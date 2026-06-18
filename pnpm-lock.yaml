@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@m3ui-vue/m3ui-vue': link:../m3ui-vue
+
 importers:
 
   .:

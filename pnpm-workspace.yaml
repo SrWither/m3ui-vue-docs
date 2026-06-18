@@ -1,0 +1,4 @@
+minimumReleaseAgeExclude:
+  - '@m3ui-vue/m3ui-vue@0.1.1'
+overrides:
+  '@m3ui-vue/m3ui-vue': link:../m3ui-vue
