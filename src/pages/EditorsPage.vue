@@ -331,7 +331,7 @@ console.log('hello')
       title="Terminal"
       description="Terminal emulator with pre-filled output lines."
       :code="`<script setup>
-import { MTerminal } from '@m3ui-vue/m3ui-vue'
+import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'
 
 const lines = [
   '$ npm install @m3ui-vue/m3ui-vue',
@@ -358,8 +358,11 @@ const lines = [
 
     <ComponentDemo
       title="Rich Text Editor"
-      description="WYSIWYG editor with formatting toolbar. Requires @tiptap peer dependencies."
+      description="WYSIWYG editor with formatting toolbar."
       :code="`<script setup>
+import { ref } from 'vue'
+import { MRichTextEditor } from '@m3ui-vue/m3ui-vue/rich-text-editor'
+
 const content = ref('<p>Hello <strong>world</strong>!</p>')
 <\/script>
 
