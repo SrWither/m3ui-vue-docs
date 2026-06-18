@@ -21,6 +21,7 @@ const buttonProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a spinner and disables the button' },
   { name: 'icon', type: 'string', description: 'Material Symbol icon name shown before the label' },
+  { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
 ]
 
 const iconButtonProps: PropDef[] = [
@@ -29,6 +30,7 @@ const iconButtonProps: PropDef[] = [
   { name: 'variant', type: "'standard' | 'filled' | 'tonal' | 'outlined'", default: "'standard'", description: 'Visual style' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'size', type: 'number', default: '40', description: 'Button size in pixels' },
+  { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
 ]
 
 const fabProps: PropDef[] = [
@@ -37,8 +39,9 @@ const fabProps: PropDef[] = [
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'surface'", default: "'primary'", description: 'Color scheme' },
   { name: 'size', type: "'small' | 'regular' | 'large'", default: "'regular'", description: 'FAB size' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
-  { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items: { icon: string, label?: string, onClick?: () => void }' },
+  { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items (see interface below)' },
   { name: 'direction', type: "'up' | 'down' | 'left' | 'right' | 'radial'", default: "'up'", description: 'Speed-dial expand direction' },
+  { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
 ]
 
 const segmentedProps: PropDef[] = [
@@ -253,8 +256,9 @@ const items = [
     <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
       <p class="mb-2 text-title-small font-medium">SpeedDialItem interface</p>
       <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>interface SpeedDialItem {
-  icon: string        // Material Symbol name
-  label?: string      // Tooltip label (shown for up/down directions)
+  icon: string                    // Material Symbol name
+  label?: string                  // Tooltip label (shown for up/down directions)
+  to?: string | Record&lt;string, any&gt;  // Vue Router destination (renders as RouterLink)
   onClick?: () => void
 }</code></pre>
     </MCard>

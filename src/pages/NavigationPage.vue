@@ -79,6 +79,11 @@ const menuProps: PropDef[] = [
   { name: 'align', type: "'left' | 'right'", default: "'right'", description: 'Dropdown alignment relative to trigger' },
 ]
 
+const menuItemProps: PropDef[] = [
+  { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
+  { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
+]
+
 const contextMenuProps: PropDef[] = [
   { name: 'items', type: 'ContextMenuItem[]', description: 'Array of menu items (see interface below)' },
 ]
@@ -135,12 +140,39 @@ const drawerSections: DrawerSection[] = [
   },
 ]
 
+const collapsibleSections: DrawerSection[] = [
+  {
+    title: 'Mail',
+    icon: 'mail',
+    collapsible: true,
+    items: [
+      { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: '12' },
+      { value: 'sent', label: 'Sent', icon: 'send' },
+      { value: 'drafts', label: 'Drafts', icon: 'drafts', badge: '3' },
+    ],
+  },
+  {
+    title: 'Labels',
+    icon: 'label',
+    collapsible: true,
+    items: [
+      { value: 'work', label: 'Work', icon: 'work' },
+      { value: 'personal', label: 'Personal', icon: 'person' },
+    ],
+  },
+]
+const collapsibleSelected = ref<string | number>('inbox')
+
+const collapsedOpen = ref(false)
+const collapsedVal = ref(false)
+
 const drawerProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model)' },
   { name: 'selected', type: 'string | number', description: 'Currently selected item value' },
-  { name: 'sections', type: 'DrawerSection[]', description: 'Array of { title?, items: DrawerItem[] }' },
+  { name: 'sections', type: 'DrawerSection[]', description: 'Array of sections (see interfaces below)' },
   { name: 'title', type: 'string', description: 'Drawer header title' },
-  { name: 'modal', type: 'boolean', default: 'true', description: 'Modal with scrim overlay' },
+  { name: 'modal', type: 'boolean', default: 'true', description: 'Modal with scrim overlay, or inline sidebar' },
+  { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons (inline variant only)' },
 ]
 
 const railVal = ref<string | number>('home')
@@ -283,8 +315,11 @@ const active = ref('home')
       </MMenu>
     </ComponentDemo>
 
-    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMenu Props</h3>
     <PropsTable :props="menuProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMenuItem Props</h3>
+    <PropsTable :props="menuItemProps" />
 
     <!-- ── MContextMenu ─────────────────────────────────────────────────── -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">MContextMenu</h2>
@@ -348,7 +383,8 @@ const items = [
   disabled?: boolean       // Grayed out, not clickable
   danger?: boolean         // Red/error color for destructive actions
   divider?: boolean        // Renders a separator line instead of an item
-  children?: ContextMenuItem[]  // Nested submenu items (recursive)
+  to?: string | Record&lt;string, any&gt;  // Vue Router destination (renders as RouterLink)
+  children?: ContextMenuItem[]       // Nested submenu items (recursive)
   onClick?: () => void     // Click handler
 }</code></pre>
     </MCard>
@@ -487,7 +523,7 @@ const items = [
     <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationDrawer</h2>
 
     <ComponentDemo
-      title="Navigation Drawer"
+      title="Modal Drawer"
       description="Slide-out drawer with grouped items and badges."
       :code="`<script setup>
 const open = ref(false)
@@ -535,8 +571,121 @@ const sections = [
       />
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Collapsible Sections"
+      description="Sections with collapsible: true can be expanded and collapsed. Add an icon to the section for the toggle header."
+      :code="`<script setup>
+const sections = [
+  {
+    title: 'Mail',
+    icon: 'mail',
+    collapsible: true,
+    items: [
+      { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: '12' },
+      { value: 'sent', label: 'Sent', icon: 'send' },
+    ],
+  },
+  {
+    title: 'Labels',
+    icon: 'label',
+    collapsible: true,
+    items: [
+      { value: 'work', label: 'Work', icon: 'work' },
+      { value: 'personal', label: 'Personal', icon: 'person' },
+    ],
+  },
+]
+<\/script>
+
+<template>
+  <MNavigationDrawer
+    v-model=&quot;open&quot;
+    :sections=&quot;sections&quot;
+    :selected=&quot;selected&quot;
+    :modal=&quot;false&quot;
+  />
+</template>`"
+    >
+      <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :sections="collapsibleSections"
+          :selected="collapsibleSelected"
+          @select="collapsibleSelected = $event"
+        />
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ collapsibleSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Collapsed Mode"
+      description="Use the collapsed prop for a compact icon-only sidebar (72px). Items show a tooltip on hover."
+      :code="`<script setup>
+const collapsed = ref(false)
+<\/script>
+
+<template>
+  <MButton @click=&quot;collapsed = !collapsed&quot;>Toggle</MButton>
+  <MNavigationDrawer
+    :model-value=&quot;true&quot;
+    :modal=&quot;false&quot;
+    :collapsed=&quot;collapsed&quot;
+    :sections=&quot;sections&quot;
+    :selected=&quot;selected&quot;
+  />
+</template>`"
+    >
+      <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :collapsed="collapsedVal"
+          :sections="collapsibleSections"
+          :selected="collapsibleSelected"
+          @select="collapsibleSelected = $event"
+        >
+          <template #header>
+            <div class="flex h-12 shrink-0 items-center" :class="collapsedVal ? 'justify-center' : 'px-3'">
+              <button
+                type="button"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8"
+                @click="collapsedVal = !collapsedVal"
+              >
+                <MIcon :name="collapsedVal ? 'menu' : 'menu_open'" :size="22" />
+              </button>
+            </div>
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ collapsibleSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="drawerProps" />
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">DrawerSection &amp; DrawerItem interfaces</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>interface DrawerItem {
+  value: string | number
+  label: string
+  icon?: string
+  badge?: string | number
+  disabled?: boolean
+  to?: string | Record&lt;string, any&gt;  // Vue Router destination (renders as RouterLink)
+}
+
+interface DrawerSection {
+  title?: string
+  icon?: string            // Icon for collapsible section header
+  items: DrawerItem[]
+  collapsible?: boolean    // Section can be expanded/collapsed
+}</code></pre>
+    </MCard>
 
     <!-- ── MNavigationRail ─────────────────────────────────────────────── -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationRail</h2>
