@@ -1,6 +1,17 @@
 <script setup lang="ts">
-import { MCard, MIcon } from '@m3ui-vue/m3ui-vue'
+import { ref } from 'vue'
+import { MCard, MIcon, MIconButton, useToast } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
+
+const toast = useToast()
+const copiedDep = ref<string | null>(null)
+
+async function copyInstall(cmd: string, id: string) {
+  await navigator.clipboard.writeText(cmd)
+  copiedDep.value = id
+  toast.success('Copied to clipboard')
+  setTimeout(() => { copiedDep.value = null }, 2000)
+}
 
 const installCode = `pnpm add @m3ui-vue/m3ui-vue
 # or
@@ -127,9 +138,18 @@ const optionalDeps = [
 
     <div class="space-y-3">
       <MCard v-for="dep in optionalDeps" :key="dep.sub" class="p-4">
-        <div class="mb-2 flex items-center gap-2">
-          <MIcon name="extension" :size="20" class="text-primary" />
-          <code class="text-label-large font-medium text-primary">@m3ui-vue/m3ui-vue/{{ dep.sub }}</code>
+        <div class="mb-2 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <MIcon name="extension" :size="20" class="text-primary" />
+            <code class="text-label-large font-medium text-primary">@m3ui-vue/m3ui-vue/{{ dep.sub }}</code>
+          </div>
+          <MIconButton
+            :icon="copiedDep === dep.sub ? 'check' : 'content_copy'"
+            :label="copiedDep === dep.sub ? 'Copied' : 'Copy install command'"
+            variant="tonal"
+            :size="32"
+            @click="copyInstall(dep.install, dep.sub)"
+          />
         </div>
         <p class="mb-2 text-body-medium text-on-surface-variant">{{ dep.components }}</p>
         <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small text-on-surface-variant"><code>{{ dep.install }}</code></pre>
