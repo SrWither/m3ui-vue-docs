@@ -31,6 +31,7 @@ const sections: NavSection[] = [
       { label: 'Buttons', icon: 'smart_button', to: '/components/buttons' },
       { label: 'Inputs', icon: 'input', to: '/components/inputs' },
       { label: 'Feedback', icon: 'feedback', to: '/components/feedback' },
+      { label: 'Data Display', icon: 'dashboard', to: '/components/data-display' },
     ],
   },
   {

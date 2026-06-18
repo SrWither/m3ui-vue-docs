@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -22,6 +22,10 @@ const router = createRouter({
     {
       path: '/components/feedback',
       component: () => import('./pages/FeedbackPage.vue'),
+    },
+    {
+      path: '/components/data-display',
+      component: () => import('./pages/DataDisplayPage.vue'),
     },
     {
       path: '/styles/palettes',
