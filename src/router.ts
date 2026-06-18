@@ -28,6 +28,10 @@ const router = createRouter({
       component: () => import('./pages/DataDisplayPage.vue'),
     },
     {
+      path: '/components/navigation',
+      component: () => import('./pages/NavigationPage.vue'),
+    },
+    {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
     },
