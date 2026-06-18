@@ -56,6 +56,10 @@ const router = createRouter({
       component: () => import('./pages/AdvancedPage.vue'),
     },
     {
+      path: '/examples',
+      component: () => import('./pages/ExamplesPage.vue'),
+    },
+    {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
     },

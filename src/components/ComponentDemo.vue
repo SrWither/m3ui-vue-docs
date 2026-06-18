@@ -7,6 +7,7 @@ defineProps<{
   title: string
   description?: string
   code: string
+  flush?: boolean
 }>()
 
 const activeTab = ref<string | number>('preview')
@@ -30,7 +31,7 @@ const tabs = [
       <MTabs v-model="activeTab" :tabs="tabs" variant="secondary" />
     </div>
 
-    <div v-show="activeTab === 'preview'" class="flex flex-wrap items-center gap-4 p-6">
+    <div v-show="activeTab === 'preview'" :class="flush ? 'flex flex-col' : 'flex flex-wrap items-center gap-4 p-6'">
       <slot />
     </div>
 

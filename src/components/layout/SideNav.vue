@@ -39,6 +39,14 @@ const sections: DrawerSection[] = [
     ],
   },
   {
+    title: 'Examples',
+    icon: 'design_services',
+    collapsible: true,
+    items: [
+      { value: '/examples', label: 'Layouts', icon: 'view_quilt', to: '/examples' },
+    ],
+  },
+  {
     title: 'Styles',
     icon: 'palette',
     collapsible: true,
