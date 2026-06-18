@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MButton, MIconButton, MFab, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
+import { MButton, MIconButton, MFab, MSegmentedButton, MCard } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 
 const segmentedValue = ref('day')
 const segmentedMulti = ref<string[]>(['bold'])
+
+const dialItems = [
+  { icon: 'image', label: 'Photo', onClick: () => {} },
+  { icon: 'videocam', label: 'Video', onClick: () => {} },
+  { icon: 'mic', label: 'Audio', onClick: () => {} },
+]
 
 const buttonProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'", default: "'filled'", description: 'Visual style of the button' },
@@ -31,7 +37,7 @@ const fabProps: PropDef[] = [
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'surface'", default: "'primary'", description: 'Color scheme' },
   { name: 'size', type: "'small' | 'regular' | 'large'", default: "'regular'", description: 'FAB size' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
-  { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items' },
+  { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items: { icon: string, label?: string, onClick?: () => void }' },
   { name: 'direction', type: "'up' | 'down' | 'left' | 'right' | 'radial'", default: "'up'", description: 'Speed-dial expand direction' },
 ]
 
@@ -194,8 +200,40 @@ const segmentedProps: PropDef[] = [
       <MFab icon="edit" label="Compose" color="tertiary" />
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Speed Dial"
+      description="Pass an items array to turn the FAB into a speed dial. Each item needs an icon and optionally a label and onClick handler."
+      :code="`const items = [
+  { icon: 'image', label: 'Photo', onClick: () => {} },
+  { icon: 'videocam', label: 'Video', onClick: () => {} },
+  { icon: 'mic', label: 'Audio', onClick: () => {} },
+]
+
+<MFab icon=&quot;add&quot; :items=&quot;items&quot; direction=&quot;up&quot; />`"
+    >
+      <div class="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <MCard v-for="dir in (['up', 'down', 'left', 'right', 'radial'] as const)" :key="dir" class="flex flex-col items-center overflow-visible p-0">
+          <p class="w-full border-b border-outline-variant px-4 py-2 text-center text-label-large font-medium text-on-surface-variant">
+            {{ dir }}
+          </p>
+          <div class="flex h-40 items-center justify-center">
+            <MFab icon="add" :items="dialItems" :direction="dir" size="small" />
+          </div>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="fabProps" />
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">SpeedDialItem interface</p>
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>interface SpeedDialItem {
+  icon: string        // Material Symbol name
+  label?: string      // Tooltip label (shown for up/down directions)
+  onClick?: () => void
+}</code></pre>
+    </MCard>
 
     <!-- ── MSegmentedButton ─────────────────────────────────────────────── -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">MSegmentedButton</h2>
