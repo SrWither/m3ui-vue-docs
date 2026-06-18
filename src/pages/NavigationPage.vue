@@ -2,9 +2,10 @@
 import { ref } from 'vue'
 import {
   MTabs, MMenu, MMenuItem, MContextMenu, MBreadcrumbs, MStepper,
-  MPagination, MButton, MIconButton, MIcon, MCard,
+  MPagination, MButton, MIconButton, MIcon, MCard, MFab,
+  MNavigationBar, MNavigationDrawer, MNavigationRail, MTopAppBar, MAppBar,
 } from '@m3ui-vue/m3ui-vue'
-import type { ContextMenuItem, BreadcrumbItem, StepItem } from '@m3ui-vue/m3ui-vue'
+import type { ContextMenuItem, BreadcrumbItem, StepItem, NavBarItem, DrawerSection, NavRailItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
@@ -98,6 +99,75 @@ const paginationProps: PropDef[] = [
   { name: 'page', type: 'number', description: 'Current page (1-based)' },
   { name: 'perPage', type: 'number', description: 'Items per page' },
   { name: 'total', type: 'number', description: 'Total number of items' },
+]
+
+const navBarVal = ref<string | number>('home')
+const navBarItems: NavBarItem[] = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'search', label: 'Search', icon: 'search' },
+  { value: 'notifications', label: 'Alerts', icon: 'notifications', badge: 3 },
+  { value: 'profile', label: 'Profile', icon: 'person' },
+]
+
+const navBarProps: PropDef[] = [
+  { name: 'modelValue', type: 'string | number', description: 'Active item value' },
+  { name: 'items', type: 'NavBarItem[]', description: 'Array of { value, label, icon, badge?, badgeDot? }' },
+]
+
+const drawerOpen = ref(false)
+const drawerSelected = ref<string | number>('inbox')
+const drawerSections: DrawerSection[] = [
+  {
+    title: 'Mail',
+    items: [
+      { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: '12' },
+      { value: 'sent', label: 'Sent', icon: 'send' },
+      { value: 'drafts', label: 'Drafts', icon: 'drafts', badge: '3' },
+    ],
+  },
+  {
+    title: 'Labels',
+    items: [
+      { value: 'work', label: 'Work', icon: 'work' },
+      { value: 'personal', label: 'Personal', icon: 'person' },
+      { value: 'trash', label: 'Trash', icon: 'delete' },
+    ],
+  },
+]
+
+const drawerProps: PropDef[] = [
+  { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model)' },
+  { name: 'selected', type: 'string | number', description: 'Currently selected item value' },
+  { name: 'sections', type: 'DrawerSection[]', description: 'Array of { title?, items: DrawerItem[] }' },
+  { name: 'title', type: 'string', description: 'Drawer header title' },
+  { name: 'modal', type: 'boolean', default: 'true', description: 'Modal with scrim overlay' },
+]
+
+const railVal = ref<string | number>('home')
+const railItems: NavRailItem[] = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'search', label: 'Search', icon: 'search' },
+  { value: 'library', label: 'Library', icon: 'video_library' },
+  { value: 'settings', label: 'Settings', icon: 'settings' },
+]
+
+const railProps: PropDef[] = [
+  { name: 'modelValue', type: 'string | number', description: 'Active item value' },
+  { name: 'items', type: 'NavRailItem[]', description: 'Array of { value, label, icon, badge?, badgeDot?, disabled? }' },
+  { name: 'alignment', type: "'top' | 'center' | 'bottom'", default: "'top'", description: 'Vertical alignment of items' },
+]
+
+const topAppBarProps: PropDef[] = [
+  { name: 'title', type: 'string', description: 'App bar title' },
+  { name: 'variant', type: "'center' | 'small' | 'medium' | 'large'", default: "'small'", description: 'Title layout variant' },
+  { name: 'navigationIcon', type: 'string', description: 'Leading icon (e.g. menu, arrow_back)' },
+  { name: 'elevated', type: 'boolean', default: 'false', description: 'Add shadow elevation' },
+]
+
+const appBarProps: PropDef[] = [
+  { name: 'color', type: "'surface' | 'primary' | 'secondary' | 'tertiary'", default: "'surface'", description: 'Background color' },
+  { name: 'elevated', type: 'boolean', default: 'false', description: 'Add shadow elevation' },
+  { name: 'dense', type: 'boolean', default: 'false', description: 'Compact height (48px vs 64px)' },
 ]
 </script>
 
@@ -381,5 +451,213 @@ const page = ref(1)
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="paginationProps" />
+
+    <!-- ── MNavigationBar ──────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationBar</h2>
+
+    <ComponentDemo
+      title="Bottom Navigation"
+      description="Mobile bottom navigation bar with pill indicator and badges."
+      :code="`<script setup>
+const active = ref('home')
+const items = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'search', label: 'Search', icon: 'search' },
+  { value: 'notifications', label: 'Alerts', icon: 'notifications', badge: 3 },
+  { value: 'profile', label: 'Profile', icon: 'person' },
+]
+<\/script>
+
+<template>
+  <MNavigationBar v-model=&quot;active&quot; :items=&quot;items&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-sm overflow-hidden rounded-xl border border-outline-variant">
+        <div class="flex h-32 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ navBarVal }} view
+        </div>
+        <MNavigationBar v-model="navBarVal" :items="navBarItems" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="navBarProps" />
+
+    <!-- ── MNavigationDrawer ───────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationDrawer</h2>
+
+    <ComponentDemo
+      title="Navigation Drawer"
+      description="Slide-out drawer with grouped items and badges."
+      :code="`<script setup>
+const open = ref(false)
+const selected = ref('inbox')
+const sections = [
+  {
+    title: 'Mail',
+    items: [
+      { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: '12' },
+      { value: 'sent', label: 'Sent', icon: 'send' },
+      { value: 'drafts', label: 'Drafts', icon: 'drafts', badge: '3' },
+    ],
+  },
+  {
+    title: 'Labels',
+    items: [
+      { value: 'work', label: 'Work', icon: 'work' },
+      { value: 'personal', label: 'Personal', icon: 'person' },
+    ],
+  },
+]
+<\/script>
+
+<template>
+  <MButton @click=&quot;open = true&quot;>Open Drawer</MButton>
+  <MNavigationDrawer
+    v-model=&quot;open&quot;
+    :sections=&quot;sections&quot;
+    :selected=&quot;selected&quot;
+    title=&quot;My App&quot;
+    @select=&quot;selected = $event&quot;
+  />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton icon="menu" @click="drawerOpen = true">Open Drawer</MButton>
+        <span class="text-body-medium text-on-surface-variant">Selected: {{ drawerSelected }}</span>
+      </div>
+      <MNavigationDrawer
+        v-model="drawerOpen"
+        :sections="drawerSections"
+        :selected="drawerSelected"
+        title="My App"
+        @select="drawerSelected = $event"
+      />
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="drawerProps" />
+
+    <!-- ── MNavigationRail ─────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationRail</h2>
+
+    <ComponentDemo
+      title="Navigation Rail"
+      description="Compact vertical navigation for desktop layouts with pill indicator."
+      :code="`<script setup>
+const active = ref('home')
+const items = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'search', label: 'Search', icon: 'search' },
+  { value: 'library', label: 'Library', icon: 'video_library' },
+  { value: 'settings', label: 'Settings', icon: 'settings' },
+]
+<\/script>
+
+<template>
+  <MNavigationRail v-model=&quot;active&quot; :items=&quot;items&quot;>
+    <template #fab>
+      <MFab icon=&quot;edit&quot; size=&quot;small&quot; />
+    </template>
+  </MNavigationRail>
+</template>`"
+    >
+      <div class="flex h-72 w-full max-w-md overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationRail v-model="railVal" :items="railItems">
+          <template #fab>
+            <MFab icon="edit" size="small" />
+          </template>
+        </MNavigationRail>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ railVal }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="railProps" />
+
+    <!-- ── MTopAppBar ──────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTopAppBar</h2>
+
+    <ComponentDemo
+      title="Variants"
+      description="Four top app bar layouts: center-aligned, small, medium, and large."
+      :code="`<template>
+  <MTopAppBar title=&quot;My App&quot; variant=&quot;small&quot; navigation-icon=&quot;menu&quot;>
+    <template #actions>
+      <MIconButton icon=&quot;search&quot; label=&quot;Search&quot; />
+      <MIconButton icon=&quot;more_vert&quot; label=&quot;More&quot; />
+    </template>
+  </MTopAppBar>
+</template>`"
+    >
+      <div class="w-full space-y-4">
+        <MCard v-for="v in (['center', 'small', 'medium', 'large'] as const)" :key="v" variant="outlined" class="overflow-hidden">
+          <MTopAppBar :title="`${v.charAt(0).toUpperCase() + v.slice(1)} variant`" :variant="v" navigation-icon="menu">
+            <template #actions>
+              <MIconButton icon="search" label="Search" />
+              <MIconButton icon="more_vert" label="More" />
+            </template>
+          </MTopAppBar>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="topAppBarProps" />
+
+    <!-- ── MAppBar ─────────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MAppBar</h2>
+
+    <ComponentDemo
+      title="App Bar"
+      description="Simple slot-based app bar with leading, default, and trailing areas."
+      :code="`<template>
+  <MAppBar>
+    <template #leading>
+      <MIconButton icon=&quot;menu&quot; label=&quot;Menu&quot; />
+    </template>
+    <span class=&quot;text-title-large&quot;>App Title</span>
+    <template #trailing>
+      <MIconButton icon=&quot;search&quot; label=&quot;Search&quot; />
+    </template>
+  </MAppBar>
+</template>`"
+    >
+      <div class="w-full space-y-4">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MAppBar>
+            <template #leading>
+              <MIconButton icon="menu" label="Menu" />
+            </template>
+            <span class="text-title-large">My App</span>
+            <template #trailing>
+              <MIconButton icon="search" label="Search" />
+              <MIconButton icon="more_vert" label="More" />
+            </template>
+          </MAppBar>
+        </MCard>
+        <MCard variant="outlined" class="overflow-hidden">
+          <MAppBar color="primary" :elevated="true">
+            <template #leading>
+              <MIconButton icon="arrow_back" label="Back" />
+            </template>
+            <span class="text-title-large">Primary</span>
+          </MAppBar>
+        </MCard>
+        <MCard variant="outlined" class="overflow-hidden">
+          <MAppBar color="tertiary" :dense="true">
+            <template #leading>
+              <MIconButton icon="arrow_back" label="Back" />
+            </template>
+            <span class="text-title-medium">Dense Tertiary</span>
+          </MAppBar>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="appBarProps" />
   </div>
 </template>

@@ -32,6 +32,30 @@ const router = createRouter({
       component: () => import('./pages/NavigationPage.vue'),
     },
     {
+      path: '/components/layout',
+      component: () => import('./pages/LayoutPage.vue'),
+    },
+    {
+      path: '/components/overlays',
+      component: () => import('./pages/OverlaysPage.vue'),
+    },
+    {
+      path: '/components/tables',
+      component: () => import('./pages/TablesPage.vue'),
+    },
+    {
+      path: '/components/utility',
+      component: () => import('./pages/UtilityPage.vue'),
+    },
+    {
+      path: '/components/editors',
+      component: () => import('./pages/EditorsPage.vue'),
+    },
+    {
+      path: '/components/advanced',
+      component: () => import('./pages/AdvancedPage.vue'),
+    },
+    {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
     },

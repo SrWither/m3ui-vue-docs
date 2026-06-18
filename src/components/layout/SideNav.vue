@@ -33,6 +33,12 @@ const sections: NavSection[] = [
       { label: 'Feedback', icon: 'feedback', to: '/components/feedback' },
       { label: 'Data Display', icon: 'dashboard', to: '/components/data-display' },
       { label: 'Navigation', icon: 'menu_open', to: '/components/navigation' },
+      { label: 'Layout', icon: 'grid_view', to: '/components/layout' },
+      { label: 'Overlays', icon: 'layers', to: '/components/overlays' },
+      { label: 'Tables', icon: 'table_chart', to: '/components/tables' },
+      { label: 'Utility', icon: 'build', to: '/components/utility' },
+      { label: 'Editors', icon: 'code', to: '/components/editors' },
+      { label: 'Advanced', icon: 'auto_awesome', to: '/components/advanced' },
     ],
   },
   {

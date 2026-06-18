@@ -27,7 +27,7 @@ const panelOpen = ref(true)
       </div>
       <h1 class="text-display-small font-medium text-on-surface">M3UI Vue</h1>
       <p class="mx-auto mt-4 max-w-2xl text-body-large text-on-surface-variant">
-        80+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
+        70+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
         Ship beautiful, accessible interfaces with 20 built-in color palettes,
         dark mode, and full TypeScript support.
       </p>
@@ -55,7 +55,7 @@ const panelOpen = ref(true)
       </MCard>
       <MCard class="p-5 text-center">
         <MIcon name="widgets" :size="32" class="mb-3 text-primary" />
-        <h3 class="text-title-small font-medium">80+ Components</h3>
+        <h3 class="text-title-small font-medium">70+ Components</h3>
         <p class="mt-1 text-body-small text-on-surface-variant">
           Buttons, inputs, tables, dialogs, editors, and more
         </p>

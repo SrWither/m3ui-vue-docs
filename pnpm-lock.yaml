@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@m3ui-vue/m3ui-vue': link:../m3ui-vue
+
 importers:
 
   .:
@@ -42,14 +45,20 @@ importers:
         specifier: ^6.43.1
         version: 6.43.1
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.1.3
-        version: 0.1.3(@codemirror/commands@6.10.3)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.5)(@codemirror/lang-json@6.0.2)(@codemirror/lang-python@6.2.1)(@codemirror/lang-vue@0.1.3)(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.1)(codemirror@6.0.2)(tailwindcss@4.3.1)(vue@3.5.38(typescript@6.0.3))
+        specifier: link:../m3ui-vue
+        version: link:../m3ui-vue
       '@tailwindcss/vite':
         specifier: ^4.3.1
         version: 4.3.1(vite@8.0.16(jiti@2.7.0))
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
       codemirror:
         specifier: ^6.0.2
         version: 6.0.2
+      markdown-it:
+        specifier: ^14.2.0
+        version: 14.2.0
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -185,94 +194,6 @@ packages:
 
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
-
-  '@m3ui-vue/m3ui-vue@0.1.3':
-    resolution: {integrity: sha512-nc/KOC5UCO+eXFZtSOqavW2cevV4DgcMI+5R+7cRy9FHcJE+s/wOIouiqfkVwsQiDiOLfAQnzuheU4ZmMjzrqQ==}
-    peerDependencies:
-      '@codemirror/commands': '*'
-      '@codemirror/lang-css': '*'
-      '@codemirror/lang-html': '*'
-      '@codemirror/lang-javascript': '*'
-      '@codemirror/lang-json': '*'
-      '@codemirror/lang-python': '*'
-      '@codemirror/lang-vue': '*'
-      '@codemirror/language': '*'
-      '@codemirror/state': '*'
-      '@codemirror/theme-one-dark': '*'
-      '@codemirror/view': '*'
-      '@tiptap/extension-color': '*'
-      '@tiptap/extension-highlight': '*'
-      '@tiptap/extension-image': '*'
-      '@tiptap/extension-link': '*'
-      '@tiptap/extension-placeholder': '*'
-      '@tiptap/extension-text-align': '*'
-      '@tiptap/extension-text-style': '*'
-      '@tiptap/extension-underline': '*'
-      '@tiptap/starter-kit': '*'
-      '@tiptap/vue-3': '*'
-      '@xterm/addon-fit': '*'
-      '@xterm/xterm': '*'
-      chart.js: '*'
-      codemirror: '*'
-      markdown-it: '*'
-      tailwindcss: ^4.0.0
-      vue: ^3.5.0
-      vue-chartjs: '*'
-    peerDependenciesMeta:
-      '@codemirror/commands':
-        optional: true
-      '@codemirror/lang-css':
-        optional: true
-      '@codemirror/lang-html':
-        optional: true
-      '@codemirror/lang-javascript':
-        optional: true
-      '@codemirror/lang-json':
-        optional: true
-      '@codemirror/lang-python':
-        optional: true
-      '@codemirror/lang-vue':
-        optional: true
-      '@codemirror/language':
-        optional: true
-      '@codemirror/state':
-        optional: true
-      '@codemirror/theme-one-dark':
-        optional: true
-      '@codemirror/view':
-        optional: true
-      '@tiptap/extension-color':
-        optional: true
-      '@tiptap/extension-highlight':
-        optional: true
-      '@tiptap/extension-image':
-        optional: true
-      '@tiptap/extension-link':
-        optional: true
-      '@tiptap/extension-placeholder':
-        optional: true
-      '@tiptap/extension-text-align':
-        optional: true
-      '@tiptap/extension-text-style':
-        optional: true
-      '@tiptap/extension-underline':
-        optional: true
-      '@tiptap/starter-kit':
-        optional: true
-      '@tiptap/vue-3':
-        optional: true
-      '@xterm/addon-fit':
-        optional: true
-      '@xterm/xterm':
-        optional: true
-      chart.js:
-        optional: true
-      codemirror:
-        optional: true
-      markdown-it:
-        optional: true
-      vue-chartjs:
-        optional: true
 
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
@@ -481,6 +402,15 @@ packages:
   '@tybys/wasm-util@0.10.2':
     resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==}
 
+  '@types/linkify-it@5.0.0':
+    resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
+
+  '@types/markdown-it@14.1.2':
+    resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
+
+  '@types/mdurl@2.0.0':
+    resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
+
   '@vitejs/plugin-vue@6.0.7':
     resolution: {integrity: sha512-km+p+XdSz9Sxm5rqUbqcSfZYaAniKxWBj1KURl+Jr7UaPvvX7BmaWMdP69I5rrFDeQGyxAG7NXdc57vz+snhWg==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -546,6 +476,9 @@ packages:
   alien-signals@3.2.1:
     resolution: {integrity: sha512-I8FjmltrfnDFoZedi5CG8DghVYNhzb/Ijluz7tCSJH0xpd0484Kowhbb1XDYOxfJpU1p5wnM2X54dA+IfGyD1g==}
 
+  argparse@2.0.1:
+    resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
   codemirror@6.0.2:
     resolution: {integrity: sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw==}
 
@@ -562,6 +495,10 @@ packages:
   enhanced-resolve@5.21.6:
     resolution: {integrity: sha512-aNnGCvbJ/RIyWo1IuhNdVjnNF+EjH9wpzpNHt+ci/m9He9LJvUN8wrCcXjp9cWsGNAuvSpVFTx/vraAFQ8qGjQ==}
     engines: {node: '>=10.13.0'}
+
+  entities@4.5.0:
+    resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
+    engines: {node: '>=0.12'}
 
   entities@7.0.1:
     resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
@@ -665,8 +602,18 @@ packages:
     resolution: {integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==}
     engines: {node: '>= 12.0.0'}
 
+  linkify-it@5.0.1:
+    resolution: {integrity: sha512-wVoTjP4Q6R0NW5hiZkVJaFZPWgtXfoGF+6LucL3/FtiNjmcHhYjEr5f1Kqjirc1nBW07J/ZuRFumqr2oqccEWg==}
+
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+
+  markdown-it@14.2.0:
+    resolution: {integrity: sha512-1TGiQiJVRQ3NPmZH6sx5Cfnmg6GQm9jvC1ch4TK511NjSJvjzKLzn5pPfZRNZkRPZP0HqCioSndqH8v2nRaWVQ==}
+    hasBin: true
+
+  mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
 
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
@@ -689,6 +636,10 @@ packages:
   postcss@8.5.15:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
+
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
 
   rolldown@1.0.3:
     resolution: {integrity: sha512-i00lAJ2ks1BYr7rjNjKC7BcqAS7nVfiT3QX1SI5aY+AFHblCmaUf9OE9dbdzDvW6dJxbi2ZCZiy9v3CcwOiX3g==}
@@ -720,6 +671,9 @@ packages:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  uc.micro@2.1.0:
+    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
   vite@8.0.16:
     resolution: {integrity: sha512-h9bXPmJichP5fLmVQo3PyaGSDE2n3aPuomeAlVRm0JLmt4rY6zmPKd59HYI4LNW8oTK7tlTsuC7l/m7awx9Jcw==}
@@ -984,24 +938,6 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.1.3(@codemirror/commands@6.10.3)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.5)(@codemirror/lang-json@6.0.2)(@codemirror/lang-python@6.2.1)(@codemirror/lang-vue@0.1.3)(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.1)(codemirror@6.0.2)(tailwindcss@4.3.1)(vue@3.5.38(typescript@6.0.3))':
-    dependencies:
-      tailwindcss: 4.3.1
-      vue: 3.5.38(typescript@6.0.3)
-    optionalDependencies:
-      '@codemirror/commands': 6.10.3
-      '@codemirror/lang-css': 6.3.1
-      '@codemirror/lang-html': 6.4.11
-      '@codemirror/lang-javascript': 6.2.5
-      '@codemirror/lang-json': 6.0.2
-      '@codemirror/lang-python': 6.2.1
-      '@codemirror/lang-vue': 0.1.3
-      '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/theme-one-dark': 6.1.3
-      '@codemirror/view': 6.43.1
-      codemirror: 6.0.2
-
   '@marijn/find-cluster-break@1.0.2': {}
 
   '@napi-rs/wasm-runtime@1.1.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
@@ -1137,6 +1073,15 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@types/linkify-it@5.0.0': {}
+
+  '@types/markdown-it@14.1.2':
+    dependencies:
+      '@types/linkify-it': 5.0.0
+      '@types/mdurl': 2.0.0
+
+  '@types/mdurl@2.0.0': {}
+
   '@vitejs/plugin-vue@6.0.7(vite@8.0.16(jiti@2.7.0))(vue@3.5.38(typescript@6.0.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
@@ -1228,6 +1173,8 @@ snapshots:
 
   alien-signals@3.2.1: {}
 
+  argparse@2.0.1: {}
+
   codemirror@6.0.2:
     dependencies:
       '@codemirror/autocomplete': 6.20.3
@@ -1248,6 +1195,8 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
+
+  entities@4.5.0: {}
 
   entities@7.0.1: {}
 
@@ -1313,9 +1262,24 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.32.0
       lightningcss-win32-x64-msvc: 1.32.0
 
+  linkify-it@5.0.1:
+    dependencies:
+      uc.micro: 2.1.0
+
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  markdown-it@14.2.0:
+    dependencies:
+      argparse: 2.0.1
+      entities: 4.5.0
+      linkify-it: 5.0.1
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.1.0
+
+  mdurl@2.0.0: {}
 
   muggle-string@0.4.1: {}
 
@@ -1332,6 +1296,8 @@ snapshots:
       nanoid: 3.3.12
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  punycode.js@2.3.1: {}
 
   rolldown@1.0.3:
     dependencies:
@@ -1371,6 +1337,8 @@ snapshots:
     optional: true
 
   typescript@6.0.3: {}
+
+  uc.micro@2.1.0: {}
 
   vite@8.0.16(jiti@2.7.0):
     dependencies:

@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import {
   MCard, MChip, MBadge, MAvatar, MIcon, MDivider, MButton, MIconButton,
+  MStatCard, MTimeline, MSkeleton, MEmptyState, MResult, MTree,
 } from '@m3ui-vue/m3ui-vue'
+import type { TimelineItem, TreeNode } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
@@ -56,6 +58,89 @@ const dividerProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Text label in the middle of the divider' },
   { name: 'inset', type: 'boolean', default: 'false', description: 'Add horizontal padding' },
 ]
+
+const statCardProps: PropDef[] = [
+  { name: 'title', type: 'string', description: 'Stat label text' },
+  { name: 'value', type: 'string | number', description: 'Main stat value' },
+  { name: 'icon', type: 'string', description: 'Material Symbol icon' },
+  { name: 'trend', type: 'number', description: 'Percentage change (positive/negative)' },
+  { name: 'trendLabel', type: 'string', description: 'Text next to trend indicator' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | 'success'", default: "'primary'", description: 'Icon container color' },
+  { name: 'loading', type: 'boolean', default: 'false', description: 'Show skeleton placeholder' },
+]
+
+const timelineItems: TimelineItem[] = [
+  { title: 'Project created', description: 'Initial repository setup', date: 'Jan 15', icon: 'rocket_launch', color: 'primary' },
+  { title: 'First release', description: 'v1.0.0 published to npm', date: 'Feb 20', icon: 'celebration', color: 'success' },
+  { title: 'Bug reported', description: 'Critical rendering issue found', date: 'Mar 5', icon: 'bug_report', color: 'error' },
+  { title: 'Patch released', description: 'Fix deployed in v1.0.1', date: 'Mar 7', icon: 'check_circle', color: 'success' },
+]
+
+const timelineProps: PropDef[] = [
+  { name: 'items', type: 'TimelineItem[]', description: 'Array of { title, description?, date?, icon?, color? }' },
+  { name: 'dense', type: 'boolean', default: 'false', description: 'Compact spacing' },
+  { name: 'alternating', type: 'boolean', default: 'false', description: 'Alternate items left/right' },
+]
+
+const skeletonProps: PropDef[] = [
+  { name: 'variant', type: "'text' | 'circular' | 'rectangular' | 'rounded'", default: "'text'", description: 'Skeleton shape' },
+  { name: 'width', type: 'string', description: 'CSS width' },
+  { name: 'height', type: 'string', description: 'CSS height' },
+  { name: 'lines', type: 'number', default: '1', description: 'Number of text lines (text variant)' },
+  { name: 'animation', type: "'pulse' | 'wave' | 'none'", default: "'pulse'", description: 'Animation style' },
+]
+
+const emptyStateProps: PropDef[] = [
+  { name: 'icon', type: 'string', default: "'inbox'", description: 'Material Symbol icon' },
+  { name: 'title', type: 'string', description: 'Title text' },
+  { name: 'description', type: 'string', description: 'Supporting description' },
+  { name: 'compact', type: 'boolean', default: 'false', description: 'Smaller variant' },
+]
+
+const resultProps: PropDef[] = [
+  { name: 'status', type: "'success' | 'error' | 'warning' | 'info' | '404' | '403' | '500'", description: 'Result type with predefined icon, colors, and default text' },
+  { name: 'title', type: 'string', description: 'Custom title (overrides default)' },
+  { name: 'description', type: 'string', description: 'Custom description (overrides default)' },
+]
+
+const treeNodes: TreeNode[] = [
+  {
+    id: 'src', label: 'src', icon: 'folder',
+    children: [
+      {
+        id: 'components', label: 'components', icon: 'folder',
+        children: [
+          { id: 'button', label: 'MButton.vue', icon: 'code' },
+          { id: 'card', label: 'MCard.vue', icon: 'code' },
+          { id: 'dialog', label: 'MDialog.vue', icon: 'code' },
+        ],
+      },
+      {
+        id: 'composables', label: 'composables', icon: 'folder',
+        children: [
+          { id: 'useTheme', label: 'useTheme.ts', icon: 'code' },
+          { id: 'useToast', label: 'useToast.ts', icon: 'code' },
+        ],
+      },
+      { id: 'index', label: 'index.ts', icon: 'code' },
+    ],
+  },
+  { id: 'package', label: 'package.json', icon: 'description' },
+  { id: 'readme', label: 'README.md', icon: 'description' },
+]
+
+const treeProps: PropDef[] = [
+  { name: 'nodes', type: 'TreeNode[]', description: 'Array of { id, label, icon?, children?, disabled? }' },
+  { name: 'selected', type: 'string | number | null', description: 'Currently selected node id' },
+  { name: 'checked', type: '(string | number)[]', description: 'Checked node ids (when checkable)' },
+  { name: 'checkable', type: 'boolean', default: 'false', description: 'Show checkboxes with cascade selection' },
+  { name: 'defaultExpanded', type: "(string | number)[] | 'all' | 'none'", default: "'none'", description: 'Which nodes start expanded' },
+  { name: 'emptyText', type: 'string', description: 'Text shown when no nodes' },
+]
+
+const selectedNode = ref<string | number | null>(null)
+const checkedNodes = ref<(string | number)[]>([])
+const statLoading = ref(false)
 </script>
 
 <template>
@@ -420,5 +505,342 @@ function remove(label) {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="dividerProps" />
+
+    <!-- ── MStatCard ───────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MStatCard</h2>
+
+    <ComponentDemo
+      title="Stat Cards"
+      description="Display key metrics with trend indicators and icons."
+      :code="`<template>
+  <MStatCard title=&quot;Revenue&quot; value=&quot;$12,450&quot; icon=&quot;payments&quot; :trend=&quot;12.5&quot; trend-label=&quot;vs last month&quot; />
+  <MStatCard title=&quot;Users&quot; value=&quot;1,234&quot; icon=&quot;group&quot; :trend=&quot;-3.2&quot; trend-label=&quot;vs last week&quot; color=&quot;secondary&quot; />
+  <MStatCard title=&quot;Errors&quot; value=&quot;23&quot; icon=&quot;error&quot; :trend=&quot;8&quot; color=&quot;error&quot; />
+</template>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <MStatCard title="Revenue" value="$12,450" icon="payments" :trend="12.5" trend-label="vs last month" />
+        <MStatCard title="Users" value="1,234" icon="group" :trend="-3.2" trend-label="vs last week" color="secondary" />
+        <MStatCard title="Errors" value="23" icon="error" :trend="8" color="error" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Loading State"
+      description="Stat card with a skeleton placeholder while data loads."
+      :code="`<template>
+  <MStatCard title=&quot;Orders&quot; value=&quot;856&quot; icon=&quot;shopping_cart&quot; :loading=&quot;loading&quot; color=&quot;tertiary&quot; />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <div class="w-64">
+          <MStatCard title="Orders" value="856" icon="shopping_cart" :loading="statLoading" color="tertiary" />
+        </div>
+        <MButton variant="tonal" @click="statLoading = !statLoading">
+          {{ statLoading ? 'Show' : 'Toggle Loading' }}
+        </MButton>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="statCardProps" />
+
+    <!-- ── MTimeline ───────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTimeline</h2>
+
+    <ComponentDemo
+      title="Timeline"
+      description="Vertical event timeline with icons and colors."
+      :code="`<script setup>
+const items = [
+  { title: 'Project created', description: 'Initial setup', date: 'Jan 15', icon: 'rocket_launch', color: 'primary' },
+  { title: 'First release', description: 'v1.0.0 published', date: 'Feb 20', icon: 'celebration', color: 'success' },
+  { title: 'Bug reported', date: 'Mar 5', icon: 'bug_report', color: 'error' },
+  { title: 'Patch released', date: 'Mar 7', icon: 'check_circle', color: 'success' },
+]
+<\/script>
+
+<template>
+  <MTimeline :items=&quot;items&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-lg">
+        <MTimeline :items="timelineItems" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Dense"
+      description="Compact timeline with less vertical spacing."
+      :code="`<template>
+  <MTimeline :items=&quot;items&quot; :dense=&quot;true&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-lg">
+        <MTimeline :items="timelineItems" :dense="true" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="timelineProps" />
+
+    <!-- ── MSkeleton ───────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSkeleton</h2>
+
+    <ComponentDemo
+      title="Variants"
+      description="Different skeleton shapes for various content types."
+      :code="`<template>
+  <MSkeleton variant=&quot;text&quot; />
+  <MSkeleton variant=&quot;text&quot; :lines=&quot;3&quot; />
+  <MSkeleton variant=&quot;circular&quot; width=&quot;48px&quot; height=&quot;48px&quot; />
+  <MSkeleton variant=&quot;rectangular&quot; height=&quot;120px&quot; />
+  <MSkeleton variant=&quot;rounded&quot; height=&quot;80px&quot; />
+</template>`"
+    >
+      <div class="grid w-full gap-6 sm:grid-cols-2">
+        <div class="space-y-4">
+          <div>
+            <p class="mb-2 text-label-medium text-on-surface-variant">Text (1 line)</p>
+            <MSkeleton variant="text" />
+          </div>
+          <div>
+            <p class="mb-2 text-label-medium text-on-surface-variant">Text (3 lines)</p>
+            <MSkeleton variant="text" :lines="3" />
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <p class="mb-2 text-label-medium text-on-surface-variant">Circular</p>
+            <MSkeleton variant="circular" width="48px" height="48px" />
+          </div>
+          <div>
+            <p class="mb-2 text-label-medium text-on-surface-variant">Rectangular</p>
+            <MSkeleton variant="rectangular" height="80px" />
+          </div>
+          <div>
+            <p class="mb-2 text-label-medium text-on-surface-variant">Rounded</p>
+            <MSkeleton variant="rounded" height="60px" />
+          </div>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Card Skeleton"
+      description="Compose skeletons to build loading placeholders for real UI."
+      :code="`<template>
+  <MCard class=&quot;w-64 p-4&quot;>
+    <div class=&quot;flex items-center gap-3&quot;>
+      <MSkeleton variant=&quot;circular&quot; width=&quot;40px&quot; height=&quot;40px&quot; />
+      <div class=&quot;flex-1 space-y-2&quot;>
+        <MSkeleton variant=&quot;text&quot; width=&quot;60%&quot; />
+        <MSkeleton variant=&quot;text&quot; width=&quot;40%&quot; />
+      </div>
+    </div>
+    <MSkeleton variant=&quot;rectangular&quot; height=&quot;120px&quot; class=&quot;mt-4&quot; />
+    <MSkeleton variant=&quot;text&quot; :lines=&quot;2&quot; class=&quot;mt-3&quot; />
+  </MCard>
+</template>`"
+    >
+      <div class="flex flex-wrap gap-4">
+        <MCard class="w-64 p-4">
+          <div class="flex items-center gap-3">
+            <MSkeleton variant="circular" width="40px" height="40px" />
+            <div class="flex-1 space-y-2">
+              <MSkeleton variant="text" width="60%" />
+              <MSkeleton variant="text" width="40%" />
+            </div>
+          </div>
+          <MSkeleton variant="rectangular" height="120px" class="mt-4" />
+          <MSkeleton variant="text" :lines="2" class="mt-3" />
+        </MCard>
+        <MCard class="w-64 p-4">
+          <div class="flex items-center gap-3">
+            <MSkeleton variant="circular" width="40px" height="40px" animation="wave" />
+            <div class="flex-1 space-y-2">
+              <MSkeleton variant="text" width="60%" animation="wave" />
+              <MSkeleton variant="text" width="40%" animation="wave" />
+            </div>
+          </div>
+          <MSkeleton variant="rectangular" height="120px" class="mt-4" animation="wave" />
+          <MSkeleton variant="text" :lines="2" class="mt-3" animation="wave" />
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="skeletonProps" />
+
+    <!-- ── MEmptyState ─────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmptyState</h2>
+
+    <ComponentDemo
+      title="Empty State"
+      description="Placeholder for empty views with optional action buttons."
+      :code="`<template>
+  <MEmptyState
+    icon=&quot;search_off&quot;
+    title=&quot;No results found&quot;
+    description=&quot;Try adjusting your search or filters.&quot;
+  >
+    <template #actions>
+      <MButton variant=&quot;tonal&quot;>Clear filters</MButton>
+    </template>
+  </MEmptyState>
+</template>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MEmptyState
+            icon="search_off"
+            title="No results found"
+            description="Try adjusting your search or filters to find what you're looking for."
+          >
+            <template #actions>
+              <MButton variant="tonal" icon="filter_alt_off">Clear filters</MButton>
+            </template>
+          </MEmptyState>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Compact"
+      description="A smaller empty state for inline use."
+      :code="`<template>
+  <MEmptyState icon=&quot;inbox&quot; title=&quot;No messages&quot; :compact=&quot;true&quot; />
+</template>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MEmptyState icon="inbox" title="No messages" description="Your inbox is empty." :compact="true" />
+        </MCard>
+        <MCard variant="outlined" class="overflow-hidden">
+          <MEmptyState icon="notifications_off" title="No notifications" :compact="true" />
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="emptyStateProps" />
+
+    <!-- ── MResult ─────────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MResult</h2>
+
+    <ComponentDemo
+      title="Result Pages"
+      description="Pre-built result screens for success, errors, and HTTP status codes."
+      :code="`<template>
+  <MResult status=&quot;success&quot; />
+  <MResult status=&quot;error&quot; />
+  <MResult status=&quot;404&quot; />
+</template>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MResult status="success" />
+        </MCard>
+        <MCard variant="outlined" class="overflow-hidden">
+          <MResult status="404">
+            <template #actions>
+              <MButton variant="tonal" icon="home">Go home</MButton>
+            </template>
+          </MResult>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="All Statuses"
+      description="Available status presets with default text."
+      :code="`<template>
+  <MResult status=&quot;success&quot; />
+  <MResult status=&quot;error&quot; />
+  <MResult status=&quot;warning&quot; />
+  <MResult status=&quot;info&quot; />
+  <MResult status=&quot;404&quot; />
+  <MResult status=&quot;403&quot; />
+  <MResult status=&quot;500&quot; />
+</template>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <MCard v-for="s in (['success', 'error', 'warning', 'info', '404', '403', '500'] as const)" :key="s" variant="outlined" class="overflow-hidden">
+          <MResult :status="s" />
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="resultProps" />
+
+    <!-- ── MTree ───────────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTree</h2>
+
+    <ComponentDemo
+      title="Tree View"
+      description="Hierarchical tree with expand/collapse and node selection."
+      :code="`<script setup>
+const selected = ref(null)
+const nodes = [
+  {
+    id: 'src', label: 'src', icon: 'folder',
+    children: [
+      { id: 'components', label: 'components', icon: 'folder',
+        children: [
+          { id: 'button', label: 'MButton.vue', icon: 'code' },
+          { id: 'card', label: 'MCard.vue', icon: 'code' },
+        ],
+      },
+      { id: 'index', label: 'index.ts', icon: 'code' },
+    ],
+  },
+]
+<\/script>
+
+<template>
+  <MTree :nodes=&quot;nodes&quot; :selected=&quot;selected&quot; default-expanded=&quot;all&quot; @update:selected=&quot;selected = $event&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-sm">
+        <MCard variant="outlined" class="p-2">
+          <MTree
+            :nodes="treeNodes"
+            :selected="selectedNode"
+            default-expanded="all"
+            @update:selected="selectedNode = $event"
+          />
+        </MCard>
+        <p v-if="selectedNode" class="mt-2 text-body-medium text-on-surface-variant">
+          Selected: {{ selectedNode }}
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Checkable Tree"
+      description="Tree with checkboxes and cascading selection."
+      :code="`<template>
+  <MTree :nodes=&quot;nodes&quot; :checkable=&quot;true&quot; :checked=&quot;checked&quot; default-expanded=&quot;all&quot; @update:checked=&quot;checked = $event&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-sm">
+        <MCard variant="outlined" class="p-2">
+          <MTree
+            :nodes="treeNodes"
+            :checkable="true"
+            :checked="checkedNodes"
+            default-expanded="all"
+            @update:checked="checkedNodes = $event"
+          />
+        </MCard>
+        <p v-if="checkedNodes.length" class="mt-2 text-body-medium text-on-surface-variant">
+          Checked: {{ checkedNodes.join(', ') }}
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="treeProps" />
   </div>
 </template>
