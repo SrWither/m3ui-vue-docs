@@ -25,6 +25,8 @@ const cardProps: PropDef[] = [
   { name: 'image', type: 'string', description: 'URL for a full-bleed header image' },
   { name: 'imageAlt', type: 'string', description: 'Alt text for the header image' },
   { name: 'imageHeight', type: 'string', description: 'Tailwind height class for the image (default h-48)' },
+  { name: 'title', type: 'string', description: 'Card title text' },
+  { name: 'subtitle', type: 'string', description: 'Supporting text below the title' },
 ]
 
 const chipProps: PropDef[] = [
@@ -231,8 +233,187 @@ const statLoading = ref(false)
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Title & Subtitle"
+      description="Use the title and subtitle props for structured text headers."
+      :code="`<template>
+  <MCard title=&quot;Card Title&quot; subtitle=&quot;Supporting text goes here&quot; class=&quot;w-72&quot;>
+    <p class=&quot;px-4 pb-4 text-body-medium text-on-surface-variant&quot;>
+      Card content using title and subtitle props for a structured layout.
+    </p>
+  </MCard>
+</template>`"
+    >
+      <div class="flex flex-wrap gap-4">
+        <MCard title="Card Title" subtitle="Supporting text goes here" class="w-72">
+          <p class="px-4 pb-4 text-body-medium text-on-surface-variant">
+            Card content using title and subtitle props for a structured layout.
+          </p>
+        </MCard>
+        <MCard title="Title Only" class="w-72">
+          <p class="px-4 pb-4 text-body-medium text-on-surface-variant">
+            A card with just a title, no subtitle.
+          </p>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Header Slot"
+      description="Use the #header slot for custom layouts like an avatar with text."
+      :code="`<template>
+  <MCard class=&quot;w-72&quot;>
+    <template #header>
+      <div class=&quot;flex items-center gap-3&quot;>
+        <MAvatar name=&quot;Alice Brown&quot; :size=&quot;40&quot; />
+        <div>
+          <h3 class=&quot;text-title-medium font-medium&quot;>Alice Brown</h3>
+          <p class=&quot;text-body-small text-on-surface-variant&quot;>Product Designer</p>
+        </div>
+      </div>
+    </template>
+    <p class=&quot;px-4 pb-4 text-body-medium text-on-surface-variant&quot;>
+      Custom header with avatar and role information.
+    </p>
+  </MCard>
+</template>`"
+    >
+      <div class="flex flex-wrap gap-4">
+        <MCard class="w-72">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <MAvatar name="Alice Brown" :size="40" />
+              <div>
+                <h3 class="text-title-medium font-medium">Alice Brown</h3>
+                <p class="text-body-small text-on-surface-variant">Product Designer</p>
+              </div>
+            </div>
+          </template>
+          <p class="px-4 pb-4 text-body-medium text-on-surface-variant">
+            Custom header with avatar and role information.
+          </p>
+        </MCard>
+        <MCard variant="outlined" class="w-72">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <MAvatar name="Carlos Diaz" :size="40" />
+              <div>
+                <h3 class="text-title-medium font-medium">Carlos Diaz</h3>
+                <p class="text-body-small text-on-surface-variant">Engineer</p>
+              </div>
+            </div>
+          </template>
+          <p class="px-4 pb-4 text-body-medium text-on-surface-variant">
+            Outlined variant with custom header slot.
+          </p>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Actions"
+      description="Use the #actions slot for bottom-aligned buttons."
+      :code="`<template>
+  <MCard title=&quot;Confirm Action&quot; subtitle=&quot;This action cannot be undone.&quot; class=&quot;w-72&quot;>
+    <p class=&quot;px-4 pb-2 text-body-medium text-on-surface-variant&quot;>
+      Are you sure you want to proceed?
+    </p>
+    <template #actions>
+      <MButton variant=&quot;text&quot;>Cancel</MButton>
+      <MButton>Confirm</MButton>
+    </template>
+  </MCard>
+</template>`"
+    >
+      <div class="flex flex-wrap gap-4">
+        <MCard title="Confirm Action" subtitle="This action cannot be undone." class="w-72">
+          <p class="px-4 pb-2 text-body-medium text-on-surface-variant">
+            Are you sure you want to proceed?
+          </p>
+          <template #actions>
+            <MButton variant="text">Cancel</MButton>
+            <MButton>Confirm</MButton>
+          </template>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Complete Card"
+      description="Image, title, subtitle, content, and action buttons combined."
+      :code="`<template>
+  <MCard
+    image=&quot;https://picsum.photos/seed/m3ui-card/400/200&quot;
+    image-alt=&quot;Landscape&quot;
+    title=&quot;Mountain Adventure&quot;
+    subtitle=&quot;Explore the great outdoors&quot;
+    class=&quot;w-72&quot;
+  >
+    <p class=&quot;px-4 pb-2 text-body-medium text-on-surface-variant&quot;>
+      An unforgettable hiking experience through scenic mountain trails.
+    </p>
+    <template #actions>
+      <MButton variant=&quot;text&quot;>Learn More</MButton>
+      <MButton>Book Now</MButton>
+    </template>
+  </MCard>
+</template>`"
+    >
+      <div class="flex flex-wrap gap-4">
+        <MCard
+          image="https://picsum.photos/seed/m3ui-card/400/200"
+          image-alt="Mountain landscape"
+          title="Mountain Adventure"
+          subtitle="Explore the great outdoors"
+          class="w-72"
+        >
+          <p class="px-4 pb-2 text-body-medium text-on-surface-variant">
+            An unforgettable hiking experience through scenic mountain trails.
+          </p>
+          <template #actions>
+            <MButton variant="text">Learn More</MButton>
+            <MButton>Book Now</MButton>
+          </template>
+        </MCard>
+        <MCard
+          image="https://picsum.photos/seed/m3ui-card2/400/200"
+          image-alt="Ocean view"
+          title="Beach Getaway"
+          subtitle="Relax by the sea"
+          variant="outlined"
+          class="w-72"
+        >
+          <p class="px-4 pb-2 text-body-medium text-on-surface-variant">
+            A perfect weekend escape with sun, sand, and waves.
+          </p>
+          <template #actions>
+            <MButton variant="text">Details</MButton>
+            <MButton variant="tonal">Reserve</MButton>
+          </template>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="cardProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
+    <MCard variant="outlined" class="overflow-x-auto p-4">
+      <table class="w-full text-body-medium">
+        <thead>
+          <tr class="border-b border-outline-variant text-left">
+            <th class="pb-2 pr-4 font-medium">Slot</th>
+            <th class="pb-2 font-medium">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="py-2 pr-4 font-mono text-body-small">#default</td><td class="py-2 text-on-surface-variant">Main content area (raw, no wrapper)</td></tr>
+          <tr><td class="py-2 pr-4 font-mono text-body-small">#header</td><td class="py-2 text-on-surface-variant">Custom header content (overrides title/subtitle props)</td></tr>
+          <tr><td class="py-2 pr-4 font-mono text-body-small">#media</td><td class="py-2 text-on-surface-variant">Custom media content (alternative to image prop)</td></tr>
+          <tr><td class="py-2 pr-4 font-mono text-body-small">#actions</td><td class="py-2 text-on-surface-variant">Bottom action buttons (flex row, right-aligned)</td></tr>
+        </tbody>
+      </table>
+    </MCard>
 
     <!-- ── MChip ────────────────────────────────────────────────────────── -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">MChip</h2>
