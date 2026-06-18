@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
-import { MSnackbar } from '@m3ui-vue/m3ui-vue'
+import { MSnackbar, palettes, useColorPalette } from '@m3ui-vue/m3ui-vue'
 
 const route = useRoute()
+const { set } = useColorPalette()
+
+onMounted(() => {
+  const random = palettes[Math.floor(Math.random() * palettes.length)]!.id
+  set(random)
+})
 </script>
 
 <template>

@@ -18,7 +18,7 @@ const tabs = [
 </script>
 
 <template>
-  <MCard class="mb-6 overflow-hidden">
+  <MCard class="mb-6">
     <div class="px-6 pt-5 pb-3">
       <h3 class="text-title-medium font-medium">{{ title }}</h3>
       <p v-if="description" class="mt-1 text-body-medium text-on-surface-variant">
