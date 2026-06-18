@@ -63,11 +63,13 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Variants"
       description="Five button variants following the M3 specification."
-      :code="`<MButton variant=&quot;filled&quot;>Filled</MButton>
-<MButton variant=&quot;tonal&quot;>Tonal</MButton>
-<MButton variant=&quot;elevated&quot;>Elevated</MButton>
-<MButton variant=&quot;outlined&quot;>Outlined</MButton>
-<MButton variant=&quot;text&quot;>Text</MButton>`"
+      :code="`<template>
+  <MButton variant=&quot;filled&quot;>Filled</MButton>
+  <MButton variant=&quot;tonal&quot;>Tonal</MButton>
+  <MButton variant=&quot;elevated&quot;>Elevated</MButton>
+  <MButton variant=&quot;outlined&quot;>Outlined</MButton>
+  <MButton variant=&quot;text&quot;>Text</MButton>
+</template>`"
     >
       <MButton variant="filled">Filled</MButton>
       <MButton variant="tonal">Tonal</MButton>
@@ -79,9 +81,11 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="With Icons"
       description="Buttons with a leading Material Symbol icon."
-      :code="`<MButton icon=&quot;add&quot;>Create</MButton>
-<MButton variant=&quot;tonal&quot; icon=&quot;edit&quot;>Edit</MButton>
-<MButton variant=&quot;outlined&quot; icon=&quot;delete&quot;>Delete</MButton>`"
+      :code="`<template>
+  <MButton icon=&quot;add&quot;>Create</MButton>
+  <MButton variant=&quot;tonal&quot; icon=&quot;edit&quot;>Edit</MButton>
+  <MButton variant=&quot;outlined&quot; icon=&quot;delete&quot;>Delete</MButton>
+</template>`"
     >
       <MButton icon="add">Create</MButton>
       <MButton variant="tonal" icon="edit">Edit</MButton>
@@ -91,10 +95,12 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Error Color"
       description="Use color='error' for destructive actions."
-      :code="`<MButton color=&quot;error&quot;>Delete</MButton>
-<MButton color=&quot;error&quot; variant=&quot;tonal&quot;>Remove</MButton>
-<MButton color=&quot;error&quot; variant=&quot;outlined&quot;>Cancel</MButton>
-<MButton color=&quot;error&quot; variant=&quot;text&quot;>Discard</MButton>`"
+      :code="`<template>
+  <MButton color=&quot;error&quot;>Delete</MButton>
+  <MButton color=&quot;error&quot; variant=&quot;tonal&quot;>Remove</MButton>
+  <MButton color=&quot;error&quot; variant=&quot;outlined&quot;>Cancel</MButton>
+  <MButton color=&quot;error&quot; variant=&quot;text&quot;>Discard</MButton>
+</template>`"
     >
       <MButton color="error">Delete</MButton>
       <MButton color="error" variant="tonal">Remove</MButton>
@@ -105,9 +111,11 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Custom Colors"
       description="Pass any CSS color string to override the button's primary color."
-      :code="`<MButton color=&quot;#e91e63&quot;>Pink</MButton>
-<MButton color=&quot;#ff9800&quot; variant=&quot;tonal&quot;>Orange</MButton>
-<MButton color=&quot;teal&quot; variant=&quot;elevated&quot;>Teal</MButton>`"
+      :code="`<template>
+  <MButton color=&quot;#e91e63&quot;>Pink</MButton>
+  <MButton color=&quot;#ff9800&quot; variant=&quot;tonal&quot;>Orange</MButton>
+  <MButton color=&quot;teal&quot; variant=&quot;elevated&quot;>Teal</MButton>
+</template>`"
     >
       <MButton color="#e91e63">Pink</MButton>
       <MButton color="#ff9800" variant="tonal">Orange</MButton>
@@ -117,9 +125,11 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="States"
       description="Loading and disabled states."
-      :code="`<MButton :loading=&quot;true&quot;>Saving...</MButton>
-<MButton :disabled=&quot;true&quot;>Disabled</MButton>
-<MButton variant=&quot;outlined&quot; :disabled=&quot;true&quot;>Disabled</MButton>`"
+      :code="`<template>
+  <MButton :loading=&quot;true&quot;>Saving...</MButton>
+  <MButton :disabled=&quot;true&quot;>Disabled</MButton>
+  <MButton variant=&quot;outlined&quot; :disabled=&quot;true&quot;>Disabled</MButton>
+</template>`"
     >
       <MButton :loading="true">Saving...</MButton>
       <MButton :disabled="true">Disabled</MButton>
@@ -135,10 +145,12 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Variants"
       description="Four icon button styles."
-      :code="`<MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;standard&quot; />
-<MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;filled&quot; />
-<MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;tonal&quot; />
-<MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;outlined&quot; />`"
+      :code="`<template>
+  <MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;standard&quot; />
+  <MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;filled&quot; />
+  <MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;tonal&quot; />
+  <MIconButton icon=&quot;settings&quot; label=&quot;Settings&quot; variant=&quot;outlined&quot; />
+</template>`"
     >
       <MIconButton icon="settings" label="Settings" variant="standard" />
       <MIconButton icon="settings" label="Settings" variant="filled" />
@@ -149,9 +161,11 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Sizes"
       description="Custom sizes via the size prop."
-      :code="`<MIconButton icon=&quot;favorite&quot; label=&quot;Small&quot; :size=&quot;32&quot; variant=&quot;tonal&quot; />
-<MIconButton icon=&quot;favorite&quot; label=&quot;Default&quot; :size=&quot;40&quot; variant=&quot;tonal&quot; />
-<MIconButton icon=&quot;favorite&quot; label=&quot;Large&quot; :size=&quot;48&quot; variant=&quot;tonal&quot; />`"
+      :code="`<template>
+  <MIconButton icon=&quot;favorite&quot; label=&quot;Small&quot; :size=&quot;32&quot; variant=&quot;tonal&quot; />
+  <MIconButton icon=&quot;favorite&quot; label=&quot;Default&quot; :size=&quot;40&quot; variant=&quot;tonal&quot; />
+  <MIconButton icon=&quot;favorite&quot; label=&quot;Large&quot; :size=&quot;48&quot; variant=&quot;tonal&quot; />
+</template>`"
     >
       <MIconButton icon="favorite" label="Small" :size="32" variant="tonal" />
       <MIconButton icon="favorite" label="Default" :size="40" variant="tonal" />
@@ -167,9 +181,11 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Sizes"
       description="Small, regular, and large floating action buttons."
-      :code="`<MFab icon=&quot;add&quot; size=&quot;small&quot; />
-<MFab icon=&quot;add&quot; size=&quot;regular&quot; />
-<MFab icon=&quot;add&quot; size=&quot;large&quot; />`"
+      :code="`<template>
+  <MFab icon=&quot;add&quot; size=&quot;small&quot; />
+  <MFab icon=&quot;add&quot; size=&quot;regular&quot; />
+  <MFab icon=&quot;add&quot; size=&quot;large&quot; />
+</template>`"
     >
       <MFab icon="add" size="small" />
       <MFab icon="add" size="regular" />
@@ -179,10 +195,12 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Colors"
       description="Four color schemes for the FAB."
-      :code="`<MFab icon=&quot;edit&quot; color=&quot;primary&quot; />
-<MFab icon=&quot;edit&quot; color=&quot;secondary&quot; />
-<MFab icon=&quot;edit&quot; color=&quot;tertiary&quot; />
-<MFab icon=&quot;edit&quot; color=&quot;surface&quot; />`"
+      :code="`<template>
+  <MFab icon=&quot;edit&quot; color=&quot;primary&quot; />
+  <MFab icon=&quot;edit&quot; color=&quot;secondary&quot; />
+  <MFab icon=&quot;edit&quot; color=&quot;tertiary&quot; />
+  <MFab icon=&quot;edit&quot; color=&quot;surface&quot; />
+</template>`"
     >
       <MFab icon="edit" color="primary" />
       <MFab icon="edit" color="secondary" />
@@ -193,8 +211,10 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Extended FAB"
       description="FAB with a text label for more context."
-      :code="`<MFab icon=&quot;add&quot; label=&quot;New item&quot; />
-<MFab icon=&quot;edit&quot; label=&quot;Compose&quot; color=&quot;tertiary&quot; />`"
+      :code="`<template>
+  <MFab icon=&quot;add&quot; label=&quot;New item&quot; />
+  <MFab icon=&quot;edit&quot; label=&quot;Compose&quot; color=&quot;tertiary&quot; />
+</template>`"
     >
       <MFab icon="add" label="New item" />
       <MFab icon="edit" label="Compose" color="tertiary" />
@@ -203,13 +223,17 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Speed Dial"
       description="Pass an items array to turn the FAB into a speed dial. Each item needs an icon and optionally a label and onClick handler."
-      :code="`const items = [
+      :code="`<script setup>
+const items = [
   { icon: 'image', label: 'Photo', onClick: () => {} },
   { icon: 'videocam', label: 'Video', onClick: () => {} },
   { icon: 'mic', label: 'Audio', onClick: () => {} },
 ]
+<\/script>
 
-<MFab icon=&quot;add&quot; :items=&quot;items&quot; direction=&quot;up&quot; />`"
+<template>
+  <MFab icon=&quot;add&quot; :items=&quot;items&quot; direction=&quot;up&quot; />
+</template>`"
     >
       <div class="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <MCard v-for="dir in (['up', 'down', 'left', 'right', 'radial'] as const)" :key="dir" class="flex flex-col items-center overflow-visible p-0">
@@ -241,14 +265,16 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Single Select"
       description="Only one segment can be active at a time."
-      :code="`<MSegmentedButton
-  v-model=&quot;value&quot;
-  :options=&quot;[
-    { value: 'day', label: 'Day' },
-    { value: 'week', label: 'Week' },
-    { value: 'month', label: 'Month' },
-  ]&quot;
-/>`"
+      :code="`<template>
+  <MSegmentedButton
+    v-model=&quot;value&quot;
+    :options=&quot;[
+      { value: 'day', label: 'Day' },
+      { value: 'week', label: 'Week' },
+      { value: 'month', label: 'Month' },
+    ]&quot;
+  />
+</template>`"
     >
       <MSegmentedButton
         v-model="segmentedValue"
@@ -264,15 +290,17 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Multi Select"
       description="Multiple segments can be active simultaneously."
-      :code="`<MSegmentedButton
-  v-model=&quot;values&quot;
-  :options=&quot;[
-    { value: 'bold', label: 'Bold', icon: 'format_bold' },
-    { value: 'italic', label: 'Italic', icon: 'format_italic' },
-    { value: 'underline', label: 'Underline', icon: 'format_underlined' },
-  ]&quot;
-  :multi-select=&quot;true&quot;
-/>`"
+      :code="`<template>
+  <MSegmentedButton
+    v-model=&quot;values&quot;
+    :options=&quot;[
+      { value: 'bold', label: 'Bold', icon: 'format_bold' },
+      { value: 'italic', label: 'Italic', icon: 'format_italic' },
+      { value: 'underline', label: 'Underline', icon: 'format_underlined' },
+    ]&quot;
+    :multi-select=&quot;true&quot;
+  />
+</template>`"
     >
       <MSegmentedButton
         v-model="segmentedMulti"

@@ -179,8 +179,10 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Variants"
       description="Filled and outlined styles."
-      :code="`<MTextField v-model=&quot;value&quot; label=&quot;Filled&quot; />
-<MTextField v-model=&quot;value&quot; label=&quot;Outlined&quot; variant=&quot;outlined&quot; />`"
+      :code="`<template>
+  <MTextField v-model=&quot;value&quot; label=&quot;Filled&quot; />
+  <MTextField v-model=&quot;value&quot; label=&quot;Outlined&quot; variant=&quot;outlined&quot; />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MTextField v-model="textFilled" label="Filled" />
@@ -191,8 +193,10 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Icons & Types"
       description="Leading icons and different input types."
-      :code="`<MTextField v-model=&quot;val&quot; label=&quot;Email&quot; type=&quot;email&quot; leading-icon=&quot;mail&quot; />
-<MTextField v-model=&quot;val&quot; label=&quot;Password&quot; type=&quot;password&quot; leading-icon=&quot;lock&quot; />`"
+      :code="`<template>
+  <MTextField v-model=&quot;val&quot; label=&quot;Email&quot; type=&quot;email&quot; leading-icon=&quot;mail&quot; />
+  <MTextField v-model=&quot;val&quot; label=&quot;Password&quot; type=&quot;password&quot; leading-icon=&quot;lock&quot; />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MTextField v-model="textFilled" label="Email" type="email" leading-icon="mail" hint="We'll never share your email" />
@@ -203,9 +207,11 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="States"
       description="Error, disabled, and multiline."
-      :code="`<MTextField v-model=&quot;val&quot; label=&quot;Username&quot; error=&quot;Already taken&quot; />
-<MTextField v-model=&quot;val&quot; label=&quot;Disabled&quot; :disabled=&quot;true&quot; />
-<MTextField v-model=&quot;val&quot; label=&quot;Bio&quot; :multiline=&quot;true&quot; :rows=&quot;3&quot; />`"
+      :code="`<template>
+  <MTextField v-model=&quot;val&quot; label=&quot;Username&quot; error=&quot;Already taken&quot; />
+  <MTextField v-model=&quot;val&quot; label=&quot;Disabled&quot; :disabled=&quot;true&quot; />
+  <MTextField v-model=&quot;val&quot; label=&quot;Bio&quot; :multiline=&quot;true&quot; :rows=&quot;3&quot; />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MTextField v-model="textError" label="Username" error="Already taken" />
@@ -223,14 +229,16 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Basic"
       description="Single-value dropdown select."
-      :code="`<MSelect
-  v-model=&quot;value&quot;
-  :options=&quot;[
-    { label: 'Option A', value: 'a' },
-    { label: 'Option B', value: 'b' },
-  ]&quot;
-  label=&quot;Choose one&quot;
-/>`"
+      :code="`<template>
+  <MSelect
+    v-model=&quot;value&quot;
+    :options=&quot;[
+      { label: 'Option A', value: 'a' },
+      { label: 'Option B', value: 'b' },
+    ]&quot;
+    label=&quot;Choose one&quot;
+  />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MSelect v-model="selectVal" :options="selectOptions" label="Filled" />
@@ -247,12 +255,14 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Multi Select"
       description="Select multiple values with chips and search."
-      :code="`<MMultiSelect
-  v-model=&quot;values&quot;
-  :options=&quot;frameworks&quot;
-  label=&quot;Frameworks&quot;
-  :searchable=&quot;true&quot;
-/>`"
+      :code="`<template>
+  <MMultiSelect
+    v-model=&quot;values&quot;
+    :options=&quot;frameworks&quot;
+    label=&quot;Frameworks&quot;
+    :searchable=&quot;true&quot;
+  />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MMultiSelect v-model="multiVal" :options="multiOptions" label="Frameworks" />
@@ -269,9 +279,11 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Checkbox"
       description="Standard, indeterminate, and disabled states."
-      :code="`<MCheckbox v-model=&quot;val&quot; label=&quot;Accept terms&quot; />
-<MCheckbox :model-value=&quot;true&quot; :indeterminate=&quot;true&quot; label=&quot;Indeterminate&quot; />
-<MCheckbox :model-value=&quot;false&quot; :disabled=&quot;true&quot; label=&quot;Disabled&quot; />`"
+      :code="`<template>
+  <MCheckbox v-model=&quot;val&quot; label=&quot;Accept terms&quot; />
+  <MCheckbox :model-value=&quot;true&quot; :indeterminate=&quot;true&quot; label=&quot;Indeterminate&quot; />
+  <MCheckbox :model-value=&quot;false&quot; :disabled=&quot;true&quot; label=&quot;Disabled&quot; />
+</template>`"
     >
       <MCheckbox v-model="checked" label="Accept terms" />
       <MCheckbox v-model="indeterminate" :indeterminate="true" label="Indeterminate" />
@@ -284,8 +296,10 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Switch"
       description="Toggle switches with labels."
-      :code="`<MSwitch v-model=&quot;val&quot; label=&quot;Notifications&quot; />
-<MSwitch :model-value=&quot;false&quot; :disabled=&quot;true&quot; label=&quot;Disabled&quot; />`"
+      :code="`<template>
+  <MSwitch v-model=&quot;val&quot; label=&quot;Notifications&quot; />
+  <MSwitch :model-value=&quot;false&quot; :disabled=&quot;true&quot; label=&quot;Disabled&quot; />
+</template>`"
     >
       <MSwitch v-model="switchVal" label="Notifications" />
       <MSwitch :model-value="false" :disabled="true" label="Disabled" />
@@ -300,15 +314,17 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Radio Group"
       description="Grouped radio buttons with vertical or horizontal layout."
-      :code="`<MRadioGroup
-  v-model=&quot;value&quot;
-  :options=&quot;[
-    { label: 'Small', value: 'sm' },
-    { label: 'Medium', value: 'md' },
-    { label: 'Large', value: 'lg' },
-  ]&quot;
-  label=&quot;Size&quot;
-/>`"
+      :code="`<template>
+  <MRadioGroup
+    v-model=&quot;value&quot;
+    :options=&quot;[
+      { label: 'Small', value: 'sm' },
+      { label: 'Medium', value: 'md' },
+      { label: 'Large', value: 'lg' },
+    ]&quot;
+    label=&quot;Size&quot;
+  />
+</template>`"
     >
       <MRadioGroup v-model="radioVal" :options="radioOptions" label="Size (column)" />
       <MRadioGroup v-model="radioVal" :options="radioOptions" label="Size (row)" direction="row" />
@@ -323,8 +339,10 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Slider"
       description="Range slider with value display."
-      :code="`<MSlider v-model=&quot;val&quot; label=&quot;Volume&quot; :show-value=&quot;true&quot; />
-<MSlider v-model=&quot;val&quot; :min=&quot;0&quot; :max=&quot;50&quot; :step=&quot;5&quot; color=&quot;tertiary&quot; />`"
+      :code="`<template>
+  <MSlider v-model=&quot;val&quot; label=&quot;Volume&quot; :show-value=&quot;true&quot; />
+  <MSlider v-model=&quot;val&quot; :min=&quot;0&quot; :max=&quot;50&quot; :step=&quot;5&quot; color=&quot;tertiary&quot; />
+</template>`"
     >
       <div class="w-full space-y-6">
         <MSlider v-model="sliderVal" label="Volume" :show-value="true" />
@@ -342,9 +360,11 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Rating"
       description="Star rating with half increments and custom icons."
-      :code="`<MRating v-model=&quot;val&quot; />
-<MRating v-model=&quot;val&quot; :half-increments=&quot;true&quot; />
-<MRating :model-value=&quot;4&quot; :readonly=&quot;true&quot; icon=&quot;favorite&quot; color=&quot;error&quot; />`"
+      :code="`<template>
+  <MRating v-model=&quot;val&quot; />
+  <MRating v-model=&quot;val&quot; :half-increments=&quot;true&quot; />
+  <MRating :model-value=&quot;4&quot; :readonly=&quot;true&quot; icon=&quot;favorite&quot; color=&quot;error&quot; />
+</template>`"
     >
       <div class="flex flex-wrap items-center gap-6">
         <div class="flex flex-col items-center gap-1">
@@ -371,8 +391,10 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Date Picker"
       description="Calendar-based date selection with locale support."
-      :code="`<MDatePicker v-model=&quot;date&quot; label=&quot;Birthday&quot; />
-<MDatePicker v-model=&quot;date&quot; label=&quot;English&quot; locale=&quot;en-US&quot; />`"
+      :code="`<template>
+  <MDatePicker v-model=&quot;date&quot; label=&quot;Birthday&quot; />
+  <MDatePicker v-model=&quot;date&quot; label=&quot;English&quot; locale=&quot;en-US&quot; />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MDatePicker v-model="dateVal" label="Fecha" />
@@ -389,7 +411,9 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Date Range"
       description="Select a start and end date."
-      :code="`<MDateRangePicker v-model=&quot;range&quot; label=&quot;Period&quot; />`"
+      :code="`<template>
+  <MDateRangePicker v-model=&quot;range&quot; label=&quot;Period&quot; />
+</template>`"
     >
       <div class="w-full max-w-sm">
         <MDateRangePicker v-model="dateRange" label="Period" locale="en-US" />
@@ -408,8 +432,10 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Time Picker"
       description="Hour and minute selection with 12/24h format."
-      :code="`<MTimePicker v-model=&quot;time&quot; label=&quot;Time&quot; />
-<MTimePicker v-model=&quot;time&quot; label=&quot;12h&quot; :use24h=&quot;false&quot; />`"
+      :code="`<template>
+  <MTimePicker v-model=&quot;time&quot; label=&quot;Time&quot; />
+  <MTimePicker v-model=&quot;time&quot; label=&quot;12h&quot; :use24h=&quot;false&quot; />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MTimePicker v-model="timeVal" label="Time (24h)" />
@@ -426,7 +452,9 @@ const colorPickerProps: PropDef[] = [
     <ComponentDemo
       title="Color Picker"
       description="Hue slider with saturation/brightness area and preset swatches."
-      :code="`<MColorPicker v-model=&quot;color&quot; label=&quot;Brand color&quot; />`"
+      :code="`<template>
+  <MColorPicker v-model=&quot;color&quot; label=&quot;Brand color&quot; />
+</template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MColorPicker v-model="colorVal" label="Brand color" />

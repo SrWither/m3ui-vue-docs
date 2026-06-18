@@ -124,7 +124,7 @@ const optionalDeps = [
       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary text-label-large font-medium">5</span>
       <div class="flex-1">
         <h2 class="mb-2 text-title-large font-medium">Use components</h2>
-        <MCodeEditor :model-value="usageCode" language="html" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" />
+        <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" />
       </div>
     </div>
 

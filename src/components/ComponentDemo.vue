@@ -37,7 +37,7 @@ const tabs = [
     <div v-show="activeTab === 'code'" class="p-4">
       <MCodeEditor
         :model-value="code"
-        language="html"
+        language="vue"
         :readonly="true"
         :line-numbers="false"
         min-height="60px"

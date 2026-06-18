@@ -101,10 +101,12 @@ const toastProps: PropDef[] = [
     <ComponentDemo
       title="Types"
       description="Four alert variants for different contexts."
-      :code="`<MAlert type=&quot;info&quot; title=&quot;Info&quot;>Informational message.</MAlert>
-<MAlert type=&quot;success&quot; title=&quot;Success&quot;>Operation completed.</MAlert>
-<MAlert type=&quot;warning&quot; title=&quot;Warning&quot;>Check your input.</MAlert>
-<MAlert type=&quot;error&quot; title=&quot;Error&quot;>Something went wrong.</MAlert>`"
+      :code="`<template>
+  <MAlert type=&quot;info&quot; title=&quot;Info&quot;>Informational message.</MAlert>
+  <MAlert type=&quot;success&quot; title=&quot;Success&quot;>Operation completed.</MAlert>
+  <MAlert type=&quot;warning&quot; title=&quot;Warning&quot;>Check your input.</MAlert>
+  <MAlert type=&quot;error&quot; title=&quot;Error&quot;>Something went wrong.</MAlert>
+</template>`"
     >
       <div class="w-full space-y-3">
         <MAlert type="info" title="Info">This is an informational message.</MAlert>
@@ -117,16 +119,22 @@ const toastProps: PropDef[] = [
     <ComponentDemo
       title="Closeable"
       description="Alerts with a dismiss button. Use v-if to toggle visibility and @close to handle dismissal."
-      :code="`<MAlert
-  v-if=&quot;visible&quot;
-  type=&quot;info&quot;
-  title=&quot;Heads up&quot;
-  :closeable=&quot;true&quot;
-  @close=&quot;visible = false&quot;
->
-  You can close this alert.
-</MAlert>
-<MButton v-else @click=&quot;visible = true&quot;>Show alert</MButton>`"
+      :code="`<script setup>
+const visible = ref(true)
+<\/script>
+
+<template>
+  <MAlert
+    v-if=&quot;visible&quot;
+    type=&quot;info&quot;
+    title=&quot;Heads up&quot;
+    :closeable=&quot;true&quot;
+    @close=&quot;visible = false&quot;
+  >
+    You can close this alert.
+  </MAlert>
+  <MButton v-else @click=&quot;visible = true&quot;>Show alert</MButton>
+</template>`"
     >
       <div class="w-full">
         <MAlert v-if="alertVisible" type="info" title="Heads up" :closeable="true" @close="alertVisible = false">
@@ -145,12 +153,16 @@ const toastProps: PropDef[] = [
     <ComponentDemo
       title="Toast Notifications"
       description="Programmatic toast messages via the useToast() composable."
-      :code="`const toast = useToast()
+      :code="`<script setup>
+import { useToast } from '@m3ui-vue/m3ui-vue'
+
+const toast = useToast()
 
 toast.success('Saved successfully')
 toast.error('Failed to save')
 toast.warning('Low disk space')
-toast.info('New update available')`"
+toast.info('New update available')
+<\/script>`"
     >
       <div class="flex flex-wrap gap-3">
         <MButton variant="tonal" icon="check_circle" @click="toast.success('Saved successfully')">Success</MButton>
@@ -163,9 +175,13 @@ toast.info('New update available')`"
     <ComponentDemo
       title="Toast Position"
       description="Control where toasts appear on screen via toast.position."
-      :code="`const toast = useToast()
+      :code="`<script setup>
+import { useToast } from '@m3ui-vue/m3ui-vue'
+
+const toast = useToast()
 toast.position.value = 'top-right'
-toast.success('Appears at top right')`"
+toast.success('Appears at top right')
+<\/script>`"
     >
       <div class="flex w-full flex-col items-center gap-4">
         <MSegmentedButton
@@ -203,13 +219,20 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Basic Dialog"
       description="Modal dialog with title, content, and actions."
-      :code="`<MDialog v-model=&quot;open&quot; title=&quot;Dialog Title&quot;>
-  <p>Dialog content goes here.</p>
-  <template #actions>
-    <MButton variant=&quot;text&quot; @click=&quot;open = false&quot;>Cancel</MButton>
-    <MButton @click=&quot;open = false&quot;>OK</MButton>
-  </template>
-</MDialog>`"
+      :code="`<script setup>
+const open = ref(false)
+<\/script>
+
+<template>
+  <MButton @click=&quot;open = true&quot;>Open</MButton>
+  <MDialog v-model=&quot;open&quot; title=&quot;Dialog Title&quot;>
+    <p>Dialog content goes here.</p>
+    <template #actions>
+      <MButton variant=&quot;text&quot; @click=&quot;open = false&quot;>Cancel</MButton>
+      <MButton @click=&quot;open = false&quot;>OK</MButton>
+    </template>
+  </MDialog>
+</template>`"
     >
       <MButton @click="dialogOpen = true">Open Dialog</MButton>
       <MDialog v-model="dialogOpen" title="Example Dialog">
@@ -232,14 +255,25 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Confirm Dialog"
       description="Pre-built confirmation dialog with loading state and danger mode."
-      :code="`<MConfirmDialog
-  v-model=&quot;open&quot;
-  title=&quot;Delete item?&quot;
-  message=&quot;This action cannot be undone.&quot;
-  :danger=&quot;true&quot;
-  confirm-label=&quot;Delete&quot;
-  @confirm=&quot;handleDelete&quot;
-/>`"
+      :code="`<script setup>
+const open = ref(false)
+
+function handleDelete() {
+  // your logic
+  open.value = false
+}
+<\/script>
+
+<template>
+  <MConfirmDialog
+    v-model=&quot;open&quot;
+    title=&quot;Delete item?&quot;
+    message=&quot;This action cannot be undone.&quot;
+    :danger=&quot;true&quot;
+    confirm-label=&quot;Delete&quot;
+    @confirm=&quot;handleDelete&quot;
+  />
+</template>`"
     >
       <div class="flex gap-3">
         <MButton variant="tonal" @click="confirmDanger = false; confirmOpen = true">Confirm</MButton>
@@ -266,9 +300,11 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Placements"
       description="Tooltips can appear on any side of the trigger."
-      :code="`<MTooltip text=&quot;Top tooltip&quot; placement=&quot;top&quot;>
-  <MButton variant=&quot;outlined&quot;>Top</MButton>
-</MTooltip>`"
+      :code="`<template>
+  <MTooltip text=&quot;Top tooltip&quot; placement=&quot;top&quot;>
+    <MButton variant=&quot;outlined&quot;>Top</MButton>
+  </MTooltip>
+</template>`"
     >
       <MTooltip text="Top tooltip" placement="top">
         <MButton variant="outlined">Top</MButton>
@@ -293,9 +329,11 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Progress Bars"
       description="Determinate, indeterminate, and wavy variants."
-      :code="`<MProgressBar :value=&quot;65&quot; label=&quot;Uploading...&quot; />
-<MProgressBar :indeterminate=&quot;true&quot; color=&quot;tertiary&quot; />
-<MProgressBar :value=&quot;80&quot; variant=&quot;wavy&quot; color=&quot;secondary&quot; />`"
+      :code="`<template>
+  <MProgressBar :value=&quot;65&quot; label=&quot;Uploading...&quot; />
+  <MProgressBar :indeterminate=&quot;true&quot; color=&quot;tertiary&quot; />
+  <MProgressBar :value=&quot;80&quot; variant=&quot;wavy&quot; color=&quot;secondary&quot; />
+</template>`"
     >
       <div class="w-full space-y-6">
         <MProgressBar :value="65" label="Uploading... 65%" />
@@ -318,9 +356,11 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Spinners"
       description="Standard and wavy loading spinners in different sizes."
-      :code="`<MSpinner :size=&quot;20&quot; />
-<MSpinner :size=&quot;32&quot; />
-<MSpinner :size=&quot;32&quot; :wavy=&quot;true&quot; />`"
+      :code="`<template>
+  <MSpinner :size=&quot;20&quot; />
+  <MSpinner :size=&quot;32&quot; />
+  <MSpinner :size=&quot;32&quot; :wavy=&quot;true&quot; />
+</template>`"
     >
       <div class="flex items-center gap-6">
         <div class="flex flex-col items-center gap-2">
@@ -355,9 +395,15 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Expansion Panel"
       description="Collapsible sections with smooth animation."
-      :code="`<MExpansionPanel v-model=&quot;open&quot; title=&quot;Section Title&quot; icon=&quot;settings&quot;>
-  Content goes here.
-</MExpansionPanel>`"
+      :code="`<script setup>
+const open = ref(true)
+<\/script>
+
+<template>
+  <MExpansionPanel v-model=&quot;open&quot; title=&quot;Section Title&quot; icon=&quot;settings&quot;>
+    Content goes here.
+  </MExpansionPanel>
+</template>`"
     >
       <div class="w-full space-y-2">
         <MExpansionPanel v-model="panel1" title="General Settings" icon="settings" subtitle="App preferences">
@@ -375,9 +421,11 @@ toast.success('Appears at top right')`"
     <ComponentDemo
       title="Variants"
       description="Outlined, filled, and elevated styles."
-      :code="`<MExpansionPanel title=&quot;Outlined&quot; variant=&quot;outlined&quot; />
-<MExpansionPanel title=&quot;Filled&quot; variant=&quot;filled&quot; />
-<MExpansionPanel title=&quot;Elevated&quot; variant=&quot;elevated&quot; />`"
+      :code="`<template>
+  <MExpansionPanel title=&quot;Outlined&quot; variant=&quot;outlined&quot; />
+  <MExpansionPanel title=&quot;Filled&quot; variant=&quot;filled&quot; />
+  <MExpansionPanel title=&quot;Elevated&quot; variant=&quot;elevated&quot; />
+</template>`"
     >
       <div class="w-full space-y-2">
         <MExpansionPanel title="Outlined" variant="outlined">Outlined content.</MExpansionPanel>
