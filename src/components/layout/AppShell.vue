@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import TopAppBar from './TopAppBar.vue'
 import SideNav from './SideNav.vue'
 
 const expanded = ref(true)
 const drawerOpen = ref(false)
+const mainEl = ref<HTMLElement>()
+const route = useRoute()
+
+watch(() => route.path, () => {
+  mainEl.value?.scrollTo(0, 0)
+})
 </script>
 
 <template>
@@ -17,7 +24,7 @@ const drawerOpen = ref(false)
     />
     <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
       <TopAppBar @menu-click="drawerOpen = true" />
-      <main class="flex-1 overflow-auto">
+      <main ref="mainEl" class="flex-1 overflow-auto">
         <div class="mx-auto max-w-5xl p-4 pb-8 md:p-8">
           <slot />
         </div>

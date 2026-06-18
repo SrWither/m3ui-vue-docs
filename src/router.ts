@@ -20,6 +20,10 @@ const router = createRouter({
       component: () => import('./pages/InputsPage.vue'),
     },
     {
+      path: '/components/feedback',
+      component: () => import('./pages/FeedbackPage.vue'),
+    },
+    {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
     },
