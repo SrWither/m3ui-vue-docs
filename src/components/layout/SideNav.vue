@@ -21,6 +21,7 @@ const sections: NavSection[] = [
     icon: 'rocket_launch',
     items: [
       { label: 'Introduction', icon: 'home', to: '/' },
+      { label: 'Setup', icon: 'build', to: '/getting-started/setup' },
     ],
   },
   {
@@ -28,6 +29,7 @@ const sections: NavSection[] = [
     icon: 'widgets',
     items: [
       { label: 'Buttons', icon: 'smart_button', to: '/components/buttons' },
+      { label: 'Inputs', icon: 'input', to: '/components/inputs' },
     ],
   },
   {
