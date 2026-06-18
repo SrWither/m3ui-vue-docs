@@ -42,8 +42,8 @@ importers:
         specifier: ^6.43.1
         version: 6.43.1
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.1.2
-        version: 0.1.2(@codemirror/commands@6.10.3)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.5)(@codemirror/lang-json@6.0.2)(@codemirror/lang-python@6.2.1)(@codemirror/lang-vue@0.1.3)(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.1)(codemirror@6.0.2)(tailwindcss@4.3.1)(vue@3.5.38(typescript@6.0.3))
+        specifier: ^0.1.3
+        version: 0.1.3(@codemirror/commands@6.10.3)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.5)(@codemirror/lang-json@6.0.2)(@codemirror/lang-python@6.2.1)(@codemirror/lang-vue@0.1.3)(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.1)(codemirror@6.0.2)(tailwindcss@4.3.1)(vue@3.5.38(typescript@6.0.3))
       '@tailwindcss/vite':
         specifier: ^4.3.1
         version: 4.3.1(vite@8.0.16(jiti@2.7.0))
@@ -186,8 +186,8 @@ packages:
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
 
-  '@m3ui-vue/m3ui-vue@0.1.2':
-    resolution: {integrity: sha512-R9UN/zArl6zceUZSscpVBFaq+OweUx8BUQrBxPjFhEY826fbIaZprkpNW/D/Ij7hov2UBNb/qN3iWnxXBOnYKA==}
+  '@m3ui-vue/m3ui-vue@0.1.3':
+    resolution: {integrity: sha512-nc/KOC5UCO+eXFZtSOqavW2cevV4DgcMI+5R+7cRy9FHcJE+s/wOIouiqfkVwsQiDiOLfAQnzuheU4ZmMjzrqQ==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-css': '*'
@@ -984,7 +984,7 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.1.2(@codemirror/commands@6.10.3)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.5)(@codemirror/lang-json@6.0.2)(@codemirror/lang-python@6.2.1)(@codemirror/lang-vue@0.1.3)(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.1)(codemirror@6.0.2)(tailwindcss@4.3.1)(vue@3.5.38(typescript@6.0.3))':
+  '@m3ui-vue/m3ui-vue@0.1.3(@codemirror/commands@6.10.3)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.5)(@codemirror/lang-json@6.0.2)(@codemirror/lang-python@6.2.1)(@codemirror/lang-vue@0.1.3)(@codemirror/language@6.12.3)(@codemirror/state@6.6.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.1)(codemirror@6.0.2)(tailwindcss@4.3.1)(vue@3.5.38(typescript@6.0.3))':
     dependencies:
       tailwindcss: 4.3.1
       vue: 3.5.38(typescript@6.0.3)
