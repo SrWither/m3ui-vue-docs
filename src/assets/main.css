@@ -2,5 +2,3 @@
 @import '@m3ui-vue/m3ui-vue/theme';
 @import '@m3ui-vue/m3ui-vue/palettes';
 @import '@m3ui-vue/m3ui-vue/styles';
-
-@source '../../node_modules/@m3ui-vue/m3ui-vue';
