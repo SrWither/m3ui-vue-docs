@@ -161,6 +161,48 @@ const topPages = [
     </template>
   </MAppLayout>
 </template>`"
+        :script="`import { ref } from 'vue'
+import {
+  MAppLayout, MNavigationDrawer, MAppBar, MIconButton, MTooltip,
+  MAvatar, MFab, MCard, MText, MSubtitle, MFlex, MStack, MBox,
+  MAbsolute,
+} from '@m3ui-vue/m3ui-vue'
+import type { DrawerSection } from '@m3ui-vue/m3ui-vue'
+
+const open = ref(true)
+const selected = ref('inbox')
+
+const sections: DrawerSection[] = [
+  {
+    items: [
+      { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: 24 },
+      { value: 'starred', label: 'Starred', icon: 'star' },
+      { value: 'sent', label: 'Sent', icon: 'send' },
+      { value: 'drafts', label: 'Drafts', icon: 'drafts', badge: 3 },
+    ],
+  },
+  {
+    title: 'Labels',
+    collapsible: true,
+    icon: 'label',
+    items: [
+      { value: 'work', label: 'Work', icon: 'work' },
+      { value: 'personal', label: 'Personal', icon: 'person' },
+    ],
+  },
+]
+
+interface Mail {
+  name: string
+  subject: string
+  preview: string
+  time: string
+}
+
+const mails: Mail[] = [
+  { name: 'Alex Rivera', subject: 'Project update', preview: 'Hey, I just pushed the latest changes...', time: '2m' },
+  { name: 'Jordan Lee', subject: 'Meeting notes', preview: 'Here are the notes from today\\'s standup...', time: '1h' },
+]`"
       >
         <div class="h-160 overflow-hidden rounded-b-md">
           <MAppLayout height="100%">
@@ -309,6 +351,32 @@ const topPages = [
     </MBox>
   </MAppLayout>
 </template>`"
+        :script="`import { ref, computed } from 'vue'
+import {
+  MAppLayout, MNavigationDrawer, MAppBar, MIconButton, MAvatar,
+  MBadge, MTooltip, MStatCard, MCard, MText, MFlex, MStack,
+  MBox, MGrid, MScrollable, MList, MListItem,
+} from '@m3ui-vue/m3ui-vue'
+import type { DrawerSection } from '@m3ui-vue/m3ui-vue'
+
+const collapsed = ref(false)
+const selected = ref<string | number>('overview')
+
+const sections: DrawerSection[] = [
+  {
+    items: [
+      { value: 'overview', label: 'Overview', icon: 'dashboard' },
+      { value: 'analytics', label: 'Analytics', icon: 'analytics' },
+      { value: 'users', label: 'Users', icon: 'group' },
+      { value: 'settings', label: 'Settings', icon: 'settings' },
+    ],
+  },
+]
+
+const activity = [
+  { name: 'New signup', desc: 'john@example.com registered', icon: 'person_add', time: '5m ago' },
+  { name: 'Payment received', desc: 'Order #1234 — \\$299.00', icon: 'payment', time: '23m ago' },
+]`"
       >
         <div class="h-160 overflow-hidden rounded-b-md">
           <MAppLayout height="100%">
@@ -431,6 +499,25 @@ const topPages = [
     </template>
   </MCard>
 </template>`"
+        :script="`import { ref } from 'vue'
+import {
+  MCard, MButton, MAvatar, MTextField, MSelect, MSwitch,
+  MCheckbox, MDivider, MText, MSubtitle, MFlex, MStack,
+} from '@m3ui-vue/m3ui-vue'
+
+const name = ref('')
+const email = ref('')
+const role = ref<string | number | null>(null)
+const bio = ref('')
+const notifications = ref(true)
+const newsletter = ref(false)
+
+const roleOptions = [
+  { label: 'Developer', value: 'developer' },
+  { label: 'Designer', value: 'designer' },
+  { label: 'Manager', value: 'manager' },
+  { label: 'Other', value: 'other' },
+]`"
       >
         <MCard class="mx-auto w-full max-w-lg">
           <template #header>

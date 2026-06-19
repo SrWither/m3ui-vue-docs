@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { MCard, MTabs } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 
-defineProps<{
+const props = defineProps<{
   title: string
   description?: string
   code: string
+  script?: string
   flush?: boolean
 }>()
 
 const activeTab = ref<string | number>('preview')
 
-const tabs = [
-  { value: 'preview', label: 'Preview', icon: 'visibility' },
-  { value: 'code', label: 'Code', icon: 'code' },
-]
+const tabs = computed(() => {
+  const t = [
+    { value: 'preview', label: 'Preview', icon: 'visibility' },
+    { value: 'template', label: 'Template', icon: 'code' },
+  ]
+  if (props.script) {
+    t.push({ value: 'script', label: 'Script', icon: 'data_object' })
+  }
+  return t
+})
 </script>
 
 <template>
@@ -35,10 +42,21 @@ const tabs = [
       <slot />
     </div>
 
-    <div v-show="activeTab === 'code'" class="p-4">
+    <div v-show="activeTab === 'template'" class="p-4">
       <MCodeEditor
         :model-value="code"
         language="vue"
+        :readonly="true"
+        :line-numbers="false"
+        min-height="60px"
+        max-height="400px"
+      />
+    </div>
+
+    <div v-if="script" v-show="activeTab === 'script'" class="p-4">
+      <MCodeEditor
+        :model-value="script"
+        language="typescript"
         :readonly="true"
         :line-numbers="false"
         min-height="60px"
