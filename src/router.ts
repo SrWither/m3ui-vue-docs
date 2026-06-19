@@ -60,6 +60,10 @@ const router = createRouter({
       component: () => import('./pages/ExamplesPage.vue'),
     },
     {
+      path: '/examples/apps',
+      component: () => import('./pages/ExamplesAppsPage.vue'),
+    },
+    {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
     },

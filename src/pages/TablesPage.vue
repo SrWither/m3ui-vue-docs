@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import {
   MTable, MDataTable, MTreeTable, MVirtualTable, MButton, MIconButton, MChip, MIcon,
 } from '@m3ui-vue/m3ui-vue'
-import type { TreeTableColumn, TreeTableRow, VTableColumn } from '@m3ui-vue/m3ui-vue'
+import type { TreeTableColumn, TreeTableRow, VTableColumn, DataTableColumn } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
@@ -31,12 +31,12 @@ const selectedRows = ref<Record<string, any>[]>([])
 const dataTableSelected = ref<Record<string, any>[]>([])
 
 const dataTableColumns = [
-  { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: true },
+  { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: 'left' },
   { key: 'name', label: 'Name', sortable: true, filterable: true, resizable: true },
   { key: 'email', label: 'Email', sortable: true, filterable: true, resizable: true },
   { key: 'role', label: 'Role', sortable: true, filterable: true },
   { key: 'status', label: 'Status', filterable: true },
-]
+] satisfies DataTableColumn[]
 
 const tableProps: PropDef[] = [
   { name: 'columns', type: 'TableColumn[]', description: 'Column definitions: { key, label, sortable?, width?, align? }' },
@@ -233,7 +233,7 @@ const rows = [
       description="Advanced table with sorting, searching, and pagination."
       :code="`<script setup>
 const columns = [
-  { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: true },
+  { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: 'left' },
   { key: 'name', label: 'Name', sortable: true, filterable: true, resizable: true },
   { key: 'email', label: 'Email', sortable: true, filterable: true, resizable: true },
   { key: 'role', label: 'Role', sortable: true, filterable: true },
@@ -298,8 +298,8 @@ const rows = [
       <div class="w-full">
         <MDataTable :columns="dataTableColumns" :rows="rows" :per-page="5">
           <template #row-actions="{ row }">
-            <MIconButton icon="edit" label="Edit" size="small" />
-            <MIconButton icon="delete" label="Delete" size="small" />
+            <MIconButton icon="edit" label="Edit" :size="32" />
+            <MIconButton icon="delete" label="Delete" :size="32" />
           </template>
         </MDataTable>
       </div>

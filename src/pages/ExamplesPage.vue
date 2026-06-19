@@ -34,7 +34,7 @@ const drawerSections: DrawerSection[] = [
 
 // ── Dashboard Layout ──
 const dashboardDrawerCollapsed = ref(false)
-const dashboardSelected = ref('overview')
+const dashboardSelected = ref<string | number>('overview')
 const dashboardSections: DrawerSection[] = [
   {
     items: [
@@ -117,13 +117,13 @@ const roleOptions = [
   </div>
 </template>`"
     >
-      <div class="flex h-[640px] overflow-hidden rounded-b-md">
+      <div class="flex h-160 overflow-hidden rounded-b-md">
         <MNavigationDrawer
           :model-value="drawerOpen"
           :modal="false"
           :selected="drawerSelected"
           :sections="drawerSections"
-          @select="drawerSelected = $event"
+          @select="drawerSelected = String($event)"
         >
           <template #header>
             <div class="px-4 pt-5 pb-3">
@@ -137,15 +137,15 @@ const roleOptions = [
         <div class="relative flex min-w-0 flex-1 flex-col">
           <MAppBar elevated>
             <template #leading>
-              <MIconButton :icon="drawerOpen ? 'menu_open' : 'menu'" @click="drawerOpen = !drawerOpen" />
+              <MIconButton :icon="drawerOpen ? 'menu_open' : 'menu'" @click="drawerOpen = !drawerOpen" label="Toggle drawer" />
             </template>
             <span class="text-title-large font-medium">{{ drawerSections.flatMap(s => s.items).find(i => i.value === drawerSelected)?.label ?? 'Inbox' }}</span>
             <template #trailing>
               <MTooltip text="Search">
-                <MIconButton icon="search" />
+                <MIconButton icon="search" label="Search" />
               </MTooltip>
               <MTooltip text="More">
-                <MIconButton icon="more_vert" />
+                <MIconButton icon="more_vert" label="More" />
               </MTooltip>
             </template>
           </MAppBar>
@@ -154,7 +154,7 @@ const roleOptions = [
             <div class="flex flex-col gap-3">
               <MCard v-for="i in 4" :key="i" clickable class="p-4">
                 <div class="flex items-start gap-3">
-                  <MAvatar :name="['Alex Rivera', 'Jordan Lee', 'Morgan Park', 'Casey Quinn'][i - 1]" :size="40" />
+                  <MAvatar :name="['Alex Rivera', 'Jordan Lee', 'Morgan Park', 'Casey Quinn'][i - 1] ?? ''" :size="40" />
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between">
                       <span class="text-title-small font-medium">{{ ['Alex Rivera', 'Jordan Lee', 'Morgan Park', 'Casey Quinn'][i - 1] }}</span>
@@ -217,7 +217,7 @@ const roleOptions = [
   </div>
 </template>`"
     >
-      <div class="flex h-[640px] overflow-hidden rounded-b-md">
+      <div class="flex h-160 overflow-hidden rounded-b-md">
         <MNavigationDrawer
           :model-value="true"
           :modal="false"
@@ -228,10 +228,11 @@ const roleOptions = [
         >
           <template #header>
             <div class="flex h-16 items-center border-b border-outline-variant">
-              <div class="flex w-[72px] shrink-0 justify-center">
+              <div class="flex w-18 shrink-0 justify-center">
                 <MIconButton
                   :icon="dashboardDrawerCollapsed ? 'menu' : 'menu_open'"
                   @click="dashboardDrawerCollapsed = !dashboardDrawerCollapsed"
+                  label="Toggle drawer"
                 />
               </div>
             </div>
@@ -240,11 +241,11 @@ const roleOptions = [
 
         <div class="flex min-w-0 flex-1 flex-col bg-surface-container-lowest">
           <MAppBar>
-            <span class="text-title-large font-medium">{{ dashboardSections[0].items.find(i => i.value === dashboardSelected)?.label ?? 'Overview' }}</span>
+            <span class="text-title-large font-medium">{{ dashboardSections[0]!.items.find(i => i.value === dashboardSelected)?.label ?? 'Overview' }}</span>
             <template #trailing>
               <MTooltip text="Notifications">
                 <MBadge :count="5">
-                  <MIconButton icon="notifications" />
+                  <MIconButton icon="notifications" label="Notifications" />
                 </MBadge>
               </MTooltip>
               <MAvatar name="Admin User" :size="32" />

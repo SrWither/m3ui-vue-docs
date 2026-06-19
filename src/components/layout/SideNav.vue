@@ -44,6 +44,7 @@ const sections: DrawerSection[] = [
     collapsible: true,
     items: [
       { value: '/examples', label: 'Layouts', icon: 'view_quilt', to: '/examples' },
+      { value: '/examples/apps', label: 'Apps', icon: 'devices', to: '/examples/apps' },
     ],
   },
   {

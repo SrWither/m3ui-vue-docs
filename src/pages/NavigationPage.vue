@@ -163,6 +163,9 @@ const collapsibleSections: DrawerSection[] = [
 ]
 const collapsibleSelected = ref<string | number>('inbox')
 
+const fullCloseOpen = ref(true)
+const fullCloseSelected = ref<string | number>('inbox')
+
 const collapsedOpen = ref(false)
 const collapsedVal = ref(false)
 
@@ -616,6 +619,45 @@ const sections = [
         />
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
           {{ collapsibleSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Full Close"
+      description="Toggle modelValue to fully show/hide the inline drawer with a smooth curtain animation."
+      :code="`<script setup>
+const open = ref(true)
+const selected = ref('inbox')
+<\/script>
+
+<template>
+  <div class=&quot;flex h-[280px] overflow-hidden rounded-xl border border-outline-variant&quot;>
+    <MNavigationDrawer
+      :model-value=&quot;open&quot;
+      :modal=&quot;false&quot;
+      :sections=&quot;sections&quot;
+      :selected=&quot;selected&quot;
+      @select=&quot;selected = $event&quot;
+    />
+    <div class=&quot;flex flex-1 items-center justify-center&quot;>
+      <MButton @click=&quot;open = !open&quot;>Toggle Drawer</MButton>
+    </div>
+  </div>
+</template>`"
+    >
+      <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="fullCloseOpen"
+          :modal="false"
+          :sections="collapsibleSections"
+          :selected="fullCloseSelected"
+          @select="fullCloseSelected = $event"
+        />
+        <div class="flex flex-1 items-center justify-center bg-surface-container">
+          <MButton @click="fullCloseOpen = !fullCloseOpen">
+            {{ fullCloseOpen ? 'Close' : 'Open' }} Drawer
+          </MButton>
         </div>
       </div>
     </ComponentDemo>
