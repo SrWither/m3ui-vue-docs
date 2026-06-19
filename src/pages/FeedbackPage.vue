@@ -119,12 +119,7 @@ const toastProps: PropDef[] = [
     <ComponentDemo
       title="Closeable"
       description="Alerts with a dismiss button. Use v-if to toggle visibility and @close to handle dismissal."
-      :code="`<script setup>
-const visible = ref(true)
-<\/script>
-
-<template>
-  <MAlert
+      :code="`<MAlert
     v-if=&quot;visible&quot;
     type=&quot;info&quot;
     title=&quot;Heads up&quot;
@@ -133,8 +128,8 @@ const visible = ref(true)
   >
     You can close this alert.
   </MAlert>
-  <MButton v-else @click=&quot;visible = true&quot;>Show alert</MButton>
-</template>`"
+  <MButton v-else @click=&quot;visible = true&quot;>Show alert</MButton>`"
+      :script="`const visible = ref(true)`"
     >
       <div class="w-full">
         <MAlert v-if="alertVisible" type="info" title="Heads up" :closeable="true" @close="alertVisible = false">
@@ -243,20 +238,15 @@ toast.show('New follower!', 'info', { icon: 'person_add', color: '#6750A4' })
     <ComponentDemo
       title="Basic Dialog"
       description="Modal dialog with title, content, and actions."
-      :code="`<script setup>
-const open = ref(false)
-<\/script>
-
-<template>
-  <MButton @click=&quot;open = true&quot;>Open</MButton>
+      :code="`<MButton @click=&quot;open = true&quot;>Open</MButton>
   <MDialog v-model=&quot;open&quot; title=&quot;Dialog Title&quot;>
     <p>Dialog content goes here.</p>
     <template #actions>
       <MButton variant=&quot;text&quot; @click=&quot;open = false&quot;>Cancel</MButton>
       <MButton @click=&quot;open = false&quot;>OK</MButton>
     </template>
-  </MDialog>
-</template>`"
+  </MDialog>`"
+      :script="`const open = ref(false)`"
     >
       <MButton @click="dialogOpen = true">Open Dialog</MButton>
       <MDialog v-model="dialogOpen" title="Example Dialog">
@@ -279,25 +269,20 @@ const open = ref(false)
     <ComponentDemo
       title="Confirm Dialog"
       description="Pre-built confirmation dialog with loading state and danger mode."
-      :code="`<script setup>
-const open = ref(false)
-
-function handleDelete() {
-  // your logic
-  open.value = false
-}
-<\/script>
-
-<template>
-  <MConfirmDialog
+      :code="`<MConfirmDialog
     v-model=&quot;open&quot;
     title=&quot;Delete item?&quot;
     message=&quot;This action cannot be undone.&quot;
     :danger=&quot;true&quot;
     confirm-label=&quot;Delete&quot;
     @confirm=&quot;handleDelete&quot;
-  />
-</template>`"
+  />`"
+      :script="`const open = ref(false)
+
+function handleDelete() {
+  // your logic
+  open.value = false
+}`"
     >
       <div class="flex gap-3">
         <MButton variant="tonal" @click="confirmDanger = false; confirmOpen = true">Confirm</MButton>
@@ -419,15 +404,10 @@ function handleDelete() {
     <ComponentDemo
       title="Expansion Panel"
       description="Collapsible sections with smooth animation."
-      :code="`<script setup>
-const open = ref(true)
-<\/script>
-
-<template>
-  <MExpansionPanel v-model=&quot;open&quot; title=&quot;Section Title&quot; icon=&quot;settings&quot;>
+      :code="`<MExpansionPanel v-model=&quot;open&quot; title=&quot;Section Title&quot; icon=&quot;settings&quot;>
     Content goes here.
-  </MExpansionPanel>
-</template>`"
+  </MExpansionPanel>`"
+      :script="`const open = ref(true)`"
     >
       <div class="w-full space-y-2">
         <MExpansionPanel v-model="panel1" title="General Settings" icon="settings" subtitle="App preferences">

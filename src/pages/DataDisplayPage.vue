@@ -486,11 +486,7 @@ const listSubheaderProps: PropDef[] = [
     <ComponentDemo
       title="With Icons & Interaction"
       description="Clickable, selectable, and removable chips."
-      :code="`<script setup>
-const selected = ref(true)
-<\/script>
-
-<template>
+      :code="`<template>
   <MChip icon=&quot;code&quot;>With icon</MChip>
   <MChip :clickable=&quot;true&quot; tone=&quot;primary&quot; @click=&quot;handleClick&quot;>Clickable</MChip>
   <MChip :selected=&quot;selected&quot; :clickable=&quot;true&quot; tone=&quot;primary&quot; @click=&quot;selected = !selected&quot;>
@@ -498,6 +494,7 @@ const selected = ref(true)
   </MChip>
   <MChip :removable=&quot;true&quot; tone=&quot;tertiary&quot; @remove=&quot;handleRemove&quot;>Removable</MChip>
 </template>`"
+      :script="`const selected = ref(true)`"
     >
       <MChip icon="code">With icon</MChip>
       <MChip :clickable="true" tone="primary">Clickable</MChip>
@@ -510,15 +507,7 @@ const selected = ref(true)
     <ComponentDemo
       title="Removable Chips"
       description="Chips that can be dismissed with an animated removal."
-      :code="`<script setup>
-const chips = ref(['Vue', 'React', 'Svelte'])
-
-function remove(label) {
-  chips.value = chips.value.filter(c => c !== label)
-}
-<\/script>
-
-<template>
+      :code="`<template>
   <MChip
     v-for=&quot;chip in chips&quot;
     :key=&quot;chip&quot;
@@ -529,6 +518,11 @@ function remove(label) {
     {{ chip }}
   </MChip>
 </template>`"
+      :script="`const chips = ref(['Vue', 'React', 'Svelte'])
+
+function remove(label) {
+  chips.value = chips.value.filter(c => c !== label)
+}`"
     >
       <MChip
         v-for="chip in removableChips"
@@ -775,18 +769,15 @@ function remove(label) {
     <ComponentDemo
       title="Timeline"
       description="Vertical event timeline with icons and colors."
-      :code="`<script setup>
-const items = [
+      :code="`<template>
+  <MTimeline :items=&quot;items&quot; />
+</template>`"
+      :script="`const items = [
   { title: 'Project created', description: 'Initial setup', date: 'Jan 15', icon: 'rocket_launch', color: 'primary' },
   { title: 'First release', description: 'v1.0.0 published', date: 'Feb 20', icon: 'celebration', color: 'success' },
   { title: 'Bug reported', date: 'Mar 5', icon: 'bug_report', color: 'error' },
   { title: 'Patch released', date: 'Mar 7', icon: 'check_circle', color: 'success' },
-]
-<\/script>
-
-<template>
-  <MTimeline :items=&quot;items&quot; />
-</template>`"
+]`"
     >
       <div class="w-full max-w-lg">
         <MTimeline :items="timelineItems" />
@@ -1004,8 +995,10 @@ const items = [
     <ComponentDemo
       title="Tree View"
       description="Hierarchical tree with expand/collapse and node selection."
-      :code="`<script setup>
-const selected = ref(null)
+      :code="`<template>
+  <MTree :nodes=&quot;nodes&quot; :selected=&quot;selected&quot; default-expanded=&quot;all&quot; @update:selected=&quot;selected = $event&quot; />
+</template>`"
+      :script="`const selected = ref(null)
 const nodes = [
   {
     id: 'src', label: 'src', icon: 'folder',
@@ -1019,12 +1012,7 @@ const nodes = [
       { id: 'index', label: 'index.ts', icon: 'code' },
     ],
   },
-]
-<\/script>
-
-<template>
-  <MTree :nodes=&quot;nodes&quot; :selected=&quot;selected&quot; default-expanded=&quot;all&quot; @update:selected=&quot;selected = $event&quot; />
-</template>`"
+]`"
     >
       <div class="w-full max-w-sm">
         <MCard variant="outlined" class="p-2">

@@ -227,17 +227,14 @@ const segmentedProps: PropDef[] = [
     <ComponentDemo
       title="Speed Dial"
       description="Pass an items array to turn the FAB into a speed dial. Each item needs an icon and optionally a label and onClick handler."
-      :code="`<script setup>
-const items = [
+      :code="`<template>
+  <MFab icon=&quot;add&quot; :items=&quot;items&quot; direction=&quot;up&quot; />
+</template>`"
+      :script="`const items = [
   { icon: 'image', label: 'Photo', onClick: () => {} },
   { icon: 'videocam', label: 'Video', onClick: () => {} },
   { icon: 'mic', label: 'Audio', onClick: () => {} },
-]
-<\/script>
-
-<template>
-  <MFab icon=&quot;add&quot; :items=&quot;items&quot; direction=&quot;up&quot; />
-</template>`"
+]`"
     >
       <div class="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <MCard v-for="dir in (['up', 'down', 'left', 'right', 'radial'] as const)" :key="dir" class="flex flex-col items-center overflow-visible p-0">

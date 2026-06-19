@@ -214,20 +214,15 @@ const spotlightSearchProps: PropDef[] = [
     <ComponentDemo
       title="Calendar with Events"
       description="Monthly calendar view with color-coded events and icons."
-      :code="`<script setup>
-import type { CalendarEvent } from '@m3ui-vue/m3ui-vue'
+      :code="`<MCalendar :events=&quot;events&quot; locale=&quot;en-US&quot; />`"
+      :script="`import type { CalendarEvent } from '@m3ui-vue/m3ui-vue'
 
 const events: CalendarEvent[] = [
   { id: '1', title: 'Team Meeting', date: '2026-06-05', color: 'primary', icon: 'groups' },
   { id: '2', title: 'Release v2', date: '2026-06-12', color: 'success', icon: 'rocket_launch' },
   { id: '3', title: 'Code Review', date: '2026-06-18', color: 'tertiary', icon: 'code' },
   { id: '4', title: 'Bug Bash', date: '2026-06-25', color: 'error', icon: 'bug_report' },
-]
-<\/script>
-
-<template>
-  <MCalendar :events=&quot;events&quot; locale=&quot;en-US&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MCalendar :events="calendarEvents" locale="en-US" />
@@ -265,8 +260,8 @@ const events: CalendarEvent[] = [
     <ComponentDemo
       title="Weekly Scheduler"
       description="Week view scheduler with time-based events. Events are placed on the grid based on their start/end ISO datetimes."
-      :code="`<script setup>
-import type { SchedulerEvent } from '@m3ui-vue/m3ui-vue'
+      :code="`<MScheduler :events=&quot;events&quot; view=&quot;week&quot; :start-hour=&quot;8&quot; :end-hour=&quot;18&quot; locale=&quot;en-US&quot; />`"
+      :script="`import type { SchedulerEvent } from '@m3ui-vue/m3ui-vue'
 
 function getWeekDate(dayOffset: number, hour: number, min = 0) {
   const d = new Date()
@@ -281,12 +276,7 @@ const events: SchedulerEvent[] = [
   { id: '1', title: 'Standup', start: getWeekDate(0, 9), end: getWeekDate(0, 9, 30), color: 'primary' },
   { id: '2', title: 'Design Review', start: getWeekDate(1, 14), end: getWeekDate(1, 15, 30), color: 'tertiary' },
   { id: '3', title: 'Sprint Planning', start: getWeekDate(3, 10), end: getWeekDate(3, 12), color: 'secondary' },
-]
-<\/script>
-
-<template>
-  <MScheduler :events=&quot;events&quot; view=&quot;week&quot; :start-hour=&quot;8&quot; :end-hour=&quot;18&quot; locale=&quot;en-US&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MScheduler :events="schedulerEvents" view="week" :start-hour="8" :end-hour="18" locale="en-US" />
@@ -324,8 +314,13 @@ const events: SchedulerEvent[] = [
     <ComponentDemo
       title="Kanban Board"
       description="Drag-and-drop kanban board with customizable card rendering via the #card slot."
-      :code="`<script setup>
-import { ref } from 'vue'
+      :code="`<MKanban v-model=&quot;columns&quot;>
+    <template #card=&quot;{ card }&quot;>
+      <p class=&quot;text-body-medium&quot;>{{ card.title }}</p>
+      <MChip tone=&quot;primary&quot; class=&quot;mt-1&quot;>{{ card.tag }}</MChip>
+    </template>
+  </MKanban>`"
+      :script="`import { ref } from 'vue'
 import type { KanbanColumn } from '@m3ui-vue/m3ui-vue'
 
 const columns = ref&lt;KanbanColumn[]&gt;([
@@ -349,17 +344,7 @@ const columns = ref&lt;KanbanColumn[]&gt;([
       { id: '5', title: 'CI pipeline', tag: 'Ops' },
     ],
   },
-])
-<\/script>
-
-<template>
-  <MKanban v-model=&quot;columns&quot;>
-    <template #card=&quot;{ card }&quot;>
-      <p class=&quot;text-body-medium&quot;>{{ card.title }}</p>
-      <MChip tone=&quot;primary&quot; class=&quot;mt-1&quot;>{{ card.tag }}</MChip>
-    </template>
-  </MKanban>
-</template>`"
+])`"
     >
       <div class="w-full">
         <MKanban v-model="kanbanColumns">
@@ -420,8 +405,9 @@ const columns = ref&lt;KanbanColumn[]&gt;([
     <ComponentDemo
       title="Command Palette"
       description="A searchable command palette with keyboard shortcut support. Press Ctrl+K to open, or use the button below."
-      :code="`<script setup>
-import { ref } from 'vue'
+      :code="`<MButton @click=&quot;open = true&quot;>Open Command Palette</MButton>
+  <MCommandPalette v-model=&quot;open&quot; :items=&quot;items&quot; />`"
+      :script="`import { ref } from 'vue'
 import type { CommandItem } from '@m3ui-vue/m3ui-vue'
 
 const open = ref(false)
@@ -433,13 +419,7 @@ const items: CommandItem[] = [
   { id: 'theme', label: 'Toggle Theme', icon: 'dark_mode', group: 'Preferences' },
   { id: 'search', label: 'Search', icon: 'search', shortcut: 'Ctrl+F', group: 'Edit' },
   { id: 'replace', label: 'Find &amp; Replace', icon: 'find_replace', shortcut: 'Ctrl+H', group: 'Edit' },
-]
-<\/script>
-
-<template>
-  <MButton @click=&quot;open = true&quot;>Open Command Palette</MButton>
-  <MCommandPalette v-model=&quot;open&quot; :items=&quot;items&quot; />
-</template>`"
+]`"
     >
       <MButton @click="paletteOpen = true">Open Command Palette</MButton>
       <MCommandPalette v-model="paletteOpen" :items="commandItems" />

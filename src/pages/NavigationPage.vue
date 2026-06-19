@@ -219,20 +219,15 @@ const appBarProps: PropDef[] = [
     <ComponentDemo
       title="Primary Tabs"
       description="Underline-style tabs with a sliding indicator."
-      :code="`<script setup>
-const active = ref('home')
-<\/script>
-
-<template>
-  <MTabs
+      :code="`<MTabs
     v-model=&quot;active&quot;
     :tabs=&quot;[
       { value: 'home', label: 'Home', icon: 'home' },
       { value: 'explore', label: 'Explore', icon: 'explore' },
       { value: 'settings', label: 'Settings', icon: 'settings' },
     ]&quot;
-  />
-</template>`"
+  />`"
+      :script="`const active = ref('home')`"
     >
       <div class="w-full">
         <MTabs
@@ -330,8 +325,11 @@ const active = ref('home')
     <ComponentDemo
       title="Context Menu"
       description="Right-click menu with icons, shortcuts, dividers, and danger items."
-      :code="`<script setup>
-const menuRef = ref()
+      :code="`<div @contextmenu.prevent=&quot;menuRef.show($event)&quot;>
+    Right-click here
+  </div>
+  <MContextMenu ref=&quot;menuRef&quot; :items=&quot;items&quot; />`"
+      :script="`const menuRef = ref()
 const items = [
   { label: 'Cut', icon: 'content_cut', shortcut: 'Ctrl+X' },
   { label: 'Copy', icon: 'content_copy', shortcut: 'Ctrl+C' },
@@ -354,15 +352,7 @@ const items = [
   },
   { divider: true },
   { label: 'Delete', icon: 'delete', danger: true },
-]
-<\/script>
-
-<template>
-  <div @contextmenu.prevent=&quot;menuRef.show($event)&quot;>
-    Right-click here
-  </div>
-  <MContextMenu ref=&quot;menuRef&quot; :items=&quot;items&quot; />
-</template>`"
+]`"
     >
       <div
         class="flex w-full items-center justify-center rounded-lg border-2 border-dashed border-outline-variant p-8 text-body-medium text-on-surface-variant transition-colors hover:border-primary hover:bg-primary-container/10"
@@ -429,18 +419,13 @@ const items = [
     <ComponentDemo
       title="Horizontal Stepper"
       description="Multi-step wizard with icons and descriptions."
-      :code="`<script setup>
-const step = ref(0)
+      :code="`<MStepper v-model=&quot;step&quot; :steps=&quot;steps&quot; />`"
+      :script="`const step = ref(0)
 const steps = [
   { label: 'Account', description: 'Create your account', icon: 'person' },
   { label: 'Profile', description: 'Set up your profile', icon: 'badge' },
   { label: 'Done', description: 'All set!', icon: 'check_circle' },
-]
-<\/script>
-
-<template>
-  <MStepper v-model=&quot;step&quot; :steps=&quot;steps&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MStepper v-model="stepperVal" :steps="steps" :linear="false" />
@@ -472,13 +457,8 @@ const steps = [
     <ComponentDemo
       title="Pagination"
       description="Page navigation with automatic page range calculation."
-      :code="`<script setup>
-const page = ref(1)
-<\/script>
-
-<template>
-  <MPagination :page=&quot;page&quot; :per-page=&quot;10&quot; :total=&quot;87&quot; @update:page=&quot;page = $event&quot; />
-</template>`"
+      :code="`<MPagination :page=&quot;page&quot; :per-page=&quot;10&quot; :total=&quot;87&quot; @update:page=&quot;page = $event&quot; />`"
+      :script="`const page = ref(1)`"
     >
       <div class="flex w-full flex-col items-center gap-4">
         <MPagination :page="page" :per-page="10" :total="87" @update:page="page = $event" />
@@ -497,19 +477,14 @@ const page = ref(1)
     <ComponentDemo
       title="Bottom Navigation"
       description="Mobile bottom navigation bar with pill indicator and badges."
-      :code="`<script setup>
-const active = ref('home')
+      :code="`<MNavigationBar v-model=&quot;active&quot; :items=&quot;items&quot; />`"
+      :script="`const active = ref('home')
 const items = [
   { value: 'home', label: 'Home', icon: 'home' },
   { value: 'search', label: 'Search', icon: 'search' },
   { value: 'notifications', label: 'Alerts', icon: 'notifications', badge: 3 },
   { value: 'profile', label: 'Profile', icon: 'person' },
-]
-<\/script>
-
-<template>
-  <MNavigationBar v-model=&quot;active&quot; :items=&quot;items&quot; />
-</template>`"
+]`"
     >
       <div class="w-full max-w-sm overflow-hidden rounded-xl border border-outline-variant">
         <div class="flex h-32 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
@@ -528,8 +503,15 @@ const items = [
     <ComponentDemo
       title="Modal Drawer"
       description="Slide-out drawer with grouped items and badges."
-      :code="`<script setup>
-const open = ref(false)
+      :code="`<MButton @click=&quot;open = true&quot;>Open Drawer</MButton>
+  <MNavigationDrawer
+    v-model=&quot;open&quot;
+    :sections=&quot;sections&quot;
+    :selected=&quot;selected&quot;
+    title=&quot;My App&quot;
+    @select=&quot;selected = $event&quot;
+  />`"
+      :script="`const open = ref(false)
 const selected = ref('inbox')
 const sections = [
   {
@@ -547,19 +529,7 @@ const sections = [
       { value: 'personal', label: 'Personal', icon: 'person' },
     ],
   },
-]
-<\/script>
-
-<template>
-  <MButton @click=&quot;open = true&quot;>Open Drawer</MButton>
-  <MNavigationDrawer
-    v-model=&quot;open&quot;
-    :sections=&quot;sections&quot;
-    :selected=&quot;selected&quot;
-    title=&quot;My App&quot;
-    @select=&quot;selected = $event&quot;
-  />
-</template>`"
+]`"
     >
       <div class="flex items-center gap-4">
         <MButton icon="menu" @click="drawerOpen = true">Open Drawer</MButton>
@@ -577,8 +547,13 @@ const sections = [
     <ComponentDemo
       title="Collapsible Sections"
       description="Sections with collapsible: true can be expanded and collapsed. Add an icon to the section for the toggle header."
-      :code="`<script setup>
-const sections = [
+      :code="`<MNavigationDrawer
+    v-model=&quot;open&quot;
+    :sections=&quot;sections&quot;
+    :selected=&quot;selected&quot;
+    :modal=&quot;false&quot;
+  />`"
+      :script="`const sections = [
   {
     title: 'Mail',
     icon: 'mail',
@@ -597,17 +572,7 @@ const sections = [
       { value: 'personal', label: 'Personal', icon: 'person' },
     ],
   },
-]
-<\/script>
-
-<template>
-  <MNavigationDrawer
-    v-model=&quot;open&quot;
-    :sections=&quot;sections&quot;
-    :selected=&quot;selected&quot;
-    :modal=&quot;false&quot;
-  />
-</template>`"
+]`"
     >
       <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationDrawer
@@ -626,13 +591,7 @@ const sections = [
     <ComponentDemo
       title="Full Close"
       description="Toggle modelValue to fully show/hide the inline drawer with a smooth curtain animation."
-      :code="`<script setup>
-const open = ref(true)
-const selected = ref('inbox')
-<\/script>
-
-<template>
-  <div class=&quot;flex h-[280px] overflow-hidden rounded-xl border border-outline-variant&quot;>
+      :code="`<div class=&quot;flex h-[280px] overflow-hidden rounded-xl border border-outline-variant&quot;>
     <MNavigationDrawer
       :model-value=&quot;open&quot;
       :modal=&quot;false&quot;
@@ -643,8 +602,9 @@ const selected = ref('inbox')
     <div class=&quot;flex flex-1 items-center justify-center&quot;>
       <MButton @click=&quot;open = !open&quot;>Toggle Drawer</MButton>
     </div>
-  </div>
-</template>`"
+  </div>`"
+      :script="`const open = ref(true)
+const selected = ref('inbox')`"
     >
       <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationDrawer
@@ -665,20 +625,15 @@ const selected = ref('inbox')
     <ComponentDemo
       title="Collapsed Mode"
       description="Use the collapsed prop for a compact icon-only sidebar (72px). Items show a tooltip on hover."
-      :code="`<script setup>
-const collapsed = ref(false)
-<\/script>
-
-<template>
-  <MButton @click=&quot;collapsed = !collapsed&quot;>Toggle</MButton>
+      :code="`<MButton @click=&quot;collapsed = !collapsed&quot;>Toggle</MButton>
   <MNavigationDrawer
     :model-value=&quot;true&quot;
     :modal=&quot;false&quot;
     :collapsed=&quot;collapsed&quot;
     :sections=&quot;sections&quot;
     :selected=&quot;selected&quot;
-  />
-</template>`"
+  />`"
+      :script="`const collapsed = ref(false)`"
     >
       <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationDrawer
@@ -735,23 +690,18 @@ interface DrawerSection {
     <ComponentDemo
       title="Navigation Rail"
       description="Compact vertical navigation for desktop layouts with pill indicator."
-      :code="`<script setup>
-const active = ref('home')
+      :code="`<MNavigationRail v-model=&quot;active&quot; :items=&quot;items&quot;>
+    <template #fab>
+      <MFab icon=&quot;edit&quot; size=&quot;small&quot; />
+    </template>
+  </MNavigationRail>`"
+      :script="`const active = ref('home')
 const items = [
   { value: 'home', label: 'Home', icon: 'home' },
   { value: 'search', label: 'Search', icon: 'search' },
   { value: 'library', label: 'Library', icon: 'video_library' },
   { value: 'settings', label: 'Settings', icon: 'settings' },
-]
-<\/script>
-
-<template>
-  <MNavigationRail v-model=&quot;active&quot; :items=&quot;items&quot;>
-    <template #fab>
-      <MFab icon=&quot;edit&quot; size=&quot;small&quot; />
-    </template>
-  </MNavigationRail>
-</template>`"
+]`"
     >
       <div class="flex h-72 w-full max-w-md overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationRail v-model="railVal" :items="railItems">

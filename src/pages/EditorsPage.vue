@@ -96,18 +96,13 @@ const richTextProps: PropDef[] = [
     <ComponentDemo
       title="Basic Editor"
       description="Editable code editor with syntax highlighting and line numbers."
-      :code="`<script setup>
-import { ref } from 'vue'
+      :code="`<MCodeEditor v-model=&quot;code&quot; language=&quot;typescript&quot; />`"
+      :script="`import { ref } from 'vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 
 const code = ref(\`function greet(name: string) {
   return \\\`Hello, \\\${name}!\\\`
-}\`)
-<\/script>
-
-<template>
-  <MCodeEditor v-model=&quot;code&quot; language=&quot;typescript&quot; />
-</template>`"
+}\`)`"
     >
       <div class="w-full">
         <MCodeEditor v-model="sampleCode" language="typescript" min-height="100px" max-height="300px" />
@@ -147,8 +142,8 @@ const code = ref(\`function greet(name: string) {
     <ComponentDemo
       title="JSON Editor"
       description="Edit JSON data with syntax highlighting and validation."
-      :code="`<script setup>
-import { ref } from 'vue'
+      :code="`<MJsonEditor v-model=&quot;data&quot; />`"
+      :script="`import { ref } from 'vue'
 import { MJsonEditor } from '@m3ui-vue/m3ui-vue'
 
 const data = ref({
@@ -156,12 +151,7 @@ const data = ref({
   age: 30,
   active: true,
   tags: ['admin', 'user'],
-})
-<\/script>
-
-<template>
-  <MJsonEditor v-model=&quot;data&quot; />
-</template>`"
+})`"
     >
       <div class="w-full">
         <MJsonEditor v-model="jsonEditorData" min-height="150px" max-height="400px" />
@@ -177,20 +167,15 @@ const data = ref({
     <ComponentDemo
       title="JSON Viewer"
       description="Read-only tree view for inspecting JSON data with expand/collapse."
-      :code="`<script setup>
-import { MJsonViewer } from '@m3ui-vue/m3ui-vue'
+      :code="`<MJsonViewer :data=&quot;data&quot; root-name=&quot;package&quot; :expand-depth=&quot;2&quot; />`"
+      :script="`import { MJsonViewer } from '@m3ui-vue/m3ui-vue'
 
 const data = {
   name: 'm3ui-vue',
   version: '0.1.4',
   dependencies: { vue: '^3.5.0', tailwindcss: '^4.0.0' },
   features: ['dark mode', 'material 3', 'tree-shaking'],
-}
-<\/script>
-
-<template>
-  <MJsonViewer :data=&quot;data&quot; root-name=&quot;package&quot; :expand-depth=&quot;2&quot; />
-</template>`"
+}`"
     >
       <div class="w-full">
         <MCard variant="outlined" class="p-4">
@@ -208,8 +193,8 @@ const data = {
     <ComponentDemo
       title="Markdown Renderer"
       description="Render markdown content with support for headings, lists, links, bold, and code blocks."
-      :code="`<script setup>
-import { MMarkdown } from '@m3ui-vue/m3ui-vue'
+      :code="`<MMarkdown :source=&quot;source&quot; />`"
+      :script="`import { MMarkdown } from '@m3ui-vue/m3ui-vue'
 
 const source = \`# Hello World
 
@@ -223,12 +208,7 @@ This is **bold** and this is *italic*.
 console.log('hello')
 \\\`\\\`\\\`
 
-[Visit Google](https://google.com)\`
-<\/script>
-
-<template>
-  <MMarkdown :source=&quot;source&quot; />
-</template>`"
+[Visit Google](https://google.com)\``"
     >
       <div class="w-full">
         <MCard variant="outlined" class="p-6">
@@ -260,20 +240,15 @@ console.log('hello')
     <ComponentDemo
       title="Terminal"
       description="Terminal emulator with pre-filled output lines."
-      :code="`<script setup>
-import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'
+      :code="`<MTerminal :lines=&quot;lines&quot; :readonly=&quot;true&quot; title=&quot;Installation&quot; />`"
+      :script="`import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'
 
 const lines = [
   '$ npm install @m3ui-vue/m3ui-vue',
   'added 42 packages in 3.2s',
   '$ echo &quot;Ready!&quot;',
   'Ready!',
-]
-<\/script>
-
-<template>
-  <MTerminal :lines=&quot;lines&quot; :readonly=&quot;true&quot; title=&quot;Installation&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MTerminal :lines="terminalLines" :readonly="true" title="Installation" min-height="200px" />
@@ -289,16 +264,11 @@ const lines = [
     <ComponentDemo
       title="Rich Text Editor"
       description="WYSIWYG editor with formatting toolbar."
-      :code="`<script setup>
-import { ref } from 'vue'
+      :code="`<MRichTextEditor v-model=&quot;content&quot; placeholder=&quot;Start writing...&quot; />`"
+      :script="`import { ref } from 'vue'
 import { MRichTextEditor } from '@m3ui-vue/m3ui-vue/rich-text-editor'
 
-const content = ref('<p>Hello <strong>world</strong>!</p>')
-<\/script>
-
-<template>
-  <MRichTextEditor v-model=&quot;content&quot; placeholder=&quot;Start writing...&quot; />
-</template>`"
+const content = ref('<p>Hello <strong>world</strong>!</p>')`"
     >
       <div class="w-full">
         <MRichTextEditor v-model="richTextContent" placeholder="Start writing..." />

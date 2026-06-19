@@ -158,8 +158,8 @@ const virtualTableProps: PropDef[] = [
     <ComponentDemo
       title="Basic Table"
       description="A simple table with sortable columns and sample data."
-      :code="`<script setup>
-const columns = [
+      :code="`<MTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; />`"
+      :script="`const columns = [
   { key: 'id', label: 'ID', sortable: true, width: 'w-16' },
   { key: 'name', label: 'Name', sortable: true },
   { key: 'email', label: 'Email', sortable: true },
@@ -173,12 +173,7 @@ const rows = [
   { id: 3, name: 'Carol White', email: 'carol@example.com', role: 'Viewer', status: 'Inactive' },
   { id: 4, name: 'David Brown', email: 'david@example.com', role: 'Editor', status: 'Active' },
   { id: 5, name: 'Eva Martinez', email: 'eva@example.com', role: 'Admin', status: 'Active' },
-]
-<\/script>
-
-<template>
-  <MTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MTable :columns="columns" :rows="rows" :searchable="false" />
@@ -246,8 +241,8 @@ const rows = [
     <ComponentDemo
       title="Feature-Rich Data Table"
       description="Advanced table with sorting, searching, and pagination."
-      :code="`<script setup>
-const columns = [
+      :code="`<MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :per-page=&quot;5&quot; />`"
+      :script="`const columns = [
   { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: 'left' },
   { key: 'name', label: 'Name', sortable: true, filterable: true, resizable: true },
   { key: 'email', label: 'Email', sortable: true, filterable: true, resizable: true },
@@ -258,12 +253,7 @@ const columns = [
 const rows = [
   { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'Active' },
   // ... more rows
-]
-<\/script>
-
-<template>
-  <MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :per-page=&quot;5&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MDataTable
@@ -323,20 +313,15 @@ const rows = [
     <ComponentDemo
       title="Selectable Rows"
       description="Enable row selection with checkboxes using v-model."
-      :code="`<script setup>
-const selected = ref([])
-<\/script>
-
-<template>
-  <MDataTable
+      :code="`<MDataTable
     v-model=&quot;selected&quot;
     :columns=&quot;columns&quot;
     :rows=&quot;rows&quot;
     :selectable=&quot;true&quot;
     :per-page=&quot;5&quot;
   />
-  <p>Selected: {{ selected.length }} rows</p>
-</template>`"
+  <p>Selected: {{ selected.length }} rows</p>`"
+      :script="`const selected = ref([])`"
     >
       <div class="w-full space-y-4">
         <MDataTable
@@ -358,18 +343,7 @@ const selected = ref([])
     <ComponentDemo
       title="Expandable Rows"
       description="Click the arrow to expand a row and reveal extra detail. Use the expandable prop and #row-expand slot."
-      :code="`<script setup>
-const columns = [
-  { key: 'id', label: 'ID', width: 'w-16' },
-  { key: 'name', label: 'Name' },
-  { key: 'email', label: 'Email' },
-  { key: 'role', label: 'Role' },
-  { key: 'status', label: 'Status' },
-]
-<\/script>
-
-<template>
-  <MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :expandable=&quot;true&quot; :per-page=&quot;5&quot;>
+      :code="`<MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :expandable=&quot;true&quot; :per-page=&quot;5&quot;>
     <template #cell-status=&quot;{ value }&quot;>
       <MChip :tone=&quot;value === 'Active' ? 'success' : 'neutral'&quot;>{{ value }}</MChip>
     </template>
@@ -389,8 +363,14 @@ const columns = [
         </div>
       </div>
     </template>
-  </MDataTable>
-</template>`"
+  </MDataTable>`"
+      :script="`const columns = [
+  { key: 'id', label: 'ID', width: 'w-16' },
+  { key: 'name', label: 'Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'role', label: 'Role' },
+  { key: 'status', label: 'Status' },
+]`"
     >
       <div class="w-full">
         <MDataTable :columns="expandColumns" :rows="expandRows" :expandable="true" :per-page="5">
@@ -434,8 +414,8 @@ const columns = [
     <ComponentDemo
       title="Tree Table"
       description="Hierarchical table with expandable rows for nested data like file systems."
-      :code="`<script setup>
-const columns = [
+      :code="`<MTreeTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :default-expanded=&quot;true&quot; />`"
+      :script="`const columns = [
   { key: 'name', label: 'Name' },
   { key: 'type', label: 'Type', width: 'w-24' },
   { key: 'size', label: 'Size', width: 'w-24', align: 'right' },
@@ -449,12 +429,7 @@ const rows = [
     ],
   },
   { id: 'pkg', name: 'package.json', type: 'json', size: '0.8 KB' },
-]
-<\/script>
-
-<template>
-  <MTreeTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :default-expanded=&quot;true&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MTreeTable :columns="treeTableColumns" :rows="treeTableRows" :default-expanded="true" />
@@ -470,8 +445,8 @@ const rows = [
     <ComponentDemo
       title="Virtual Table"
       description="Renders only visible rows for high-performance display of large datasets. This demo has 1,000 rows."
-      :code="`<script setup>
-const columns = [
+      :code="`<MVirtualTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; max-height=&quot;400px&quot; />`"
+      :script="`const columns = [
   { key: 'id', label: 'ID', width: '80px', sortable: true },
   { key: 'name', label: 'Name', sortable: true },
   { key: 'email', label: 'Email', sortable: true },
@@ -482,12 +457,7 @@ const rows = Array.from({ length: 1000 }, (_, i) => ({
   name: \`User \${i + 1}\`,
   email: \`user\${i + 1}@example.com\`,
   department: ['Engineering', 'Design', 'Marketing', 'Sales'][i % 4],
-}))
-<\/script>
-
-<template>
-  <MVirtualTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; max-height=&quot;400px&quot; />
-</template>`"
+}))`"
     >
       <div class="w-full">
         <MVirtualTable :columns="virtualColumns" :rows="virtualRows" max-height="400px" />

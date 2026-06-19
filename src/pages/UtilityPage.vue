@@ -140,21 +140,18 @@ const tourProps: PropDef[] = [
     <ComponentDemo
       title="Drag & Drop List"
       description="Reorder items by dragging. Each item needs a unique id."
-      :code="`<script setup>
-const items = ref([
-  { id: '1', label: 'First item' },
-  { id: '2', label: 'Second item' },
-  { id: '3', label: 'Third item' },
-])
-<\/script>
-
-<template>
+      :code="`<template>
   <MDragDropList v-model=&quot;items&quot;>
     <template #item=&quot;{ item }&quot;>
       {{ item.label }}
     </template>
   </MDragDropList>
 </template>`"
+      :script="`const items = ref([
+  { id: '1', label: 'First item' },
+  { id: '2', label: 'Second item' },
+  { id: '3', label: 'Third item' },
+])`"
     >
       <div class="w-full max-w-sm">
         <MDragDropList v-model="dragItems">
@@ -177,17 +174,7 @@ const items = ref([
     <ComponentDemo
       title="Transfer List"
       description="Move items between two lists. Selected values are tracked via v-model."
-      :code="`<script setup>
-const selected = ref(['vue'])
-const items = [
-  { value: 'vue', label: 'Vue', icon: 'code' },
-  { value: 'react', label: 'React', icon: 'code' },
-  { value: 'angular', label: 'Angular', icon: 'code' },
-  { value: 'svelte', label: 'Svelte', icon: 'code' },
-]
-<\/script>
-
-<template>
+      :code="`<template>
   <MTransferList
     v-model=&quot;selected&quot;
     :items=&quot;items&quot;
@@ -196,6 +183,13 @@ const items = [
     :filterable=&quot;true&quot;
   />
 </template>`"
+      :script="`const selected = ref(['vue'])
+const items = [
+  { value: 'vue', label: 'Vue', icon: 'code' },
+  { value: 'react', label: 'React', icon: 'code' },
+  { value: 'angular', label: 'Angular', icon: 'code' },
+  { value: 'svelte', label: 'Svelte', icon: 'code' },
+]`"
     >
       <div class="w-full">
         <MTransferList
@@ -217,17 +211,14 @@ const items = [
     <ComponentDemo
       title="Keyboard Shortcuts"
       description="Register global keyboard shortcuts with optional overlay display."
-      :code="`<script setup>
-const bindings = [
+      :code="`<template>
+  <MHotkeys :bindings=&quot;bindings&quot; :show-overlay=&quot;true&quot; />
+</template>`"
+      :script="`const bindings = [
   { keys: 'mod+s', label: 'Save', handler: () => console.log('Save'), group: 'File' },
   { keys: 'mod+shift+p', label: 'Palette', handler: () => console.log('Palette'), group: 'Navigation' },
   { keys: 'mod+k', label: 'Search', handler: () => console.log('Search'), group: 'Navigation' },
-]
-<\/script>
-
-<template>
-  <MHotkeys :bindings=&quot;bindings&quot; :show-overlay=&quot;true&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <MHotkeys :bindings="hotkeyBindings" :show-overlay="true" />
@@ -257,8 +248,12 @@ const bindings = [
     <ComponentDemo
       title="Infinite Scroll"
       description="Automatically loads more content when scrolling near the bottom."
-      :code="`<script setup>
-const items = ref([...])
+      :code="`<template>
+  <MInfiniteScroll :loading=&quot;loading&quot; :ended=&quot;ended&quot; @load=&quot;loadMore&quot;>
+    <div v-for=&quot;item in items&quot; :key=&quot;item&quot;>{{ item }}</div>
+  </MInfiniteScroll>
+</template>`"
+      :script="`const items = ref([...])
 const loading = ref(false)
 const ended = ref(false)
 
@@ -266,14 +261,7 @@ function loadMore() {
   loading.value = true
   // fetch more items...
   loading.value = false
-}
-<\/script>
-
-<template>
-  <MInfiniteScroll :loading=&quot;loading&quot; :ended=&quot;ended&quot; @load=&quot;loadMore&quot;>
-    <div v-for=&quot;item in items&quot; :key=&quot;item&quot;>{{ item }}</div>
-  </MInfiniteScroll>
-</template>`"
+}`"
     >
       <div class="h-64 w-full max-w-md overflow-y-auto rounded-xl border border-outline-variant">
         <MInfiniteScroll :loading="infiniteLoading" :ended="infiniteEnded" @load="loadMore">
@@ -297,19 +285,16 @@ function loadMore() {
     <ComponentDemo
       title="Guided Tour"
       description="Step-by-step walkthrough that highlights elements on the page."
-      :code="`<script setup>
-const open = ref(false)
+      :code="`<template>
+  <MButton @click=&quot;open = true&quot;>Start Tour</MButton>
+  <MTour v-model=&quot;open&quot; :steps=&quot;steps&quot; />
+</template>`"
+      :script="`const open = ref(false)
 const steps = [
   { target: '#step-1', title: 'Welcome', content: 'Start here.', placement: 'bottom' },
   { target: '#step-2', title: 'Features', content: 'Explore features.', placement: 'bottom' },
   { target: '#step-3', title: 'Done!', content: 'Tour complete.', placement: 'left' },
-]
-<\/script>
-
-<template>
-  <MButton @click=&quot;open = true&quot;>Start Tour</MButton>
-  <MTour v-model=&quot;open&quot; :steps=&quot;steps&quot; />
-</template>`"
+]`"
     >
       <div class="w-full">
         <div class="mb-4 flex items-center gap-4">
