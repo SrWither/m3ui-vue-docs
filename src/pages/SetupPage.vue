@@ -13,9 +13,9 @@ async function copyInstall(cmd: string, id: string) {
   setTimeout(() => { copiedDep.value = null }, 2000)
 }
 
-const installCode = `pnpm add @m3ui-vue/m3ui-vue
+const installCode = `pnpm add @m3ui-vue/m3ui-vue@latest
 # or
-npm install @m3ui-vue/m3ui-vue`
+npm install @m3ui-vue/m3ui-vue@latest`
 
 const fontsCode = `<link
   href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
