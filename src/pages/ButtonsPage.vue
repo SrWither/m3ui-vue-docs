@@ -42,6 +42,7 @@ const fabProps: PropDef[] = [
   { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items (see interface below)' },
   { name: 'direction', type: "'up' | 'down' | 'left' | 'right' | 'radial'", default: "'up'", description: 'Speed-dial expand direction' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
+  { name: 'persistent', type: 'boolean', default: 'false', description: 'Keep speed-dial open after clicking an item or clicking outside' },
 ]
 
 const segmentedProps: PropDef[] = [
@@ -247,6 +248,18 @@ const items = [
             <MFab icon="add" :items="dialItems" :direction="dir" size="small" />
           </div>
         </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Persistent Speed Dial"
+      description="With persistent, the speed dial stays open after clicking an item or clicking outside. The user must click the FAB again to close it."
+      :code="`<template>
+  <MFab icon=&quot;add&quot; :items=&quot;items&quot; :persistent=&quot;true&quot; />
+</template>`"
+    >
+      <div class="flex h-52 w-full items-center justify-center">
+        <MFab icon="add" :items="dialItems" :persistent="true" size="small" />
       </div>
     </ComponentDemo>
 
