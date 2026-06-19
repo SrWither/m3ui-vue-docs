@@ -30,6 +30,21 @@ const rows = [
 const selectedRows = ref<Record<string, any>[]>([])
 const dataTableSelected = ref<Record<string, any>[]>([])
 
+const expandRows = [
+  { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'Active', phone: '+1 555-0101', department: 'Engineering', joined: '2022-03-15', bio: 'Full-stack developer with 8 years of experience. Leads the platform team and mentors junior developers.' },
+  { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'Editor', status: 'Active', phone: '+1 555-0102', department: 'Design', joined: '2023-01-10', bio: 'UI/UX designer focused on design systems and component libraries. Previously worked at a fintech startup.' },
+  { id: 3, name: 'Carol White', email: 'carol@example.com', role: 'Viewer', status: 'Inactive', phone: '+1 555-0103', department: 'Marketing', joined: '2023-06-22', bio: 'Content strategist specializing in developer documentation and technical writing.' },
+  { id: 4, name: 'David Brown', email: 'david@example.com', role: 'Editor', status: 'Active', phone: '+1 555-0104', department: 'Engineering', joined: '2022-11-05', bio: 'Backend engineer working on APIs and microservices. Passionate about performance optimization.' },
+]
+
+const expandColumns = [
+  { key: 'id', label: 'ID', sortable: true, width: 'w-16' },
+  { key: 'name', label: 'Name', sortable: true },
+  { key: 'email', label: 'Email', sortable: true },
+  { key: 'role', label: 'Role' },
+  { key: 'status', label: 'Status' },
+]
+
 const dataTableColumns = [
   { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: 'left' },
   { key: 'name', label: 'Name', sortable: true, filterable: true, resizable: true },
@@ -337,6 +352,76 @@ const selected = ref([])
             — {{ dataTableSelected.map(r => r.name).join(', ') }}
           </span>
         </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Expandable Rows"
+      description="Click the arrow to expand a row and reveal extra detail. Use the expandable prop and #row-expand slot."
+      :code="`<script setup>
+const columns = [
+  { key: 'id', label: 'ID', width: 'w-16' },
+  { key: 'name', label: 'Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'role', label: 'Role' },
+  { key: 'status', label: 'Status' },
+]
+<\/script>
+
+<template>
+  <MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :expandable=&quot;true&quot; :per-page=&quot;5&quot;>
+    <template #cell-status=&quot;{ value }&quot;>
+      <MChip :tone=&quot;value === 'Active' ? 'success' : 'neutral'&quot;>{{ value }}</MChip>
+    </template>
+    <template #row-expand=&quot;{ row }&quot;>
+      <div class=&quot;grid grid-cols-2 gap-4 text-body-medium&quot;>
+        <div>
+          <p class=&quot;text-label-medium text-on-surface-variant&quot;>Phone</p>
+          <p>{{ row.phone }}</p>
+        </div>
+        <div>
+          <p class=&quot;text-label-medium text-on-surface-variant&quot;>Department</p>
+          <p>{{ row.department }}</p>
+        </div>
+        <div class=&quot;col-span-2&quot;>
+          <p class=&quot;text-label-medium text-on-surface-variant&quot;>Bio</p>
+          <p>{{ row.bio }}</p>
+        </div>
+      </div>
+    </template>
+  </MDataTable>
+</template>`"
+    >
+      <div class="w-full">
+        <MDataTable :columns="expandColumns" :rows="expandRows" :expandable="true" :per-page="5">
+          <template #cell-status="{ value }">
+            <MChip :tone="value === 'Active' ? 'success' : 'neutral'">{{ value }}</MChip>
+          </template>
+          <template #row-expand="{ row }">
+            <div class="grid grid-cols-2 gap-x-8 gap-y-3 text-body-medium">
+              <div>
+                <p class="text-label-medium text-on-surface-variant">Phone</p>
+                <p>{{ row.phone }}</p>
+              </div>
+              <div>
+                <p class="text-label-medium text-on-surface-variant">Department</p>
+                <p>{{ row.department }}</p>
+              </div>
+              <div>
+                <p class="text-label-medium text-on-surface-variant">Joined</p>
+                <p>{{ row.joined }}</p>
+              </div>
+              <div>
+                <p class="text-label-medium text-on-surface-variant">Role</p>
+                <MChip :tone="row.role === 'Admin' ? 'error' : row.role === 'Editor' ? 'primary' : 'neutral'" class="mt-1">{{ row.role }}</MChip>
+              </div>
+              <div class="col-span-2">
+                <p class="text-label-medium text-on-surface-variant">Bio</p>
+                <p class="text-on-surface-variant">{{ row.bio }}</p>
+              </div>
+            </div>
+          </template>
+        </MDataTable>
       </div>
     </ComponentDemo>
 

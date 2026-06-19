@@ -210,6 +210,30 @@ toast.success('Appears at top right')
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Custom Icon & Color"
+      description="Override the default variant icon, or pass a custom background color for a fully branded toast."
+      :code="`<script setup>
+import { useToast } from '@m3ui-vue/m3ui-vue'
+
+const toast = useToast()
+
+// Custom icon with a standard variant
+toast.success('Deployed!', { icon: 'rocket_launch' })
+
+// Custom background color (text auto-switches to white)
+toast.show('New follower!', 'info', { icon: 'person_add', color: '#6750A4' })
+<\/script>`"
+    >
+      <div class="flex flex-wrap gap-3">
+        <MButton variant="tonal" @click="toast.success('Deployed to production', { icon: 'rocket_launch' })">Custom Icon</MButton>
+        <MButton variant="tonal" @click="toast.show('New follower!', 'info', { icon: 'person_add', color: '#6750A4' })">Purple</MButton>
+        <MButton variant="tonal" @click="toast.show('Message sent', 'info', { icon: 'send', color: '#0891b2' })">Cyan</MButton>
+        <MButton variant="tonal" @click="toast.show('Payment received', 'info', { icon: 'payments', color: '#16a34a' })">Green</MButton>
+        <MButton variant="tonal" @click="toast.show('File deleted', 'info', { icon: 'delete_forever', color: '#dc2626' })">Red</MButton>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Methods</h3>
     <PropsTable :props="toastProps" />
 

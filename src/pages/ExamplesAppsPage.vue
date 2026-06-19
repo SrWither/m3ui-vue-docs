@@ -330,24 +330,46 @@ function bulkDelete() {
       title="Messaging"
       description="Contact list with online status, message bubbles, and input area."
       flush
-      :code="`<template>
+      :code="`<script setup>
+import { ref } from 'vue'
+
+const contacts = [
+  { name: 'Ana García', status: 'online', lastMsg: 'Sure, let me check that!', time: '2m', unread: 3 },
+  { name: 'Carlos López', status: 'online', lastMsg: 'The deploy is done', time: '15m', unread: 0 },
+]
+
+const selected = ref(0)
+const message = ref('')
+<\/script>
+
+<template>
   <div class=&quot;flex h-[600px] overflow-hidden rounded-xl border border-outline-variant&quot;>
     &lt;!-- Contact list --&gt;
     <div class=&quot;flex w-72 flex-col border-r border-outline-variant bg-surface&quot;>
-      <div class=&quot;p-3&quot;>
-        <MTextField placeholder=&quot;Search...&quot; leading-icon=&quot;search&quot; variant=&quot;outlined&quot; />
-      </div>
       <div class=&quot;flex-1 overflow-auto&quot;>
         <div
-          v-for=&quot;contact in contacts&quot;
-          class=&quot;flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-on-surface/4&quot;
+          v-for=&quot;(contact, i) in contacts&quot;
+          class=&quot;flex cursor-pointer items-center gap-3 px-4 py-3&quot;
+          :class=&quot;selected === i ? 'bg-secondary-container' : 'hover:bg-on-surface/4'&quot;
+          @click=&quot;selected = i&quot;
         >
-          <MBadge :dot=&quot;contact.status === 'online'&quot; color=&quot;success&quot; overlap>
+          &lt;!-- Avatar with online dot --&gt;
+          <span class=&quot;relative inline-flex&quot;>
             <MAvatar :name=&quot;contact.name&quot; :size=&quot;40&quot; />
-          </MBadge>
+            <span
+              v-if=&quot;contact.status === 'online'&quot;
+              class=&quot;absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-surface bg-success&quot;
+            />
+          </span>
           <div class=&quot;min-w-0 flex-1&quot;>
-            <span class=&quot;text-body-medium font-medium&quot;>{{ contact.name }}</span>
-            <p class=&quot;truncate text-body-small text-on-surface-variant&quot;>{{ contact.lastMsg }}</p>
+            <div class=&quot;flex items-center gap-3&quot;>
+              <span class=&quot;min-w-0 flex-1 truncate text-body-medium font-medium&quot;>{{ contact.name }}</span>
+              <span class=&quot;shrink-0 text-body-small text-on-surface-variant&quot;>{{ contact.time }}</span>
+            </div>
+            <div class=&quot;flex items-center gap-3&quot;>
+              <p class=&quot;min-w-0 flex-1 truncate text-body-small text-on-surface-variant&quot;>{{ contact.lastMsg }}</p>
+              <MBadge v-if=&quot;contact.unread&quot; :count=&quot;contact.unread&quot; />
+            </div>
           </div>
         </div>
       </div>
@@ -357,19 +379,30 @@ function bulkDelete() {
     <div class=&quot;flex min-w-0 flex-1 flex-col&quot;>
       <MAppBar elevated>
         <template #leading>
-          <MAvatar :name=&quot;selectedContact.name&quot; :size=&quot;36&quot; />
+          <span class=&quot;relative inline-flex&quot;>
+            <MAvatar :name=&quot;contacts[selected].name&quot; :size=&quot;36&quot; />
+            <span
+              v-if=&quot;contacts[selected].status === 'online'&quot;
+              class=&quot;absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border-2 border-surface bg-success&quot;
+            />
+          </span>
         </template>
-        <span class=&quot;text-title-medium font-medium&quot;>{{ selectedContact.name }}</span>
+        <div>
+          <span class=&quot;text-title-medium font-medium&quot;>{{ contacts[selected].name }}</span>
+          <p class=&quot;text-body-small text-on-surface-variant&quot;>
+            {{ contacts[selected].status === 'online' ? 'Online' : 'Offline' }}
+          </p>
+        </div>
       </MAppBar>
       <div class=&quot;flex-1 overflow-auto p-4&quot;>
-        &lt;!-- Messages --&gt;
+        &lt;!-- Message bubbles --&gt;
       </div>
       <div class=&quot;border-t border-outline-variant p-3&quot;>
-        <MTextField v-model=&quot;message&quot; placeholder=&quot;Type a message...&quot; variant=&quot;outlined&quot;>
-          <template #trailing>
-            <MIconButton icon=&quot;send&quot; @click=&quot;send&quot; />
-          </template>
-        </MTextField>
+        <form class=&quot;flex items-center gap-2&quot;>
+          <MIconButton icon=&quot;attach_file&quot; type=&quot;button&quot; />
+          <MTextField v-model=&quot;message&quot; label=&quot;Type a message...&quot; variant=&quot;outlined&quot; class=&quot;flex-1&quot; />
+          <MIconButton icon=&quot;send&quot; type=&quot;submit&quot; />
+        </form>
       </div>
     </div>
   </div>
@@ -534,23 +567,28 @@ function bulkDelete() {
           {{ role }}
         </MChip>
       </div>
-      <MSelect v-model=&quot;status&quot; :options=&quot;statusOptions&quot; label=&quot;Status&quot; variant=&quot;outlined&quot; />
+      <MSelect v-model=&quot;status&quot; :options=&quot;statusOptions&quot; label=&quot;Status&quot; variant=&quot;outlined&quot; class=&quot;min-w-48&quot; />
       <div class=&quot;ml-auto flex gap-2&quot;>
-        <MButton v-if=&quot;selected.length&quot; variant=&quot;tonal&quot; tone=&quot;error&quot; @click=&quot;bulkDelete&quot;>
+        <MButton v-if=&quot;selected.length&quot; variant=&quot;tonal&quot; tone=&quot;error&quot; leading-icon=&quot;delete_sweep&quot; @click=&quot;bulkDelete&quot;>
           Delete ({{ selected.length }})
         </MButton>
-        <MButton leading-icon=&quot;add&quot; @click=&quot;openAdd&quot;>Add User</MButton>
+        <MButton leading-icon=&quot;person_add&quot; @click=&quot;openAdd&quot;>Add User</MButton>
       </div>
     </div>
 
     &lt;!-- Table --&gt;
-    <MDataTable :columns=&quot;columns&quot; :rows=&quot;filteredUsers&quot; v-model=&quot;selected&quot; selectable>
+    <MDataTable :columns=&quot;columns&quot; :rows=&quot;filteredUsers&quot; v-model=&quot;selected&quot; selectable :per-page=&quot;5&quot;>
+      <template #cell-role=&quot;{ value }&quot;>
+        <MChip :tone=&quot;value === 'Admin' ? 'error' : value === 'Editor' ? 'primary' : 'neutral'&quot;>{{ value }}</MChip>
+      </template>
       <template #cell-status=&quot;{ value }&quot;>
         <MChip :tone=&quot;value === 'Active' ? 'success' : 'neutral'&quot;>{{ value }}</MChip>
       </template>
       <template #cell-actions=&quot;{ row }&quot;>
-        <MIconButton icon=&quot;edit&quot; @click=&quot;openEdit(row)&quot; />
-        <MIconButton icon=&quot;delete&quot; @click=&quot;confirmDelete(row)&quot; />
+        <div class=&quot;flex gap-1&quot; @click.stop>
+          <MIconButton icon=&quot;edit&quot; @click=&quot;openEdit(row)&quot; />
+          <MIconButton icon=&quot;delete&quot; @click=&quot;confirmDelete(row)&quot; />
+        </div>
       </template>
     </MDataTable>
   </div>
