@@ -617,8 +617,8 @@ const showOverlay = ref(false)
         <MFlex direction="row" align="center" gap="sm">
           <MText variant="title-medium">App Title</MText>
           <MSpacer />
-          <MIconButton icon="search" />
-          <MIconButton icon="more_vert" />
+          <MIconButton icon="search" label="Search" />
+          <MIconButton icon="more_vert" label="More options" />
         </MFlex>
       </div>
     </ComponentDemo>
@@ -826,11 +826,11 @@ const showOverlay = ref(false)
           </MBox>
           <MAbsolute :top="8" :right="8">
             <MBadge :count="3">
-              <MIconButton icon="notifications" variant="tonal" />
+              <MIconButton icon="notifications" variant="tonal" label="Notifications" />
             </MBadge>
           </MAbsolute>
           <MAbsolute :bottom="12" :left="12">
-            <MButton size="small" variant="tonal">Action</MButton>
+            <MButton size="small" variant="tonal" label="Action" />
           </MAbsolute>
         </MRelative>
       </div>
@@ -850,8 +850,8 @@ const showOverlay = ref(false)
     >
       <div class="w-full max-w-sm">
         <MRelative>
-          <div class="h-40 w-full rounded-lg bg-gradient-to-br from-primary to-tertiary" />
-          <MAbsolute :inset="true" class="flex items-end rounded-lg bg-gradient-to-t from-black/60 to-transparent p-4">
+          <div class="h-40 w-full rounded-lg bg-linear-to-br from-primary to-tertiary" />
+          <MAbsolute :inset="true" class="flex items-end rounded-lg bg-linear-to-t from-black/60 to-transparent p-4">
             <MText variant="title-medium" class="text-white">Overlay Title</MText>
           </MAbsolute>
         </MRelative>
@@ -981,7 +981,7 @@ const showOverlay = ref(false)
       <MGrid :cols="3" gap="md" class="w-full">
         <div v-for="r in ['1/1', '16/9', '4/3']" :key="r">
           <MText variant="label-small" color="on-surface-variant" class="mb-1">{{ r }}</MText>
-          <MAspectRatio :ratio="r" class="rounded-lg bg-gradient-to-br from-primary/30 to-tertiary/30">
+          <MAspectRatio :ratio="r" class="rounded-lg bg-linear-to-br from-primary/30 to-tertiary/30">
             <MCenter class="h-full">
               <MText variant="body-small" color="on-surface-variant">{{ r }}</MText>
             </MCenter>

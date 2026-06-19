@@ -243,7 +243,7 @@ const mails: Mail[] = [
               </MAppBar>
             </template>
 
-            <MBox surface="container-lowest" padding="lg">
+            <MBox surface="container-low" padding="lg">
               <MStack gap="sm">
                 <MCard v-for="(mail, i) in mailItems" :key="i" clickable>
                   <MFlex gap="sm" class="p-4">
@@ -391,7 +391,7 @@ const activity = [
               >
                 <template #header>
                   <div class="flex h-16 shrink-0 items-center border-b border-outline-variant">
-                    <div class="flex w-[72px] shrink-0 justify-center">
+                    <div class="flex w-18 shrink-0 justify-center">
                       <MIconButton
                         :icon="dashboardDrawerCollapsed ? 'menu' : 'menu_open'"
                         @click="dashboardDrawerCollapsed = !dashboardDrawerCollapsed"
@@ -420,7 +420,7 @@ const activity = [
             </template>
 
             <MScrollable class="h-full">
-              <MBox surface="container-lowest" padding="lg">
+              <MBox surface="container-low" padding="lg">
                 <MStack gap="lg">
                   <MGrid :cols="2" gap="md">
                     <MStatCard title="Total Users" value="12,847" icon="group" :trend="12.5" trend-label="vs last month" color="primary" />
