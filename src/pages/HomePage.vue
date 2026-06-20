@@ -163,15 +163,19 @@ const categories = [
           <h2 class="text-headline-small font-medium">Component Library</h2>
         </MFlex>
 
-        <MGrid :cols="2" :sm="3" :lg="5" gap="sm">
-          <router-link v-for="cat in categories" :key="cat.label" :to="cat.to" class="no-underline">
-            <MCard clickable class="flex h-full flex-col items-center gap-2 p-4 text-center">
-              <MIcon :name="cat.icon" :size="28" class="text-primary" />
-              <span class="text-label-large font-medium">{{ cat.label }}</span>
-              <MChip size="small">{{ cat.count }}</MChip>
-            </MCard>
-          </router-link>
-        </MGrid>
+        <MStack gap="sm">
+          <div v-for="(row, ri) in [categories.slice(0, 4), categories.slice(4, 8), categories.slice(8)]" :key="ri"
+            class="flex flex-wrap justify-center gap-3"
+          >
+            <router-link v-for="cat in row" :key="cat.label" :to="cat.to" class="w-[calc(50%-0.375rem)] sm:w-[calc(25%-0.5625rem)] no-underline">
+              <MCard clickable class="flex h-full flex-col items-center gap-2 p-4 text-center">
+                <MIcon :name="cat.icon" :size="28" class="text-primary" />
+                <span class="text-label-large font-medium">{{ cat.label }}</span>
+                <MChip size="small">{{ cat.count }}</MChip>
+              </MCard>
+            </router-link>
+          </div>
+        </MStack>
       </MStack>
     </section>
 
