@@ -58,6 +58,9 @@ const tooltipProps: PropDef[] = [
   { name: 'delay', type: 'number', default: '600', description: 'Show delay in ms' },
 ]
 
+const progressVal = ref(50)
+const progressWavy = ref(50)
+
 const progressProps: PropDef[] = [
   { name: 'value', type: 'number', description: 'Progress 0–100 (omit for indeterminate)' },
   { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Indeterminate animation' },
@@ -352,6 +355,37 @@ function handleDelete() {
           <MProgressBar :value="30" color="error" />
           <MProgressBar :value="60" color="primary" />
           <MProgressBar :value="90" color="tertiary" />
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Interactive Progress"
+      description="Use the buttons to increase or decrease the progress value."
+      :code="`<MProgressBar :value=&quot;progress&quot; :label=&quot;\`\${progress}%\`&quot; />
+<MButton @click=&quot;progress = Math.max(0, progress - 10)&quot;>- 10</MButton>
+<MButton @click=&quot;progress = Math.min(100, progress + 10)&quot;>+ 10</MButton>`"
+    >
+      <div class="w-full space-y-6">
+        <div>
+          <p class="mb-2 text-label-large font-medium">Default</p>
+          <MProgressBar :value="progressVal" :label="`${progressVal}%`" />
+          <div class="mt-3 flex items-center gap-3">
+            <MButton variant="tonal" icon="remove" @click="progressVal = Math.max(0, progressVal - 10)">- 10</MButton>
+            <span class="w-12 text-center text-title-medium font-medium">{{ progressVal }}%</span>
+            <MButton variant="tonal" icon="add" @click="progressVal = Math.min(100, progressVal + 10)">+ 10</MButton>
+            <MButton variant="text" @click="progressVal = 0">Reset</MButton>
+          </div>
+        </div>
+        <div>
+          <p class="mb-2 text-label-large font-medium">Wavy</p>
+          <MProgressBar :value="progressWavy" variant="wavy" color="secondary" :label="`${progressWavy}%`" />
+          <div class="mt-3 flex items-center gap-3">
+            <MButton variant="tonal" icon="remove" @click="progressWavy = Math.max(0, progressWavy - 10)">- 10</MButton>
+            <span class="w-12 text-center text-title-medium font-medium">{{ progressWavy }}%</span>
+            <MButton variant="tonal" icon="add" @click="progressWavy = Math.min(100, progressWavy + 10)">+ 10</MButton>
+            <MButton variant="text" @click="progressWavy = 0">Reset</MButton>
+          </div>
         </div>
       </div>
     </ComponentDemo>
