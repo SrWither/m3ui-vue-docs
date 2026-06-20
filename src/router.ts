@@ -12,6 +12,10 @@ const router = createRouter({
       component: () => import('./pages/SetupPage.vue'),
     },
     {
+      path: '/getting-started/i18n',
+      component: () => import('./pages/I18nPage.vue'),
+    },
+    {
       path: '/components/buttons',
       component: () => import('./pages/ButtonsPage.vue'),
     },

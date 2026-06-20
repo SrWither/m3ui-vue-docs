@@ -138,6 +138,8 @@ const multiSelectProps: PropDef[] = [
   { name: 'searchable', type: 'boolean', default: 'true', description: 'Show search in dropdown' },
   { name: 'maxChips', type: 'number', default: '3', description: 'Max visible chips before "+N"' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset all selections' },
+  { name: 'searchPlaceholder', type: 'string', default: "'Search...'", description: 'Placeholder for search input in dropdown' },
+  { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Text when no options match search' },
 ]
 
 const checkboxProps: PropDef[] = [
@@ -192,6 +194,9 @@ const datePickerProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'placeholder', type: 'string', default: "'Select date'", description: 'Placeholder when no date selected' },
+  { name: 'prevMonthLabel', type: 'string', default: "'Previous month'", description: 'Aria label for previous month button' },
+  { name: 'nextMonthLabel', type: 'string', default: "'Next month'", description: 'Aria label for next month button' },
 ]
 
 const dateRangeProps: PropDef[] = [
@@ -201,6 +206,11 @@ const dateRangeProps: PropDef[] = [
   { name: 'max', type: 'string', description: 'Maximum date' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
   { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'placeholder', type: 'string', default: "'Select range'", description: 'Placeholder when no range selected' },
+  { name: 'prevMonthLabel', type: 'string', default: "'Previous'", description: 'Aria label for previous month button' },
+  { name: 'nextMonthLabel', type: 'string', default: "'Next'", description: 'Aria label for next month button' },
+  { name: 'pickStartText', type: 'string', default: "'Select start'", description: 'Text shown when picking start date' },
+  { name: 'pickEndText', type: 'string', default: "'Select end'", description: 'Text shown when picking end date' },
 ]
 
 const timePickerProps: PropDef[] = [
@@ -210,6 +220,7 @@ const timePickerProps: PropDef[] = [
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'minuteStep', type: 'number', default: '5', description: 'Minute increment step' },
   { name: 'use24h', type: 'boolean', default: 'true', description: 'Use 24-hour format' },
+  { name: 'placeholder', type: 'string', default: "'Select time'", description: 'Placeholder when no time selected' },
 ]
 
 const colorPickerProps: PropDef[] = [
@@ -474,6 +485,10 @@ const val = ref(['vue', 'svelte'])`"
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="multiSelectProps" />
 
+    <p class="mt-3 text-body-medium text-on-surface-variant">
+      <strong>Slot:</strong> <code>no-results</code> — Custom content when no options match the search query.
+    </p>
+
     <!-- ── MCheckbox & MSwitch ──────────────────────────────────────────── -->
     <h2 id="mcheckbox" class="mb-4 mt-14 text-headline-small font-medium">MCheckbox &amp; MSwitch</h2>
 
@@ -606,7 +621,6 @@ const val = ref(3.5)`"
       description="Calendar-based date selection with locale support."
       :code="`<template>
   <MDatePicker v-model=&quot;date&quot; label=&quot;Birthday&quot; />
-  <MDatePicker v-model=&quot;date&quot; label=&quot;English&quot; locale=&quot;en-US&quot; />
 </template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">

@@ -22,6 +22,9 @@ const calendarEvents: CalendarEvent[] = [
 const calendarProps: PropDef[] = [
   { name: 'events', type: 'CalendarEvent[]', default: '[]', description: 'Array of { id, title, date (YYYY-MM-DD), color?, icon? }' },
   { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'todayLabel', type: 'string', default: "'Today'", description: 'Label for Today button' },
+  { name: 'prevMonthLabel', type: 'string', default: "'Previous month'", description: 'Aria label for previous month button' },
+  { name: 'nextMonthLabel', type: 'string', default: "'Next month'", description: 'Aria label for next month button' },
 ]
 
 /* ── MScheduler ───────────────────────────────────────────────────────── */
@@ -47,6 +50,11 @@ const schedulerProps: PropDef[] = [
   { name: 'startHour', type: 'number', default: '7', description: 'First visible hour' },
   { name: 'endHour', type: 'number', default: '22', description: 'Last visible hour' },
   { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for date formatting' },
+  { name: 'prevLabel', type: 'string', default: "'Previous'", description: 'Aria label for previous navigation' },
+  { name: 'nextLabel', type: 'string', default: "'Next'", description: 'Aria label for next navigation' },
+  { name: 'todayLabel', type: 'string', default: "'Today'", description: 'Label for Today button' },
+  { name: 'dayViewLabel', type: 'string', default: "'Day'", description: 'Label for Day view toggle' },
+  { name: 'weekViewLabel', type: 'string', default: "'Week'", description: 'Label for Week view toggle' },
 ]
 
 /* ── MKanban ──────────────────────────────────────────────────────────── */
@@ -94,9 +102,12 @@ const commandItems: CommandItem[] = [
 const commandPaletteProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model)' },
   { name: 'items', type: 'CommandItem[]', description: 'Array of { id, label, icon?, shortcut?, group?, disabled?, onSelect? }' },
-  { name: 'placeholder', type: 'string', default: "'Buscar comando...'", description: 'Search placeholder' },
-  { name: 'noResultsText', type: 'string', default: "'Sin resultados'", description: 'Empty state text' },
+  { name: 'placeholder', type: 'string', default: "'Search command...'", description: 'Search placeholder' },
+  { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Empty state text' },
   { name: 'hotkey', type: 'string', default: "'k'", description: 'Keyboard shortcut key (with Cmd/Ctrl)' },
+  { name: 'navigateHint', type: 'string', default: "'navigate'", description: 'Hint text for arrow keys' },
+  { name: 'selectHint', type: 'string', default: "'select'", description: 'Hint text for enter key' },
+  { name: 'closeHint', type: 'string', default: "'close'", description: 'Hint text for escape key' },
 ]
 
 /* ── MSpotlightSearch ─────────────────────────────────────────────────── */
@@ -193,11 +204,14 @@ const chartProps: PropDef[] = [
 const spotlightSearchProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model)' },
   { name: 'results', type: 'SpotlightResult[]', default: '[]', description: 'Search results to display' },
-  { name: 'placeholder', type: 'string', default: "'Buscar...'", description: 'Search placeholder' },
+  { name: 'placeholder', type: 'string', default: "'Search...'", description: 'Search placeholder' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show loading spinner' },
-  { name: 'noResultsText', type: 'string', default: "'No se encontraron resultados'", description: 'Empty state text' },
+  { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Empty state text' },
   { name: 'hotkey', type: 'string', default: "'/'", description: 'Keyboard shortcut' },
   { name: 'debounce', type: 'number', default: '0', description: 'Debounce delay in ms for search event' },
+  { name: 'navigateHint', type: 'string', default: "'navigate'", description: 'Hint text for arrow keys' },
+  { name: 'openHint', type: 'string', default: "'open'", description: 'Hint text for enter key' },
+  { name: 'closeHint', type: 'string', default: "'close'", description: 'Hint text for escape key' },
 ]
 </script>
 

@@ -62,6 +62,10 @@ const fileUploadProps: PropDef[] = [
   { name: 'multiple', type: 'boolean', default: 'false', description: 'Allow multiple files' },
   { name: 'maxSize', type: 'number', description: 'Max file size in bytes' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the upload area' },
+  { name: 'dropText', type: 'string', default: "'Drop files here or'", description: 'Drop zone main text' },
+  { name: 'selectText', type: 'string', default: "'browse'", description: 'Drop zone select link text' },
+  { name: 'maxSizePrefix', type: 'string', default: "'Max.'", description: 'Prefix for max size text' },
+  { name: 'removeLabel', type: 'string', default: "'Remove'", description: 'Aria label for remove button' },
 ]
 
 const dragDropProps: PropDef[] = [
@@ -72,9 +76,15 @@ const dragDropProps: PropDef[] = [
 const transferProps: PropDef[] = [
   { name: 'modelValue', type: '(string | number)[]', description: 'Selected (right-side) values' },
   { name: 'items', type: 'TransferItem[]', description: 'Array of { value, label, icon? }' },
-  { name: 'sourceTitle', type: 'string', default: "'Disponibles'", description: 'Left panel title' },
-  { name: 'targetTitle', type: 'string', default: "'Seleccionados'", description: 'Right panel title' },
+  { name: 'sourceTitle', type: 'string', default: "'Available'", description: 'Left panel title' },
+  { name: 'targetTitle', type: 'string', default: "'Selected'", description: 'Right panel title' },
   { name: 'filterable', type: 'boolean', default: 'false', description: 'Show search inputs' },
+  { name: 'searchPlaceholder', type: 'string', default: "'Search...'", description: 'Search input placeholder' },
+  { name: 'emptyText', type: 'string', default: "'No items'", description: 'Text when list is empty' },
+  { name: 'moveAllRightLabel', type: 'string', default: "'Move all right'", description: 'Aria label for move all right button' },
+  { name: 'moveRightLabel', type: 'string', default: "'Move selected right'", description: 'Aria label for move right button' },
+  { name: 'moveLeftLabel', type: 'string', default: "'Move selected left'", description: 'Aria label for move left button' },
+  { name: 'moveAllLeftLabel', type: 'string', default: "'Move all left'", description: 'Aria label for move all left button' },
 ]
 
 const hotkeyProps: PropDef[] = [
@@ -86,14 +96,17 @@ const infiniteScrollProps: PropDef[] = [
   { name: 'loading', type: 'boolean', default: 'false', description: 'Currently loading more items' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable load trigger' },
   { name: 'threshold', type: 'number', default: '100', description: 'Distance in px before sentinel triggers' },
-  { name: 'loadingText', type: 'string', default: "'Cargando...'", description: 'Text shown while loading' },
-  { name: 'endText', type: 'string', default: "'No hay más elementos'", description: 'Text when ended' },
+  { name: 'loadingText', type: 'string', default: "'Loading...'", description: 'Text shown while loading' },
+  { name: 'endText', type: 'string', default: "'No more items'", description: 'Text when ended' },
   { name: 'ended', type: 'boolean', default: 'false', description: 'No more items to load' },
 ]
 
 const tourProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Show/hide the tour (v-model)' },
   { name: 'steps', type: 'TourStep[]', description: 'Array of { target, title, content, placement? }' },
+  { name: 'prevLabel', type: 'string', default: "'Previous'", description: 'Label for previous button' },
+  { name: 'nextLabel', type: 'string', default: "'Next'", description: 'Label for next button' },
+  { name: 'finishLabel', type: 'string', default: "'Finish'", description: 'Label for finish button (last step)' },
 ]
 </script>
 
@@ -133,6 +146,11 @@ const tourProps: PropDef[] = [
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="fileUploadProps" />
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>dropzone  — Custom content for the drop zone area</code></pre>
+    </MCard>
 
     <!-- ── MDragDropList ────────────────────────────────────────────────── -->
     <h2 id="mdragdroplist" class="mb-4 mt-14 text-headline-small font-medium">MDragDropList</h2>
@@ -178,8 +196,6 @@ const tourProps: PropDef[] = [
   <MTransferList
     v-model=&quot;selected&quot;
     :items=&quot;items&quot;
-    source-title=&quot;Available&quot;
-    target-title=&quot;Selected&quot;
     :filterable=&quot;true&quot;
   />
 </template>`"
@@ -204,6 +220,12 @@ const items = [
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="transferProps" />
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>source-empty  — Custom content when source list is empty
+target-empty  — Custom content when target list is empty</code></pre>
+    </MCard>
 
     <!-- ── MHotkeys ────────────────────────────────────────────────────── -->
     <h2 id="mhotkeys" class="mb-4 mt-14 text-headline-small font-medium">MHotkeys</h2>
@@ -251,6 +273,10 @@ const items = [
       :code="`<template>
   <MInfiniteScroll :loading=&quot;loading&quot; :ended=&quot;ended&quot; @load=&quot;loadMore&quot;>
     <div v-for=&quot;item in items&quot; :key=&quot;item&quot;>{{ item }}</div>
+
+    <!-- Custom slot overrides -->
+    <template #loading>Loading more...</template>
+    <template #end>You've reached the end!</template>
   </MInfiniteScroll>
 </template>`"
       :script="`const items = ref([...])
@@ -278,6 +304,14 @@ function loadMore() {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="infiniteScrollProps" />
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>default   — Content list items
+loading   — Custom loading indicator
+end       — Custom end-of-list content
+idle      — Content when not loading and not ended</code></pre>
+    </MCard>
 
     <!-- ── MTour ───────────────────────────────────────────────────────── -->
     <h2 id="mtour" class="mb-4 mt-14 text-headline-small font-medium">MTour</h2>

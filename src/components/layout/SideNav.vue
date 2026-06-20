@@ -78,6 +78,7 @@ const sections: DrawerSection[] = [
     items: [
       { value: '/', label: 'Introduction', icon: 'home', to: '/' },
       { value: '/getting-started/setup', label: 'Setup', icon: 'build', to: '/getting-started/setup' },
+      { value: '/getting-started/i18n', label: 'i18n', icon: 'translate', to: '/getting-started/i18n' },
     ],
   },
   {

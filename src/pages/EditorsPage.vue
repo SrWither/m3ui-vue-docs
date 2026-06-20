@@ -125,9 +125,10 @@ const richTextContent = ref('<p>This is <strong>bold</strong> and <em>italic</em
 
 const richTextProps: PropDef[] = [
   { name: 'modelValue', type: 'string', description: 'HTML content (v-model)' },
-  { name: 'placeholder', type: 'string', default: "'Escribe aquí...'", description: 'Placeholder text' },
+  { name: 'placeholder', type: 'string', description: 'Placeholder text' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables editing' },
   { name: 'minHeight', type: 'string', default: "'200px'", description: 'Minimum editor height' },
+  { name: 'labels', type: 'RichTextEditorLabels', description: 'Object with all UI label overrides for i18n' },
 ]
 
 </script>
@@ -323,6 +324,37 @@ const content = ref('<p>Hello <strong>world</strong>!</p>')`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="richTextProps" />
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">RichTextEditorLabels interface</p>
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>interface RichTextEditorLabels {
+  bold?: string           // 'Bold'
+  italic?: string         // 'Italic'
+  underline?: string      // 'Underline'
+  strikethrough?: string  // 'Strikethrough'
+  highlight?: string      // 'Highlight'
+  bulletList?: string     // 'Bullet list'
+  orderedList?: string    // 'Ordered list'
+  blockquote?: string     // 'Blockquote'
+  code?: string           // 'Code'
+  alignLeft?: string      // 'Align left'
+  alignCenter?: string    // 'Align center'
+  alignRight?: string     // 'Align right'
+  undo?: string           // 'Undo'
+  redo?: string           // 'Redo'
+  link?: string           // 'Link'
+  image?: string          // 'Image'
+  paragraph?: string      // 'Paragraph'
+  heading1?: string       // 'Heading 1'
+  heading2?: string       // 'Heading 2'
+  heading3?: string       // 'Heading 3'
+  insertLink?: string     // 'Insert link'
+  insertImage?: string    // 'Insert image'
+  imageUrlLabel?: string  // 'Image URL'
+  cancel?: string         // 'Cancel'
+  insert?: string         // 'Insert'
+}</code></pre>
+    </MCard>
 
     <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
       <p class="mb-2 text-title-small font-medium">Peer Dependencies</p>

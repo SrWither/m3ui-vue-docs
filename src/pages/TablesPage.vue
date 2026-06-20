@@ -91,7 +91,7 @@ const tableProps: PropDef[] = [
   { name: 'columns', type: 'TableColumn[]', description: 'Column definitions: { key, label, sortable?, width?, align? }' },
   { name: 'rows', type: 'Record<string, any>[]', description: 'Table data rows' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show skeleton loading state' },
-  { name: 'emptyText', type: 'string', default: "'Sin resultados'", description: 'Text when no rows' },
+  { name: 'emptyText', type: 'string', default: "'No results'", description: 'Text when no rows' },
   { name: 'rowKey', type: 'string', default: "'id'", description: 'Unique key field in each row' },
   { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection with checkboxes' },
   { name: 'modelValue', type: 'Record<string, any>[]', default: '[]', description: 'Selected rows (v-model)' },
@@ -100,6 +100,8 @@ const tableProps: PropDef[] = [
   { name: 'serverSide', type: 'boolean', default: 'false', description: 'Emit fetch instead of local filtering' },
   { name: 'total', type: 'number', default: '0', description: 'Total rows (for server-side pagination)' },
   { name: 'page', type: 'number', default: '1', description: 'Current page' },
+  { name: 'searchPlaceholder', type: 'string', default: "'Search...'", description: 'Placeholder for search input' },
+  { name: 'selectedText', type: 'string', default: "'selected'", description: "Text for selected count badge (pluralized with 's')" },
 ]
 
 const fetchParamsFields: PropDef[] = [
@@ -114,7 +116,7 @@ const dataTableProps: PropDef[] = [
   { name: 'columns', type: 'DataTableColumn[]', description: 'Column definitions: { key, label, sortable?, filterable?, resizable?, width?, minWidth?, align?, pinned?, hidden? }' },
   { name: 'rows', type: 'Record<string, any>[]', description: 'Table data rows' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show skeleton loading state' },
-  { name: 'emptyText', type: 'string', default: "'Sin resultados'", description: 'Text when no rows' },
+  { name: 'emptyText', type: 'string', default: "'No results'", description: 'Text when no rows' },
   { name: 'rowKey', type: 'string', default: "'id'", description: 'Unique key field in each row' },
   { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection' },
   { name: 'modelValue', type: 'Record<string, any>[]', default: '[]', description: 'Selected rows (v-model)' },
@@ -130,6 +132,13 @@ const dataTableProps: PropDef[] = [
   { name: 'serverSide', type: 'boolean', default: 'false', description: 'Emit fetch instead of local filtering' },
   { name: 'total', type: 'number', default: '0', description: 'Total rows (for server-side pagination)' },
   { name: 'page', type: 'number', default: '1', description: 'Current page (v-model via update:page)' },
+  { name: 'searchPlaceholder', type: 'string', default: "'Search...'", description: 'Placeholder for search input' },
+  { name: 'selectedText', type: 'string', default: "'selected'", description: 'Text for selected count badge' },
+  { name: 'recordsText', type: 'string', default: "'record'", description: 'Text for total records count' },
+  { name: 'expandLabel', type: 'string', default: "'Expand'", description: 'Aria label for expand button' },
+  { name: 'columnsLabel', type: 'string', default: "'Columns'", description: 'Label for column toggle button' },
+  { name: 'exportLabel', type: 'string', default: "'Export CSV'", description: 'Label for export button' },
+  { name: 'noGroupText', type: 'string', default: "'No group'", description: 'Text for ungrouped rows' },
 ]
 
 /* ── MDataTable Server-side demo ────────────────────────────────────── */
@@ -380,7 +389,11 @@ async function onFetch(params: TableFetchParams) {
     <ComponentDemo
       title="Feature-Rich Data Table"
       description="Advanced table with sorting, searching, and pagination."
-      :code="`<MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :per-page=&quot;5&quot; />`"
+      :code="`<MDataTable
+  :columns=&quot;columns&quot;
+  :rows=&quot;rows&quot;
+  :per-page=&quot;5&quot;
+/>`"
       :script="`const columns = [
   { key: 'id', label: 'ID', sortable: true, width: 'w-16', pinned: 'left' },
   { key: 'name', label: 'Name', sortable: true, filterable: true, resizable: true },

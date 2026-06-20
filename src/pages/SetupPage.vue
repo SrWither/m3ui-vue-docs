@@ -189,5 +189,6 @@ const optionalDeps = [
         <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small text-on-surface-variant"><code>{{ dep.install }}</code></pre>
       </MCard>
     </div>
+
   </div>
 </template>

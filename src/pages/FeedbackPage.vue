@@ -33,6 +33,7 @@ const alertProps: PropDef[] = [
   { name: 'type', type: "'info' | 'success' | 'warning' | 'error'", default: "'info'", description: 'Alert variant and color' },
   { name: 'title', type: 'string', description: 'Bold title text' },
   { name: 'closeable', type: 'boolean', default: 'false', description: 'Show close button' },
+  { name: 'closeAriaLabel', type: 'string', default: "'Close'", description: 'Aria label for close button' },
 ]
 
 const dialogProps: PropDef[] = [
@@ -40,14 +41,15 @@ const dialogProps: PropDef[] = [
   { name: 'title', type: 'string', description: 'Dialog title' },
   { name: 'maxWidth', type: 'string', default: "'max-w-md'", description: 'Tailwind max-width class' },
   { name: 'persistent', type: 'boolean', default: 'false', description: 'Prevent closing by clicking scrim' },
+  { name: 'closeLabel', type: 'string', default: "'Close'", description: 'Label for close button' },
 ]
 
 const confirmProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state' },
   { name: 'title', type: 'string', description: 'Dialog title' },
   { name: 'message', type: 'string', description: 'Confirmation message body' },
-  { name: 'confirmLabel', type: 'string', default: "'Confirmar'", description: 'Confirm button label' },
-  { name: 'cancelLabel', type: 'string', default: "'Cancelar'", description: 'Cancel button label' },
+  { name: 'confirmLabel', type: 'string', default: "'Confirm'", description: 'Confirm button label' },
+  { name: 'cancelLabel', type: 'string', default: "'Cancel'", description: 'Cancel button label' },
   { name: 'danger', type: 'boolean', default: 'false', description: 'Error color for destructive actions' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show spinner on confirm button' },
 ]
@@ -72,6 +74,7 @@ const progressProps: PropDef[] = [
 const spinnerProps: PropDef[] = [
   { name: 'size', type: 'number', default: '20', description: 'Size in px' },
   { name: 'wavy', type: 'boolean', default: 'false', description: 'Wavy animation style' },
+  { name: 'label', type: 'string', default: "'Loading'", description: 'Aria label for spinner' },
 ]
 
 const panelProps: PropDef[] = [
