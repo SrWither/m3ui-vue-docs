@@ -54,7 +54,56 @@ const jsonViewerProps: PropDef[] = [
 ]
 
 /* ── MMarkdown ───────────────────────────────────────────────────────── */
-const markdownSource = `# Hello World\n\nThis is **bold** and this is *italic*.\n\n- Item one\n- Item two\n- Item three\n\n\`\`\`js\nconsole.log('hello')\n\`\`\`\n\n[Visit Google](https://google.com)`
+const markdownSource = `# Hello World
+
+This is **bold** and this is *italic*.
+
+- Item one
+- Item two
+- Item three
+
+## Syntax Highlighting
+
+\`\`\`typescript copy {3-5}
+interface User {
+  name: string
+  age: number
+  active: boolean
+}
+
+function greet(user: User): string {
+  // Return a personalized greeting
+  const prefix = user.active ? "Welcome back" : "Hello"
+  return \`\${prefix}, \${user.name}! You are \${user.age} years old.\`
+}
+
+const admin: User = { name: "Alice", age: 30, active: true }
+console.log(greet(admin))
+\`\`\`
+
+\`\`\`html copy {3}
+<template>
+  <div class="container">
+    <h1>{{ title }}</h1>
+    <MButton variant="filled" @click="onClick">
+      Click me
+    </MButton>
+  </div>
+</template>
+\`\`\`
+
+> Add \\\`copy\\\` for a copy button, and \\\`{1,3-5}\\\` to highlight lines.
+
+## Table Example
+
+| Component | Category | Status |
+|-----------|----------|--------|
+| MButton | Actions | Stable |
+| MCard | Containers | Stable |
+| MMarkdown | Editors | Beta |
+| MDataTable | Data | Stable |
+
+[Visit Google](https://google.com)`
 
 const markdownProps: PropDef[] = [
   { name: 'source', type: 'string', description: 'Markdown source text' },
@@ -192,23 +241,20 @@ const data = {
 
     <ComponentDemo
       title="Markdown Renderer"
-      description="Render markdown content with support for headings, lists, links, bold, and code blocks."
+      description="Render markdown content with syntax highlighting, lists, links, and more. Install highlight.js for code coloring."
       :code="`<MMarkdown :source=&quot;source&quot; />`"
-      :script="`import { MMarkdown } from '@m3ui-vue/m3ui-vue'
+      :script="`import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 
 const source = \`# Hello World
 
 This is **bold** and this is *italic*.
 
-- Item one
-- Item two
-- Item three
-
-\\\`\\\`\\\`js
-console.log('hello')
+\\\`\\\`\\\`ts copy {2}
+function greet(name: string): string {
+  return \\\\\`Hello, \\\${name}!\\\\\`
+}
 \\\`\\\`\\\`
-
-[Visit Google](https://google.com)\``"
+\``"
     >
       <div class="w-full">
         <MCard variant="outlined" class="p-6">
