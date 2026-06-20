@@ -4,9 +4,9 @@ import {
   MCard, MChip, MBadge, MAvatar, MIcon, MDivider, MButton, MIconButton,
   MStatCard, MTimeline, MSkeleton, MEmptyState, MResult, MTree,
   MList, MListItem, MListSubheader, MSwitch,
-  MEmoji, MEmojiButton, MEmojiSelector,
+  MEmoji, MEmojiButton, MEmojiSelector, MCarousel,
 } from '@m3ui-vue/m3ui-vue'
-import type { TimelineItem, TreeNode } from '@m3ui-vue/m3ui-vue'
+import type { TimelineItem, TreeNode, CarouselItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
@@ -192,6 +192,29 @@ const listSubheaderProps: PropDef[] = [
 
 /* ── Emoji ──────────────────────────────────────────────────────────── */
 const selectedEmoji = ref('')
+
+const carouselItems: CarouselItem[] = [
+  { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=450&fit=crop', title: 'Mountain Vista', subtitle: 'Swiss Alps at sunrise' },
+  { src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=450&fit=crop', title: 'Tropical Beach', subtitle: 'Crystal clear waters' },
+  { src: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=450&fit=crop', title: 'Starry Night', subtitle: 'Milky way over the mountains' },
+  { src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=450&fit=crop', title: 'Green Valley', subtitle: 'Rolling hills in summer' },
+]
+
+const carouselSimple: CarouselItem[] = [
+  { src: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=800&h=450&fit=crop' },
+  { src: 'https://images.unsplash.com/photo-1524781289445-ddf8f5695861?w=800&h=450&fit=crop' },
+  { src: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=800&h=450&fit=crop' },
+]
+
+const carouselProps: PropDef[] = [
+  { name: 'items', type: 'CarouselItem[]', description: '{ src, alt?, title?, subtitle? }' },
+  { name: 'autoplay', type: 'boolean', default: 'false', description: 'Auto-advance slides' },
+  { name: 'interval', type: 'number', default: '5000', description: 'Autoplay interval in ms' },
+  { name: 'showArrows', type: 'boolean', default: 'true', description: 'Show prev/next arrow buttons' },
+  { name: 'showIndicators', type: 'boolean', default: 'true', description: 'Show dot indicators' },
+  { name: 'aspectRatio', type: 'string', default: "'16/9'", description: 'CSS aspect-ratio for the container' },
+  { name: 'rounded', type: 'boolean', default: 'true', description: 'Apply rounded corners' },
+]
 
 const emojiProps: PropDef[] = [
   { name: 'emoji', type: 'string', description: 'The emoji character to display' },
@@ -1524,5 +1547,49 @@ const nodes = [
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="emojiSelectorProps" />
+
+    <!-- ── MCarousel ───────────────────────────────────────────────────── -->
+    <h2 id="mcarousel" class="mb-4 mt-14 text-headline-small font-medium">MCarousel</h2>
+
+    <ComponentDemo
+      title="Carousel with Overlays"
+      description="Image carousel with title/subtitle overlays, arrow navigation, and dot indicators. Supports swipe on touch devices."
+      :code="`<MCarousel :items=&quot;items&quot; />`"
+      :script="`import { MCarousel } from '@m3ui-vue/m3ui-vue'
+import type { CarouselItem } from '@m3ui-vue/m3ui-vue'
+
+const items: CarouselItem[] = [
+  { src: '/photo1.jpg', title: 'Mountain Vista', subtitle: 'Swiss Alps at sunrise' },
+  { src: '/photo2.jpg', title: 'Tropical Beach', subtitle: 'Crystal clear waters' },
+  { src: '/photo3.jpg', title: 'Starry Night', subtitle: 'Milky way over the mountains' },
+]`"
+    >
+      <div class="w-full">
+        <MCarousel :items="carouselItems" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Autoplay"
+      description="Auto-advance slides every 3 seconds. Pauses on hover and touch."
+      :code="`<MCarousel :items=&quot;items&quot; :autoplay=&quot;true&quot; :interval=&quot;3000&quot; />`"
+    >
+      <div class="w-full">
+        <MCarousel :items="carouselSimple" :autoplay="true" :interval="3000" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Minimal"
+      description="No arrows, no indicators — just swipe or use keyboard arrows."
+      :code="`<MCarousel :items=&quot;items&quot; :show-arrows=&quot;false&quot; :show-indicators=&quot;false&quot; aspect-ratio=&quot;4/3&quot; />`"
+    >
+      <div class="mx-auto w-full max-w-md">
+        <MCarousel :items="carouselSimple" :show-arrows="false" :show-indicators="false" aspect-ratio="4/3" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="carouselProps" />
   </div>
 </template>
