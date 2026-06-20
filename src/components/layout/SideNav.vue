@@ -45,7 +45,11 @@ const iconMap: Record<string, string> = {
   MContainer: 'crop_free', MGrid: 'grid_view', MStack: 'view_agenda', MFlex: 'view_stream',
   MSpacer: 'space_bar', MCenter: 'center_focus_strong', MBox: 'check_box_outline_blank',
   MSplitter: 'vertical_split', MMasonry: 'dashboard', MAppLayout: 'view_sidebar',
-  MScrollable: 'swap_vert',
+  MScrollable: 'swap_vert', MFullscreen: 'fullscreen', MOverlay: 'filter_none',
+  MText: 'text_fields', MTitle: 'title', MSubtitle: 'subtitles', MSection: 'view_day',
+  MResponsive: 'devices', MRelative: 'photo_size_select_large', MSticky: 'push_pin',
+  MAspectRatio: 'aspect_ratio', MFixed: 'picture_in_picture',
+  MResult: 'check_circle', MDateRangePicker: 'date_range', MAppBar: 'web',
   MBottomSheet: 'drag_handle', MSideSheet: 'dock_to_right', MLoadingOverlay: 'hourglass_top',
   MTable: 'table_chart', MDataTable: 'table_view', MTreeTable: 'account_tree', MVirtualTable: 'view_list',
   MFileUpload: 'upload_file', MDragDropList: 'drag_indicator', MTransferList: 'swap_horiz',
@@ -83,15 +87,15 @@ const sections: DrawerSection[] = [
       { value: '/components/buttons', label: 'Buttons', icon: 'smart_button', to: '/components/buttons',
         children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MSegmentedButton']) },
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
-        children: ch('/components/inputs', ['MTextField', 'MSelect', 'MMultiSelect', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MTimePicker', 'MColorPicker']) },
+        children: ch('/components/inputs', ['MTextField', 'MSelect', 'MMultiSelect', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDateRangePicker', 'MTimePicker', 'MColorPicker']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
         children: ch('/components/feedback', ['MAlert', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MSpinner', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',
-        children: ch('/components/data-display', ['MCard', 'MChip', 'MBadge', 'MAvatar', 'MIcon', 'MDivider', 'MStatCard', 'MTimeline', 'MSkeleton', 'MEmptyState', 'MTree', 'MList', 'MEmoji', 'MEmojiButton', 'MEmojiSelector']) },
+        children: ch('/components/data-display', ['MCard', 'MChip', 'MBadge', 'MAvatar', 'MIcon', 'MDivider', 'MStatCard', 'MTimeline', 'MSkeleton', 'MEmptyState', 'MResult', 'MTree', 'MList', 'MEmoji', 'MEmojiButton', 'MEmojiSelector']) },
       { value: '/components/navigation', label: 'Navigation', icon: 'menu_open', to: '/components/navigation',
-        children: ch('/components/navigation', ['MTabs', 'MMenu', 'MContextMenu', 'MBreadcrumbs', 'MStepper', 'MPagination', 'MNavigationBar', 'MNavigationDrawer', 'MNavigationRail', 'MTopAppBar']) },
+        children: ch('/components/navigation', ['MTabs', 'MMenu', 'MContextMenu', 'MBreadcrumbs', 'MStepper', 'MPagination', 'MNavigationBar', 'MNavigationDrawer', 'MNavigationRail', 'MTopAppBar', 'MAppBar']) },
       { value: '/components/layout', label: 'Layout', icon: 'grid_view', to: '/components/layout',
-        children: ch('/components/layout', ['MContainer', 'MGrid', 'MStack', 'MFlex', 'MSpacer', 'MCenter', 'MBox', 'MSplitter', 'MMasonry', 'MAppLayout', 'MScrollable']) },
+        children: ch('/components/layout', ['MContainer', 'MGrid', 'MStack', 'MSplitter', 'MMasonry', 'MText', 'MTitle', 'MSubtitle', 'MFlex', 'MSpacer', 'MCenter', 'MBox', 'MSection', 'MResponsive', 'MRelative', 'MSticky', 'MScrollable', 'MAspectRatio', 'MAppLayout', 'MOverlay', 'MFullscreen']) },
       { value: '/components/overlays', label: 'Overlays', icon: 'layers', to: '/components/overlays',
         children: ch('/components/overlays', ['MBottomSheet', 'MSideSheet', 'MLoadingOverlay']) },
       { value: '/components/tables', label: 'Tables', icon: 'table_chart', to: '/components/tables',
@@ -138,7 +142,7 @@ const sections: DrawerSection[] = [
       <template #header>
         <div class="shrink-0 border-b border-outline-variant">
           <MFlex align="center" class="h-16">
-            <div class="flex w-[72px] shrink-0 justify-center">
+            <div class="flex w-18 shrink-0 justify-center">
               <MIconButton
                 :icon="expanded ? 'menu_open' : 'menu'"
                 :label="expanded ? 'Collapse' : 'Expand'"

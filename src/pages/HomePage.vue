@@ -56,16 +56,17 @@ const todoDone = ref([false, true, false])
 const todoItems = ['Ship new release', 'Write tests', 'Update docs']
 
 const categories = [
-  { label: 'Buttons & Actions', icon: 'smart_button', count: 8, to: '/components/buttons' },
-  { label: 'Inputs & Forms', icon: 'input', count: 12, to: '/components/inputs' },
-  { label: 'Data Display', icon: 'dashboard', count: 15, to: '/components/data-display' },
-  { label: 'Feedback', icon: 'feedback', count: 8, to: '/components/feedback' },
-  { label: 'Navigation', icon: 'menu_open', count: 6, to: '/components/navigation' },
-  { label: 'Layout', icon: 'grid_view', count: 14, to: '/components/layout' },
-  { label: 'Overlays', icon: 'layers', count: 7, to: '/components/overlays' },
+  { label: 'Buttons & Actions', icon: 'smart_button', count: 4, to: '/components/buttons' },
+  { label: 'Inputs & Forms', icon: 'input', count: 11, to: '/components/inputs' },
+  { label: 'Data Display', icon: 'dashboard', count: 16, to: '/components/data-display' },
+  { label: 'Feedback', icon: 'feedback', count: 7, to: '/components/feedback' },
+  { label: 'Navigation', icon: 'menu_open', count: 11, to: '/components/navigation' },
+  { label: 'Layout', icon: 'grid_view', count: 21, to: '/components/layout' },
+  { label: 'Overlays', icon: 'layers', count: 3, to: '/components/overlays' },
   { label: 'Tables', icon: 'table_chart', count: 4, to: '/components/tables' },
+  { label: 'Utility', icon: 'build', count: 6, to: '/components/utility' },
   { label: 'Editors', icon: 'code', count: 6, to: '/components/editors' },
-  { label: 'Advanced', icon: 'auto_awesome', count: 10, to: '/components/advanced' },
+  { label: 'Advanced', icon: 'auto_awesome', count: 6, to: '/components/advanced' },
 ]
 </script>
 
