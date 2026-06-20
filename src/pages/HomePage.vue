@@ -90,7 +90,7 @@ const categories = [
 
         <p class="max-w-2xl text-title-medium text-on-primary-container/80">
           70+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
-          Beautiful, accessible, tree-shakeable. With 20 color palettes, dark mode, and full TypeScript support.
+          Beautiful, accessible, tree-shakeable. With 30 color palettes, dark mode, i18n, and full TypeScript support.
         </p>
 
         <MFlex gap="sm" wrap class="mt-2 justify-center">

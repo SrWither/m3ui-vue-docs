@@ -2,11 +2,40 @@
 import {
   MCard,
   MButton,
+  MIcon,
+  MSegmentedButton,
   useColorPalette,
+  useTheme,
 } from '@m3ui-vue/m3ui-vue'
+import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 
 const { palette, palettes, set } = useColorPalette()
+const { theme } = useTheme()
+
+const themeOptions: SegmentedOption[] = [
+  { value: 'light', label: 'Light', icon: 'light_mode' },
+  { value: 'dark', label: 'Dark', icon: 'dark_mode' },
+  { value: 'system', label: 'System', icon: 'brightness_auto' },
+]
+
+const darkModeCode = `import { useTheme } from '@m3ui-vue/m3ui-vue'
+
+const { theme, cycle } = useTheme()
+
+// theme is a ref: 'light' | 'dark' | 'system'
+theme.value = 'dark'
+
+// or cycle through light → dark → system
+cycle()`
+
+const darkModeCssCode = `/* All M3UI tokens adapt automatically.
+   No extra CSS needed — just toggle the .dark class. */
+
+/* You can also use Tailwind's dark: modifier in your own code */
+<div class="bg-surface dark:bg-surface-dim">
+  <p class="text-on-surface">Adapts automatically</p>
+</div>`
 
 const installCode = `@import 'tailwindcss';
 @import '@m3ui-vue/m3ui-vue/theme';
@@ -134,7 +163,7 @@ const allTokens = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">Color Palettes</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      M3UI ships with 20 pre-built color palettes, each with light and dark variants.
+      M3UI ships with 30 pre-built color palettes (including 10 monochromatic neutrals), each with light and dark variants.
       Click any palette below to apply it — the entire page updates instantly.
     </p>
 
@@ -287,5 +316,58 @@ const allTokens = [
         for components to render correctly.
       </p>
     </MCard>
+
+    <!-- Dark mode -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">Dark Mode</h2>
+    <p class="mb-4 text-body-large text-on-surface-variant">
+      Every palette includes both light and dark variants. The
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useTheme()</code>
+      composable manages the current theme and persists it to localStorage.
+    </p>
+
+    <h3 class="mb-3 text-title-medium font-medium">Try it</h3>
+    <div class="mb-6 flex items-center gap-4">
+      <MSegmentedButton v-model="theme" :options="themeOptions" />
+      <span class="text-body-medium text-on-surface-variant">
+        Current: <strong class="text-on-surface">{{ theme }}</strong>
+      </span>
+    </div>
+
+    <h3 class="mb-2 text-title-medium font-medium">Usage</h3>
+    <MCodeEditor
+      :model-value="darkModeCode"
+      language="typescript"
+      :readonly="true"
+      :line-numbers="false"
+      min-height="50px"
+      max-height="250px"
+      class="mb-6"
+    />
+
+    <MCard class="mb-6 flex items-start gap-3 p-4">
+      <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <div>
+        <p class="text-body-medium text-on-surface-variant">
+          <strong class="text-on-surface">How it works:</strong>
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useTheme()</code>
+          toggles the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">.dark</code> class on
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;html&gt;</code>.
+          All M3 color tokens automatically switch to their dark variants &mdash; no extra CSS needed.
+          The <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">system</code> option
+          follows the user's OS preference via
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">prefers-color-scheme</code>.
+        </p>
+      </div>
+    </MCard>
+
+    <h3 class="mb-2 text-title-medium font-medium">In your templates</h3>
+    <MCodeEditor
+      :model-value="darkModeCssCode"
+      language="html"
+      :readonly="true"
+      :line-numbers="false"
+      min-height="50px"
+      max-height="200px"
+    />
   </div>
 </template>

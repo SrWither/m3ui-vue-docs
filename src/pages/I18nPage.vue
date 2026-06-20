@@ -42,6 +42,30 @@ const perInstanceCode = `<!-- Per-instance override (takes priority over global 
   finish-label="Fertig"
 />`
 
+const presetsCode = `// Use a pre-built locale preset
+import { createM3UI } from '@m3ui-vue/m3ui-vue'
+import { esLocale } from '@m3ui-vue/m3ui-vue/locales'
+
+app.use(createM3UI({ locale: esLocale }))
+
+// Or combine a preset with your own overrides
+import { frLocale } from '@m3ui-vue/m3ui-vue/locales'
+
+app.use(createM3UI({
+  locale: { ...frLocale, search: 'Chercher ici...' }
+}))`
+
+const availablePresetsCode = `// Available presets
+import {
+  esLocale,  // Spanish
+  frLocale,  // French
+  ptLocale,  // Portuguese (Brazil)
+  deLocale,  // German
+  jaLocale,  // Japanese
+  zhLocale,  // Chinese (Simplified)
+  koLocale,  // Korean
+} from '@m3ui-vue/m3ui-vue/locales'`
+
 const composableCode = `<script setup>
 import { useLocale } from '@m3ui-vue/m3ui-vue'
 
@@ -175,6 +199,15 @@ const fullSpanishCode = `app.use(createM3UI({
       You only need to include the keys you want to override &mdash; the rest keep their English defaults.
     </p>
     <MCodeEditor :model-value="globalSetupCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="400px" class="mb-10" />
+
+    <!-- Locale presets -->
+    <h2 class="mb-4 text-headline-small font-medium">Locale presets</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Pre-built locale packages are available for common languages. Import and use them directly &mdash;
+      no need to manually define all keys.
+    </p>
+    <MCodeEditor :model-value="presetsCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" class="mb-6" />
+    <MCodeEditor :model-value="availablePresetsCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-10" />
 
     <!-- Per-instance -->
     <h2 class="mb-4 text-headline-small font-medium">Per-instance override</h2>
