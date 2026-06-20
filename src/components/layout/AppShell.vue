@@ -11,7 +11,7 @@ const mainEl = ref<HTMLElement>()
 const route = useRoute()
 
 watch(() => route.path, () => {
-  mainEl.value?.scrollTo(0, 0)
+  mainEl.value?.closest('main')?.scrollTo(0, 0)
 })
 </script>
 
