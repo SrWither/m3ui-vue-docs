@@ -299,7 +299,7 @@ function send() {
                 </MStack>
                 <MStack gap="sm" align="end" class="shrink-0 pt-0.5">
                   <MText variant="body-small" color="on-surface-variant">{{ contact.time }}</MText>
-                  <MBadge v-if="contact.unread" :count="contact.unread" />
+                  <span v-if="contact.unread" class="self-end mr-[-2px] flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[10px] font-medium text-on-error">{{ contact.unread }}</span>
                 </MStack>
               </div>
             </MScrollable>
