@@ -365,6 +365,9 @@ function handleDelete() {
       :code="`<MProgressBar :value=&quot;progress&quot; :label=&quot;\`\${progress}%\`&quot; />
 <MButton @click=&quot;progress = Math.max(0, progress - 10)&quot;>- 10</MButton>
 <MButton @click=&quot;progress = Math.min(100, progress + 10)&quot;>+ 10</MButton>`"
+      :script="`import { MProgressBar, MButton } from '@m3ui-vue/m3ui-vue'
+
+const progress = ref(50)`"
     >
       <div class="w-full space-y-6">
         <div>
@@ -404,6 +407,7 @@ function handleDelete() {
   <MSpinner :size=&quot;32&quot; />
   <MSpinner :size=&quot;32&quot; :wavy=&quot;true&quot; />
 </template>`"
+      :script="`import { MSpinner } from '@m3ui-vue/m3ui-vue'`"
     >
       <div class="flex items-center gap-6">
         <div class="flex flex-col items-center gap-2">

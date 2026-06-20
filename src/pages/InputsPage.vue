@@ -282,6 +282,9 @@ const colorPickerProps: PropDef[] = [
       title="Clearable"
       description="Add a clear button that appears when the field has a value."
       :code="`<MTextField v-model=&quot;text&quot; label=&quot;Search&quot; leading-icon=&quot;search&quot; :clearable=&quot;true&quot; />`"
+      :script="`import { MTextField } from '@m3ui-vue/m3ui-vue'
+
+const text = ref('Hello world')`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MTextField v-model="textClearable" label="Search" leading-icon="search" :clearable="true" />
@@ -313,6 +316,9 @@ const quantity = ref(25)`"
       title="Without Stepper"
       description="Disable the +/- buttons for a plain numeric input."
       :code="`<MNumberField v-model=&quot;val&quot; label=&quot;Amount&quot; :stepper=&quot;false&quot; />`"
+      :script="`import { MNumberField } from '@m3ui-vue/m3ui-vue'
+
+const val = ref(25)`"
     >
       <div class="w-full sm:w-64">
         <MNumberField v-model="numVal" label="Amount" :stepper="false" variant="outlined" />
@@ -394,6 +400,9 @@ const quantity = ref(25)`"
       title="Clearable"
       description="Add a clear button to reset the selection."
       :code="`<MSelect v-model=&quot;val&quot; :options=&quot;options&quot; label=&quot;Choice&quot; :clearable=&quot;true&quot; />`"
+      :script="`import { MSelect } from '@m3ui-vue/m3ui-vue'
+
+const val = ref('a')`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MSelect v-model="selectClearable" :options="selectOptions" label="Filled" :clearable="true" />
@@ -452,6 +461,9 @@ const quantity = ref(25)`"
       title="Clearable"
       description="Clear all selections at once."
       :code="`<MMultiSelect v-model=&quot;val&quot; :options=&quot;options&quot; label=&quot;Frameworks&quot; :clearable=&quot;true&quot; />`"
+      :script="`import { MMultiSelect } from '@m3ui-vue/m3ui-vue'
+
+const val = ref(['vue', 'svelte'])`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Filled" :clearable="true" />
@@ -473,6 +485,9 @@ const quantity = ref(25)`"
   <MCheckbox :model-value=&quot;true&quot; :indeterminate=&quot;true&quot; label=&quot;Indeterminate&quot; />
   <MCheckbox :model-value=&quot;false&quot; :disabled=&quot;true&quot; label=&quot;Disabled&quot; />
 </template>`"
+      :script="`import { MCheckbox } from '@m3ui-vue/m3ui-vue'
+
+const val = ref(false)`"
     >
       <MCheckbox v-model="checked" label="Accept terms" />
       <MCheckbox v-model="indeterminate" :indeterminate="true" label="Indeterminate" />
@@ -489,6 +504,9 @@ const quantity = ref(25)`"
   <MSwitch v-model=&quot;val&quot; label=&quot;Notifications&quot; />
   <MSwitch :model-value=&quot;false&quot; :disabled=&quot;true&quot; label=&quot;Disabled&quot; />
 </template>`"
+      :script="`import { MSwitch } from '@m3ui-vue/m3ui-vue'
+
+const val = ref(true)`"
     >
       <MSwitch v-model="switchVal" label="Notifications" />
       <MSwitch :model-value="false" :disabled="true" label="Disabled" />
@@ -532,6 +550,9 @@ const quantity = ref(25)`"
   <MSlider v-model=&quot;val&quot; label=&quot;Volume&quot; :show-value=&quot;true&quot; />
   <MSlider v-model=&quot;val&quot; :min=&quot;0&quot; :max=&quot;50&quot; :step=&quot;5&quot; color=&quot;tertiary&quot; />
 </template>`"
+      :script="`import { MSlider } from '@m3ui-vue/m3ui-vue'
+
+const val = ref(40)`"
     >
       <div class="w-full space-y-6">
         <MSlider v-model="sliderVal" label="Volume" :show-value="true" />
@@ -554,6 +575,9 @@ const quantity = ref(25)`"
   <MRating v-model=&quot;val&quot; :half-increments=&quot;true&quot; />
   <MRating :model-value=&quot;4&quot; :readonly=&quot;true&quot; icon=&quot;favorite&quot; color=&quot;error&quot; />
 </template>`"
+      :script="`import { MRating } from '@m3ui-vue/m3ui-vue'
+
+const val = ref(3.5)`"
     >
       <div class="flex flex-wrap items-center gap-6">
         <div class="flex flex-col items-center gap-1">

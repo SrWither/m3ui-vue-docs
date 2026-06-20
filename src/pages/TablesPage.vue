@@ -415,6 +415,7 @@ const rows = [
     :per-page=&quot;5&quot;
   />
 </template>`"
+      :script="`import { MDataTable } from '@m3ui-vue/m3ui-vue'`"
     >
       <div class="w-full">
         <MDataTable
@@ -438,6 +439,7 @@ const rows = [
     </template>
   </MDataTable>
 </template>`"
+      :script="`import { MDataTable, MIconButton } from '@m3ui-vue/m3ui-vue'`"
     >
       <div class="w-full">
         <MDataTable :columns="dataTableColumns" :rows="rows" :per-page="5">

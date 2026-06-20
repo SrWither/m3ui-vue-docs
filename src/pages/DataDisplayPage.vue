@@ -1478,6 +1478,7 @@ const nodes = [
       title="Emoji Display"
       description="Render an emoji at any size with accessible labeling."
       :code="`<MEmoji emoji=&quot;🚀&quot; :size=&quot;48&quot; label=&quot;Rocket&quot; />`"
+      :script="`import { MEmoji } from '@m3ui-vue/m3ui-vue'`"
     >
       <div class="flex items-end gap-4">
         <MEmoji emoji="😀" :size="20" />
@@ -1573,6 +1574,14 @@ const items: CarouselItem[] = [
       title="Autoplay"
       description="Auto-advance slides every 3 seconds. Pauses on hover and touch."
       :code="`<MCarousel :items=&quot;items&quot; :autoplay=&quot;true&quot; :interval=&quot;3000&quot; />`"
+      :script="`import { MCarousel } from '@m3ui-vue/m3ui-vue'
+import type { CarouselItem } from '@m3ui-vue/m3ui-vue'
+
+const items: CarouselItem[] = [
+  { src: '/photo1.jpg' },
+  { src: '/photo2.jpg' },
+  { src: '/photo3.jpg' },
+]`"
     >
       <div class="w-full">
         <MCarousel :items="carouselSimple" :autoplay="true" :interval="3000" />
@@ -1583,6 +1592,7 @@ const items: CarouselItem[] = [
       title="Minimal"
       description="No arrows, no indicators — just swipe or use keyboard arrows."
       :code="`<MCarousel :items=&quot;items&quot; :show-arrows=&quot;false&quot; :show-indicators=&quot;false&quot; aspect-ratio=&quot;4/3&quot; />`"
+      :script="`import { MCarousel } from '@m3ui-vue/m3ui-vue'`"
     >
       <div class="mx-auto w-full max-w-md">
         <MCarousel :items="carouselSimple" :show-arrows="false" :show-indicators="false" aspect-ratio="4/3" />
