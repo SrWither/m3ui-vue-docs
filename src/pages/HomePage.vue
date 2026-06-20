@@ -75,9 +75,9 @@ const categories = [
     <!-- ══ HERO ══════════════════════════════════════════════════ -->
     <section class="relative overflow-hidden rounded-2xl bg-primary-container px-6 py-16 text-center md:px-12 md:py-20">
       <div class="absolute inset-0 opacity-10">
-        <div class="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary" />
-        <div class="absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-tertiary" />
-        <div class="absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary" />
+        <div class="hero-blob absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary" />
+        <div class="hero-blob hero-blob-2 absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-tertiary" />
+        <div class="hero-blob hero-blob-3 absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary" />
       </div>
 
       <MStack align="center" gap="md" class="relative">
@@ -361,3 +361,32 @@ const categories = [
     </MDialog>
   </MStack>
 </template>
+
+<style>
+@keyframes hero-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-20px, 15px) scale(0.95); }
+  75% { transform: translate(15px, 25px) scale(1.08); }
+}
+@keyframes hero-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-25px, 20px) scale(1.1); }
+  50% { transform: translate(20px, -15px) scale(0.92); }
+  75% { transform: translate(-10px, -25px) scale(1.05); }
+}
+@keyframes hero-float-3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  33% { transform: translate(calc(-50% + 25px), calc(-50% - 20px)) scale(1.12); }
+  66% { transform: translate(calc(-50% - 20px), calc(-50% + 15px)) scale(0.9); }
+}
+.hero-blob {
+  animation: hero-float 12s ease-in-out infinite;
+}
+.hero-blob-2 {
+  animation: hero-float-2 15s ease-in-out infinite;
+}
+.hero-blob-3 {
+  animation: hero-float-3 18s ease-in-out infinite;
+}
+</style>
