@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import {
   MTable, MDataTable, MTreeTable, MVirtualTable, MButton, MIconButton, MChip, MIcon,
 } from '@m3ui-vue/m3ui-vue'
-import type { TreeTableColumn, TreeTableRow, VTableColumn, DataTableColumn } from '@m3ui-vue/m3ui-vue'
+import type { TreeTableColumn, TreeTableRow, VTableColumn, DataTableColumn, TableFetchParams, DataTableFetchParams } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
@@ -29,6 +29,40 @@ const rows = [
 
 const selectedRows = ref<Record<string, any>[]>([])
 const dataTableSelected = ref<Record<string, any>[]>([])
+
+/* ── Server-side demo ──────────────────────────────────────────────── */
+const allUsers = Array.from({ length: 53 }, (_, i) => ({
+  id: i + 1,
+  name: ['Alice', 'Bob', 'Carol', 'David', 'Eva', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack'][i % 10] + ' ' + ['Johnson', 'Smith', 'White', 'Brown', 'Martinez', 'Lee', 'Kim', 'Davis', 'Wilson', 'Moore'][i % 10],
+  email: `user${i + 1}@example.com`,
+  role: ['Admin', 'Editor', 'Viewer'][i % 3]!,
+}))
+
+const serverRows = ref<Record<string, any>[]>([])
+const serverTotal = ref(0)
+const serverPage = ref(1)
+const serverLoading = ref(false)
+
+function onFetch(params: TableFetchParams) {
+  serverLoading.value = true
+  setTimeout(() => {
+    let filtered = allUsers
+    if (params.search) {
+      const q = params.search.toLowerCase()
+      filtered = filtered.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    }
+    if (params.sortKey && params.sortDir) {
+      const key = params.sortKey as keyof typeof allUsers[0]
+      const dir = params.sortDir === 'asc' ? 1 : -1
+      filtered = [...filtered].sort((a, b) => String(a[key]).localeCompare(String(b[key]), undefined, { numeric: true }) * dir)
+    }
+    serverTotal.value = filtered.length
+    const start = (params.page - 1) * params.perPage
+    serverRows.value = filtered.slice(start, start + params.perPage)
+    serverPage.value = params.page
+    serverLoading.value = false
+  }, 500)
+}
 
 const expandRows = [
   { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'Active', phone: '+1 555-0101', department: 'Engineering', joined: '2022-03-15', bio: 'Full-stack developer with 8 years of experience. Leads the platform team and mentors junior developers.' },
@@ -68,6 +102,14 @@ const tableProps: PropDef[] = [
   { name: 'page', type: 'number', default: '1', description: 'Current page' },
 ]
 
+const fetchParamsFields: PropDef[] = [
+  { name: 'page', type: 'number', description: 'Current page number' },
+  { name: 'perPage', type: 'number', description: 'Rows per page' },
+  { name: 'search', type: 'string', description: 'Current search query (empty string if none)' },
+  { name: 'sortKey', type: 'string', description: 'Column key being sorted (empty string if none)' },
+  { name: 'sortDir', type: "'asc' | 'desc' | ''", description: 'Sort direction (empty string if no sort active)' },
+]
+
 const dataTableProps: PropDef[] = [
   { name: 'columns', type: 'DataTableColumn[]', description: 'Column definitions: { key, label, sortable?, filterable?, resizable?, width?, minWidth?, align?, pinned?, hidden? }' },
   { name: 'rows', type: 'Record<string, any>[]', description: 'Table data rows' },
@@ -85,7 +127,37 @@ const dataTableProps: PropDef[] = [
   { name: 'groupBy', type: 'string', description: 'Group rows by this column key' },
   { name: 'columnToggle', type: 'boolean', default: 'false', description: 'Allow hiding/showing columns' },
   { name: 'exportable', type: 'boolean', default: 'false', description: 'Show export button' },
+  { name: 'serverSide', type: 'boolean', default: 'false', description: 'Emit fetch instead of local filtering' },
+  { name: 'total', type: 'number', default: '0', description: 'Total rows (for server-side pagination)' },
+  { name: 'page', type: 'number', default: '1', description: 'Current page (v-model via update:page)' },
 ]
+
+/* ── MDataTable Server-side demo ────────────────────────────────────── */
+const dtServerRows = ref<Record<string, any>[]>([])
+const dtServerTotal = ref(0)
+const dtServerPage = ref(1)
+const dtServerLoading = ref(false)
+
+function onDtFetch(params: DataTableFetchParams) {
+  dtServerLoading.value = true
+  setTimeout(() => {
+    let filtered = allUsers
+    if (params.search) {
+      const q = params.search.toLowerCase()
+      filtered = filtered.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    }
+    if (params.sortKey && params.sortDir) {
+      const key = params.sortKey as keyof typeof allUsers[0]
+      const dir = params.sortDir === 'asc' ? 1 : -1
+      filtered = [...filtered].sort((a, b) => String(a[key]).localeCompare(String(b[key]), undefined, { numeric: true }) * dir)
+    }
+    dtServerTotal.value = filtered.length
+    const start = (params.page - 1) * params.perPage
+    dtServerRows.value = filtered.slice(start, start + params.perPage)
+    dtServerPage.value = params.page
+    dtServerLoading.value = false
+  }, 500)
+}
 
 const treeTableColumns: TreeTableColumn[] = [
   { key: 'name', label: 'Name' },
@@ -232,8 +304,75 @@ const rows = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Server-Side (Remote Data)"
+      description="Set serverSide to delegate search, sort, and pagination to your backend. The table emits a fetch event with the current params — you handle the API call."
+      :code="`<MTable
+  :columns=&quot;columns&quot;
+  :rows=&quot;rows&quot;
+  :loading=&quot;loading&quot;
+  :server-side=&quot;true&quot;
+  :total=&quot;total&quot;
+  :page=&quot;page&quot;
+  :per-page=&quot;5&quot;
+  @fetch=&quot;onFetch&quot;
+  @update:page=&quot;page = $event&quot;
+/>`"
+      :script="`import { ref } from 'vue'
+import type { TableFetchParams } from '@m3ui-vue/m3ui-vue'
+
+const rows = ref([])
+const total = ref(0)
+const page = ref(1)
+const loading = ref(false)
+
+async function onFetch(params: TableFetchParams) {
+  loading.value = true
+
+  // Replace with your real API call:
+  // const res = await fetch(\`/api/users?\${new URLSearchParams({
+  //   page: String(params.page),
+  //   per_page: String(params.perPage),
+  //   search: params.search,
+  //   sort: params.sortKey,
+  //   order: params.sortDir,
+  // })}\`)
+  // const data = await res.json()
+
+  rows.value = data.items
+  total.value = data.total
+  page.value = params.page
+  loading.value = false
+}`"
+    >
+      <div class="w-full">
+        <MTable
+          :columns="[
+            { key: 'id', label: 'ID', sortable: true, width: 'w-16' },
+            { key: 'name', label: 'Name', sortable: true },
+            { key: 'email', label: 'Email', sortable: true },
+            { key: 'role', label: 'Role', sortable: true },
+          ]"
+          :rows="serverRows"
+          :loading="serverLoading"
+          :server-side="true"
+          :total="serverTotal"
+          :page="serverPage"
+          :per-page="5"
+          @fetch="onFetch"
+          @update:page="serverPage = $event"
+        />
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="tableProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">TableFetchParams</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Object emitted by the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@fetch</code> event when <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">serverSide</code> is enabled.
+    </p>
+    <PropsTable :props="fetchParamsFields" />
 
     <!-- ── MDataTable ──────────────────────────────────────────────────── -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">MDataTable</h2>
@@ -402,6 +541,51 @@ const rows = [
             </div>
           </template>
         </MDataTable>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Server-Side (Remote Data)"
+      description="Same server-side support as MTable — set serverSide to delegate search, sort, and pagination to your backend."
+      :code="`<MDataTable
+  :columns=&quot;columns&quot;
+  :rows=&quot;rows&quot;
+  :loading=&quot;loading&quot;
+  :server-side=&quot;true&quot;
+  :total=&quot;total&quot;
+  :page=&quot;page&quot;
+  :per-page=&quot;5&quot;
+  @fetch=&quot;onFetch&quot;
+  @update:page=&quot;page = $event&quot;
+/>`"
+      :script="`import type { DataTableFetchParams } from '@m3ui-vue/m3ui-vue'
+
+async function onFetch(params: DataTableFetchParams) {
+  loading.value = true
+  const res = await fetch(\`/api/users?page=\${params.page}&per_page=\${params.perPage}&search=\${params.search}&sort=\${params.sortKey}&order=\${params.sortDir}\`)
+  const data = await res.json()
+  rows.value = data.items
+  total.value = data.total
+  loading.value = false
+}`"
+    >
+      <div class="w-full">
+        <MDataTable
+          :columns="[
+            { key: 'id', label: 'ID', sortable: true, width: '80px' },
+            { key: 'name', label: 'Name', sortable: true },
+            { key: 'email', label: 'Email', sortable: true },
+            { key: 'role', label: 'Role', sortable: true },
+          ]"
+          :rows="dtServerRows"
+          :loading="dtServerLoading"
+          :server-side="true"
+          :total="dtServerTotal"
+          :page="dtServerPage"
+          :per-page="5"
+          @fetch="onDtFetch"
+          @update:page="dtServerPage = $event"
+        />
       </div>
     </ComponentDemo>
 
