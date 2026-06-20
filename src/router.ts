@@ -70,4 +70,13 @@ const router = createRouter({
   ],
 })
 
+router.afterEach((to) => {
+  if (to.hash) {
+    setTimeout(() => {
+      const el = document.querySelector(to.hash)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 150)
+  }
+})
+
 export default router

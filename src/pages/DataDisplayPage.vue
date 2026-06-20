@@ -224,7 +224,7 @@ const emojiSelectorProps: PropDef[] = [
     </p>
 
     <!-- ── MCard ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MCard</h2>
+    <h2 id="mcard" class="mb-4 text-headline-small font-medium">MCard</h2>
 
     <ComponentDemo
       title="Variants"
@@ -487,7 +487,7 @@ const emojiSelectorProps: PropDef[] = [
     </MCard>
 
     <!-- ── MChip ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MChip</h2>
+    <h2 id="mchip" class="mb-4 mt-14 text-headline-small font-medium">MChip</h2>
 
     <ComponentDemo
       title="Tones"
@@ -568,7 +568,7 @@ function remove(label) {
     <PropsTable :props="chipProps" />
 
     <!-- ── MBadge ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MBadge</h2>
+    <h2 id="mbadge" class="mb-4 mt-14 text-headline-small font-medium">MBadge</h2>
 
     <ComponentDemo
       title="Badge"
@@ -671,7 +671,7 @@ function remove(label) {
     <PropsTable :props="badgeProps" />
 
     <!-- ── MAvatar ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MAvatar</h2>
+    <h2 id="mavatar" class="mb-4 mt-14 text-headline-small font-medium">MAvatar</h2>
 
     <ComponentDemo
       title="Avatars"
@@ -716,7 +716,7 @@ function remove(label) {
     <PropsTable :props="avatarProps" />
 
     <!-- ── MIcon ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MIcon</h2>
+    <h2 id="micon" class="mb-4 mt-14 text-headline-small font-medium">MIcon</h2>
 
     <ComponentDemo
       title="Icons"
@@ -772,7 +772,7 @@ function remove(label) {
     <PropsTable :props="iconProps" />
 
     <!-- ── MDivider ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MDivider</h2>
+    <h2 id="mdivider" class="mb-4 mt-14 text-headline-small font-medium">MDivider</h2>
 
     <ComponentDemo
       title="Divider"
@@ -818,7 +818,7 @@ function remove(label) {
     <PropsTable :props="dividerProps" />
 
     <!-- ── MStatCard ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MStatCard</h2>
+    <h2 id="mstatcard" class="mb-4 mt-14 text-headline-small font-medium">MStatCard</h2>
 
     <ComponentDemo
       title="Stat Cards"
@@ -857,7 +857,7 @@ function remove(label) {
     <PropsTable :props="statCardProps" />
 
     <!-- ── MTimeline ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTimeline</h2>
+    <h2 id="mtimeline" class="mb-4 mt-14 text-headline-small font-medium">MTimeline</h2>
 
     <ComponentDemo
       title="Timeline"
@@ -893,7 +893,7 @@ function remove(label) {
     <PropsTable :props="timelineProps" />
 
     <!-- ── MSkeleton ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSkeleton</h2>
+    <h2 id="mskeleton" class="mb-4 mt-14 text-headline-small font-medium">MSkeleton</h2>
 
     <ComponentDemo
       title="Variants"
@@ -981,7 +981,7 @@ function remove(label) {
     <PropsTable :props="skeletonProps" />
 
     <!-- ── MEmptyState ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmptyState</h2>
+    <h2 id="memptystate" class="mb-4 mt-14 text-headline-small font-medium">MEmptyState</h2>
 
     <ComponentDemo
       title="Empty State"
@@ -1034,7 +1034,7 @@ function remove(label) {
     <PropsTable :props="emptyStateProps" />
 
     <!-- ── MResult ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MResult</h2>
+    <h2 id="mresult" class="mb-4 mt-14 text-headline-small font-medium">MResult</h2>
 
     <ComponentDemo
       title="Result Pages"
@@ -1083,7 +1083,7 @@ function remove(label) {
     <PropsTable :props="resultProps" />
 
     <!-- ── MTree ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTree</h2>
+    <h2 id="mtree" class="mb-4 mt-14 text-headline-small font-medium">MTree</h2>
 
     <ComponentDemo
       title="Tree View"
@@ -1149,7 +1149,7 @@ const nodes = [
     <PropsTable :props="treeProps" />
 
     <!-- ── MList ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MList</h2>
+    <h2 id="mlist" class="mb-4 mt-14 text-headline-small font-medium">MList</h2>
 
     <ComponentDemo
       title="Basic List"
@@ -1449,7 +1449,7 @@ const nodes = [
     </MCard>
 
     <!-- ── MEmoji ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmoji</h2>
+    <h2 id="memoji" class="mb-4 mt-14 text-headline-small font-medium">MEmoji</h2>
 
     <ComponentDemo
       title="Emoji Display"
@@ -1468,7 +1468,7 @@ const nodes = [
     <PropsTable :props="emojiProps" />
 
     <!-- ── MEmojiButton ────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmojiButton</h2>
+    <h2 id="memojibutton" class="mb-4 mt-14 text-headline-small font-medium">MEmojiButton</h2>
 
     <ComponentDemo
       title="Discord-style Hover"
@@ -1503,7 +1503,7 @@ const nodes = [
     <PropsTable :props="emojiButtonProps" />
 
     <!-- ── MEmojiSelector ──────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmojiSelector</h2>
+    <h2 id="memojiselector" class="mb-4 mt-14 text-headline-small font-medium">MEmojiSelector</h2>
 
     <ComponentDemo
       title="Emoji Picker"

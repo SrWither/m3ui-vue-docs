@@ -105,7 +105,7 @@ const tourProps: PropDef[] = [
     </p>
 
     <!-- ── MFileUpload ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MFileUpload</h2>
+    <h2 id="mfileupload" class="mb-4 text-headline-small font-medium">MFileUpload</h2>
 
     <ComponentDemo
       title="File Upload"
@@ -135,7 +135,7 @@ const tourProps: PropDef[] = [
     <PropsTable :props="fileUploadProps" />
 
     <!-- ── MDragDropList ────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MDragDropList</h2>
+    <h2 id="mdragdroplist" class="mb-4 mt-14 text-headline-small font-medium">MDragDropList</h2>
 
     <ComponentDemo
       title="Drag & Drop List"
@@ -169,7 +169,7 @@ const tourProps: PropDef[] = [
     <PropsTable :props="dragDropProps" />
 
     <!-- ── MTransferList ───────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTransferList</h2>
+    <h2 id="mtransferlist" class="mb-4 mt-14 text-headline-small font-medium">MTransferList</h2>
 
     <ComponentDemo
       title="Transfer List"
@@ -206,7 +206,7 @@ const items = [
     <PropsTable :props="transferProps" />
 
     <!-- ── MHotkeys ────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MHotkeys</h2>
+    <h2 id="mhotkeys" class="mb-4 mt-14 text-headline-small font-medium">MHotkeys</h2>
 
     <ComponentDemo
       title="Keyboard Shortcuts"
@@ -243,7 +243,7 @@ const items = [
     </MCard>
 
     <!-- ── MInfiniteScroll ─────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MInfiniteScroll</h2>
+    <h2 id="minfinitescroll" class="mb-4 mt-14 text-headline-small font-medium">MInfiniteScroll</h2>
 
     <ComponentDemo
       title="Infinite Scroll"
@@ -280,7 +280,7 @@ function loadMore() {
     <PropsTable :props="infiniteScrollProps" />
 
     <!-- ── MTour ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTour</h2>
+    <h2 id="mtour" class="mb-4 mt-14 text-headline-small font-medium">MTour</h2>
 
     <ComponentDemo
       title="Guided Tour"

@@ -209,7 +209,7 @@ const spotlightSearchProps: PropDef[] = [
     </p>
 
     <!-- ── MCalendar ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MCalendar</h2>
+    <h2 id="mcalendar" class="mb-4 text-headline-small font-medium">MCalendar</h2>
 
     <ComponentDemo
       title="Calendar with Events"
@@ -255,7 +255,7 @@ const events: CalendarEvent[] = [
     </MCard>
 
     <!-- ── MScheduler ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MScheduler</h2>
+    <h2 id="mscheduler" class="mb-4 mt-14 text-headline-small font-medium">MScheduler</h2>
 
     <ComponentDemo
       title="Weekly Scheduler"
@@ -309,7 +309,7 @@ const events: SchedulerEvent[] = [
     </MCard>
 
     <!-- ── MKanban ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MKanban</h2>
+    <h2 id="mkanban" class="mb-4 mt-14 text-headline-small font-medium">MKanban</h2>
 
     <ComponentDemo
       title="Kanban Board"
@@ -400,7 +400,7 @@ const columns = ref&lt;KanbanColumn[]&gt;([
     </MCard>
 
     <!-- ── MCommandPalette ────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MCommandPalette</h2>
+    <h2 id="mcommandpalette" class="mb-4 mt-14 text-headline-small font-medium">MCommandPalette</h2>
 
     <ComponentDemo
       title="Command Palette"
@@ -447,7 +447,7 @@ const items: CommandItem[] = [
     </MCard>
 
     <!-- ── MSpotlightSearch ───────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSpotlightSearch</h2>
+    <h2 id="mspotlightsearch" class="mb-4 mt-14 text-headline-small font-medium">MSpotlightSearch</h2>
 
     <ComponentDemo
       title="Spotlight Search"
@@ -521,7 +521,7 @@ function onSearch(q: string) {
     </MCard>
 
     <!-- ── MChart ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MChart</h2>
+    <h2 id="mchart" class="mb-4 mt-14 text-headline-small font-medium">MChart</h2>
 
     <ComponentDemo
       title="Bar & Line"

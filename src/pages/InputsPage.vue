@@ -16,7 +16,7 @@ const textPassword = ref('')
 const textMultiline = ref('')
 const textError = ref('bad value')
 
-const selectVal = ref<string | number | null>(null)
+const selectVal = ref<unknown>(null)
 const selectOptions = [
   { label: 'Option A', value: 'a' },
   { label: 'Option B', value: 'b' },
@@ -24,13 +24,29 @@ const selectOptions = [
   { label: 'Disabled', value: 'd', disabled: true },
 ]
 
-const multiVal = ref<(string | number)[]>([])
+const multiVal = ref<unknown[]>([])
 const multiOptions = [
   { label: 'Vue', value: 'vue' },
   { label: 'React', value: 'react' },
   { label: 'Svelte', value: 'svelte' },
   { label: 'Angular', value: 'angular' },
   { label: 'Solid', value: 'solid' },
+]
+
+const objectSelectVal = ref<unknown>(null)
+const objectOptions = [
+  { label: 'United States', value: { code: 'US', region: 'Americas' } },
+  { label: 'Germany', value: { code: 'DE', region: 'Europe' } },
+  { label: 'Japan', value: { code: 'JP', region: 'Asia' } },
+  { label: 'Brazil', value: { code: 'BR', region: 'Americas' } },
+]
+
+const multiObjectVal = ref<unknown[]>([])
+const multiObjectOptions = [
+  { label: 'Read', value: { id: 1, scope: 'read' } },
+  { label: 'Write', value: { id: 2, scope: 'write' } },
+  { label: 'Delete', value: { id: 3, scope: 'delete' } },
+  { label: 'Admin', value: { id: 4, scope: 'admin' } },
 ]
 
 const checked = ref(false)
@@ -67,8 +83,8 @@ const textFieldProps: PropDef[] = [
 ]
 
 const selectProps: PropDef[] = [
-  { name: 'modelValue', type: 'string | number | null', description: 'Selected value' },
-  { name: 'options', type: '{ label, value, disabled? }[]', description: 'Available options' },
+  { name: 'modelValue', type: 'unknown', description: 'Selected value (any type)' },
+  { name: 'options', type: 'SelectOption[]', description: '{ label: string, value: unknown, disabled?: boolean }' },
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'placeholder', type: 'string', description: 'Placeholder when no value selected' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
@@ -77,8 +93,8 @@ const selectProps: PropDef[] = [
 ]
 
 const multiSelectProps: PropDef[] = [
-  { name: 'modelValue', type: '(string | number)[]', description: 'Selected values' },
-  { name: 'options', type: '{ label, value, disabled? }[]', description: 'Available options' },
+  { name: 'modelValue', type: 'unknown[]', description: 'Selected values (any type)' },
+  { name: 'options', type: 'MultiSelectOption[]', description: '{ label: string, value: unknown, disabled?: boolean }' },
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
   { name: 'searchable', type: 'boolean', default: 'true', description: 'Show search in dropdown' },
@@ -174,7 +190,7 @@ const colorPickerProps: PropDef[] = [
     </p>
 
     <!-- ── MTextField ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MTextField</h2>
+    <h2 id="mtextfield" class="mb-4 text-headline-small font-medium">MTextField</h2>
 
     <ComponentDemo
       title="Variants"
@@ -224,7 +240,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="textFieldProps" />
 
     <!-- ── MSelect ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSelect</h2>
+    <h2 id="mselect" class="mb-4 mt-14 text-headline-small font-medium">MSelect</h2>
 
     <ComponentDemo
       title="Basic"
@@ -246,11 +262,33 @@ const colorPickerProps: PropDef[] = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Object Values"
+      description="Values can be any type — objects, arrays, booleans, etc. Comparison uses strict equality (===)."
+      :code="`<MSelect
+  v-model=&quot;selected&quot;
+  :options=&quot;[
+    { label: 'United States', value: { code: 'US', region: 'Americas' } },
+    { label: 'Germany', value: { code: 'DE', region: 'Europe' } },
+    { label: 'Japan', value: { code: 'JP', region: 'Asia' } },
+  ]&quot;
+  label=&quot;Country&quot;
+  variant=&quot;outlined&quot;
+/>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MSelect v-model="objectSelectVal" :options="objectOptions" label="Country" variant="outlined" />
+        <div v-if="objectSelectVal" class="flex items-center text-body-medium text-on-surface-variant">
+          Selected: <code class="ml-2 rounded bg-surface-container-high px-2 py-1 text-primary">{{ JSON.stringify(objectSelectVal) }}</code>
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="selectProps" />
 
     <!-- ── MMultiSelect ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MMultiSelect</h2>
+    <h2 id="mmultiselect" class="mb-4 mt-14 text-headline-small font-medium">MMultiSelect</h2>
 
     <ComponentDemo
       title="Multi Select"
@@ -270,11 +308,34 @@ const colorPickerProps: PropDef[] = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Object Values"
+      description="Values can be any type — objects, booleans, etc. Useful for permissions, roles, or complex data."
+      :code="`<MMultiSelect
+  v-model=&quot;selected&quot;
+  :options=&quot;[
+    { label: 'Read', value: { id: 1, scope: 'read' } },
+    { label: 'Write', value: { id: 2, scope: 'write' } },
+    { label: 'Delete', value: { id: 3, scope: 'delete' } },
+    { label: 'Admin', value: { id: 4, scope: 'admin' } },
+  ]&quot;
+  label=&quot;Permissions&quot;
+  variant=&quot;outlined&quot;
+/>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiSelect v-model="multiObjectVal" :options="multiObjectOptions" label="Permissions" variant="outlined" />
+        <div v-if="multiObjectVal.length" class="flex items-start text-body-medium text-on-surface-variant">
+          <code class="rounded bg-surface-container-high px-2 py-1 text-primary text-body-small">{{ JSON.stringify(multiObjectVal, null, 2) }}</code>
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="multiSelectProps" />
 
     <!-- ── MCheckbox & MSwitch ──────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MCheckbox &amp; MSwitch</h2>
+    <h2 id="mcheckbox" class="mb-4 mt-14 text-headline-small font-medium">MCheckbox &amp; MSwitch</h2>
 
     <ComponentDemo
       title="Checkbox"
@@ -309,7 +370,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="switchProps" />
 
     <!-- ── MRadioGroup ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MRadioGroup</h2>
+    <h2 id="mradiogroup" class="mb-4 mt-14 text-headline-small font-medium">MRadioGroup</h2>
 
     <ComponentDemo
       title="Radio Group"
@@ -334,7 +395,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="radioGroupProps" />
 
     <!-- ── MSlider ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSlider</h2>
+    <h2 id="mslider" class="mb-4 mt-14 text-headline-small font-medium">MSlider</h2>
 
     <ComponentDemo
       title="Slider"
@@ -355,7 +416,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="sliderProps" />
 
     <!-- ── MRating ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MRating</h2>
+    <h2 id="mrating" class="mb-4 mt-14 text-headline-small font-medium">MRating</h2>
 
     <ComponentDemo
       title="Rating"
@@ -386,7 +447,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="ratingProps" />
 
     <!-- ── MDatePicker ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MDatePicker</h2>
+    <h2 id="mdatepicker" class="mb-4 mt-14 text-headline-small font-medium">MDatePicker</h2>
 
     <ComponentDemo
       title="Date Picker"
@@ -406,7 +467,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="datePickerProps" />
 
     <!-- ── MDateRangePicker ─────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MDateRangePicker</h2>
+    <h2 id="mdaterangepicker" class="mb-4 mt-14 text-headline-small font-medium">MDateRangePicker</h2>
 
     <ComponentDemo
       title="Date Range"
@@ -427,7 +488,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="dateRangeProps" />
 
     <!-- ── MTimePicker ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTimePicker</h2>
+    <h2 id="mtimepicker" class="mb-4 mt-14 text-headline-small font-medium">MTimePicker</h2>
 
     <ComponentDemo
       title="Time Picker"
@@ -447,7 +508,7 @@ const colorPickerProps: PropDef[] = [
     <PropsTable :props="timePickerProps" />
 
     <!-- ── MColorPicker ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MColorPicker</h2>
+    <h2 id="mcolorpicker" class="mb-4 mt-14 text-headline-small font-medium">MColorPicker</h2>
 
     <ComponentDemo
       title="Color Picker"

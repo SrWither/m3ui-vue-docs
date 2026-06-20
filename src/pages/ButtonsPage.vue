@@ -62,7 +62,7 @@ const segmentedProps: PropDef[] = [
     </p>
 
     <!-- ── MButton ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MButton</h2>
+    <h2 id="mbutton" class="mb-4 text-headline-small font-medium">MButton</h2>
 
     <ComponentDemo
       title="Variants"
@@ -144,7 +144,7 @@ const segmentedProps: PropDef[] = [
     <PropsTable :props="buttonProps" />
 
     <!-- ── MIconButton ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MIconButton</h2>
+    <h2 id="miconbutton" class="mb-4 mt-14 text-headline-small font-medium">MIconButton</h2>
 
     <ComponentDemo
       title="Variants"
@@ -180,7 +180,7 @@ const segmentedProps: PropDef[] = [
     <PropsTable :props="iconButtonProps" />
 
     <!-- ── MFab ─────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MFab</h2>
+    <h2 id="mfab" class="mb-4 mt-14 text-headline-small font-medium">MFab</h2>
 
     <ComponentDemo
       title="Sizes"
@@ -274,7 +274,7 @@ const segmentedProps: PropDef[] = [
     </MCard>
 
     <!-- ── MSegmentedButton ─────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSegmentedButton</h2>
+    <h2 id="msegmentedbutton" class="mb-4 mt-14 text-headline-small font-medium">MSegmentedButton</h2>
 
     <ComponentDemo
       title="Single Select"

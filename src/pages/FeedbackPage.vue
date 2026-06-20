@@ -96,7 +96,7 @@ const toastProps: PropDef[] = [
     </p>
 
     <!-- ── MAlert ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MAlert</h2>
+    <h2 id="malert" class="mb-4 text-headline-small font-medium">MAlert</h2>
 
     <ComponentDemo
       title="Types"
@@ -233,7 +233,7 @@ toast.show('New follower!', 'info', { icon: 'person_add', color: '#6750A4' })
     <PropsTable :props="toastProps" />
 
     <!-- ── MDialog ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MDialog</h2>
+    <h2 id="mdialog" class="mb-4 mt-14 text-headline-small font-medium">MDialog</h2>
 
     <ComponentDemo
       title="Basic Dialog"
@@ -264,7 +264,7 @@ toast.show('New follower!', 'info', { icon: 'person_add', color: '#6750A4' })
     <PropsTable :props="dialogProps" />
 
     <!-- ── MConfirmDialog ───────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MConfirmDialog</h2>
+    <h2 id="mconfirmdialog" class="mb-4 mt-14 text-headline-small font-medium">MConfirmDialog</h2>
 
     <ComponentDemo
       title="Confirm Dialog"
@@ -304,7 +304,7 @@ function handleDelete() {
     <PropsTable :props="confirmProps" />
 
     <!-- ── MTooltip ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTooltip</h2>
+    <h2 id="mtooltip" class="mb-4 mt-14 text-headline-small font-medium">MTooltip</h2>
 
     <ComponentDemo
       title="Placements"
@@ -333,7 +333,7 @@ function handleDelete() {
     <PropsTable :props="tooltipProps" />
 
     <!-- ── MProgressBar ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MProgressBar</h2>
+    <h2 id="mprogressbar" class="mb-4 mt-14 text-headline-small font-medium">MProgressBar</h2>
 
     <ComponentDemo
       title="Progress Bars"
@@ -360,7 +360,7 @@ function handleDelete() {
     <PropsTable :props="progressProps" />
 
     <!-- ── MSpinner ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSpinner</h2>
+    <h2 id="mspinner" class="mb-4 mt-14 text-headline-small font-medium">MSpinner</h2>
 
     <ComponentDemo
       title="Spinners"
@@ -399,7 +399,7 @@ function handleDelete() {
     <PropsTable :props="spinnerProps" />
 
     <!-- ── MExpansionPanel ──────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MExpansionPanel</h2>
+    <h2 id="mexpansionpanel" class="mb-4 mt-14 text-headline-small font-medium">MExpansionPanel</h2>
 
     <ComponentDemo
       title="Expansion Panel"

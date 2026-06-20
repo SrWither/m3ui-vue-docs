@@ -46,7 +46,7 @@ const loadingOverlayProps: PropDef[] = [
     </p>
 
     <!-- ── MBottomSheet ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MBottomSheet</h2>
+    <h2 id="mbottomsheet" class="mb-4 text-headline-small font-medium">MBottomSheet</h2>
 
     <ComponentDemo
       title="Basic Bottom Sheet"
@@ -131,7 +131,7 @@ const open = ref(false)
     <PropsTable :props="bottomSheetProps" />
 
     <!-- ── MSideSheet ────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSideSheet</h2>
+    <h2 id="msidesheet" class="mb-4 mt-14 text-headline-small font-medium">MSideSheet</h2>
 
     <ComponentDemo
       title="Basic Side Sheet"
@@ -193,7 +193,7 @@ const open = ref(false)
     <PropsTable :props="sideSheetProps" />
 
     <!-- ── MLoadingOverlay ───────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MLoadingOverlay</h2>
+    <h2 id="mloadingoverlay" class="mb-4 mt-14 text-headline-small font-medium">MLoadingOverlay</h2>
 
     <ComponentDemo
       title="Inline Overlay on a Card"

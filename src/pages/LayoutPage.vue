@@ -183,7 +183,7 @@ const showOverlay = ref(false)
     </p>
 
     <!-- ── MContainer ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MContainer</h2>
+    <h2 id="mcontainer" class="mb-4 text-headline-small font-medium">MContainer</h2>
 
     <ComponentDemo
       title="Max Width Breakpoints"
@@ -219,7 +219,7 @@ const showOverlay = ref(false)
     <PropsTable :props="containerProps" />
 
     <!-- ── MGrid ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MGrid</h2>
+    <h2 id="mgrid" class="mb-4 mt-14 text-headline-small font-medium">MGrid</h2>
 
     <ComponentDemo
       title="Responsive Grid"
@@ -267,7 +267,7 @@ const showOverlay = ref(false)
     <PropsTable :props="gridProps" />
 
     <!-- ── MStack ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MStack</h2>
+    <h2 id="mstack" class="mb-4 mt-14 text-headline-small font-medium">MStack</h2>
 
     <ComponentDemo
       title="Horizontal Stack"
@@ -327,7 +327,7 @@ const showOverlay = ref(false)
     <PropsTable :props="stackProps" />
 
     <!-- ── MSplitter ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSplitter</h2>
+    <h2 id="msplitter" class="mb-4 mt-14 text-headline-small font-medium">MSplitter</h2>
 
     <ComponentDemo
       title="Horizontal Splitter"
@@ -399,7 +399,7 @@ const showOverlay = ref(false)
     </MCard>
 
     <!-- ── MMasonry ────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MMasonry</h2>
+    <h2 id="mmasonry" class="mb-4 mt-14 text-headline-small font-medium">MMasonry</h2>
 
     <ComponentDemo
       title="Masonry Layout"
@@ -453,7 +453,7 @@ const showOverlay = ref(false)
     <PropsTable :props="masonryProps" />
 
     <!-- ── MText ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MText</h2>
+    <h2 id="mtext" class="mb-4 mt-14 text-headline-small font-medium">MText</h2>
 
     <ComponentDemo
       title="Type Scale"
@@ -513,7 +513,7 @@ const showOverlay = ref(false)
     <PropsTable :props="textProps" />
 
     <!-- ── MTitle ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTitle</h2>
+    <h2 id="mtitle" class="mb-4 mt-14 text-headline-small font-medium">MTitle</h2>
 
     <ComponentDemo
       title="Title Sizes"
@@ -535,7 +535,7 @@ const showOverlay = ref(false)
     <PropsTable :props="titleProps" />
 
     <!-- ── MSubtitle ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSubtitle</h2>
+    <h2 id="msubtitle" class="mb-4 mt-14 text-headline-small font-medium">MSubtitle</h2>
 
     <ComponentDemo
       title="Subtitle Sizes"
@@ -557,7 +557,7 @@ const showOverlay = ref(false)
     <PropsTable :props="subtitleProps" />
 
     <!-- ── MFlex ───────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MFlex</h2>
+    <h2 id="mflex" class="mb-4 mt-14 text-headline-small font-medium">MFlex</h2>
 
     <ComponentDemo
       title="Row Layout"
@@ -599,7 +599,7 @@ const showOverlay = ref(false)
     <PropsTable :props="flexProps" />
 
     <!-- ── MSpacer ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSpacer</h2>
+    <h2 id="mspacer" class="mb-4 mt-14 text-headline-small font-medium">MSpacer</h2>
 
     <ComponentDemo
       title="Spacer"
@@ -629,7 +629,7 @@ const showOverlay = ref(false)
     </MCard>
 
     <!-- ── MCenter ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MCenter</h2>
+    <h2 id="mcenter" class="mb-4 mt-14 text-headline-small font-medium">MCenter</h2>
 
     <ComponentDemo
       title="Center Content"
@@ -651,7 +651,7 @@ const showOverlay = ref(false)
     <PropsTable :props="centerProps" />
 
     <!-- ── MBox ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MBox</h2>
+    <h2 id="mbox" class="mb-4 mt-14 text-headline-small font-medium">MBox</h2>
 
     <ComponentDemo
       title="Surface Variants"
@@ -699,7 +699,7 @@ const showOverlay = ref(false)
     <PropsTable :props="boxProps" />
 
     <!-- ── MSection ────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSection</h2>
+    <h2 id="msection" class="mb-4 mt-14 text-headline-small font-medium">MSection</h2>
 
     <ComponentDemo
       title="Basic Section"
@@ -753,7 +753,7 @@ const showOverlay = ref(false)
     </MCard>
 
     <!-- ── MResponsive ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MResponsive</h2>
+    <h2 id="mresponsive" class="mb-4 mt-14 text-headline-small font-medium">MResponsive</h2>
 
     <ComponentDemo
       title="Responsive Visibility"
@@ -798,7 +798,7 @@ const showOverlay = ref(false)
     <PropsTable :props="responsiveProps" />
 
     <!-- ── MRelative & MAbsolute ───────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MRelative & MAbsolute</h2>
+    <h2 id="mrelative" class="mb-4 mt-14 text-headline-small font-medium">MRelative & MAbsolute</h2>
 
     <ComponentDemo
       title="Positioning"
@@ -892,7 +892,7 @@ const showOverlay = ref(false)
     </MCard>
 
     <!-- ── MSticky ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MSticky</h2>
+    <h2 id="msticky" class="mb-4 mt-14 text-headline-small font-medium">MSticky</h2>
 
     <ComponentDemo
       title="Sticky Header"
@@ -930,7 +930,7 @@ const showOverlay = ref(false)
     <PropsTable :props="stickyProps" />
 
     <!-- ── MScrollable ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MScrollable</h2>
+    <h2 id="mscrollable" class="mb-4 mt-14 text-headline-small font-medium">MScrollable</h2>
 
     <ComponentDemo
       title="Scroll Directions"
@@ -967,7 +967,7 @@ const showOverlay = ref(false)
     <PropsTable :props="scrollableProps" />
 
     <!-- ── MAspectRatio ────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MAspectRatio</h2>
+    <h2 id="maspectratio" class="mb-4 mt-14 text-headline-small font-medium">MAspectRatio</h2>
 
     <ComponentDemo
       title="Aspect Ratios"
@@ -994,7 +994,7 @@ const showOverlay = ref(false)
     <PropsTable :props="aspectRatioProps" />
 
     <!-- ── MAppLayout ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MAppLayout</h2>
+    <h2 id="mapplayout" class="mb-4 mt-14 text-headline-small font-medium">MAppLayout</h2>
 
     <ComponentDemo
       title="App Shell"
@@ -1085,7 +1085,7 @@ const showOverlay = ref(false)
     </MCard>
 
     <!-- ── MOverlay ────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MOverlay</h2>
+    <h2 id="moverlay" class="mb-4 mt-14 text-headline-small font-medium">MOverlay</h2>
 
     <ComponentDemo
       title="Overlay"
@@ -1118,7 +1118,7 @@ const showOverlay = ref(false)
     <PropsTable :props="overlayProps" />
 
     <!-- ── MFullscreen ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MFullscreen</h2>
+    <h2 id="mfullscreen" class="mb-4 mt-14 text-headline-small font-medium">MFullscreen</h2>
 
     <MCard class="overflow-hidden border-l-4 border-l-tertiary p-5">
       <p class="mb-2 text-title-small font-medium">MFullscreen</p>

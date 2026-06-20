@@ -225,7 +225,7 @@ const virtualTableProps: PropDef[] = [
     </p>
 
     <!-- ── MTable ──────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MTable</h2>
+    <h2 id="mtable" class="mb-4 text-headline-small font-medium">MTable</h2>
 
     <ComponentDemo
       title="Basic Table"
@@ -375,7 +375,7 @@ async function onFetch(params: TableFetchParams) {
     <PropsTable :props="fetchParamsFields" />
 
     <!-- ── MDataTable ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MDataTable</h2>
+    <h2 id="mdatatable" class="mb-4 mt-14 text-headline-small font-medium">MDataTable</h2>
 
     <ComponentDemo
       title="Feature-Rich Data Table"
@@ -593,7 +593,7 @@ async function onFetch(params: DataTableFetchParams) {
     <PropsTable :props="dataTableProps" />
 
     <!-- ── MTreeTable ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTreeTable</h2>
+    <h2 id="mtreetable" class="mb-4 mt-14 text-headline-small font-medium">MTreeTable</h2>
 
     <ComponentDemo
       title="Tree Table"
@@ -624,7 +624,7 @@ const rows = [
     <PropsTable :props="treeTableProps" />
 
     <!-- ── MVirtualTable ───────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MVirtualTable</h2>
+    <h2 id="mvirtualtable" class="mb-4 mt-14 text-headline-small font-medium">MVirtualTable</h2>
 
     <ComponentDemo
       title="Virtual Table"

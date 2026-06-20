@@ -338,21 +338,21 @@ const categories = [
         </MFlex>
       </MStack>
     </section>
-  </MStack>
 
-  <!-- Dialog demo -->
-  <MDialog v-model="dialogOpen" title="Welcome!">
-    <MStack gap="sm">
-      <MFlex align="center" gap="sm">
-        <MEmoji emoji="👋" :size="32" />
-        <p class="text-body-medium text-on-surface-variant">
-          This is a Material 3 dialog. It supports a title, custom content, and action buttons.
-        </p>
-      </MFlex>
-    </MStack>
-    <template #actions>
-      <MButton variant="text" @click="dialogOpen = false">Close</MButton>
-      <MButton @click="dialogOpen = false; toast.success('Nice!')">Got it</MButton>
-    </template>
-  </MDialog>
+    <!-- Dialog demo -->
+    <MDialog v-model="dialogOpen" title="Welcome!">
+      <MStack gap="sm">
+        <MFlex align="center" gap="sm">
+          <MEmoji emoji="👋" :size="32" />
+          <p class="text-body-medium text-on-surface-variant">
+            This is a Material 3 dialog. It supports a title, custom content, and action buttons.
+          </p>
+        </MFlex>
+      </MStack>
+      <template #actions>
+        <MButton variant="text" @click="dialogOpen = false">Close</MButton>
+        <MButton @click="dialogOpen = false; toast.success('Nice!')">Got it</MButton>
+      </template>
+    </MDialog>
+  </MStack>
 </template>

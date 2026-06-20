@@ -140,7 +140,7 @@ const richTextProps: PropDef[] = [
     </p>
 
     <!-- ── MCodeEditor ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MCodeEditor</h2>
+    <h2 id="mcodeeditor" class="mb-4 text-headline-small font-medium">MCodeEditor</h2>
 
     <ComponentDemo
       title="Basic Editor"
@@ -186,7 +186,7 @@ const code = ref(\`function greet(name: string) {
     <PropsTable :props="codeEditorProps" />
 
     <!-- ── MJsonEditor ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MJsonEditor</h2>
+    <h2 id="mjsoneditor" class="mb-4 mt-14 text-headline-small font-medium">MJsonEditor</h2>
 
     <ComponentDemo
       title="JSON Editor"
@@ -211,7 +211,7 @@ const data = ref({
     <PropsTable :props="jsonEditorProps" />
 
     <!-- ── MJsonViewer ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MJsonViewer</h2>
+    <h2 id="mjsonviewer" class="mb-4 mt-14 text-headline-small font-medium">MJsonViewer</h2>
 
     <ComponentDemo
       title="JSON Viewer"
@@ -237,7 +237,7 @@ const data = {
     <PropsTable :props="jsonViewerProps" />
 
     <!-- ── MMarkdown ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MMarkdown</h2>
+    <h2 id="mmarkdown" class="mb-4 mt-14 text-headline-small font-medium">MMarkdown</h2>
 
     <ComponentDemo
       title="Markdown Renderer"
@@ -267,7 +267,7 @@ function greet(name: string): string {
     <PropsTable :props="markdownProps" />
 
     <!-- ── MTerminal ───────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTerminal</h2>
+    <h2 id="mterminal" class="mb-4 mt-14 text-headline-small font-medium">MTerminal</h2>
 
     <MCard variant="outlined" class="mb-6 p-4">
       <div class="flex items-start gap-3">
@@ -305,7 +305,7 @@ const lines = [
     <PropsTable :props="terminalProps" />
 
     <!-- ── MRichTextEditor ─────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MRichTextEditor</h2>
+    <h2 id="mrichtexteditor" class="mb-4 mt-14 text-headline-small font-medium">MRichTextEditor</h2>
 
     <ComponentDemo
       title="Rich Text Editor"

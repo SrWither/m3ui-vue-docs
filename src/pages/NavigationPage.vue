@@ -169,6 +169,40 @@ const fullCloseSelected = ref<string | number>('inbox')
 const collapsedOpen = ref(false)
 const collapsedVal = ref(false)
 
+const nestedSelected = ref<string | number>('dashboard')
+const nestedCollapsed = ref(false)
+const S = { iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' } as const
+const nestedSections: DrawerSection[] = [
+  {
+    items: [
+      { value: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+      {
+        value: 'settings', label: 'Settings', icon: 'settings',
+        children: [
+          { value: 'profile', label: 'Profile', icon: 'person', ...S },
+          { value: 'security', label: 'Security', icon: 'lock', ...S },
+          {
+            value: 'notifications', label: 'Notifications', icon: 'notifications', ...S,
+            children: [
+              { value: 'email-notif', label: 'Email', icon: 'mail', ...S },
+              { value: 'push-notif', label: 'Push', icon: 'phone_android', ...S },
+              { value: 'sms-notif', label: 'SMS', icon: 'sms', ...S },
+            ],
+          },
+        ],
+      },
+      {
+        value: 'content', label: 'Content', icon: 'article',
+        children: [
+          { value: 'posts', label: 'Posts', icon: 'edit_note', ...S },
+          { value: 'media', label: 'Media', icon: 'image', ...S },
+          { value: 'comments', label: 'Comments', icon: 'comment', ...S },
+        ],
+      },
+    ],
+  },
+]
+
 const drawerProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model)' },
   { name: 'selected', type: 'string | number', description: 'Currently selected item value' },
@@ -214,7 +248,7 @@ const appBarProps: PropDef[] = [
     </p>
 
     <!-- ── MTabs ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 text-headline-small font-medium">MTabs</h2>
+    <h2 id="mtabs" class="mb-4 text-headline-small font-medium">MTabs</h2>
 
     <ComponentDemo
       title="Primary Tabs"
@@ -277,7 +311,7 @@ const appBarProps: PropDef[] = [
     <PropsTable :props="tabsProps" />
 
     <!-- ── MMenu ────────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MMenu</h2>
+    <h2 id="mmenu" class="mb-4 mt-14 text-headline-small font-medium">MMenu</h2>
 
     <ComponentDemo
       title="Dropdown Menu"
@@ -320,7 +354,7 @@ const appBarProps: PropDef[] = [
     <PropsTable :props="menuItemProps" />
 
     <!-- ── MContextMenu ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MContextMenu</h2>
+    <h2 id="mcontextmenu" class="mb-4 mt-14 text-headline-small font-medium">MContextMenu</h2>
 
     <ComponentDemo
       title="Context Menu"
@@ -383,7 +417,7 @@ const items = [
     </MCard>
 
     <!-- ── MBreadcrumbs ─────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MBreadcrumbs</h2>
+    <h2 id="mbreadcrumbs" class="mb-4 mt-14 text-headline-small font-medium">MBreadcrumbs</h2>
 
     <ComponentDemo
       title="Breadcrumbs"
@@ -414,7 +448,7 @@ const items = [
     <PropsTable :props="breadcrumbsProps" />
 
     <!-- ── MStepper ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MStepper</h2>
+    <h2 id="mstepper" class="mb-4 mt-14 text-headline-small font-medium">MStepper</h2>
 
     <ComponentDemo
       title="Horizontal Stepper"
@@ -452,7 +486,7 @@ const steps = [
     <PropsTable :props="stepperProps" />
 
     <!-- ── MPagination ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MPagination</h2>
+    <h2 id="mpagination" class="mb-4 mt-14 text-headline-small font-medium">MPagination</h2>
 
     <ComponentDemo
       title="Pagination"
@@ -472,7 +506,7 @@ const steps = [
     <PropsTable :props="paginationProps" />
 
     <!-- ── MNavigationBar ──────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationBar</h2>
+    <h2 id="mnavigationbar" class="mb-4 mt-14 text-headline-small font-medium">MNavigationBar</h2>
 
     <ComponentDemo
       title="Bottom Navigation"
@@ -498,7 +532,7 @@ const items = [
     <PropsTable :props="navBarProps" />
 
     <!-- ── MNavigationDrawer ───────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationDrawer</h2>
+    <h2 id="mnavigationdrawer" class="mb-4 mt-14 text-headline-small font-medium">MNavigationDrawer</h2>
 
     <ComponentDemo
       title="Modal Drawer"
@@ -662,6 +696,82 @@ const selected = ref('inbox')`"
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Nested Children + Collapsed"
+      description="Items can have children (recursive). Each level indents further and animates on expand/collapse. In collapsed mode, children icons slide to center with a smooth transition. Supports unlimited nesting depth."
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :collapsed=&quot;collapsed&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <template #header>
+    <div class=&quot;flex h-12 items-center&quot; :class=&quot;collapsed ? 'justify-center' : 'px-3'&quot;>
+      <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+    </div>
+  </template>
+</MNavigationDrawer>`"
+      :script="`const collapsed = ref(false)
+const selected = ref('dashboard')
+const sections = [
+  {
+    items: [
+      { value: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+      {
+        value: 'settings', label: 'Settings', icon: 'settings',
+        children: [
+          // iconSize, labelClass, py make children match parent size
+          { value: 'profile', label: 'Profile', icon: 'person', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+          { value: 'security', label: 'Security', icon: 'lock', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+          {
+            value: 'notifications', label: 'Notifications', icon: 'notifications', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5',
+            children: [
+              { value: 'email-notif', label: 'Email', icon: 'mail', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+              { value: 'push-notif', label: 'Push', icon: 'phone_android', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+              { value: 'sms-notif', label: 'SMS', icon: 'sms', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+            ],
+          },
+        ],
+      },
+      {
+        value: 'content', label: 'Content', icon: 'article',
+        children: [
+          { value: 'posts', label: 'Posts', icon: 'edit_note', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+          { value: 'media', label: 'Media', icon: 'image', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+          { value: 'comments', label: 'Comments', icon: 'comment', iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' },
+        ],
+      },
+    ],
+  },
+]`"
+    >
+      <div class="flex h-96 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :collapsed="nestedCollapsed"
+          :sections="nestedSections"
+          :selected="nestedSelected"
+          @select="nestedSelected = $event"
+        >
+          <template #header>
+            <div class="flex h-12 shrink-0 items-center" :class="nestedCollapsed ? 'justify-center' : 'px-3'">
+              <MIconButton
+                :icon="nestedCollapsed ? 'menu' : 'menu_open'"
+                :label="nestedCollapsed ? 'Expand' : 'Collapse'"
+                @click="nestedCollapsed = !nestedCollapsed"
+              />
+            </div>
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ nestedSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="drawerProps" />
 
@@ -674,6 +784,10 @@ const selected = ref('inbox')`"
   badge?: string | number
   disabled?: boolean
   to?: string | Record&lt;string, any&gt;  // Vue Router destination (renders as RouterLink)
+  children?: DrawerItem[]           // Nested sub-items (recursive, unlimited depth)
+  iconSize?: number                 // Override icon size (px) for this item
+  labelClass?: string               // Override label CSS class (e.g. 'text-label-large')
+  py?: string                       // Override vertical padding class (e.g. 'py-2.5')
 }
 
 interface DrawerSection {
@@ -685,7 +799,7 @@ interface DrawerSection {
     </MCard>
 
     <!-- ── MNavigationRail ─────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MNavigationRail</h2>
+    <h2 id="mnavigationrail" class="mb-4 mt-14 text-headline-small font-medium">MNavigationRail</h2>
 
     <ComponentDemo
       title="Navigation Rail"
@@ -719,7 +833,7 @@ const items = [
     <PropsTable :props="railProps" />
 
     <!-- ── MTopAppBar ──────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MTopAppBar</h2>
+    <h2 id="mtopappbar" class="mb-4 mt-14 text-headline-small font-medium">MTopAppBar</h2>
 
     <ComponentDemo
       title="Variants"
@@ -749,7 +863,7 @@ const items = [
     <PropsTable :props="topAppBarProps" />
 
     <!-- ── MAppBar ─────────────────────────────────────────────────────── -->
-    <h2 class="mb-4 mt-14 text-headline-small font-medium">MAppBar</h2>
+    <h2 id="mappbar" class="mb-4 mt-14 text-headline-small font-medium">MAppBar</h2>
 
     <ComponentDemo
       title="App Bar"
