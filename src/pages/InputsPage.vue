@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import {
   MTextField, MSelect, MMultiSelect, MCheckbox, MSwitch,
   MRadioGroup, MSlider, MRating, MDatePicker, MDateRangePicker,
-  MTimePicker, MColorPicker,
+  MTimePicker, MColorPicker, MNumberField, MMaskField,
 } from '@m3ui-vue/m3ui-vue'
 import type { DateRange } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -15,6 +15,18 @@ const textOutlined = ref('')
 const textPassword = ref('')
 const textMultiline = ref('')
 const textError = ref('bad value')
+const textClearable = ref('Hello world')
+
+const selectClearable = ref<unknown>('a')
+const multiClearable = ref<unknown[]>(['vue', 'svelte'])
+
+const numVal = ref<number | null>(25)
+const numPrice = ref<number | null>(9.99)
+
+const maskCard = ref('')
+const maskPhone = ref('')
+const maskDate = ref('')
+const maskCustom = ref('')
 
 const selectVal = ref<unknown>(null)
 const selectOptions = [
@@ -80,6 +92,31 @@ const textFieldProps: PropDef[] = [
   { name: 'multiline', type: 'boolean', default: 'false', description: 'Renders a textarea' },
   { name: 'rows', type: 'number', default: '3', description: 'Textarea rows (when multiline)' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol shown before the input' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button when the field has a value' },
+]
+
+const numberFieldProps: PropDef[] = [
+  { name: 'modelValue', type: 'number | null', description: 'Bound numeric value' },
+  { name: 'label', type: 'string', description: 'Field label' },
+  { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
+  { name: 'min', type: 'number', description: 'Minimum allowed value' },
+  { name: 'max', type: 'number', description: 'Maximum allowed value' },
+  { name: 'step', type: 'number', default: '1', description: 'Increment/decrement step' },
+  { name: 'stepper', type: 'boolean', default: 'true', description: 'Show +/- buttons' },
+  { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
+  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'hint', type: 'string', description: 'Hint text' },
+]
+
+const maskFieldProps: PropDef[] = [
+  { name: 'modelValue', type: 'string', description: 'Masked value (v-model)' },
+  { name: 'label', type: 'string', description: 'Field label' },
+  { name: 'mask', type: 'string | MaskPreset', description: "Mask pattern (# = digit) or preset: 'credit-card', 'phone', 'date', 'time', 'zip'" },
+  { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show clear button' },
+  { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
+  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'hint', type: 'string', description: 'Hint text' },
 ]
 
 const selectProps: PropDef[] = [
@@ -90,6 +127,7 @@ const selectProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the select' },
   { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset the selection' },
 ]
 
 const multiSelectProps: PropDef[] = [
@@ -99,6 +137,7 @@ const multiSelectProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
   { name: 'searchable', type: 'boolean', default: 'true', description: 'Show search in dropdown' },
   { name: 'maxChips', type: 'number', default: '3', description: 'Max visible chips before "+N"' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset all selections' },
 ]
 
 const checkboxProps: PropDef[] = [
@@ -233,11 +272,78 @@ const colorPickerProps: PropDef[] = [
         <MTextField v-model="textError" label="Username" error="Already taken" />
         <MTextField model-value="Can't edit this" label="Disabled" :disabled="true" />
       </div>
-      <MTextField v-model="textMultiline" label="Bio" :multiline="true" :rows="3" variant="outlined" class="mt-4 w-full" />
+      <div class="mt-4 grid w-full gap-4 sm:grid-cols-2">
+        <MTextField v-model="textMultiline" label="Bio" :multiline="true" :rows="3" leading-icon="edit_note" />
+        <MTextField v-model="textMultiline" label="Bio" :multiline="true" :rows="3" leading-icon="edit_note" variant="outlined" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Clearable"
+      description="Add a clear button that appears when the field has a value."
+      :code="`<MTextField v-model=&quot;text&quot; label=&quot;Search&quot; leading-icon=&quot;search&quot; :clearable=&quot;true&quot; />`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MTextField v-model="textClearable" label="Search" leading-icon="search" :clearable="true" />
+        <MTextField v-model="textClearable" label="Outlined" leading-icon="search" :clearable="true" variant="outlined" />
+      </div>
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="textFieldProps" />
+
+    <!-- ── MNumberField ────────────────────────────────────────────────── -->
+    <h2 id="mnumberfield" class="mb-4 mt-14 text-headline-small font-medium">MNumberField</h2>
+
+    <ComponentDemo
+      title="Number Input"
+      description="Numeric input with +/- stepper buttons, min/max clamping, and keyboard arrows."
+      :code="`<MNumberField v-model=&quot;quantity&quot; label=&quot;Quantity&quot; :min=&quot;0&quot; :max=&quot;100&quot; />`"
+      :script="`import { MNumberField } from '@m3ui-vue/m3ui-vue'
+
+const quantity = ref(25)`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MNumberField v-model="numVal" label="Quantity" :min="0" :max="100" />
+        <MNumberField v-model="numPrice" label="Price" :step="0.5" :min="0" leading-icon="attach_money" variant="outlined" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Without Stepper"
+      description="Disable the +/- buttons for a plain numeric input."
+      :code="`<MNumberField v-model=&quot;val&quot; label=&quot;Amount&quot; :stepper=&quot;false&quot; />`"
+    >
+      <div class="w-full sm:w-64">
+        <MNumberField v-model="numVal" label="Amount" :stepper="false" variant="outlined" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="numberFieldProps" />
+
+    <!-- ── MMaskField ──────────────────────────────────────────────────── -->
+    <h2 id="mmaskfield" class="mb-4 mt-14 text-headline-small font-medium">MMaskField</h2>
+
+    <ComponentDemo
+      title="Masked Inputs"
+      description="Input with formatting masks. Use presets like 'credit-card', 'phone', 'date', or custom patterns where # = digit."
+      :code="`<MMaskField v-model=&quot;card&quot; label=&quot;Card Number&quot; mask=&quot;credit-card&quot; leading-icon=&quot;credit_card&quot; />
+<MMaskField v-model=&quot;phone&quot; label=&quot;Phone&quot; mask=&quot;phone&quot; leading-icon=&quot;phone&quot; />
+<MMaskField v-model=&quot;date&quot; label=&quot;Date&quot; mask=&quot;date&quot; leading-icon=&quot;calendar_today&quot; />
+<MMaskField v-model=&quot;custom&quot; label=&quot;Custom&quot; mask=&quot;##-###-####&quot; />`"
+      :script="`import { MMaskField } from '@m3ui-vue/m3ui-vue'`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMaskField v-model="maskCard" label="Card Number" mask="credit-card" leading-icon="credit_card" :clearable="true" />
+        <MMaskField v-model="maskPhone" label="Phone" mask="phone" leading-icon="phone" :clearable="true" variant="outlined" />
+        <MMaskField v-model="maskDate" label="Birthday" mask="date" leading-icon="calendar_today" hint="MM/DD/YYYY" />
+        <MMaskField v-model="maskCustom" label="Custom Code" mask="##-###-####" variant="outlined" hint="Pattern: ##-###-####" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="maskFieldProps" />
 
     <!-- ── MSelect ──────────────────────────────────────────────────────── -->
     <h2 id="mselect" class="mb-4 mt-14 text-headline-small font-medium">MSelect</h2>
@@ -281,6 +387,17 @@ const colorPickerProps: PropDef[] = [
         <div v-if="objectSelectVal" class="flex items-center text-body-medium text-on-surface-variant">
           Selected: <code class="ml-2 rounded bg-surface-container-high px-2 py-1 text-primary">{{ JSON.stringify(objectSelectVal) }}</code>
         </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Clearable"
+      description="Add a clear button to reset the selection."
+      :code="`<MSelect v-model=&quot;val&quot; :options=&quot;options&quot; label=&quot;Choice&quot; :clearable=&quot;true&quot; />`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MSelect v-model="selectClearable" :options="selectOptions" label="Filled" :clearable="true" />
+        <MSelect v-model="selectClearable" :options="selectOptions" label="Outlined" :clearable="true" variant="outlined" />
       </div>
     </ComponentDemo>
 
@@ -328,6 +445,17 @@ const colorPickerProps: PropDef[] = [
         <div v-if="multiObjectVal.length" class="flex items-start text-body-medium text-on-surface-variant">
           <code class="rounded bg-surface-container-high px-2 py-1 text-primary text-body-small">{{ JSON.stringify(multiObjectVal, null, 2) }}</code>
         </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Clearable"
+      description="Clear all selections at once."
+      :code="`<MMultiSelect v-model=&quot;val&quot; :options=&quot;options&quot; label=&quot;Frameworks&quot; :clearable=&quot;true&quot; />`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Filled" :clearable="true" />
+        <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Outlined" :clearable="true" variant="outlined" />
       </div>
     </ComponentDemo>
 

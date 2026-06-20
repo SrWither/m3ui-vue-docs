@@ -57,7 +57,7 @@ const todoItems = ['Ship new release', 'Write tests', 'Update docs']
 
 const categories = [
   { label: 'Buttons & Actions', icon: 'smart_button', count: 4, to: '/components/buttons' },
-  { label: 'Inputs & Forms', icon: 'input', count: 11, to: '/components/inputs' },
+  { label: 'Inputs & Forms', icon: 'input', count: 13, to: '/components/inputs' },
   { label: 'Data Display', icon: 'dashboard', count: 16, to: '/components/data-display' },
   { label: 'Feedback', icon: 'feedback', count: 7, to: '/components/feedback' },
   { label: 'Navigation', icon: 'menu_open', count: 11, to: '/components/navigation' },
