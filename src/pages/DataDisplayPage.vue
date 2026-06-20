@@ -4,6 +4,7 @@ import {
   MCard, MChip, MBadge, MAvatar, MIcon, MDivider, MButton, MIconButton,
   MStatCard, MTimeline, MSkeleton, MEmptyState, MResult, MTree,
   MList, MListItem, MListSubheader, MSwitch,
+  MEmoji, MEmojiButton, MEmojiSelector,
 } from '@m3ui-vue/m3ui-vue'
 import type { TimelineItem, TreeNode } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -185,6 +186,31 @@ const listItemProps: PropDef[] = [
 
 const listSubheaderProps: PropDef[] = [
   { name: 'inset', type: 'boolean', default: 'false', description: 'Align with items that have leading icons' },
+]
+
+/* ── Emoji ──────────────────────────────────────────────────────────── */
+const selectedEmoji = ref('')
+
+const emojiProps: PropDef[] = [
+  { name: 'emoji', type: 'string', description: 'The emoji character to display' },
+  { name: 'size', type: 'number', default: '24', description: 'Size in pixels' },
+  { name: 'label', type: 'string', description: 'Accessible label (sets role="img")' },
+]
+
+const emojiButtonProps: PropDef[] = [
+  { name: 'emoji', type: 'string', default: "'😀'", description: 'Default emoji to display' },
+  { name: 'size', type: 'number', default: '28', description: 'Emoji size in pixels' },
+  { name: 'randomOnHover', type: 'boolean', default: 'true', description: 'Cycle random emojis on hover (Discord-style)' },
+  { name: 'category', type: 'string', description: "Limit random pool to a category id (e.g. 'smileys', 'animals')" },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable interaction' },
+  { name: 'label', type: 'string', description: 'Accessible label' },
+]
+
+const emojiSelectorProps: PropDef[] = [
+  { name: 'categories', type: 'string[]', description: 'Which category ids to show (all if omitted)' },
+  { name: 'search', type: 'boolean', default: 'true', description: 'Show search bar' },
+  { name: 'columns', type: 'number', default: '8', description: 'Number of columns in the grid' },
+  { name: 'emojiSize', type: 'number', default: '28', description: 'Emoji render size in px' },
 ]
 </script>
 
@@ -1354,5 +1380,82 @@ const nodes = [
         </tbody>
       </table>
     </MCard>
+
+    <!-- ── MEmoji ──────────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmoji</h2>
+
+    <ComponentDemo
+      title="Emoji Display"
+      description="Render an emoji at any size with accessible labeling."
+      :code="`<MEmoji emoji=&quot;🚀&quot; :size=&quot;48&quot; label=&quot;Rocket&quot; />`"
+    >
+      <div class="flex items-end gap-4">
+        <MEmoji emoji="😀" :size="20" />
+        <MEmoji emoji="🚀" :size="32" />
+        <MEmoji emoji="🎉" :size="48" />
+        <MEmoji emoji="🐶" :size="64" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="emojiProps" />
+
+    <!-- ── MEmojiButton ────────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmojiButton</h2>
+
+    <ComponentDemo
+      title="Discord-style Hover"
+      description="Hover the button to see random emojis cycle. Click to trigger."
+      :code="`<MEmojiButton emoji=&quot;😎&quot; @click=&quot;onPick&quot; />`"
+      :script="`import { MEmojiButton } from '@m3ui-vue/m3ui-vue'`"
+    >
+      <div class="flex items-center gap-6">
+        <div class="flex flex-col items-center gap-2">
+          <MEmojiButton emoji="😎" :size="32" @click="(e: string) => selectedEmoji = e" />
+          <span class="text-label-small text-on-surface-variant">All</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <MEmojiButton emoji="🐱" :size="32" category="animals" @click="(e: string) => selectedEmoji = e" />
+          <span class="text-label-small text-on-surface-variant">Animals</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <MEmojiButton emoji="🍕" :size="32" category="food" @click="(e: string) => selectedEmoji = e" />
+          <span class="text-label-small text-on-surface-variant">Food</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <MEmojiButton emoji="😊" :size="32" :random-on-hover="false" @click="(e: string) => selectedEmoji = e" />
+          <span class="text-label-small text-on-surface-variant">No random</span>
+        </div>
+        <p v-if="selectedEmoji" class="ml-4 text-body-large">
+          Picked: <span class="text-headline-medium">{{ selectedEmoji }}</span>
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="emojiButtonProps" />
+
+    <!-- ── MEmojiSelector ──────────────────────────────────────────────── -->
+    <h2 class="mb-4 mt-14 text-headline-small font-medium">MEmojiSelector</h2>
+
+    <ComponentDemo
+      title="Emoji Picker"
+      description="Full emoji picker with categories, search, and click-to-select."
+      :code="`<MEmojiSelector @select=&quot;onSelect&quot; />`"
+      :script="`import { MEmojiSelector } from '@m3ui-vue/m3ui-vue'`"
+    >
+      <div class="flex w-full flex-col gap-4 sm:flex-row">
+        <div class="w-full sm:w-80">
+          <MEmojiSelector @select="(e: string) => selectedEmoji = e" />
+        </div>
+        <div v-if="selectedEmoji" class="flex items-center gap-3">
+          <span class="text-6xl">{{ selectedEmoji }}</span>
+          <span class="text-body-large text-on-surface-variant">Selected</span>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="emojiSelectorProps" />
   </div>
 </template>
