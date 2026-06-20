@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { MNavigationDrawer, MIcon } from '@m3ui-vue/m3ui-vue'
+import { MNavigationDrawer, MIcon, MIconButton, MFlex } from '@m3ui-vue/m3ui-vue'
 import type { DrawerSection } from '@m3ui-vue/m3ui-vue'
 
 defineProps<{ expanded?: boolean; drawerOpen?: boolean }>()
@@ -69,17 +69,16 @@ const sections: DrawerSection[] = [
       :sections="sections"
     >
       <template #header>
-        <div class="flex h-16 shrink-0 items-center border-b border-outline-variant">
-          <div class="flex w-[72px] shrink-0 justify-center">
-            <button
-              type="button"
-              class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8 active:bg-on-surface/12"
-              :title="expanded ? 'Collapse' : 'Expand'"
-              @click="$emit('toggle')"
-            >
-              <MIcon :name="expanded ? 'menu_open' : 'menu'" :size="22" />
-            </button>
-          </div>
+        <div class="shrink-0 border-b border-outline-variant">
+          <MFlex align="center" class="h-16">
+            <div class="flex w-[72px] shrink-0 justify-center">
+              <MIconButton
+                :icon="expanded ? 'menu_open' : 'menu'"
+                :label="expanded ? 'Collapse' : 'Expand'"
+                @click="$emit('toggle')"
+              />
+            </div>
+          </MFlex>
         </div>
       </template>
     </MNavigationDrawer>
@@ -93,21 +92,15 @@ const sections: DrawerSection[] = [
     @update:model-value="!$event && $emit('drawerClose')"
   >
     <template #header>
-      <div class="flex items-center justify-between px-4 pt-5 pb-2">
-        <div class="flex items-center gap-3">
+      <MFlex align="center" justify="between" class="px-4 pt-5 pb-2">
+        <MFlex align="center" gap="sm">
           <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
             <MIcon name="widgets" :size="18" />
           </span>
           <span class="text-title-medium font-medium text-on-surface">M3UI Docs</span>
-        </div>
-        <button
-          type="button"
-          class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8 active:bg-on-surface/12"
-          @click="$emit('drawerClose')"
-        >
-          <MIcon name="close" :size="20" />
-        </button>
-      </div>
+        </MFlex>
+        <MIconButton icon="close" label="Close menu" @click="$emit('drawerClose')" />
+      </MFlex>
     </template>
   </MNavigationDrawer>
 </template>
