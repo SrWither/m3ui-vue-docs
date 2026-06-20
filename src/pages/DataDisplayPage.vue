@@ -912,6 +912,35 @@ function remove(label) {
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Alternating"
+      description="Items alternate left and right of a central line, with icons and connecting vertical track."
+      :code="`<MTimeline :items=&quot;items&quot; :alternating=&quot;true&quot; />`"
+      :script="`import { MTimeline } from '@m3ui-vue/m3ui-vue'
+import type { TimelineItem } from '@m3ui-vue/m3ui-vue'
+
+const items: TimelineItem[] = [
+  { title: 'Project created', description: 'Initial repo setup', date: 'Jan 15', icon: 'rocket_launch', color: 'primary' },
+  { title: 'Design approved', description: 'Mockups finalized by the team', date: 'Jan 22', icon: 'design_services', color: 'secondary' },
+  { title: 'Sprint 1 done', description: 'Button, Card, TextField shipped', date: 'Feb 5', icon: 'check_circle', color: 'success' },
+  { title: 'Critical bug fixed', description: 'Dark mode rendering issue resolved', date: 'Feb 8', icon: 'bug_report', color: 'error' },
+  { title: 'v1.0 released', description: 'First stable version in production', date: 'Feb 20', icon: 'celebration', color: 'tertiary' },
+]`"
+    >
+      <div class="w-full">
+        <MTimeline
+          :items="[
+            { title: 'Project created', description: 'Initial repo setup', date: 'Jan 15', icon: 'rocket_launch', color: 'primary' },
+            { title: 'Design approved', description: 'Mockups finalized by the team', date: 'Jan 22', icon: 'design_services', color: 'secondary' },
+            { title: 'Sprint 1 done', description: 'Button, Card, TextField shipped', date: 'Feb 5', icon: 'check_circle', color: 'success' },
+            { title: 'Critical bug fixed', description: 'Dark mode rendering issue resolved', date: 'Feb 8', icon: 'bug_report', color: 'error' },
+            { title: 'v1.0 released', description: 'First stable version in production', date: 'Feb 20', icon: 'celebration', color: 'tertiary' },
+          ]"
+          :alternating="true"
+        />
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="timelineProps" />
 
