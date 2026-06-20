@@ -198,7 +198,7 @@ function bulkDelete() {
           </MStack>
           <MStack gap=&quot;sm&quot; align=&quot;end&quot; class=&quot;shrink-0 pt-0.5&quot;>
             <MText variant=&quot;body-small&quot; color=&quot;on-surface-variant&quot;>{{ contact.time }}</MText>
-            <MBadge v-if=&quot;contact.unread&quot; :count=&quot;contact.unread&quot; />
+            <span v-if=&quot;contact.unread&quot; class=&quot;self-end flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[10px] font-medium text-on-error&quot;>{{ contact.unread }}</span>
           </MStack>
         </div>
       </MScrollable>
@@ -232,7 +232,7 @@ function bulkDelete() {
 </template>`"
         :script="`import { ref } from 'vue'
 import {
-  MAvatar, MBadge, MAppBar, MTextField, MIconButton, MTooltip,
+  MAvatar, MAppBar, MTextField, MIconButton, MTooltip,
   MText, MFlex, MStack, MBox, MScrollable, MRelative, MAbsolute,
 } from '@m3ui-vue/m3ui-vue'
 
