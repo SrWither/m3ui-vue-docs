@@ -61,7 +61,7 @@ const categories = [
   { label: 'Data Display', icon: 'dashboard', count: 17, to: '/components/data-display' },
   { label: 'Feedback', icon: 'feedback', count: 7, to: '/components/feedback' },
   { label: 'Navigation', icon: 'menu_open', count: 11, to: '/components/navigation' },
-  { label: 'Layout', icon: 'grid_view', count: 21, to: '/components/layout' },
+  { label: 'Layout', icon: 'grid_view', count: 24, to: '/components/layout' },
   { label: 'Overlays', icon: 'layers', count: 3, to: '/components/overlays' },
   { label: 'Tables', icon: 'table_chart', count: 4, to: '/components/tables' },
   { label: 'Utility', icon: 'build', count: 6, to: '/components/utility' },
@@ -107,7 +107,7 @@ const categories = [
 
         <!-- Stats -->
         <MFlex gap="sm" wrap class="mt-4 justify-center">
-          <MChip icon="widgets" tone="primary">100+ Components</MChip>
+          <MChip icon="widgets" tone="primary">70+ Components</MChip>
           <MChip icon="palette" tone="secondary">20 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>
           <MChip icon="code">TypeScript</MChip>
@@ -191,7 +191,7 @@ const categories = [
         </p>
 
         <MGrid :cols="1" :md="2" gap="md">
-          <MCodeEditor v-model="sampleCode" language="typescript" min-height="220px" max-height="300px" />
+          <MCodeEditor v-model="sampleCode" language="typescript" min-height="220px" max-height="300px" class="h-full" />
           <MCard variant="outlined" class="overflow-hidden p-5">
             <MMarkdown :source="markdownDemo" />
           </MCard>
@@ -313,7 +313,7 @@ const categories = [
               </MFlex>
               <MStack gap="sm">
                 <MExpansionPanel v-model="panelOpen" title="What is M3UI?" icon="help">
-                  A Material Design 3 component library for Vue 3 + Tailwind CSS v4 with 100+ components.
+                  A Material Design 3 component library for Vue 3 + Tailwind CSS v4 with 70+ components.
                 </MExpansionPanel>
                 <MExpansionPanel v-model="panelFreeOpen" title="Is it free?" icon="payments">
                   Absolutely! M3UI Vue is MIT licensed — use it in personal projects, commercial apps, SaaS products, or anything else. No attribution required, no strings attached.
