@@ -50,7 +50,8 @@ const badgeProps: PropDef[] = [
 ]
 
 const avatarProps: PropDef[] = [
-  { name: 'name', type: 'string', description: 'Full name — initials are extracted automatically' },
+  { name: 'name', type: 'string', description: 'Full name — initials are extracted automatically. Takes priority over fallback' },
+  { name: 'fallback', type: 'string', description: 'Custom text to display when name is not provided (e.g. "AJ")' },
   { name: 'size', type: 'number', default: '40', description: 'Avatar size in px' },
 ]
 
@@ -710,6 +711,22 @@ function remove(label) {
       <MAvatar name="Carlos Diaz" :size="48" />
       <MAvatar name="Eva" :size="56" />
       <MAvatar name="Gabriel Hernandez" :size="64" />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Fallback"
+      description="Use the fallback prop for custom initials when no name is available."
+      :code="`<template>
+  <MAvatar fallback=&quot;FM&quot; />
+  <MAvatar fallback=&quot;AJ&quot; :size=&quot;48&quot; />
+  <MAvatar :size=&quot;56&quot; />  &lt;!-- shows ? --&gt;
+  <MAvatar name=&quot;Alice Brown&quot; fallback=&quot;XX&quot; :size=&quot;56&quot; />  &lt;!-- name wins --&gt;
+</template>`"
+    >
+      <MAvatar fallback="FM" />
+      <MAvatar fallback="AJ" :size="48" />
+      <MAvatar :size="56" />
+      <MAvatar name="Alice Brown" fallback="XX" :size="56" />
     </ComponentDemo>
 
     <ComponentDemo

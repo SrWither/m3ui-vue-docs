@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import {
   MTabs, MMenu, MMenuItem, MContextMenu, MBreadcrumbs, MStepper,
-  MPagination, MButton, MIconButton, MIcon, MCard, MFab,
+  MPagination, MButton, MIconButton, MIcon, MCard, MFab, MAvatar,
   MNavigationBar, MNavigationDrawer, MNavigationRail, MTopAppBar, MAppBar,
 } from '@m3ui-vue/m3ui-vue'
 import type { ContextMenuItem, BreadcrumbItem, StepItem, NavBarItem, DrawerSection, NavRailItem } from '@m3ui-vue/m3ui-vue'
@@ -210,6 +210,98 @@ const drawerProps: PropDef[] = [
   { name: 'title', type: 'string', description: 'Drawer header title' },
   { name: 'modal', type: 'boolean', default: 'true', description: 'Modal with scrim overlay, or inline sidebar' },
   { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons (inline variant only)' },
+  { name: 'width', type: 'string', description: 'Custom drawer width (e.g. "320px", "25rem"). Defaults to w-72 (288px)' },
+]
+
+// ── Custom width examples ─────────────────────────────────────────
+const widthSections: DrawerSection[] = [
+  {
+    title: 'Navigation',
+    icon: 'explore',
+    collapsible: true,
+    items: [
+      { value: 'w-home', label: 'Home', icon: 'home' },
+      { value: 'w-discover', label: 'Discover', icon: 'travel_explore' },
+      {
+        value: 'w-projects', label: 'Projects', icon: 'folder',
+        children: [
+          { value: 'w-active', label: 'Active', icon: 'play_circle', ...S },
+          { value: 'w-archived', label: 'Archived', icon: 'archive', ...S },
+          {
+            value: 'w-shared', label: 'Shared', icon: 'group', ...S,
+            children: [
+              { value: 'w-team-a', label: 'Team Alpha', icon: 'groups', ...S },
+              { value: 'w-team-b', label: 'Team Beta', icon: 'groups', ...S },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Account',
+    icon: 'person',
+    collapsible: true,
+    items: [
+      { value: 'w-profile', label: 'Profile', icon: 'badge' },
+      { value: 'w-billing', label: 'Billing', icon: 'credit_card' },
+      {
+        value: 'w-prefs', label: 'Preferences', icon: 'tune',
+        children: [
+          { value: 'w-theme', label: 'Theme', icon: 'palette', ...S },
+          { value: 'w-lang', label: 'Language', icon: 'translate', ...S },
+          { value: 'w-notifs', label: 'Notifications', icon: 'notifications', ...S },
+        ],
+      },
+    ],
+  },
+]
+
+const modalW1Open = ref(false)
+const modalW2Open = ref(false)
+const modalW3Open = ref(false)
+const modalWSelected = ref<string | number>('w-home')
+
+const inlineW1Selected = ref<string | number>('w-home')
+const inlineW2Selected = ref<string | number>('w-home')
+const inlineW3Selected = ref<string | number>('w-home')
+
+const collapsedW1 = ref(false)
+const collapsedW2 = ref(false)
+const collapsedW3 = ref(false)
+const collapsedWSelected1 = ref<string | number>('w-home')
+const collapsedWSelected2 = ref<string | number>('w-home')
+const collapsedWSelected3 = ref<string | number>('w-home')
+
+// ── Profile drawer examples ───────────────────────────────────────
+const profileModalOpen = ref(false)
+const profileInlineOpen = ref(true)
+const profileSelected = ref<string | number>('p-home')
+const profileSections: DrawerSection[] = [
+  {
+    items: [
+      { value: 'p-home', label: 'Home', icon: 'home' },
+      { value: 'p-inbox', label: 'Inbox', icon: 'inbox', badge: '24' },
+      { value: 'p-starred', label: 'Starred', icon: 'star' },
+      { value: 'p-sent', label: 'Sent Mail', icon: 'send' },
+      { value: 'p-drafts', label: 'Drafts', icon: 'drafts', badge: '2' },
+    ],
+  },
+  {
+    title: 'Labels',
+    items: [
+      { value: 'p-important', label: 'Important', icon: 'label_important' },
+      { value: 'p-spam', label: 'Spam', icon: 'report' },
+      { value: 'p-trash', label: 'Trash', icon: 'delete' },
+    ],
+  },
+  {
+    title: 'Other',
+    items: [
+      { value: 'p-settings', label: 'Settings', icon: 'settings' },
+      { value: 'p-help', label: 'Help & feedback', icon: 'help' },
+    ],
+  },
 ]
 
 const railVal = ref<string | number>('home')
@@ -231,12 +323,14 @@ const topAppBarProps: PropDef[] = [
   { name: 'variant', type: "'center' | 'small' | 'medium' | 'large'", default: "'small'", description: 'Title layout variant' },
   { name: 'navigationIcon', type: 'string', description: 'Leading icon (e.g. menu, arrow_back)' },
   { name: 'elevated', type: 'boolean', default: 'false', description: 'Add shadow elevation' },
+  { name: 'bordered', type: 'boolean', default: 'false', description: 'Add a bottom border (border-outline-variant)' },
 ]
 
 const appBarProps: PropDef[] = [
   { name: 'color', type: "'surface' | 'primary' | 'secondary' | 'tertiary'", default: "'surface'", description: 'Background color' },
   { name: 'elevated', type: 'boolean', default: 'false', description: 'Add shadow elevation' },
   { name: 'dense', type: 'boolean', default: 'false', description: 'Compact height (48px vs 64px)' },
+  { name: 'bordered', type: 'boolean', default: 'false', description: 'Add a bottom border (border-outline-variant)' },
 ]
 </script>
 
@@ -772,6 +866,285 @@ const sections = [
       </div>
     </ComponentDemo>
 
+    <!-- ── Profile Header: Modal ──────────────────────────────────── -->
+    <ComponentDemo
+      title="Profile Header — Modal"
+      description="Classic Material drawer with a cover image, profile avatar, name, and email in the header slot."
+      :code="`<MNavigationDrawer v-model=&quot;open&quot; :sections=&quot;sections&quot; :selected=&quot;selected&quot; @select=&quot;selected = $event&quot;>
+  <template #header>
+    <div class=&quot;relative h-40 bg-gradient-to-br from-primary via-tertiary to-secondary&quot;>
+      <div class=&quot;absolute inset-0 bg-black/20&quot; />
+      <div class=&quot;absolute bottom-0 left-0 p-4&quot;>
+        <MAvatar fallback=&quot;AJ&quot; :size=&quot;56&quot; class=&quot;mb-2 ring-2 ring-white/30&quot; />
+        <p class=&quot;text-title-medium font-medium text-white&quot;>Alex Johnson</p>
+        <p class=&quot;text-body-small text-white/80&quot;>alex.johnson@gmail.com</p>
+      </div>
+    </div>
+  </template>
+</MNavigationDrawer>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton icon="menu" @click="profileModalOpen = true">Open Profile Drawer</MButton>
+        <span class="text-body-medium text-on-surface-variant">Selected: {{ profileSelected }}</span>
+      </div>
+      <MNavigationDrawer
+        v-model="profileModalOpen"
+        :sections="profileSections"
+        :selected="profileSelected"
+        @select="profileSelected = $event"
+      >
+        <template #header>
+          <div class="relative h-40 bg-gradient-to-br from-primary via-tertiary to-secondary">
+            <div class="absolute inset-0 bg-black/20" />
+            <div class="absolute bottom-0 left-0 p-4">
+              <MAvatar fallback="AJ" :size="56" class="mb-2 ring-2 ring-white/30" />
+              <p class="text-title-medium font-medium text-white">Alex Johnson</p>
+              <p class="text-body-small text-white/80">alex.johnson@gmail.com</p>
+            </div>
+          </div>
+        </template>
+      </MNavigationDrawer>
+    </ComponentDemo>
+
+    <!-- ── Profile Header: Full Close ─────────────────────────────── -->
+    <ComponentDemo
+      title="Profile Header — Full Close"
+      description="Inline drawer with the same profile header. Toggle to show the curtain close animation."
+      :code="`<MNavigationDrawer
+  :model-value=&quot;open&quot;
+  :modal=&quot;false&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <template #header>
+    <div class=&quot;relative h-40 ...&quot;>
+      ...
+    </div>
+  </template>
+</MNavigationDrawer>`"
+    >
+      <div class="flex h-96 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="profileInlineOpen"
+          :modal="false"
+          :sections="profileSections"
+          :selected="profileSelected"
+          @select="profileSelected = $event"
+        >
+          <template #header>
+            <div class="relative h-40 bg-gradient-to-br from-primary via-tertiary to-secondary">
+              <div class="absolute inset-0 bg-black/20" />
+              <div class="absolute bottom-0 left-0 p-4">
+                <MAvatar fallback="AJ" :size="56" class="mb-2 ring-2 ring-white/30" />
+                <p class="text-title-medium font-medium text-white">Alex Johnson</p>
+                <p class="text-body-small text-white/80">alex.johnson@gmail.com</p>
+              </div>
+            </div>
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 flex-col items-center justify-center gap-3 bg-surface-container">
+          <span class="text-body-medium text-on-surface-variant">{{ profileSelected }} view</span>
+          <MButton @click="profileInlineOpen = !profileInlineOpen">
+            {{ profileInlineOpen ? 'Close' : 'Open' }} Drawer
+          </MButton>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <!-- ── Custom Width: Modal ─────────────────────────────────────── -->
+    <h3 class="mb-4 mt-10 text-title-large font-medium">Custom Width — Modal</h3>
+
+    <ComponentDemo
+      title="Modal Drawers with Custom Width"
+      description="Use the width prop to control drawer width. Compare 240px, 320px, and 400px with collapsible sections and nested children."
+      :code="`<MNavigationDrawer v-model=&quot;open&quot; width=&quot;320px&quot; :sections=&quot;sections&quot; ... />`"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <MButton variant="outlined" @click="modalW1Open = true">240px</MButton>
+        <MButton variant="outlined" @click="modalW2Open = true">320px</MButton>
+        <MButton variant="outlined" @click="modalW3Open = true">400px</MButton>
+        <span class="text-body-medium text-on-surface-variant">Selected: {{ modalWSelected }}</span>
+      </div>
+      <MNavigationDrawer
+        v-model="modalW1Open"
+        width="240px"
+        :sections="widthSections"
+        :selected="modalWSelected"
+        title="240px"
+        @select="modalWSelected = $event"
+      />
+      <MNavigationDrawer
+        v-model="modalW2Open"
+        width="320px"
+        :sections="widthSections"
+        :selected="modalWSelected"
+        title="320px"
+        @select="modalWSelected = $event"
+      />
+      <MNavigationDrawer
+        v-model="modalW3Open"
+        width="400px"
+        :sections="widthSections"
+        :selected="modalWSelected"
+        title="400px"
+        @select="modalWSelected = $event"
+      />
+    </ComponentDemo>
+
+    <!-- ── Custom Width: Inline ────────────────────────────────────── -->
+    <h3 class="mb-4 mt-10 text-title-large font-medium">Custom Width — Inline</h3>
+
+    <ComponentDemo
+      title="Inline 220px"
+      description="Narrow inline drawer with collapsible sections and nested children."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; width=&quot;220px&quot; ... />`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          width="220px"
+          :sections="widthSections"
+          :selected="inlineW1Selected"
+          @select="inlineW1Selected = $event"
+        />
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ inlineW1Selected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Inline 300px"
+      description="Medium inline drawer."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; width=&quot;300px&quot; ... />`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          width="300px"
+          :sections="widthSections"
+          :selected="inlineW2Selected"
+          @select="inlineW2Selected = $event"
+        />
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ inlineW2Selected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Inline 380px"
+      description="Wide inline drawer."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; width=&quot;380px&quot; ... />`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          width="380px"
+          :sections="widthSections"
+          :selected="inlineW3Selected"
+          @select="inlineW3Selected = $event"
+        />
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ inlineW3Selected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <!-- ── Custom Width: Collapsed ─────────────────────────────────── -->
+    <h3 class="mb-4 mt-10 text-title-large font-medium">Custom Width — Collapsed</h3>
+
+    <ComponentDemo
+      title="Collapsed 240px"
+      description="Narrow drawer that collapses to 72px icon-only mode."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; :collapsed=&quot;collapsed&quot; width=&quot;240px&quot; ... />`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :collapsed="collapsedW1"
+          width="240px"
+          :sections="widthSections"
+          :selected="collapsedWSelected1"
+          @select="collapsedWSelected1 = $event"
+        >
+          <template #header>
+            <div class="flex h-12 shrink-0 items-center" :class="collapsedW1 ? 'justify-center' : 'px-3'">
+              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="collapsedW1 = !collapsedW1">
+                <MIcon :name="collapsedW1 ? 'menu' : 'menu_open'" :size="22" />
+              </button>
+            </div>
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ collapsedWSelected1 }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Collapsed 320px"
+      description="Medium drawer that collapses to 72px."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; :collapsed=&quot;collapsed&quot; width=&quot;320px&quot; ... />`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :collapsed="collapsedW2"
+          width="320px"
+          :sections="widthSections"
+          :selected="collapsedWSelected2"
+          @select="collapsedWSelected2 = $event"
+        >
+          <template #header>
+            <div class="flex h-12 shrink-0 items-center" :class="collapsedW2 ? 'justify-center' : 'px-3'">
+              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="collapsedW2 = !collapsedW2">
+                <MIcon :name="collapsedW2 ? 'menu' : 'menu_open'" :size="22" />
+              </button>
+            </div>
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ collapsedWSelected2 }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Collapsed 400px"
+      description="Wide drawer that collapses to 72px."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; :collapsed=&quot;collapsed&quot; width=&quot;400px&quot; ... />`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :collapsed="collapsedW3"
+          width="400px"
+          :sections="widthSections"
+          :selected="collapsedWSelected3"
+          @select="collapsedWSelected3 = $event"
+        >
+          <template #header>
+            <div class="flex h-12 shrink-0 items-center" :class="collapsedW3 ? 'justify-center' : 'px-3'">
+              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="collapsedW3 = !collapsedW3">
+                <MIcon :name="collapsedW3 ? 'menu' : 'menu_open'" :size="22" />
+              </button>
+            </div>
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ collapsedWSelected3 }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="drawerProps" />
 
@@ -859,8 +1232,66 @@ const items = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Bordered"
+      description="Use the bordered prop to add a bottom border. Useful when the app bar sits above content without elevation."
+      :code="`<MTopAppBar title=&quot;My App&quot; :bordered=&quot;true&quot; navigation-icon=&quot;arrow_back&quot;>
+  <template #actions>
+    <MIconButton icon=&quot;more_vert&quot; label=&quot;More&quot; />
+  </template>
+</MTopAppBar>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MTopAppBar title="Bordered" :bordered="true" navigation-icon="arrow_back">
+            <template #actions>
+              <MIconButton icon="search" label="Search" />
+              <MIconButton icon="more_vert" label="More" />
+            </template>
+          </MTopAppBar>
+          <div class="flex h-16 items-center justify-center text-body-medium text-on-surface-variant">Content below</div>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Navigation Slot"
+      description="Use the #navigation slot for full control over the leading area — for example, to conditionally show a menu icon only on mobile."
+      :code="`<MTopAppBar title=&quot;Dashboard&quot;>
+  <template #navigation>
+    <MResponsive hide=&quot;md-up&quot; tag=&quot;span&quot;>
+      <MIconButton icon=&quot;menu&quot; label=&quot;Menu&quot; @click=&quot;drawerOpen = true&quot; />
+    </MResponsive>
+  </template>
+  <template #actions>
+    <MIconButton icon=&quot;notifications&quot; label=&quot;Alerts&quot; />
+  </template>
+</MTopAppBar>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MTopAppBar title="Dashboard" :bordered="true">
+            <template #navigation>
+              <MIconButton icon="menu" label="Menu" />
+            </template>
+            <template #actions>
+              <MIconButton icon="notifications" label="Alerts" />
+              <MIconButton icon="more_vert" label="More" />
+            </template>
+          </MTopAppBar>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="topAppBarProps" />
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>#title        — Custom title content (default: renders the title prop)
+#navigation   — Custom leading area (default: MIconButton from navigationIcon prop)
+#actions      — Trailing action buttons</code></pre>
+    </MCard>
 
     <!-- ── MAppBar ─────────────────────────────────────────────────────── -->
     <h2 id="mappbar" class="mb-4 mt-14 text-headline-small font-medium">MAppBar</h2>
@@ -912,7 +1343,44 @@ const items = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Bordered"
+      description="Use the bordered prop to add a bottom border instead of elevation."
+      :code="`<MAppBar :bordered=&quot;true&quot;>
+  <template #leading>
+    <MIconButton icon=&quot;arrow_back&quot; label=&quot;Back&quot; />
+  </template>
+  <span class=&quot;text-title-large&quot;>Details</span>
+  <template #trailing>
+    <MIconButton icon=&quot;share&quot; label=&quot;Share&quot; />
+  </template>
+</MAppBar>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MAppBar :bordered="true">
+            <template #leading>
+              <MIconButton icon="arrow_back" label="Back" />
+            </template>
+            <span class="text-title-large">Details</span>
+            <template #trailing>
+              <MIconButton icon="share" label="Share" />
+              <MIconButton icon="more_vert" label="More" />
+            </template>
+          </MAppBar>
+          <div class="flex h-16 items-center justify-center text-body-medium text-on-surface-variant">Content below</div>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="appBarProps" />
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>#leading   — Leading area (e.g. back button, menu icon)
+#default   — Main content (title text)
+#trailing  — Trailing action buttons</code></pre>
+    </MCard>
   </div>
 </template>

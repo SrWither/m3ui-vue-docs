@@ -4,7 +4,7 @@ import {
   MContainer, MGrid, MStack, MSplitter, MMasonry, MCard, MButton,
   MText, MTitle, MSubtitle, MFlex, MSpacer, MCenter, MBox, MSection, MResponsive,
   MIconButton, MSpinner, MRelative, MAbsolute, MFixed, MSticky, MFullscreen,
-  MScrollable, MAspectRatio, MAppLayout, MOverlay, MIcon, MBadge, MFab,
+  MScrollable, MAspectRatio, MAppLayout, MFooter, MOverlay, MIcon, MBadge, MFab, MDivider,
 } from '@m3ui-vue/m3ui-vue'
 import type { TextVariant } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -137,7 +137,9 @@ const surfaceVariants = [
 
 const positionProps: PropDef[] = [
   { name: 'placement', type: "'top-left' | 'top-center' | 'top-right' | 'center-left' | 'center' | 'center-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'", description: 'Preset corner/edge placement' },
-  { name: 'offset', type: 'string | number', default: '0', description: 'Distance from edges when using placement' },
+  { name: 'offset', type: 'string | number', default: '0', description: 'Distance from edges when using placement (applies to both axes)' },
+  { name: 'offsetX', type: 'string | number', description: 'Horizontal offset — overrides offset for the X axis' },
+  { name: 'offsetY', type: 'string | number', description: 'Vertical offset — overrides offset for the Y axis' },
   { name: 'top', type: 'string | number', description: 'Top offset (number = px)' },
   { name: 'right', type: 'string | number', description: 'Right offset' },
   { name: 'bottom', type: 'string | number', description: 'Bottom offset' },
@@ -162,8 +164,12 @@ const aspectRatioProps: PropDef[] = [
 ]
 
 const appLayoutProps: PropDef[] = [
-  { name: 'drawerWidth', type: 'string', default: "'auto'", description: 'Fixed width for the drawer slot' },
   { name: 'height', type: 'string', default: "'100dvh'", description: 'Container height (CSS value). Use "100%" to fit inside a parent instead of the viewport.' },
+]
+
+const footerProps: PropDef[] = [
+  { name: 'bordered', type: 'boolean', default: 'false', description: 'Add a top border (border-outline-variant)' },
+  { name: 'surface', type: "'default' | 'container' | 'container-low' | 'container-high' | 'inverse'", default: "'default'", description: 'Background surface color' },
 ]
 
 const overlayProps: PropDef[] = [
@@ -797,12 +803,26 @@ const showOverlay = ref(false)
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="responsiveProps" />
 
-    <!-- ── MRelative & MAbsolute ───────────────────────────────────────── -->
-    <h2 id="mrelative" class="mb-4 mt-14 text-headline-small font-medium">MRelative & MAbsolute</h2>
+    <!-- ── MRelative ─────────────────────────────────────────────────── -->
+    <h2 id="mrelative" class="mb-4 mt-14 text-headline-small font-medium">MRelative</h2>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      Wrapper that sets <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">position: relative</code> on a container.
+      Use it as the positioning parent for MAbsolute children.
+    </p>
+
+    <MCard class="mb-8 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="text-body-medium text-on-surface-variant">MRelative has no props — it simply creates a relative positioning context.</p>
+    </MCard>
+
+    <!-- ── MAbsolute ──────────────────────────────────────────────────── -->
+    <h2 id="mabsolute" class="mb-4 mt-14 text-headline-small font-medium">MAbsolute</h2>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      Declarative absolute positioning without Tailwind classes. Supports manual offsets, placement shortcuts, and per-axis control.
+    </p>
 
     <ComponentDemo
-      title="Positioning"
-      description="Declarative positioning without Tailwind classes."
+      title="Manual Offsets"
+      description="Use top, right, bottom, left props for precise positioning."
       :code="`<template>
   <MRelative>
     <MBox surface=&quot;container&quot; padding=&quot;lg&quot; rounded=&quot;lg&quot; class=&quot;h-40&quot;>
@@ -883,13 +903,71 @@ const showOverlay = ref(false)
       </div>
     </ComponentDemo>
 
-    <h3 class="mb-3 mt-6 text-title-large font-medium">MAbsolute / MFixed Props</h3>
+    <ComponentDemo
+      title="Separate X / Y Offsets"
+      description="Use offsetX and offsetY to set different distances per axis. They override the general offset prop."
+      :code="`<MRelative class=&quot;h-48&quot;>
+  <MAbsolute placement=&quot;top-right&quot; :offset-x=&quot;16&quot; :offset-y=&quot;8&quot;>
+    Close to top, further from right
+  </MAbsolute>
+  <MAbsolute placement=&quot;bottom-right&quot; :offset-x=&quot;24&quot; :offset-y=&quot;96&quot;>
+    Large Y offset (e.g. above a bottom nav)
+  </MAbsolute>
+</MRelative>`"
+    >
+      <div class="w-full max-w-md">
+        <MRelative>
+          <MBox surface="container" padding="lg" rounded="lg" class="h-48" />
+          <MAbsolute placement="top-right" :offset-x="16" :offset-y="8">
+            <MBox surface="primary-container" padding="xs" rounded="md">
+              <MText variant="label-small">offsetX: 16, offsetY: 8</MText>
+            </MBox>
+          </MAbsolute>
+          <MAbsolute placement="bottom-left" :offset-x="12" :offset-y="32">
+            <MBox surface="secondary-container" padding="xs" rounded="md">
+              <MText variant="label-small">offsetX: 12, offsetY: 32</MText>
+            </MBox>
+          </MAbsolute>
+          <MAbsolute placement="bottom-right" :offset-x="24" :offset-y="48">
+            <MBox surface="tertiary-container" padding="xs" rounded="md">
+              <MText variant="label-small">offsetX: 24, offsetY: 48</MText>
+            </MBox>
+          </MAbsolute>
+        </MRelative>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="positionProps" />
 
-    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
-      <p class="mb-2 text-title-small font-medium">MRelative</p>
-      <p class="text-body-medium text-on-surface-variant">MRelative has no props — it simply sets <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">position: relative</code> on a wrapper div.</p>
-    </MCard>
+    <!-- ── MFixed ─────────────────────────────────────────────────────── -->
+    <h2 id="mfixed" class="mb-4 mt-14 text-headline-small font-medium">MFixed</h2>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      Same API as MAbsolute but uses <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">position: fixed</code>.
+      Positions elements relative to the viewport. Default z-index is 50.
+    </p>
+
+    <ComponentDemo
+      title="Fixed Positioning"
+      description="Use MFixed to pin elements to the viewport. Supports the same placement, offset, offsetX, and offsetY props as MAbsolute."
+      :code="`<MFixed placement=&quot;bottom-right&quot; :offset-x=&quot;24&quot; :offset-y=&quot;24&quot;>
+  <MFab icon=&quot;add&quot; />
+</MFixed>
+
+<MFixed placement=&quot;top-center&quot; :offset-y=&quot;16&quot;>
+  <MAlert variant=&quot;filled&quot;>Fixed banner</MAlert>
+</MFixed>`"
+    >
+      <MCard class="flex items-center gap-3 p-4">
+        <MIcon name="info" :size="20" class="text-primary" />
+        <MText variant="body-medium" color="on-surface-variant">
+          MFixed shares the same props as MAbsolute — see the table above. The only difference is the default z-index (50) and <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-body-small text-primary">position: fixed</code> instead of absolute.
+        </MText>
+      </MCard>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="positionProps" />
 
     <!-- ── MSticky ─────────────────────────────────────────────────────── -->
     <h2 id="msticky" class="mb-4 mt-14 text-headline-small font-medium">MSticky</h2>
@@ -992,6 +1070,172 @@ const showOverlay = ref(false)
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="aspectRatioProps" />
+
+    <!-- ── MFooter ──────────────────────────────────────────────────── -->
+    <h2 id="mfooter" class="mb-4 mt-14 text-headline-small font-medium">MFooter</h2>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      Page footer with slots for brand, content, social links, and a bottom bar. Responsive padding adapts to screen size.
+    </p>
+
+    <ComponentDemo
+      title="Simple Footer"
+      description="Minimal footer with just a bottom bar for copyright."
+      :code="`<MFooter :bordered=&quot;true&quot; surface=&quot;container&quot;>
+  <template #bottom>
+    <MText variant=&quot;body-small&quot; color=&quot;on-surface-variant&quot;>
+      &amp;copy; 2026 MyApp. All rights reserved.
+    </MText>
+  </template>
+</MFooter>`"
+    >
+      <div class="w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MFooter :bordered="true" surface="container">
+          <template #bottom>
+            <MText variant="body-small" color="on-surface-variant">
+              &copy; 2026 MyApp. All rights reserved.
+            </MText>
+          </template>
+        </MFooter>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Full Footer"
+      description="Complete footer with brand, navigation columns, social links, and a bottom bar."
+      :code="`<MFooter :bordered=&quot;true&quot; surface=&quot;container-low&quot;>
+  <template #brand>
+    <MFlex align=&quot;center&quot; gap=&quot;sm&quot;>
+      <MIcon name=&quot;widgets&quot; :size=&quot;28&quot; class=&quot;text-primary&quot; />
+      <MText variant=&quot;title-large&quot; weight=&quot;medium&quot;>MyApp</MText>
+    </MFlex>
+    <MText variant=&quot;body-medium&quot; color=&quot;on-surface-variant&quot; class=&quot;mt-2 max-w-md&quot;>
+      Building beautiful interfaces with Material Design 3.
+    </MText>
+  </template>
+
+  <MGrid :cols=&quot;2&quot; :sm=&quot;3&quot; :lg=&quot;4&quot; gap=&quot;lg&quot;>
+    &lt;!-- columns... --&gt;
+  </MGrid>
+
+  <template #social>
+    <MIconButton icon=&quot;...&quot; label=&quot;...&quot; />
+  </template>
+
+  <template #bottom>
+    <MFlex align=&quot;center&quot; justify=&quot;between&quot; gap=&quot;md&quot; wrap>
+      &lt;!-- copyright + links --&gt;
+    </MFlex>
+  </template>
+</MFooter>`"
+    >
+      <div class="w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MFooter :bordered="true" surface="container-low">
+          <template #brand>
+            <MFlex align="center" gap="sm">
+              <MBox surface="primary-container" padding="sm" rounded="lg">
+                <MCenter>
+                  <MIcon name="widgets" :size="24" />
+                </MCenter>
+              </MBox>
+              <MText variant="title-large" weight="medium">MyApp</MText>
+            </MFlex>
+            <MText variant="body-medium" color="on-surface-variant" class="mt-2 max-w-md">
+              Building beautiful interfaces with Material Design 3 and Vue.
+            </MText>
+          </template>
+
+          <MGrid :cols="2" :sm="3" :lg="4" gap="lg">
+            <MStack gap="sm">
+              <MText variant="label-large" weight="medium">Product</MText>
+              <MText variant="body-small" color="on-surface-variant">Features</MText>
+              <MText variant="body-small" color="on-surface-variant">Pricing</MText>
+              <MText variant="body-small" color="on-surface-variant">Changelog</MText>
+              <MText variant="body-small" color="on-surface-variant">Roadmap</MText>
+            </MStack>
+            <MStack gap="sm">
+              <MText variant="label-large" weight="medium">Resources</MText>
+              <MText variant="body-small" color="on-surface-variant">Documentation</MText>
+              <MText variant="body-small" color="on-surface-variant">API Reference</MText>
+              <MText variant="body-small" color="on-surface-variant">Examples</MText>
+              <MText variant="body-small" color="on-surface-variant">Blog</MText>
+            </MStack>
+            <MStack gap="sm">
+              <MText variant="label-large" weight="medium">Company</MText>
+              <MText variant="body-small" color="on-surface-variant">About</MText>
+              <MText variant="body-small" color="on-surface-variant">Careers</MText>
+              <MText variant="body-small" color="on-surface-variant">Contact</MText>
+            </MStack>
+            <MStack gap="sm">
+              <MText variant="label-large" weight="medium">Legal</MText>
+              <MText variant="body-small" color="on-surface-variant">Privacy Policy</MText>
+              <MText variant="body-small" color="on-surface-variant">Terms of Service</MText>
+              <MText variant="body-small" color="on-surface-variant">Cookie Policy</MText>
+            </MStack>
+          </MGrid>
+
+          <template #social>
+            <MIconButton icon="code" label="GitHub" />
+            <MIconButton icon="chat" label="Discord" />
+            <MIconButton icon="alternate_email" label="Twitter" />
+            <MIconButton icon="videocam" label="YouTube" />
+          </template>
+
+          <template #bottom>
+            <MFlex align="center" justify="between" gap="md" :wrap="true">
+              <MText variant="body-small" color="on-surface-variant">
+                &copy; 2026 MyApp Inc. All rights reserved.
+              </MText>
+              <MFlex gap="lg">
+                <MText variant="body-small" color="on-surface-variant">Privacy</MText>
+                <MText variant="body-small" color="on-surface-variant">Terms</MText>
+                <MText variant="body-small" color="on-surface-variant">Sitemap</MText>
+              </MFlex>
+            </MFlex>
+          </template>
+        </MFooter>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Inverse Surface"
+      description="Dark footer using the inverse surface for contrast against light pages."
+      :code="`<MFooter surface=&quot;inverse&quot;>
+  ...
+</MFooter>`"
+    >
+      <div class="w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MFooter surface="inverse">
+          <template #brand>
+            <MFlex align="center" gap="sm">
+              <MIcon name="rocket_launch" :size="24" />
+              <MText variant="title-medium" weight="medium">Startup</MText>
+            </MFlex>
+          </template>
+          <MFlex gap="xl" :wrap="true">
+            <MText variant="body-small">Docs</MText>
+            <MText variant="body-small">Blog</MText>
+            <MText variant="body-small">Pricing</MText>
+            <MText variant="body-small">Support</MText>
+          </MFlex>
+          <template #bottom>
+            <MText variant="body-small" class="opacity-60">
+              &copy; 2026 Startup Inc.
+            </MText>
+          </template>
+        </MFooter>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="footerProps" />
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>#brand    — Logo and tagline area (top)
+#default  — Main content area (navigation columns, etc.)
+#social   — Social media icon buttons (flex row with gap)
+#bottom   — Bottom bar with copyright / legal links (separated by a top border)</code></pre>
+    </MCard>
 
     <!-- ── MAppLayout ──────────────────────────────────────────────────── -->
     <h2 id="mapplayout" class="mb-4 mt-14 text-headline-small font-medium">MAppLayout</h2>
