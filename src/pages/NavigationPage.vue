@@ -211,7 +211,24 @@ const drawerProps: PropDef[] = [
   { name: 'modal', type: 'boolean', default: 'true', description: 'Modal with scrim overlay, or inline sidebar' },
   { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons (inline variant only)' },
   { name: 'width', type: 'string', description: 'Custom drawer width (e.g. "320px", "25rem"). Defaults to w-72 (288px)' },
+  { name: 'side', type: "'left' | 'right' | 'top' | 'bottom'", default: "'left'", description: 'Which side the drawer opens from. Top/bottom only available for modal variant.' },
 ]
+
+// ── Side examples ─────────────────────────────────────────────────
+const sideModalLeft = ref(false)
+const sideModalRight = ref(false)
+const sideModalTop = ref(false)
+const sideModalBottom = ref(false)
+const sideSelected = ref<string | number>('w-home')
+
+const sideInlineRight = ref(true)
+const sideInlineRightSelected = ref<string | number>('w-home')
+
+const sideFullCloseRight = ref(true)
+const sideFullCloseRightSelected = ref<string | number>('w-home')
+
+const sideCollapsedRight = ref(false)
+const sideCollapsedRightSelected = ref<string | number>('w-home')
 
 // ── Custom width examples ─────────────────────────────────────────
 const widthSections: DrawerSection[] = [
@@ -949,6 +966,139 @@ const sections = [
             {{ profileInlineOpen ? 'Close' : 'Open' }} Drawer
           </MButton>
         </div>
+      </div>
+    </ComponentDemo>
+
+    <!-- ── Side: Modal ───────────────────────────────────────────── -->
+    <h3 class="mb-4 mt-10 text-title-large font-medium">Side — Modal</h3>
+
+    <ComponentDemo
+      title="All Four Sides"
+      description="Use the side prop to open the modal drawer from any direction."
+      :code="`<MNavigationDrawer v-model=&quot;open&quot; side=&quot;right&quot; :sections=&quot;sections&quot; ... />
+<MNavigationDrawer v-model=&quot;open&quot; side=&quot;top&quot; :sections=&quot;sections&quot; ... />
+<MNavigationDrawer v-model=&quot;open&quot; side=&quot;bottom&quot; :sections=&quot;sections&quot; ... />`"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <MButton variant="outlined" icon="chevron_right" @click="sideModalLeft = true">Left (default)</MButton>
+        <MButton variant="outlined" icon="chevron_left" @click="sideModalRight = true">Right</MButton>
+        <MButton variant="outlined" icon="expand_more" @click="sideModalTop = true">Top</MButton>
+        <MButton variant="outlined" icon="expand_less" @click="sideModalBottom = true">Bottom</MButton>
+        <span class="text-body-medium text-on-surface-variant">Selected: {{ sideSelected }}</span>
+      </div>
+      <MNavigationDrawer
+        v-model="sideModalLeft"
+        side="left"
+        :sections="widthSections"
+        :selected="sideSelected"
+        title="Left"
+        @select="sideSelected = $event"
+      />
+      <MNavigationDrawer
+        v-model="sideModalRight"
+        side="right"
+        :sections="widthSections"
+        :selected="sideSelected"
+        title="Right"
+        @select="sideSelected = $event"
+      />
+      <MNavigationDrawer
+        v-model="sideModalTop"
+        side="top"
+        :sections="widthSections"
+        :selected="sideSelected"
+        title="Top"
+        @select="sideSelected = $event"
+      />
+      <MNavigationDrawer
+        v-model="sideModalBottom"
+        side="bottom"
+        :sections="widthSections"
+        :selected="sideSelected"
+        title="Bottom"
+        @select="sideSelected = $event"
+      />
+    </ComponentDemo>
+
+    <!-- ── Side: Inline ──────────────────────────────────────────── -->
+    <h3 class="mb-4 mt-10 text-title-large font-medium">Side — Inline</h3>
+
+    <ComponentDemo
+      title="Right Side Inline"
+      description="Inline drawer on the right side of the layout with border-left instead of border-right."
+      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; side=&quot;right&quot; ... />`"
+    >
+      <div class="flex h-72 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ sideInlineRightSelected }} view
+        </div>
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          side="right"
+          :sections="widthSections"
+          :selected="sideInlineRightSelected"
+          @select="sideInlineRightSelected = $event"
+        />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Right Side Full Close"
+      description="Toggle an inline right-side drawer with the curtain animation."
+      :code="`<MNavigationDrawer :model-value=&quot;open&quot; :modal=&quot;false&quot; side=&quot;right&quot; ... />`"
+    >
+      <div class="flex h-72 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <div class="flex flex-1 flex-col items-center justify-center gap-3 bg-surface-container">
+          <span class="text-body-medium text-on-surface-variant">{{ sideFullCloseRightSelected }} view</span>
+          <MButton @click="sideFullCloseRight = !sideFullCloseRight">
+            {{ sideFullCloseRight ? 'Close' : 'Open' }} Drawer
+          </MButton>
+        </div>
+        <MNavigationDrawer
+          :model-value="sideFullCloseRight"
+          :modal="false"
+          side="right"
+          :sections="widthSections"
+          :selected="sideFullCloseRightSelected"
+          @select="sideFullCloseRightSelected = $event"
+        />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Right Side Collapsed"
+      description="Collapsed mode on a right-side inline drawer."
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  side=&quot;right&quot;
+  :collapsed=&quot;collapsed&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+/>`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ sideCollapsedRightSelected }} view
+        </div>
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          side="right"
+          :collapsed="sideCollapsedRight"
+          :sections="widthSections"
+          :selected="sideCollapsedRightSelected"
+          @select="sideCollapsedRightSelected = $event"
+        >
+          <template #header>
+            <div class="flex h-12 shrink-0 items-center" :class="sideCollapsedRight ? 'justify-center' : 'px-3'">
+              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="sideCollapsedRight = !sideCollapsedRight">
+                <MIcon :name="sideCollapsedRight ? 'menu' : 'menu_open'" :size="22" />
+              </button>
+            </div>
+          </template>
+        </MNavigationDrawer>
       </div>
     </ComponentDemo>
 

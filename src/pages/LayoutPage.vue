@@ -165,6 +165,7 @@ const aspectRatioProps: PropDef[] = [
 
 const appLayoutProps: PropDef[] = [
   { name: 'height', type: 'string', default: "'100dvh'", description: 'Container height (CSS value). Use "100%" to fit inside a parent instead of the viewport.' },
+  { name: 'drawerRight', type: 'boolean', default: 'false', description: 'Place the drawer slot on the right side of the layout' },
 ]
 
 const footerProps: PropDef[] = [
@@ -1316,12 +1317,60 @@ const showOverlay = ref(false)
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Drawer on the Right"
+      description="Use drawerRight to place the drawer on the right side. Combine with MNavigationDrawer side=&quot;right&quot; for the correct border."
+      :code="`<MAppLayout :drawer-right=&quot;true&quot;>
+  <template #drawer>
+    <MNavigationDrawer side=&quot;right&quot; ... />
+  </template>
+  <template #header>
+    <MTopAppBar ... />
+  </template>
+  Main content
+</MAppLayout>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined" class="h-72 overflow-hidden">
+          <MAppLayout height="100%" :drawer-right="true">
+            <template #drawer>
+              <MBox surface="container-low" padding="sm" class="h-full w-48 border-l border-outline-variant">
+                <MText variant="title-small" weight="medium" class="mb-3">Drawer</MText>
+                <MStack gap="xs">
+                  <MBox surface="secondary-container" padding="xs" rounded="md">
+                    <MFlex align="center" gap="sm">
+                      <MIcon name="home" :size="18" />
+                      <MText variant="label-large">Home</MText>
+                    </MFlex>
+                  </MBox>
+                  <MFlex align="center" gap="sm" class="px-1">
+                    <MIcon name="settings" :size="18" class="text-on-surface-variant" />
+                    <MText variant="label-large" color="on-surface-variant">Settings</MText>
+                  </MFlex>
+                </MStack>
+              </MBox>
+            </template>
+
+            <template #header>
+              <MBox surface="container" padding="sm" class="border-b border-outline-variant">
+                <MText variant="title-small" weight="medium">Header</MText>
+              </MBox>
+            </template>
+
+            <MBox padding="md">
+              <MText variant="body-medium" color="on-surface-variant">Main content area — drawer is on the right</MText>
+            </MBox>
+          </MAppLayout>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="appLayoutProps" />
 
     <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
       <p class="mb-2 text-title-small font-medium">Slots</p>
-      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>#drawer   — Side navigation (e.g. MNavigationDrawer)
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>#drawer   — Side navigation (e.g. MNavigationDrawer). Use drawerRight prop to place it on the right.
 #header   — Top bar (e.g. MTopAppBar)
 #default  — Main scrollable content
 #footer   — Bottom bar or status area
