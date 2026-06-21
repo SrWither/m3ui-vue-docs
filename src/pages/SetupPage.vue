@@ -97,11 +97,29 @@ const optionalDeps = [
       </div>
     </MCard>
 
+    <MCard class="mb-8 flex items-start gap-3 p-4">
+      <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <div>
+        <p class="text-body-medium font-medium text-on-surface">
+          Scrollbars are hidden by default on Chromium-based browsers (Chrome, Edge, Arc, etc.)
+          because their space-consuming behavior breaks some layout styles. Firefox is unaffected —
+          it uses overlay scrollbars natively. If you need visible scrollbars, apply
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollbar-width: thin</code> or
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollbar-width: auto</code>
+          on the specific elements where you want them.
+        </p>
+      </div>
+    </MCard>
+
     <!-- Step 1 -->
     <div class="mb-8 flex gap-4">
       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary text-label-large font-medium">1</span>
       <div class="flex-1">
         <h2 class="mb-2 text-title-large font-medium">Install the package</h2>
+        <p class="mb-3 text-body-medium text-on-surface-variant">
+          After installing, run <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">pnpm info @m3ui-vue/m3ui-vue version</code> and compare it with your
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">node_modules</code> to make sure you got the latest version — package managers can sometimes resolve an older cached version even with the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@latest</code> tag.
+        </p>
         <MCodeEditor :model-value="installCode" language="javascript" :readonly="true" :line-numbers="false" min-height="50px" max-height="100px" />
       </div>
     </div>
