@@ -72,7 +72,7 @@ const categories = [
   { label: 'Feedback', icon: 'feedback', count: 7, to: '/components/feedback' },
   { label: 'Navigation', icon: 'menu_open', count: 11, to: '/components/navigation' },
   { label: 'Layout', icon: 'grid_view', count: 24, to: '/components/layout' },
-  { label: 'Overlays', icon: 'layers', count: 3, to: '/components/overlays' },
+  { label: 'Overlays', icon: 'layers', count: 4, to: '/components/overlays' },
   { label: 'Tables', icon: 'table_chart', count: 4, to: '/components/tables' },
   { label: 'Utility', icon: 'build', count: 6, to: '/components/utility' },
   { label: 'Editors', icon: 'code', count: 6, to: '/components/editors' },
