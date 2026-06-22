@@ -10,7 +10,16 @@ import {
 } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
-import { version } from '../../../m3ui-vue/package.json'
+import { onMounted } from 'vue'
+
+const version = ref('')
+onMounted(async () => {
+  try {
+    const res = await fetch('https://registry.npmjs.org/@m3ui-vue/m3ui-vue/latest')
+    const data = await res.json()
+    version.value = data.version
+  } catch { /* fallback: chip hidden via v-if */ }
+})
 
 const toast = useToast()
 const { theme, cycle } = useTheme()
@@ -108,7 +117,7 @@ const categories = [
 
         <!-- Stats -->
         <MFlex gap="sm" wrap class="mt-4 justify-center">
-          <MChip icon="new_releases" tone="primary">v{{ version }}</MChip>
+          <MChip v-if="version" icon="new_releases" tone="primary">v{{ version }}</MChip>
           <MChip icon="widgets" tone="primary">70+ Components</MChip>
           <MChip icon="palette" tone="secondary">20 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>
