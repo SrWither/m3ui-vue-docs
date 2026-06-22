@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import {
   MCard, MButton, MIconButton, MIcon, MAvatar, MBadge, MDivider,
   MAppBar, MTextField, MChip, MTooltip, MDataTable, MDialog, MSelect,
-  MConfirmDialog, useToast,
+  MConfirmDialog, MChatBubble, useToast,
   MText, MSubtitle, MFlex, MSpacer, MStack, MBox, MSection, MCenter,
   MScrollable, MRelative, MAbsolute, MList, MListItem, MListSubheader,
 } from '@m3ui-vue/m3ui-vue'
@@ -216,8 +216,17 @@ function bulkDelete() {
         </MStack>
       </MAppBar>
 
-      <MScrollable class=&quot;flex-1 bg-surface-container-lowest p-4&quot;>
-        &lt;!-- message bubbles --&gt;
+      <MScrollable class=&quot;flex-1 bg-surface-container-lowest&quot;>
+        <div class=&quot;space-y-2 p-4&quot;>
+          <MChatBubble
+            v-for=&quot;msg in messages&quot;
+            :text=&quot;msg.text&quot;
+            :time=&quot;msg.time&quot;
+            :side=&quot;msg.from === 'me' ? 'right' : 'left'&quot;
+            :sender=&quot;msg.from !== 'me' ? contacts[selected].name : undefined&quot;
+            :status=&quot;msg.from === 'me' ? 'read' : undefined&quot;
+          />
+        </div>
       </MScrollable>
 
       <MBox padding=&quot;sm&quot; class=&quot;border-t border-outline-variant&quot;>
@@ -232,7 +241,7 @@ function bulkDelete() {
 </template>`"
         :script="`import { ref } from 'vue'
 import {
-  MAvatar, MAppBar, MTextField, MIconButton, MTooltip,
+  MAvatar, MAppBar, MTextField, MIconButton, MTooltip, MChatBubble,
   MText, MFlex, MStack, MBox, MScrollable, MRelative, MAbsolute,
 } from '@m3ui-vue/m3ui-vue'
 
@@ -330,23 +339,17 @@ function send() {
             </MAppBar>
 
             <MScrollable class="flex-1 bg-surface-container-lowest">
-              <MStack gap="sm" class="p-4">
-                <MFlex
+              <div class="space-y-2 p-4">
+                <MChatBubble
                   v-for="(msg, i) in chatMessages"
                   :key="i"
-                  :justify="msg.from === 'me' ? 'end' : 'start'"
-                >
-                  <MBox
-                    :surface="msg.from === 'me' ? 'primary-container' : 'container-high'"
-                    padding="sm"
-                    class="max-w-[75%]"
-                    :class="msg.from === 'me' ? 'rounded-2xl rounded-br-md' : 'rounded-2xl rounded-bl-md'"
-                  >
-                    <MText variant="body-medium">{{ msg.text }}</MText>
-                    <MText variant="body-small" align="right" class="mt-1 opacity-60">{{ msg.time }}</MText>
-                  </MBox>
-                </MFlex>
-              </MStack>
+                  :text="msg.text"
+                  :time="msg.time"
+                  :side="msg.from === 'me' ? 'right' : 'left'"
+                  :sender="msg.from !== 'me' ? contacts[chatSelected]!.name : undefined"
+                  :status="msg.from === 'me' ? 'read' : undefined"
+                />
+              </div>
             </MScrollable>
 
             <MBox padding="sm" class="border-t border-outline-variant bg-surface">

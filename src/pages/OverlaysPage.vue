@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  MBottomSheet, MSideSheet, MLoadingOverlay, MWindow,
+  MBottomSheet, MSideSheet, MLoadingOverlay, MWindow, MChatBubble,
   MButton, MCard, MIcon, MTextField, MSelect, MSwitch,
   MChip, MAvatar, MDivider, MProgressBar, MBadge,
 } from '@m3ui-vue/m3ui-vue'
@@ -37,6 +37,7 @@ function sendChat() {
   chatInput.value = ''
 }
 
+const windowConstrained = ref(false)
 const windowPlayer = ref(false)
 const playerPlaying = ref(false)
 const playerProgress = ref(35)
@@ -56,6 +57,8 @@ const windowProps: PropDef[] = [
   { name: 'height', type: 'string', default: "'300px'", description: 'Initial height' },
   { name: 'minWidth', type: 'number', default: '200', description: 'Minimum width in px' },
   { name: 'minHeight', type: 'number', default: '150', description: 'Minimum height in px' },
+  { name: 'maxWidth', type: 'number', description: 'Maximum width in px' },
+  { name: 'maxHeight', type: 'number', description: 'Maximum height in px' },
   { name: 'x', type: 'number', default: '50', description: 'Initial X position' },
   { name: 'y', type: 'number', default: '50', description: 'Initial Y position' },
   { name: 'resizable', type: 'boolean', default: 'true', description: 'Allow resizing from edges and corners' },
@@ -503,6 +506,44 @@ const loading = ref(false)
     </ComponentDemo>
 
     <ComponentDemo
+      title="Size Constraints"
+      description="Use maxWidth and maxHeight to limit how large the window can grow. The window also auto-clamps to its container — try resizing your browser."
+      :code="`<MWindow
+  v-model=&quot;open&quot;
+  title=&quot;Constrained&quot;
+  icon=&quot;aspect_ratio&quot;
+  width=&quot;300px&quot;
+  height=&quot;200px&quot;
+  :min-width=&quot;200&quot;
+  :min-height=&quot;150&quot;
+  :max-width=&quot;500&quot;
+  :max-height=&quot;300&quot;
+/>`"
+    >
+      <div class="relative h-96 w-full overflow-hidden rounded-xl border border-outline-variant bg-surface-container-low">
+        <MButton v-if="!windowConstrained" variant="tonal" class="absolute left-4 top-4" @click="windowConstrained = true">Open Window</MButton>
+        <MWindow
+          v-model="windowConstrained"
+          title="Constrained"
+          icon="aspect_ratio"
+          width="300px"
+          height="200px"
+          :min-width="200"
+          :min-height="150"
+          :max-width="500"
+          :max-height="300"
+          :x="20"
+          :y="20"
+        >
+          <div class="p-4 text-body-medium text-on-surface-variant">
+            <p>This window can't shrink below 200×150 or grow beyond 500×300.</p>
+            <p class="mt-2">It also auto-clamps to the container boundaries on resize.</p>
+          </div>
+        </MWindow>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
       title="Chat App"
       description="A more elaborate example showing a functional chat window with messages, input, and status indicators."
       flush
@@ -521,24 +562,14 @@ const loading = ref(false)
   </template>
   <div class=&quot;flex h-full flex-col&quot;>
     <div class=&quot;flex-1 space-y-2 overflow-y-auto p-3&quot;>
-      <div
+      <MChatBubble
         v-for=&quot;msg in messages&quot;
-        :key=&quot;msg.time&quot;
-        class=&quot;flex&quot;
-        :class=&quot;msg.from === 'me' ? 'justify-end' : 'justify-start'&quot;
-      >
-        <div
-          class=&quot;max-w-[75%] rounded-2xl px-3 py-2&quot;
-          :class=&quot;msg.from === 'me'
-            ? 'rounded-br-sm bg-primary text-on-primary'
-            : 'rounded-bl-sm bg-surface-container-high text-on-surface'&quot;
-        >
-          <p class=&quot;text-body-medium&quot;>{{ msg.text }}</p>
-          <p class=&quot;mt-0.5 text-right text-label-small&quot;
-            :class=&quot;msg.from === 'me' ? 'text-on-primary/60' : 'text-on-surface-variant'&quot;
-          >{{ msg.time }}</p>
-        </div>
-      </div>
+        :text=&quot;msg.text&quot;
+        :time=&quot;msg.time&quot;
+        :side=&quot;msg.from === 'me' ? 'right' : 'left'&quot;
+        :sender=&quot;msg.from !== 'me' ? 'Alex' : undefined&quot;
+        :status=&quot;msg.from === 'me' ? 'read' : undefined&quot;
+      />
     </div>
     <div class=&quot;flex items-center gap-2 border-t border-outline-variant p-2&quot;>
       <input
@@ -598,22 +629,15 @@ function send() {
           </template>
           <div class="flex h-full flex-col">
             <div class="flex-1 space-y-2 overflow-y-auto p-3">
-              <div
+              <MChatBubble
                 v-for="(msg, i) in chatMessages"
                 :key="i"
-                class="flex"
-                :class="msg.from === 'me' ? 'justify-end' : 'justify-start'"
-              >
-                <div
-                  class="max-w-[75%] rounded-2xl px-3 py-2"
-                  :class="msg.from === 'me'
-                    ? 'rounded-br-sm bg-primary text-on-primary'
-                    : 'rounded-bl-sm bg-surface-container-high text-on-surface'"
-                >
-                  <p class="text-body-medium">{{ msg.text }}</p>
-                  <p class="mt-0.5 text-right text-label-small" :class="msg.from === 'me' ? 'text-on-primary/60' : 'text-on-surface-variant'">{{ msg.time }}</p>
-                </div>
-              </div>
+                :text="msg.text"
+                :time="msg.time"
+                :side="msg.from === 'me' ? 'right' : 'left'"
+                :sender="msg.from !== 'me' ? msg.name : undefined"
+                :status="msg.from === 'me' ? 'read' : undefined"
+              />
             </div>
             <div class="flex items-center gap-2 border-t border-outline-variant p-2">
               <input
