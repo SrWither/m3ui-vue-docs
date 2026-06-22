@@ -37,6 +37,17 @@ function sendChat() {
   chatInput.value = ''
 }
 
+const windowPlayer = ref(false)
+const playerPlaying = ref(false)
+const playerProgress = ref(35)
+const playerVolume = ref(75)
+const playlist = [
+  { title: 'Midnight City', artist: 'M83', duration: '4:03', active: true },
+  { title: 'Digital Love', artist: 'Daft Punk', duration: '4:58', active: false },
+  { title: 'Intro', artist: 'The xx', duration: '2:07', active: false },
+  { title: 'Retrograde', artist: 'James Blake', duration: '3:43', active: false },
+]
+
 const windowProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Visible state (v-model)' },
   { name: 'title', type: 'string', description: 'Window title in the title bar' },
@@ -501,6 +512,7 @@ const loading = ref(false)
   icon=&quot;chat&quot;
   width=&quot;380px&quot;
   height=&quot;420px&quot;
+  :reset-position=&quot;true&quot;
 >
   <template #actions>
     <MBadge :dot=&quot;true&quot; color=&quot;success&quot;>
@@ -508,15 +520,53 @@ const loading = ref(false)
     </MBadge>
   </template>
   <div class=&quot;flex h-full flex-col&quot;>
-    <div class=&quot;flex-1 overflow-y-auto p-3 space-y-2&quot;>
-      <!-- messages -->
+    <div class=&quot;flex-1 space-y-2 overflow-y-auto p-3&quot;>
+      <div
+        v-for=&quot;msg in messages&quot;
+        :key=&quot;msg.time&quot;
+        class=&quot;flex&quot;
+        :class=&quot;msg.from === 'me' ? 'justify-end' : 'justify-start'&quot;
+      >
+        <div
+          class=&quot;max-w-[75%] rounded-2xl px-3 py-2&quot;
+          :class=&quot;msg.from === 'me'
+            ? 'rounded-br-sm bg-primary text-on-primary'
+            : 'rounded-bl-sm bg-surface-container-high text-on-surface'&quot;
+        >
+          <p class=&quot;text-body-medium&quot;>{{ msg.text }}</p>
+          <p class=&quot;mt-0.5 text-right text-label-small&quot;
+            :class=&quot;msg.from === 'me' ? 'text-on-primary/60' : 'text-on-surface-variant'&quot;
+          >{{ msg.time }}</p>
+        </div>
+      </div>
     </div>
-    <div class=&quot;border-t border-outline-variant p-2 flex gap-2&quot;>
-      <input ... />
-      <MButton size=&quot;small&quot; icon=&quot;send&quot; @click=&quot;send&quot; />
+    <div class=&quot;flex items-center gap-2 border-t border-outline-variant p-2&quot;>
+      <input
+        v-model=&quot;input&quot;
+        placeholder=&quot;Type a message...&quot;
+        class=&quot;flex-1 rounded-full bg-surface-container-high px-4 py-2 text-body-medium outline-none&quot;
+        @keydown.enter=&quot;send&quot;
+      />
+      <button
+        class=&quot;flex h-9 w-9 items-center justify-center rounded-full bg-primary text-on-primary&quot;
+        @click=&quot;send&quot;
+      >
+        <MIcon name=&quot;send&quot; :size=&quot;18&quot; />
+      </button>
     </div>
   </div>
 </MWindow>`"
+      :script="`const open = ref(false)
+const input = ref('')
+const messages = ref([
+  { from: 'them', text: 'Hey! How\\'s the project going?', time: '10:32' },
+  { from: 'me', text: 'Almost done, just finishing the UI.', time: '10:33' },
+])
+function send() {
+  if (!input.value.trim()) return
+  messages.value.push({ from: 'me', text: input.value, time: '...' })
+  input.value = ''
+}`"
     >
       <div class="relative h-[500px] w-full overflow-hidden rounded-b-md bg-surface-container-low">
         <div class="absolute inset-0 flex items-center justify-center">
@@ -579,6 +629,173 @@ const loading = ref(false)
               >
                 <MIcon name="send" :size="18" />
               </button>
+            </div>
+          </div>
+        </MWindow>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Music Player"
+      description="A floating music player with album art, playlist, playback controls, and a progress bar — all inside a draggable, resizable window."
+      flush
+      :code="`<MWindow
+  v-model=&quot;open&quot;
+  title=&quot;Now Playing&quot;
+  icon=&quot;headphones&quot;
+  width=&quot;360px&quot;
+  height=&quot;440px&quot;
+  :reset-position=&quot;true&quot;
+>
+  <div class=&quot;flex h-full flex-col&quot;>
+    &lt;!-- Album art + controls --&gt;
+    <div class=&quot;relative bg-gradient-to-br from-primary/20 via-tertiary/10 to-secondary/20 px-5 py-4&quot;>
+      <div class=&quot;flex items-center gap-4&quot;>
+        <div class=&quot;flex h-16 w-16 items-center justify-center rounded-xl bg-primary/15&quot;>
+          <MIcon name=&quot;music_note&quot; :size=&quot;32&quot; class=&quot;text-primary&quot; />
+        </div>
+        <div class=&quot;min-w-0 flex-1&quot;>
+          <p class=&quot;text-title-medium font-medium&quot;>Midnight City</p>
+          <p class=&quot;text-body-small text-on-surface-variant&quot;>M83</p>
+          <div class=&quot;mt-1.5 flex items-center gap-2&quot;>
+            <span class=&quot;text-label-small&quot;>1:24</span>
+            <MProgressBar :value=&quot;35&quot; class=&quot;flex-1&quot; />
+            <span class=&quot;text-label-small&quot;>4:03</span>
+          </div>
+        </div>
+      </div>
+      <div class=&quot;mt-3 flex items-center justify-center gap-1&quot;>
+        <MIconButton icon=&quot;shuffle&quot; />
+        <MIconButton icon=&quot;skip_previous&quot; />
+        <button class=&quot;h-12 w-12 rounded-full bg-primary text-on-primary&quot; @click=&quot;playing = !playing&quot;>
+          <MIcon :name=&quot;playing ? 'pause' : 'play_arrow'&quot; :size=&quot;28&quot; />
+        </button>
+        <MIconButton icon=&quot;skip_next&quot; />
+        <MIconButton icon=&quot;repeat&quot; />
+      </div>
+    </div>
+    <MDivider />
+    &lt;!-- Playlist --&gt;
+    <div class=&quot;flex-1 overflow-y-auto px-2 py-1&quot;>
+      <div v-for=&quot;track in playlist&quot; class=&quot;flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-on-surface/5&quot;>
+        <MIcon :name=&quot;track.active ? 'equalizer' : 'music_note'&quot; :size=&quot;16&quot; />
+        <div class=&quot;flex-1&quot;>
+          <p class=&quot;text-body-medium&quot;>{{ track.title }}</p>
+          <p class=&quot;text-label-small text-on-surface-variant&quot;>{{ track.artist }}</p>
+        </div>
+        <span class=&quot;text-label-small&quot;>{{ track.duration }}</span>
+      </div>
+    </div>
+    &lt;!-- Volume --&gt;
+    <div class=&quot;flex items-center gap-2 border-t border-outline-variant px-4 py-2&quot;>
+      <MIcon name=&quot;volume_down&quot; :size=&quot;18&quot; />
+      <MProgressBar :value=&quot;75&quot; class=&quot;flex-1&quot; />
+      <MIcon name=&quot;volume_up&quot; :size=&quot;18&quot; />
+    </div>
+  </div>
+</MWindow>`"
+      :script="`const open = ref(false)
+const playing = ref(false)
+const playlist = [
+  { title: 'Midnight City', artist: 'M83', duration: '4:03', active: true },
+  { title: 'Digital Love', artist: 'Daft Punk', duration: '4:58', active: false },
+  { title: 'Intro', artist: 'The xx', duration: '2:07', active: false },
+  { title: 'Retrograde', artist: 'James Blake', duration: '3:43', active: false },
+]`"
+    >
+      <div class="relative h-[520px] w-full overflow-hidden rounded-b-md bg-surface-container-low">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center text-on-surface-variant">
+            <MIcon name="desktop_windows" :size="48" class="mb-2 opacity-20" />
+            <p class="text-body-medium opacity-40">Desktop workspace</p>
+          </div>
+        </div>
+        <MButton v-if="!windowPlayer" variant="tonal" class="absolute left-4 top-4 z-10" @click="windowPlayer = true">
+          <MIcon name="headphones" :size="18" />
+          <span class="ml-2">Open Player</span>
+        </MButton>
+        <MWindow
+          v-model="windowPlayer"
+          title="Now Playing"
+          icon="headphones"
+          width="360px"
+          height="440px"
+          :x="30"
+          :y="20"
+          :reset-position="true"
+        >
+          <div class="flex h-full flex-col">
+            <!-- Album art + info -->
+            <div class="relative bg-gradient-to-br from-primary/20 via-tertiary/10 to-secondary/20 px-5 py-4">
+              <div class="flex items-center gap-4">
+                <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/15 shadow-elevation-1">
+                  <MIcon name="music_note" :size="32" class="text-primary" />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-title-medium font-medium text-on-surface">Midnight City</p>
+                  <p class="text-body-small text-on-surface-variant">M83 — Hurry Up, We're Dreaming</p>
+                  <div class="mt-1.5 flex items-center gap-2">
+                    <span class="text-label-small text-on-surface-variant">1:24</span>
+                    <MProgressBar :value="playerProgress" class="flex-1" />
+                    <span class="text-label-small text-on-surface-variant">4:03</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Controls -->
+              <div class="mt-3 flex items-center justify-center gap-1">
+                <button class="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8">
+                  <MIcon name="shuffle" :size="20" />
+                </button>
+                <button class="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8">
+                  <MIcon name="skip_previous" :size="24" />
+                </button>
+                <button
+                  class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-on-primary shadow-elevation-1 transition-colors hover:bg-primary/90"
+                  @click="playerPlaying = !playerPlaying"
+                >
+                  <MIcon :name="playerPlaying ? 'pause' : 'play_arrow'" :size="28" />
+                </button>
+                <button class="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8">
+                  <MIcon name="skip_next" :size="24" />
+                </button>
+                <button class="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8">
+                  <MIcon name="repeat" :size="20" />
+                </button>
+              </div>
+            </div>
+
+            <MDivider />
+
+            <!-- Playlist -->
+            <div class="flex-1 overflow-y-auto">
+              <div class="px-2 py-1">
+                <p class="px-3 py-2 text-label-medium font-medium text-on-surface-variant">Up Next</p>
+                <div
+                  v-for="(track, i) in playlist"
+                  :key="i"
+                  class="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-on-surface/5"
+                  :class="track.active ? 'bg-primary/8' : ''"
+                >
+                  <div
+                    class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+                    :class="track.active ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant'"
+                  >
+                    <MIcon :name="track.active ? 'equalizer' : 'music_note'" :size="16" />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-body-medium" :class="track.active ? 'font-medium text-primary' : 'text-on-surface'">{{ track.title }}</p>
+                    <p class="text-label-small text-on-surface-variant">{{ track.artist }}</p>
+                  </div>
+                  <span class="text-label-small text-on-surface-variant">{{ track.duration }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Volume -->
+            <div class="flex items-center gap-2 border-t border-outline-variant px-4 py-2">
+              <MIcon name="volume_down" :size="18" class="text-on-surface-variant" />
+              <MProgressBar :value="playerVolume" class="flex-1" />
+              <MIcon name="volume_up" :size="18" class="text-on-surface-variant" />
             </div>
           </div>
         </MWindow>
