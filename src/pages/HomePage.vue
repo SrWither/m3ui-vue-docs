@@ -10,6 +10,7 @@ import {
 } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
+import { version } from '../../../m3ui-vue/package.json'
 
 const toast = useToast()
 const { theme, cycle } = useTheme()
@@ -107,6 +108,7 @@ const categories = [
 
         <!-- Stats -->
         <MFlex gap="sm" wrap class="mt-4 justify-center">
+          <MChip icon="new_releases" tone="primary">v{{ version }}</MChip>
           <MChip icon="widgets" tone="primary">70+ Components</MChip>
           <MChip icon="palette" tone="secondary">20 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>

@@ -769,15 +769,19 @@ const selected = ref('inbox')`"
 
     <ComponentDemo
       title="Collapsed Mode"
-      description="Use the collapsed prop for a compact icon-only sidebar (72px). Items show a tooltip on hover."
-      :code="`<MButton @click=&quot;collapsed = !collapsed&quot;>Toggle</MButton>
-  <MNavigationDrawer
+      description="Use the collapsed prop for a compact icon-only sidebar (72px). Items show a tooltip on hover. The #toggle slot keeps the icon anchored during transitions and adds a bottom border aligned with MTopAppBar."
+      :code="`<MNavigationDrawer
     :model-value=&quot;true&quot;
     :modal=&quot;false&quot;
     :collapsed=&quot;collapsed&quot;
     :sections=&quot;sections&quot;
     :selected=&quot;selected&quot;
-  />`"
+    @select=&quot;selected = $event&quot;
+  >
+    <template #toggle>
+      <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+    </template>
+  </MNavigationDrawer>`"
       :script="`const collapsed = ref(false)`"
     >
       <div class="flex h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
@@ -789,16 +793,12 @@ const selected = ref('inbox')`"
           :selected="collapsibleSelected"
           @select="collapsibleSelected = $event"
         >
-          <template #header>
-            <div class="flex h-12 shrink-0 items-center" :class="collapsedVal ? 'justify-center' : 'px-3'">
-              <button
-                type="button"
-                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8"
-                @click="collapsedVal = !collapsedVal"
-              >
-                <MIcon :name="collapsedVal ? 'menu' : 'menu_open'" :size="22" />
-              </button>
-            </div>
+          <template #toggle>
+            <MIconButton
+              :icon="collapsedVal ? 'menu' : 'menu_open'"
+              :label="collapsedVal ? 'Expand' : 'Collapse'"
+              @click="collapsedVal = !collapsedVal"
+            />
           </template>
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
@@ -818,10 +818,8 @@ const selected = ref('inbox')`"
   :selected=&quot;selected&quot;
   @select=&quot;selected = $event&quot;
 >
-  <template #header>
-    <div class=&quot;flex h-12 items-center&quot; :class=&quot;collapsed ? 'justify-center' : 'px-3'&quot;>
-      <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
-    </div>
+  <template #toggle>
+    <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
   </template>
 </MNavigationDrawer>`"
       :script="`const collapsed = ref(false)
@@ -867,18 +865,55 @@ const sections = [
           :selected="nestedSelected"
           @select="nestedSelected = $event"
         >
-          <template #header>
-            <div class="flex h-12 shrink-0 items-center" :class="nestedCollapsed ? 'justify-center' : 'px-3'">
-              <MIconButton
-                :icon="nestedCollapsed ? 'menu' : 'menu_open'"
-                :label="nestedCollapsed ? 'Expand' : 'Collapse'"
-                @click="nestedCollapsed = !nestedCollapsed"
-              />
-            </div>
+          <template #toggle>
+            <MIconButton
+              :icon="nestedCollapsed ? 'menu' : 'menu_open'"
+              :label="nestedCollapsed ? 'Expand' : 'Collapse'"
+              @click="nestedCollapsed = !nestedCollapsed"
+            />
           </template>
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
           {{ nestedSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Default Slot"
+      description="The default slot renders at the end of the scrollable area, after all sections. Use it for footers, logout buttons, or any custom content."
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <div class=&quot;mt-auto border-t border-outline-variant px-3 py-2&quot;>
+    <button class=&quot;flex w-full items-center gap-3 rounded-full px-3 py-2.5 text-on-surface-variant hover:bg-on-surface/8&quot;>
+      <MIcon name=&quot;logout&quot; :size=&quot;24&quot; />
+      <span class=&quot;text-label-large font-medium&quot;>Log out</span>
+    </button>
+  </div>
+</MNavigationDrawer>`"
+    >
+      <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :sections="drawerSections"
+          :selected="drawerSelected"
+          @select="drawerSelected = $event"
+        >
+          <div class="mt-auto border-t border-outline-variant px-3 py-2">
+            <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded-full px-3 py-2.5 text-on-surface-variant transition-colors hover:bg-on-surface/8">
+              <MIcon name="logout" :size="24" />
+              <span class="text-label-large font-medium">Log out</span>
+            </button>
+          </div>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ drawerSelected }} view
         </div>
       </div>
     </ComponentDemo>
@@ -1076,7 +1111,12 @@ const sections = [
   :collapsed=&quot;collapsed&quot;
   :sections=&quot;sections&quot;
   :selected=&quot;selected&quot;
-/>`"
+  @select=&quot;selected = $event&quot;
+>
+  <template #toggle>
+    <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+  </template>
+</MNavigationDrawer>`"
     >
       <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
@@ -1091,12 +1131,12 @@ const sections = [
           :selected="sideCollapsedRightSelected"
           @select="sideCollapsedRightSelected = $event"
         >
-          <template #header>
-            <div class="flex h-12 shrink-0 items-center" :class="sideCollapsedRight ? 'justify-center' : 'px-3'">
-              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="sideCollapsedRight = !sideCollapsedRight">
-                <MIcon :name="sideCollapsedRight ? 'menu' : 'menu_open'" :size="22" />
-              </button>
-            </div>
+          <template #toggle>
+            <MIconButton
+              :icon="sideCollapsedRight ? 'menu' : 'menu_open'"
+              :label="sideCollapsedRight ? 'Expand' : 'Collapse'"
+              @click="sideCollapsedRight = !sideCollapsedRight"
+            />
           </template>
         </MNavigationDrawer>
       </div>
@@ -1211,7 +1251,19 @@ const sections = [
     <ComponentDemo
       title="Collapsed 240px"
       description="Narrow drawer that collapses to 72px icon-only mode."
-      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; :collapsed=&quot;collapsed&quot; width=&quot;240px&quot; ... />`"
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :collapsed=&quot;collapsed&quot;
+  width=&quot;240px&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <template #toggle>
+    <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+  </template>
+</MNavigationDrawer>`"
     >
       <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationDrawer
@@ -1223,12 +1275,12 @@ const sections = [
           :selected="collapsedWSelected1"
           @select="collapsedWSelected1 = $event"
         >
-          <template #header>
-            <div class="flex h-12 shrink-0 items-center" :class="collapsedW1 ? 'justify-center' : 'px-3'">
-              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="collapsedW1 = !collapsedW1">
-                <MIcon :name="collapsedW1 ? 'menu' : 'menu_open'" :size="22" />
-              </button>
-            </div>
+          <template #toggle>
+            <MIconButton
+              :icon="collapsedW1 ? 'menu' : 'menu_open'"
+              :label="collapsedW1 ? 'Expand' : 'Collapse'"
+              @click="collapsedW1 = !collapsedW1"
+            />
           </template>
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
@@ -1240,7 +1292,19 @@ const sections = [
     <ComponentDemo
       title="Collapsed 320px"
       description="Medium drawer that collapses to 72px."
-      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; :collapsed=&quot;collapsed&quot; width=&quot;320px&quot; ... />`"
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :collapsed=&quot;collapsed&quot;
+  width=&quot;320px&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <template #toggle>
+    <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+  </template>
+</MNavigationDrawer>`"
     >
       <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationDrawer
@@ -1252,12 +1316,12 @@ const sections = [
           :selected="collapsedWSelected2"
           @select="collapsedWSelected2 = $event"
         >
-          <template #header>
-            <div class="flex h-12 shrink-0 items-center" :class="collapsedW2 ? 'justify-center' : 'px-3'">
-              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="collapsedW2 = !collapsedW2">
-                <MIcon :name="collapsedW2 ? 'menu' : 'menu_open'" :size="22" />
-              </button>
-            </div>
+          <template #toggle>
+            <MIconButton
+              :icon="collapsedW2 ? 'menu' : 'menu_open'"
+              :label="collapsedW2 ? 'Expand' : 'Collapse'"
+              @click="collapsedW2 = !collapsedW2"
+            />
           </template>
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
@@ -1269,7 +1333,19 @@ const sections = [
     <ComponentDemo
       title="Collapsed 400px"
       description="Wide drawer that collapses to 72px."
-      :code="`<MNavigationDrawer :model-value=&quot;true&quot; :modal=&quot;false&quot; :collapsed=&quot;collapsed&quot; width=&quot;400px&quot; ... />`"
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :collapsed=&quot;collapsed&quot;
+  width=&quot;400px&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <template #toggle>
+    <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+  </template>
+</MNavigationDrawer>`"
     >
       <div class="flex h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
         <MNavigationDrawer
@@ -1281,12 +1357,12 @@ const sections = [
           :selected="collapsedWSelected3"
           @select="collapsedWSelected3 = $event"
         >
-          <template #header>
-            <div class="flex h-12 shrink-0 items-center" :class="collapsedW3 ? 'justify-center' : 'px-3'">
-              <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8" @click="collapsedW3 = !collapsedW3">
-                <MIcon :name="collapsedW3 ? 'menu' : 'menu_open'" :size="22" />
-              </button>
-            </div>
+          <template #toggle>
+            <MIconButton
+              :icon="collapsedW3 ? 'menu' : 'menu_open'"
+              :label="collapsedW3 ? 'Expand' : 'Collapse'"
+              @click="collapsedW3 = !collapsedW3"
+            />
           </template>
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
@@ -1319,6 +1395,20 @@ interface DrawerSection {
   items: DrawerItem[]
   collapsible?: boolean    // Section can be expanded/collapsed
 }</code></pre>
+    </MCard>
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Slots</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>#toggle   — Collapse/expand toggle button area (inline variant only).
+            Renders inside a 72px centered container with a bottom border
+            that aligns with MTopAppBar (64px height). The icon stays
+            anchored in the same position during collapse/expand transitions.
+
+#header   — Custom header content (e.g. profile card, logo).
+            Fully generic, no positioning constraints applied.
+
+#default  — Free content rendered at the end of the scrollable area,
+            after all sections. Use for footers, logout buttons, etc.</code></pre>
     </MCard>
 
     <!-- ── MNavigationRail ─────────────────────────────────────────────── -->

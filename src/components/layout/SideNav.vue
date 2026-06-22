@@ -141,18 +141,12 @@ const sections: DrawerSection[] = [
       :selected="selected"
       :sections="sections"
     >
-      <template #header>
-        <div class="shrink-0 border-b border-outline-variant">
-          <MFlex align="center" class="h-16">
-            <div class="flex w-18 shrink-0 justify-center">
-              <MIconButton
-                :icon="expanded ? 'menu_open' : 'menu'"
-                :label="expanded ? 'Collapse' : 'Expand'"
-                @click="$emit('toggle')"
-              />
-            </div>
-          </MFlex>
-        </div>
+      <template #toggle>
+        <MIconButton
+          :icon="expanded ? 'menu_open' : 'menu'"
+          :label="expanded ? 'Collapse' : 'Expand'"
+          @click="$emit('toggle')"
+        />
       </template>
     </MNavigationDrawer>
   </div>
