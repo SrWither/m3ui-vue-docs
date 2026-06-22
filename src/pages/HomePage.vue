@@ -119,7 +119,7 @@ const categories = [
         <MFlex gap="sm" wrap class="mt-4 justify-center">
           <MChip v-if="version" icon="new_releases" tone="primary">v{{ version }}</MChip>
           <MChip icon="widgets" tone="primary">70+ Components</MChip>
-          <MChip icon="palette" tone="secondary">20 Palettes</MChip>
+          <MChip icon="palette" tone="secondary">30 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>
           <MChip icon="code">TypeScript</MChip>
         </MFlex>
