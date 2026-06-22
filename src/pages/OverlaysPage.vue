@@ -637,6 +637,7 @@ function send() {
                 :side="msg.from === 'me' ? 'right' : 'left'"
                 :sender="msg.from !== 'me' ? msg.name : undefined"
                 :status="msg.from === 'me' ? 'read' : undefined"
+                :max-width="'70%'"
               />
             </div>
             <div class="flex items-center gap-2 border-t border-outline-variant p-2">
