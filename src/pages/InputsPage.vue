@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  MTextField, MSelect, MMultiSelect, MCheckbox, MSwitch,
-  MRadioGroup, MSlider, MRating, MDatePicker, MDateRangePicker,
-  MTimePicker, MColorPicker, MNumberField, MMaskField,
+  MTextField, MSelect, MMultiSelect, MAutocomplete, MMultiAutocomplete, MTagInput,
+  MCheckbox, MSwitch, MRadioGroup, MSlider, MRating,
+  MDatePicker, MDateRangePicker, MTimePicker, MColorPicker,
+  MNumberField, MMaskField,
 } from '@m3ui-vue/m3ui-vue'
 import type { DateRange } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -19,6 +20,26 @@ const textClearable = ref('Hello world')
 
 const selectClearable = ref<unknown>('a')
 const multiClearable = ref<unknown[]>(['vue', 'svelte'])
+const multiHideVal = ref<unknown[]>([])
+
+const autoVal = ref<unknown>(null)
+const autoOptions = [
+  { label: 'Argentina', value: 'ar' },
+  { label: 'Australia', value: 'au' },
+  { label: 'Brazil', value: 'br' },
+  { label: 'Canada', value: 'ca' },
+  { label: 'France', value: 'fr' },
+  { label: 'Germany', value: 'de' },
+  { label: 'Japan', value: 'jp' },
+  { label: 'Mexico', value: 'mx' },
+  { label: 'United Kingdom', value: 'uk' },
+  { label: 'United States', value: 'us' },
+]
+
+const multiAutoVal = ref<unknown[]>([])
+const multiAutoHideVal = ref<unknown[]>([])
+
+const tags = ref<string[]>(['Vue', 'TypeScript'])
 
 const numVal = ref<number | null>(25)
 const numPrice = ref<number | null>(9.99)
@@ -140,6 +161,51 @@ const multiSelectProps: PropDef[] = [
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset all selections' },
   { name: 'searchPlaceholder', type: 'string', default: "'Search...'", description: 'Placeholder for search input in dropdown' },
   { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Text when no options match search' },
+  { name: 'hideSelected', type: 'boolean', default: 'false', description: 'Remove already-selected options from the dropdown' },
+]
+
+const autocompleteProps: PropDef[] = [
+  { name: 'modelValue', type: 'unknown', description: 'Selected value (v-model)' },
+  { name: 'options', type: 'SelectOption[]', description: 'Array of { label, value, disabled? }' },
+  { name: 'label', type: 'string', description: 'Floating label text' },
+  { name: 'placeholder', type: 'string', description: 'Input placeholder' },
+  { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
+  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'hint', type: 'string', description: 'Helper text below field' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button' },
+  { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
+  { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Text when no options match' },
+]
+
+const multiAutocompleteProps: PropDef[] = [
+  { name: 'modelValue', type: 'unknown[]', description: 'Selected values (v-model)' },
+  { name: 'options', type: 'MultiSelectOption[]', description: 'Array of { label, value, disabled? }' },
+  { name: 'label', type: 'string', description: 'Floating label text' },
+  { name: 'placeholder', type: 'string', description: 'Input placeholder' },
+  { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
+  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'hint', type: 'string', description: 'Helper text below field' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear-all button' },
+  { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
+  { name: 'maxChips', type: 'number', default: '3', description: 'Max visible chips before "+N"' },
+  { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Text when no options match' },
+  { name: 'hideSelected', type: 'boolean', default: 'false', description: 'Remove already-selected options from the dropdown' },
+]
+
+const tagInputProps: PropDef[] = [
+  { name: 'modelValue', type: 'string[]', description: 'Array of tags (v-model)' },
+  { name: 'label', type: 'string', description: 'Floating label text' },
+  { name: 'placeholder', type: 'string', description: 'Input placeholder' },
+  { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
+  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'hint', type: 'string', description: 'Helper text below field' },
+  { name: 'maxTags', type: 'number', description: 'Max number of tags allowed' },
+  { name: 'duplicates', type: 'boolean', default: 'false', description: 'Allow duplicate tags' },
+  { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear-all button' },
+  { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
 ]
 
 const checkboxProps: PropDef[] = [
@@ -380,8 +446,8 @@ const val = ref(25)`"
 </template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MSelect v-model="selectVal" :options="selectOptions" label="Filled" />
-        <MSelect v-model="selectVal" :options="selectOptions" label="Outlined" variant="outlined" />
+        <MSelect v-model="selectVal" :options="selectOptions" label="Filled" leading-icon="list" />
+        <MSelect v-model="selectVal" :options="selectOptions" label="Outlined" variant="outlined" leading-icon="list" />
       </div>
     </ComponentDemo>
 
@@ -400,7 +466,7 @@ const val = ref(25)`"
 />`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MSelect v-model="objectSelectVal" :options="objectOptions" label="Country" variant="outlined" />
+        <MSelect v-model="objectSelectVal" :options="objectOptions" label="Country" variant="outlined" leading-icon="public" />
         <div v-if="objectSelectVal" class="flex items-center text-body-medium text-on-surface-variant">
           Selected: <code class="ml-2 rounded bg-surface-container-high px-2 py-1 text-primary">{{ JSON.stringify(objectSelectVal) }}</code>
         </div>
@@ -416,8 +482,8 @@ const val = ref(25)`"
 const val = ref('a')`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MSelect v-model="selectClearable" :options="selectOptions" label="Filled" :clearable="true" />
-        <MSelect v-model="selectClearable" :options="selectOptions" label="Outlined" :clearable="true" variant="outlined" />
+        <MSelect v-model="selectClearable" :options="selectOptions" label="Filled" :clearable="true" leading-icon="list" />
+        <MSelect v-model="selectClearable" :options="selectOptions" label="Outlined" :clearable="true" variant="outlined" leading-icon="list" />
       </div>
     </ComponentDemo>
 
@@ -440,8 +506,8 @@ const val = ref('a')`"
 </template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MMultiSelect v-model="multiVal" :options="multiOptions" label="Frameworks" />
-        <MMultiSelect v-model="multiVal" :options="multiOptions" label="Outlined" variant="outlined" />
+        <MMultiSelect v-model="multiVal" :options="multiOptions" label="Frameworks" leading-icon="code" />
+        <MMultiSelect v-model="multiVal" :options="multiOptions" label="Outlined" variant="outlined" leading-icon="code" />
       </div>
     </ComponentDemo>
 
@@ -461,7 +527,7 @@ const val = ref('a')`"
 />`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MMultiSelect v-model="multiObjectVal" :options="multiObjectOptions" label="Permissions" variant="outlined" />
+        <MMultiSelect v-model="multiObjectVal" :options="multiObjectOptions" label="Permissions" variant="outlined" leading-icon="shield" />
         <div v-if="multiObjectVal.length" class="flex items-start text-body-medium text-on-surface-variant">
           <code class="rounded bg-surface-container-high px-2 py-1 text-primary text-body-small">{{ JSON.stringify(multiObjectVal, null, 2) }}</code>
         </div>
@@ -477,8 +543,25 @@ const val = ref('a')`"
 const val = ref(['vue', 'svelte'])`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Filled" :clearable="true" />
-        <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Outlined" :clearable="true" variant="outlined" />
+        <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Filled" :clearable="true" leading-icon="code" />
+        <MMultiSelect v-model="multiClearable" :options="multiOptions" label="Outlined" :clearable="true" variant="outlined" leading-icon="code" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Hide Selected"
+      description="Already-picked options disappear from the dropdown."
+      :code="`<MMultiSelect
+  v-model=&quot;val&quot;
+  :options=&quot;options&quot;
+  label=&quot;Frameworks&quot;
+  :hide-selected=&quot;true&quot;
+  :clearable=&quot;true&quot;
+/>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiSelect v-model="multiHideVal" :options="multiOptions" label="Frameworks" leading-icon="code" :hide-selected="true" :clearable="true" />
+        <MMultiSelect v-model="multiHideVal" :options="multiOptions" label="Outlined" leading-icon="code" variant="outlined" :hide-selected="true" :clearable="true" />
       </div>
     </ComponentDemo>
 
@@ -488,6 +571,112 @@ const val = ref(['vue', 'svelte'])`"
     <p class="mt-3 text-body-medium text-on-surface-variant">
       <strong>Slot:</strong> <code>no-results</code> — Custom content when no options match the search query.
     </p>
+
+    <!-- ── MAutocomplete ──────────────────────────────────────────────────── -->
+    <h2 id="mautocomplete" class="mb-4 mt-14 text-headline-small font-medium">MAutocomplete</h2>
+
+    <ComponentDemo
+      title="Searchable Select"
+      description="Like MSelect but with a text input for filtering. Type to search, arrow keys to navigate, Enter to select."
+      :code="`<MAutocomplete
+  v-model=&quot;country&quot;
+  :options=&quot;countries&quot;
+  label=&quot;Country&quot;
+  leading-icon=&quot;public&quot;
+/>`"
+      :script="`const country = ref(null)
+const countries = [
+  { label: 'Argentina', value: 'ar' },
+  { label: 'Brazil', value: 'br' },
+  { label: 'Canada', value: 'ca' },
+  { label: 'France', value: 'fr' },
+  { label: 'Germany', value: 'de' },
+  { label: 'Japan', value: 'jp' },
+  { label: 'United States', value: 'us' },
+]`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MAutocomplete v-model="autoVal" :options="autoOptions" label="Country" leading-icon="public" />
+        <MAutocomplete v-model="autoVal" :options="autoOptions" label="Country (outlined)" leading-icon="public" variant="outlined" :clearable="true" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="autocompleteProps" />
+
+    <!-- ── MMultiAutocomplete ──────────────────────────────────────────── -->
+    <h2 id="mmultiautocomplete" class="mb-4 mt-14 text-headline-small font-medium">MMultiAutocomplete</h2>
+
+    <ComponentDemo
+      title="Searchable Multi Select"
+      description="Multi-value autocomplete with inline search. Type to filter, Enter to toggle, Backspace to remove last chip."
+      :code="`<MMultiAutocomplete
+  v-model=&quot;selected&quot;
+  :options=&quot;countries&quot;
+  label=&quot;Countries&quot;
+  leading-icon=&quot;public&quot;
+  :clearable=&quot;true&quot;
+/>`"
+      :script="`const selected = ref([])
+const countries = [
+  { label: 'Argentina', value: 'ar' },
+  { label: 'Brazil', value: 'br' },
+  { label: 'Canada', value: 'ca' },
+  { label: 'France', value: 'fr' },
+  { label: 'Germany', value: 'de' },
+  { label: 'Japan', value: 'jp' },
+  { label: 'United States', value: 'us' },
+]`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiAutocomplete v-model="multiAutoVal" :options="autoOptions" label="Countries" leading-icon="public" />
+        <MMultiAutocomplete v-model="multiAutoVal" :options="autoOptions" label="Countries (outlined)" leading-icon="public" variant="outlined" :clearable="true" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Hide Selected"
+      description="With hideSelected, already-picked options disappear from the dropdown — useful when you don't want duplicates cluttering the list."
+      :code="`<MMultiAutocomplete
+  v-model=&quot;selected&quot;
+  :options=&quot;countries&quot;
+  label=&quot;Countries&quot;
+  leading-icon=&quot;public&quot;
+  :hide-selected=&quot;true&quot;
+  :clearable=&quot;true&quot;
+/>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiAutocomplete v-model="multiAutoHideVal" :options="autoOptions" label="Countries" leading-icon="public" :hide-selected="true" :clearable="true" />
+        <MMultiAutocomplete v-model="multiAutoHideVal" :options="autoOptions" label="Countries (outlined)" leading-icon="public" variant="outlined" :hide-selected="true" :clearable="true" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="multiAutocompleteProps" />
+
+    <!-- ── MTagInput ───────────────────────────────────────────────────── -->
+    <h2 id="mtaginput" class="mb-4 mt-14 text-headline-small font-medium">MTagInput</h2>
+
+    <ComponentDemo
+      title="Tag Input"
+      description="Type and press Enter or comma to add tags. Backspace removes the last tag."
+      :code="`<MTagInput
+  v-model=&quot;tags&quot;
+  label=&quot;Skills&quot;
+  leading-icon=&quot;sell&quot;
+  placeholder=&quot;Add a skill...&quot;
+/>`"
+      :script="`const tags = ref(['Vue', 'TypeScript'])`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MTagInput v-model="tags" label="Skills" leading-icon="sell" placeholder="Add a skill..." />
+        <MTagInput v-model="tags" label="Skills (outlined)" leading-icon="sell" variant="outlined" :clearable="true" placeholder="Add a skill..." />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="tagInputProps" />
 
     <!-- ── MCheckbox & MSwitch ──────────────────────────────────────────── -->
     <h2 id="mcheckbox" class="mb-4 mt-14 text-headline-small font-medium">MCheckbox &amp; MSwitch</h2>

@@ -289,21 +289,17 @@ const mails: Mail[] = [
         :sections=&quot;sections&quot;
         @select=&quot;selected = $event&quot;
       >
-        <template #header>
-          <div class=&quot;flex h-16 items-center border-b border-outline-variant&quot;>
-            <div class=&quot;flex w-[72px] shrink-0 justify-center&quot;>
-              <MIconButton
-                :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot;
-                @click=&quot;collapsed = !collapsed&quot;
-              />
-            </div>
-          </div>
+        <template #toggle>
+          <MIconButton
+            :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot;
+            @click=&quot;collapsed = !collapsed&quot;
+          />
         </template>
       </MNavigationDrawer>
     </template>
 
     <template #header>
-      <MAppBar>
+      <MAppBar :bordered=&quot;true&quot;>
         <MText variant=&quot;title-large&quot; weight=&quot;medium&quot;>Dashboard</MText>
         <template #trailing>
           <MBadge :count=&quot;5&quot;>
@@ -389,22 +385,18 @@ const activity = [
                 :sections="dashboardSections"
                 @select="dashboardSelected = $event"
               >
-                <template #header>
-                  <div class="flex h-16 shrink-0 items-center border-b border-outline-variant">
-                    <div class="flex w-18 shrink-0 justify-center">
-                      <MIconButton
-                        :icon="dashboardDrawerCollapsed ? 'menu' : 'menu_open'"
-                        @click="dashboardDrawerCollapsed = !dashboardDrawerCollapsed"
-                        label="Toggle drawer"
-                      />
-                    </div>
-                  </div>
-                </template>
+                <template #toggle>
+                <MIconButton
+                  :icon="dashboardDrawerCollapsed ? 'menu' : 'menu_open'"
+                  @click="dashboardDrawerCollapsed = !dashboardDrawerCollapsed"
+                  label="Toggle drawer"
+                />
+              </template>
               </MNavigationDrawer>
             </template>
 
             <template #header>
-              <MAppBar>
+              <MAppBar :bordered="true">
                 <MText variant="title-large" weight="medium">
                   {{ dashboardSections[0]!.items.find(i => i.value === dashboardSelected)?.label ?? 'Overview' }}
                 </MText>

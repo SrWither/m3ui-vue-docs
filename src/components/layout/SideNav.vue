@@ -30,7 +30,7 @@ watch(() => route.path, (path) => {
 
 const iconMap: Record<string, string> = {
   MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MSegmentedButton: 'toggle_on',
-  MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MCheckbox: 'check_box',
+  MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box',
   MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
   MTimePicker: 'schedule', MColorPicker: 'palette',
   MAlert: 'warning', MDialog: 'open_in_new', MConfirmDialog: 'help', MTooltip: 'info',
@@ -89,7 +89,7 @@ const sections: DrawerSection[] = [
       { value: '/components/buttons', label: 'Buttons', icon: 'smart_button', to: '/components/buttons',
         children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MSegmentedButton']) },
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
-        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MSelect', 'MMultiSelect', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDateRangePicker', 'MTimePicker', 'MColorPicker']) },
+        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDateRangePicker', 'MTimePicker', 'MColorPicker']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
         children: ch('/components/feedback', ['MAlert', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MSpinner', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',

@@ -21,7 +21,7 @@ const themeLabel = computed(() => {
 </script>
 
 <template>
-  <MTopAppBar navigation-icon="menu" class="border-b border-outline-variant md:[&>div>button:first-child]:hidden" @navigation="$emit('menuClick')">
+  <MTopAppBar navigation-icon="menu" :bordered="true" class="md:[&>div>button:first-child]:hidden" @navigation="$emit('menuClick')">
     <template #title>
       <div class="flex items-center gap-3">
         <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
