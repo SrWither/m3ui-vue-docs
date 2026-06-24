@@ -322,9 +322,7 @@ const profileSections: DrawerSection[] = [
 ]
 
 const railVal = ref<string | number>('home')
-const railExpanded = ref(false)
 const railDrawerVal = ref<string | number>('inbox')
-const railDrawerExpanded = ref(false)
 const railItems: NavRailItem[] = [
   { value: 'home', label: 'Home', icon: 'home' },
   { value: 'search', label: 'Search', icon: 'search' },
@@ -336,7 +334,6 @@ const railProps: PropDef[] = [
   { name: 'modelValue', type: 'string | number', description: 'Active item value' },
   { name: 'items', type: 'NavRailItem[]', description: 'Array of { value, label, icon, badge?, badgeDot?, disabled? }' },
   { name: 'alignment', type: "'top' | 'center' | 'bottom'", default: "'top'", description: 'Vertical alignment of items' },
-  { name: 'expanded', type: 'boolean', default: 'false', description: 'Expanded mode — labels beside icons, wider rail' },
 ]
 
 const topAppBarProps: PropDef[] = [

@@ -95,6 +95,16 @@ const radioOptions = [
 ]
 
 const sliderVal = ref(40)
+const sliderCentered = ref(0)
+const sliderRange = ref<[number, number]>([20, 70])
+const musicVolume = ref(65)
+const musicBass = ref(10)
+const musicTreble = ref(-5)
+const eqLow = ref(50)
+const eqMid = ref(70)
+const eqHigh = ref(40)
+const vertCentered = ref(0)
+const vertRange = ref<[number, number]>([30, 75])
 const ratingVal = ref(3.5)
 
 const dateVal = ref<string | null>(null)
@@ -250,7 +260,13 @@ const sliderProps: PropDef[] = [
   { name: 'step', type: 'number', default: '1', description: 'Step increment' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the slider' },
   { name: 'label', type: 'string', description: 'Label text' },
-  { name: 'showValue', type: 'boolean', default: 'false', description: 'Show current value' },
+  { name: 'showValue', type: 'boolean', default: 'false', description: 'Show current value beside label' },
+  { name: 'showTooltip', type: 'boolean', default: 'false', description: 'Show value tooltip while dragging' },
+  { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Slider orientation' },
+  { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'xs'", description: 'Track and thumb size' },
+  { name: 'variant', type: "'standard' | 'centered' | 'range'", default: "'standard'", description: 'Standard, centered (from middle), or range (two thumbs)' },
+  { name: 'stops', type: 'boolean', default: 'false', description: 'Show stop dots at each step (max 30 visible)' },
+  { name: 'icon', type: 'string', description: 'Material Symbol icon shown before the slider' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Track color' },
 ]
 
@@ -838,20 +854,164 @@ const val = ref(true)`"
     <h2 id="mslider" class="mb-4 mt-14 text-headline-small font-medium">MSlider</h2>
 
     <ComponentDemo
-      title="Slider"
-      description="Range slider with value display."
-      :code="`<template>
-  <MSlider v-model=&quot;val&quot; label=&quot;Volume&quot; :show-value=&quot;true&quot; />
-  <MSlider v-model=&quot;val&quot; :min=&quot;0&quot; :max=&quot;50&quot; :step=&quot;5&quot; color=&quot;tertiary&quot; />
-</template>`"
-      :script="`import { MSlider } from '@m3ui-vue/m3ui-vue'
-
-const val = ref(40)`"
+      title="Standard Slider"
+      description="M3 slider with vertical bar thumb, rounded track with gap, and optional tooltip."
+      :code="`<MSlider v-model=&quot;val&quot; label=&quot;Volume&quot; :show-value=&quot;true&quot; :show-tooltip=&quot;true&quot; />`"
     >
       <div class="w-full space-y-6">
-        <MSlider v-model="sliderVal" label="Volume" :show-value="true" />
-        <MSlider v-model="sliderVal" label="Step 5" :min="0" :max="100" :step="5" :show-value="true" color="tertiary" />
+        <MSlider v-model="sliderVal" label="Volume" :show-value="true" :show-tooltip="true" />
+        <MSlider v-model="sliderVal" label="Tertiary" :show-value="true" color="tertiary" />
         <MSlider :model-value="60" label="Disabled" :disabled="true" :show-value="true" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Sizes"
+      description="Five track sizes from XS (default) to XL."
+      :code="`<MSlider v-model=&quot;val&quot; size=&quot;md&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderVal" label="XS" size="xs" :show-value="true" />
+        <MSlider v-model="sliderVal" label="SM" size="sm" :show-value="true" />
+        <MSlider v-model="sliderVal" label="MD" size="md" :show-value="true" :show-tooltip="true" />
+        <MSlider v-model="sliderVal" label="LG" size="lg" :show-value="true" :show-tooltip="true" />
+        <MSlider v-model="sliderVal" label="XL" size="xl" :show-value="true" :show-tooltip="true" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Stops"
+      description="Discrete slider with visible stop dots at each step."
+      :code="`<MSlider v-model=&quot;val&quot; :step=&quot;10&quot; :stops=&quot;true&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderVal" label="Step 10" :step="10" :stops="true" :show-value="true" size="sm" />
+        <MSlider v-model="sliderVal" label="Step 20" :step="20" :stops="true" :show-value="true" size="md" color="secondary" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Vertical"
+      description="Vertical orientation. Same design rotated — the thumb becomes horizontal. Supports icons, stops, and tooltip."
+      :code="`<MSlider v-model=&quot;val&quot; orientation=&quot;vertical&quot; :show-tooltip=&quot;true&quot; />`"
+    >
+      <div class="flex items-stretch gap-8" style="height: 360px">
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="xs" />
+          <span class="text-label-small text-on-surface-variant">XS</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="sm" icon="volume_up" />
+          <span class="text-label-small text-on-surface-variant">Volume</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="md" icon="brightness_6" color="tertiary" />
+          <span class="text-label-small text-on-surface-variant">Brightness</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="lg" icon="thermostat" color="secondary" :step="10" :stops="true" />
+          <span class="text-label-small text-on-surface-variant">Temperature</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="xl" icon="speed" color="error" />
+          <span class="text-label-small text-on-surface-variant">Speed</span>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Centered"
+      description="Starts from the middle — for values like -50 to 50. The active track extends from center toward the value."
+      :code="`<MSlider v-model=&quot;val&quot; :min=&quot;-50&quot; :max=&quot;50&quot; variant=&quot;centered&quot; :show-tooltip=&quot;true&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderCentered" :min="-50" :max="50" variant="centered" :show-tooltip="true" :show-value="true" label="Balance" size="sm" />
+        <MSlider v-model="sliderCentered" :min="-50" :max="50" variant="centered" :show-tooltip="true" :show-value="true" label="Pan" size="md" color="tertiary" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Range"
+      description="Two thumbs to select a range. The active track spans between both values."
+      :code="`<MSlider v-model=&quot;range&quot; variant=&quot;range&quot; :show-tooltip=&quot;true&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderRange" variant="range" :show-tooltip="true" :show-value="true" label="Price range" size="sm" />
+        <MSlider v-model="sliderRange" variant="range" :show-tooltip="true" :show-value="true" label="Age range" size="md" color="secondary" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="With Icon"
+      description="Optional inset icon displayed before the slider."
+      :code="`<MSlider v-model=&quot;val&quot; icon=&quot;volume_up&quot; :show-tooltip=&quot;true&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderVal" icon="volume_up" :show-tooltip="true" size="sm" />
+        <MSlider v-model="sliderVal" icon="brightness_6" :show-tooltip="true" size="md" color="tertiary" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Vertical Centered & Range"
+      description="Centered and range variants also work vertically."
+      :code="`<MSlider v-model=&quot;val&quot; orientation=&quot;vertical&quot; variant=&quot;centered&quot; :min=&quot;-50&quot; :max=&quot;50&quot; />
+<MSlider v-model=&quot;range&quot; orientation=&quot;vertical&quot; variant=&quot;range&quot; />`"
+    >
+      <div class="flex items-stretch gap-8" style="height: 300px">
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="vertCentered" orientation="vertical" variant="centered" :min="-50" :max="50" :show-tooltip="true" size="sm" />
+          <span class="text-label-small text-on-surface-variant">Centered</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="vertCentered" orientation="vertical" variant="centered" :min="-50" :max="50" :show-tooltip="true" size="md" color="tertiary" icon="swap_vert" />
+          <span class="text-label-small text-on-surface-variant">With icon</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="vertRange" orientation="vertical" variant="range" :show-tooltip="true" size="sm" color="secondary" />
+          <span class="text-label-small text-on-surface-variant">Range</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center gap-2">
+          <MSlider v-model="vertRange" orientation="vertical" variant="range" :show-tooltip="true" size="lg" color="error" />
+          <span class="text-label-small text-on-surface-variant">Range LG</span>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Audio Mixer"
+      description="Practical example combining horizontal and vertical sliders with icons, centered variant, and different sizes."
+      :code="`<!-- Horizontal controls -->
+<MSlider v-model=&quot;volume&quot; icon=&quot;volume_up&quot; label=&quot;Volume&quot; size=&quot;md&quot; />
+<MSlider v-model=&quot;bass&quot; :min=&quot;-20&quot; :max=&quot;20&quot; variant=&quot;centered&quot; label=&quot;Bass&quot; />
+
+<!-- Vertical EQ -->
+<MSlider v-model=&quot;low&quot; orientation=&quot;vertical&quot; icon=&quot;graphic_eq&quot; size=&quot;lg&quot; />`"
+    >
+      <div class="w-full rounded-xl bg-surface-container p-6">
+        <p class="mb-4 text-title-medium font-medium text-on-surface">Audio Mixer</p>
+
+        <div class="mb-6 space-y-4">
+          <MSlider v-model="musicVolume" icon="volume_up" label="Master Volume" :show-value="true" :show-tooltip="true" size="md" />
+          <MSlider v-model="musicBass" :min="-20" :max="20" variant="centered" label="Bass" :show-value="true" :show-tooltip="true" size="sm" color="secondary" />
+          <MSlider v-model="musicTreble" :min="-20" :max="20" variant="centered" label="Treble" :show-value="true" :show-tooltip="true" size="sm" color="tertiary" />
+        </div>
+
+        <p class="mb-3 text-label-large text-on-surface-variant">Equalizer</p>
+        <div class="flex items-stretch gap-6" style="height: 240px">
+          <div class="flex flex-1 flex-col items-center gap-1">
+            <MSlider v-model="eqLow" orientation="vertical" :show-tooltip="true" size="lg" icon="graphic_eq" color="secondary" />
+            <span class="text-label-small text-on-surface-variant">Low</span>
+          </div>
+          <div class="flex flex-1 flex-col items-center gap-1">
+            <MSlider v-model="eqMid" orientation="vertical" :show-tooltip="true" size="lg" icon="graphic_eq" />
+            <span class="text-label-small text-on-surface-variant">Mid</span>
+          </div>
+          <div class="flex flex-1 flex-col items-center gap-1">
+            <MSlider v-model="eqHigh" orientation="vertical" :show-tooltip="true" size="lg" icon="graphic_eq" color="tertiary" />
+            <span class="text-label-small text-on-surface-variant">High</span>
+          </div>
+        </div>
       </div>
     </ComponentDemo>
 
