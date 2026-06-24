@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import {
   MFileUpload, MDragDropList, MTransferList, MHotkeys, MInfiniteScroll,
-  MTour, MButton, MCard, MIcon,
+  MTour, MButton, MCard, MIcon, useDevice,
 } from '@m3ui-vue/m3ui-vue'
 import type { DragDropItem, TransferItem, HotkeyBinding, TourStep } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -100,6 +100,8 @@ const infiniteScrollProps: PropDef[] = [
   { name: 'endText', type: 'string', default: "'No more items'", description: 'Text when ended' },
   { name: 'ended', type: 'boolean', default: 'false', description: 'No more items to load' },
 ]
+
+const { isMobile } = useDevice()
 
 const tourProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Show/hide the tour (v-model)' },
@@ -352,6 +354,51 @@ const steps = [
   content: string   // Step description
   placement?: 'top' | 'bottom' | 'left' | 'right'
 }</code></pre>
+    </MCard>
+
+    <!-- ── useDevice ──────────────────────────────────────────────────── -->
+    <h2 id="usedevice" class="mb-4 mt-14 text-headline-small font-medium">useDevice</h2>
+
+    <ComponentDemo
+      title="Mobile Detection"
+      description="Reactive composable that tracks whether the viewport is mobile-sized (< 768px). Uses a shared resize listener across all consumers."
+      :code="`<script setup>
+import { useDevice } from '@m3ui-vue/m3ui-vue'
+
+const { isMobile } = useDevice()
+<\/script>
+
+<template>
+  <p v-if=&quot;isMobile&quot;>You are on a mobile device</p>
+  <p v-else>You are on a desktop device</p>
+</template>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined" class="flex items-center gap-3 p-4">
+          <MIcon :name="isMobile ? 'phone_android' : 'desktop_windows'" :size="24" />
+          <span class="text-body-large">
+            Current viewport: <strong>{{ isMobile ? 'Mobile' : 'Desktop' }}</strong>
+          </span>
+        </MCard>
+        <p class="mt-2 text-body-small text-on-surface-variant">
+          Resize the browser window to see the value change (breakpoint: 768px).
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Return value</p>
+      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>const { isMobile } = useDevice()
+// isMobile: Ref&lt;boolean&gt; — true when window.innerWidth &lt; 768</code></pre>
+    </MCard>
+
+    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Details</p>
+      <ul class="list-inside list-disc space-y-1 text-body-medium text-on-surface-variant">
+        <li>Breakpoint is fixed at <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">768px</code></li>
+        <li>The resize listener is shared — only one is active regardless of how many components call <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">useDevice()</code></li>
+        <li>Automatically cleans up when the last consumer unmounts</li>
+      </ul>
     </MCard>
   </div>
 </template>
