@@ -322,6 +322,9 @@ const profileSections: DrawerSection[] = [
 ]
 
 const railVal = ref<string | number>('home')
+const railExpanded = ref(false)
+const railDrawerVal = ref<string | number>('inbox')
+const railDrawerExpanded = ref(false)
 const railItems: NavRailItem[] = [
   { value: 'home', label: 'Home', icon: 'home' },
   { value: 'search', label: 'Search', icon: 'search' },
@@ -333,6 +336,7 @@ const railProps: PropDef[] = [
   { name: 'modelValue', type: 'string | number', description: 'Active item value' },
   { name: 'items', type: 'NavRailItem[]', description: 'Array of { value, label, icon, badge?, badgeDot?, disabled? }' },
   { name: 'alignment', type: "'top' | 'center' | 'bottom'", default: "'top'", description: 'Vertical alignment of items' },
+  { name: 'expanded', type: 'boolean', default: 'false', description: 'Expanded mode — labels beside icons, wider rail' },
 ]
 
 const topAppBarProps: PropDef[] = [
@@ -1438,6 +1442,42 @@ const items = [
         </MNavigationRail>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
           {{ railVal }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="With App Layout"
+      description="Navigation rail with FAB, badges, and a content area. Typical sidebar pattern for tablet/desktop."
+      :code="`<MNavigationRail v-model=&quot;active&quot; :items=&quot;items&quot;>
+  <template #fab>
+    <MFab icon=&quot;edit&quot; size=&quot;small&quot; />
+  </template>
+</MNavigationRail>`"
+    >
+      <div class="flex h-96 w-full max-w-xl overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationRail
+          v-model="railDrawerVal"
+          :items="[
+            { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: 12 },
+            { value: 'starred', label: 'Starred', icon: 'star' },
+            { value: 'sent', label: 'Sent', icon: 'send' },
+            { value: 'drafts', label: 'Drafts', icon: 'drafts', badge: 3 },
+            { value: 'trash', label: 'Trash', icon: 'delete' },
+            { value: 'settings', label: 'Settings', icon: 'settings' },
+          ]"
+        >
+          <template #fab>
+            <MFab icon="edit" size="small" color="tertiary" />
+          </template>
+        </MNavigationRail>
+        <div class="flex flex-1 flex-col bg-surface-container">
+          <div class="flex h-14 items-center gap-3 border-b border-outline-variant px-4">
+            <span class="text-title-medium font-medium text-on-surface capitalize">{{ railDrawerVal }}</span>
+          </div>
+          <div class="flex flex-1 items-center justify-center text-body-medium text-on-surface-variant">
+            {{ railDrawerVal }} content
+          </div>
         </div>
       </div>
     </ComponentDemo>

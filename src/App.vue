@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
-import { MSnackbar, palettes, useColorPalette } from '@m3ui-vue/m3ui-vue'
+import { palettes, useColorPalette } from '@m3ui-vue/m3ui-vue'
 
 const route = useRoute()
 const { set } = useColorPalette()
@@ -21,8 +21,6 @@ onMounted(() => {
       </Transition>
     </RouterView>
   </AppShell>
-
-  <MSnackbar />
 </template>
 
 <style>

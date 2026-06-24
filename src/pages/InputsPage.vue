@@ -3,7 +3,8 @@ import { ref } from 'vue'
 import {
   MTextField, MSelect, MMultiSelect, MAutocomplete, MMultiAutocomplete, MTagInput,
   MCheckbox, MSwitch, MRadioGroup, MSlider, MRating,
-  MDatePicker, MDateRangePicker, MTimePicker, MColorPicker,
+  MDatePicker, MDatePickerModal, MDateRangePicker, MDateRangePickerModal,
+  MTimePicker, MTimePickerModal, MColorPicker, MColorPickerModal, MButton,
   MNumberField, MMaskField,
 } from '@m3ui-vue/m3ui-vue'
 import type { DateRange } from '@m3ui-vue/m3ui-vue'
@@ -99,7 +100,15 @@ const ratingVal = ref(3.5)
 const dateVal = ref<string | null>(null)
 const dateRange = ref<DateRange>({ start: null, end: null })
 const timeVal = ref<string | null>(null)
+const showTimePicker = ref(false)
+const timeModalVal = ref<string | null>(null)
+const showDatePicker = ref(false)
+const dateModalVal = ref<string | null>(null)
+const showDateRangePicker = ref(false)
+const dateRangeModalVal = ref<DateRange>({ start: null, end: null })
 const colorVal = ref('#6750a4')
+const showColorPicker = ref(false)
+const colorModalVal = ref('#6750a4')
 
 const textFieldProps: PropDef[] = [
   { name: 'modelValue', type: 'string | number', description: 'Bound value' },
@@ -146,6 +155,7 @@ const selectProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'placeholder', type: 'string', description: 'Placeholder when no value selected' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
+  { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the select' },
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset the selection' },
@@ -156,6 +166,7 @@ const multiSelectProps: PropDef[] = [
   { name: 'options', type: 'MultiSelectOption[]', description: '{ label: string, value: unknown, disabled?: boolean }' },
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
+  { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'searchable', type: 'boolean', default: 'true', description: 'Show search in dropdown' },
   { name: 'maxChips', type: 'number', default: '3', description: 'Max visible chips before "+N"' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset all selections' },
@@ -170,6 +181,7 @@ const autocompleteProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Floating label text' },
   { name: 'placeholder', type: 'string', description: 'Input placeholder' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
+  { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'hint', type: 'string', description: 'Helper text below field' },
@@ -184,6 +196,7 @@ const multiAutocompleteProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Floating label text' },
   { name: 'placeholder', type: 'string', description: 'Input placeholder' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
+  { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'hint', type: 'string', description: 'Helper text below field' },
@@ -265,6 +278,15 @@ const datePickerProps: PropDef[] = [
   { name: 'nextMonthLabel', type: 'string', default: "'Next month'", description: 'Aria label for next month button' },
 ]
 
+const datePickerModalProps: PropDef[] = [
+  { name: 'modelValue', type: 'string | null', description: 'Selected date in YYYY-MM-DD format (v-model)' },
+  { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
+  { name: 'min', type: 'string', description: 'Minimum selectable date (YYYY-MM-DD)' },
+  { name: 'max', type: 'string', description: 'Maximum selectable date (YYYY-MM-DD)' },
+  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'title', type: 'string', default: "'Select date'", description: 'Dialog title' },
+]
+
 const dateRangeProps: PropDef[] = [
   { name: 'modelValue', type: '{ start: string | null, end: string | null }', description: 'Selected date range' },
   { name: 'label', type: 'string', description: 'Field label' },
@@ -279,6 +301,15 @@ const dateRangeProps: PropDef[] = [
   { name: 'pickEndText', type: 'string', default: "'Select end'", description: 'Text shown when picking end date' },
 ]
 
+const dateRangePickerModalProps: PropDef[] = [
+  { name: 'modelValue', type: '{ start: string | null, end: string | null }', description: 'Selected date range (v-model)' },
+  { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
+  { name: 'min', type: 'string', description: 'Minimum selectable date (YYYY-MM-DD)' },
+  { name: 'max', type: 'string', description: 'Maximum selectable date (YYYY-MM-DD)' },
+  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'title', type: 'string', default: "'Select range'", description: 'Dialog title' },
+]
+
 const timePickerProps: PropDef[] = [
   { name: 'modelValue', type: 'string | null', description: 'Selected time (HH:MM)' },
   { name: 'label', type: 'string', description: 'Field label' },
@@ -289,12 +320,27 @@ const timePickerProps: PropDef[] = [
   { name: 'placeholder', type: 'string', default: "'Select time'", description: 'Placeholder when no time selected' },
 ]
 
+const timePickerModalProps: PropDef[] = [
+  { name: 'modelValue', type: 'string | null', description: 'Selected time in HH:MM format (v-model)' },
+  { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
+  { name: 'use24h', type: 'boolean', default: 'false', description: 'Use 24-hour format (shows inner ring 13-23)' },
+  { name: 'minuteStep', type: 'number', default: '5', description: 'Minute increment step' },
+  { name: 'title', type: 'string', default: "'Select time'", description: 'Dialog title' },
+]
+
 const colorPickerProps: PropDef[] = [
   { name: 'modelValue', type: 'string', description: 'Selected color (hex)' },
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'presets', type: 'string[]', description: '18 preset color swatches' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
   { name: 'error', type: 'string', description: 'Error message' },
+]
+
+const colorPickerModalProps: PropDef[] = [
+  { name: 'modelValue', type: 'string', description: 'Selected color in hex format (v-model)' },
+  { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
+  { name: 'presets', type: 'string[]', description: '18 preset color swatches' },
+  { name: 'title', type: 'string', default: "'Select color'", description: 'Dialog title' },
 ]
 </script>
 
@@ -487,6 +533,17 @@ const val = ref('a')`"
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Modal mode"
+      description="Opens the options in a dialog instead of a dropdown. Useful for mobile or long option lists."
+      :code='`<MSelect v-model="val" :options="options" label="Choice" mode="modal" />`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MSelect v-model="selectVal" :options="selectOptions" label="Modal Filled" mode="modal" leading-icon="list" />
+        <MSelect v-model="selectVal" :options="selectOptions" label="Modal Outlined" mode="modal" variant="outlined" leading-icon="list" />
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="selectProps" />
 
@@ -565,6 +622,17 @@ const val = ref(['vue', 'svelte'])`"
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Modal mode"
+      description="Opens the options in a dialog instead of a dropdown."
+      :code='`<MMultiSelect v-model="val" :options="options" label="Frameworks" mode="modal" />`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiSelect v-model="multiVal" :options="multiOptions" label="Modal Filled" mode="modal" leading-icon="code" />
+        <MMultiSelect v-model="multiVal" :options="multiOptions" label="Modal Outlined" mode="modal" variant="outlined" leading-icon="code" />
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="multiSelectProps" />
 
@@ -598,6 +666,17 @@ const countries = [
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MAutocomplete v-model="autoVal" :options="autoOptions" label="Country" leading-icon="public" />
         <MAutocomplete v-model="autoVal" :options="autoOptions" label="Country (outlined)" leading-icon="public" variant="outlined" :clearable="true" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Modal mode"
+      description="Opens the options in a dialog with search."
+      :code='`<MAutocomplete v-model="val" :options="options" label="Country" mode="modal" />`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MAutocomplete v-model="autoVal" :options="autoOptions" label="Modal Filled" mode="modal" leading-icon="public" />
+        <MAutocomplete v-model="autoVal" :options="autoOptions" label="Modal Outlined" mode="modal" variant="outlined" leading-icon="public" />
       </div>
     </ComponentDemo>
 
@@ -649,6 +728,17 @@ const countries = [
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MMultiAutocomplete v-model="multiAutoHideVal" :options="autoOptions" label="Countries" leading-icon="public" :hide-selected="true" :clearable="true" />
         <MMultiAutocomplete v-model="multiAutoHideVal" :options="autoOptions" label="Countries (outlined)" leading-icon="public" variant="outlined" :hide-selected="true" :clearable="true" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Modal mode"
+      description="Opens the options in a dialog with search and checkboxes."
+      :code='`<MMultiAutocomplete v-model="val" :options="options" label="Countries" mode="modal" />`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiAutocomplete v-model="multiAutoVal" :options="autoOptions" label="Modal Filled" mode="modal" leading-icon="public" />
+        <MMultiAutocomplete v-model="multiAutoVal" :options="autoOptions" label="Modal Outlined" mode="modal" variant="outlined" leading-icon="public" />
       </div>
     </ComponentDemo>
 
@@ -821,6 +911,27 @@ const val = ref(3.5)`"
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="datePickerProps" />
 
+    <!-- ── MDatePickerModal ────────────────────────────────────────────── -->
+    <h2 id="mdatepickermodal" class="mb-4 mt-14 text-headline-small font-medium">MDatePickerModal</h2>
+
+    <ComponentDemo
+      title="Date Picker Modal"
+      description="Modal date picker with calendar and keyboard input modes. Toggle between calendar view and text input with the edit icon."
+      :code="`<template>
+  <MButton @click=&quot;show = true&quot;>Pick date</MButton>
+  <MDatePickerModal v-model=&quot;date&quot; v-model:show=&quot;show&quot; />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton @click="showDatePicker = true">Pick date</MButton>
+        <span v-if="dateModalVal" class="text-body-medium text-on-surface-variant">{{ dateModalVal }}</span>
+      </div>
+      <MDatePickerModal v-model="dateModalVal" v-model:show="showDatePicker" locale="en-US" />
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="datePickerModalProps" />
+
     <!-- ── MDateRangePicker ─────────────────────────────────────────────── -->
     <h2 id="mdaterangepicker" class="mb-4 mt-14 text-headline-small font-medium">MDateRangePicker</h2>
 
@@ -842,6 +953,29 @@ const val = ref(3.5)`"
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="dateRangeProps" />
 
+    <!-- ── MDateRangePickerModal ────────────────────────────────────────── -->
+    <h2 id="mdaterangepickermodal" class="mb-4 mt-14 text-headline-small font-medium">MDateRangePickerModal</h2>
+
+    <ComponentDemo
+      title="Date Range Picker Modal"
+      description="Modal date range picker. Select start and end dates within a dialog with range highlighting."
+      :code="`<template>
+  <MButton @click=&quot;show = true&quot;>Pick range</MButton>
+  <MDateRangePickerModal v-model=&quot;range&quot; v-model:show=&quot;show&quot; />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton @click="showDateRangePicker = true">Pick range</MButton>
+        <span v-if="dateRangeModalVal.start" class="text-body-medium text-on-surface-variant">
+          {{ dateRangeModalVal.start }} → {{ dateRangeModalVal.end ?? '...' }}
+        </span>
+      </div>
+      <MDateRangePickerModal v-model="dateRangeModalVal" v-model:show="showDateRangePicker" locale="en-US" />
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="dateRangePickerModalProps" />
+
     <!-- ── MTimePicker ──────────────────────────────────────────────────── -->
     <h2 id="mtimepicker" class="mb-4 mt-14 text-headline-small font-medium">MTimePicker</h2>
 
@@ -861,6 +995,27 @@ const val = ref(3.5)`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="timePickerProps" />
+
+    <!-- ── MTimePickerModal ────────────────────────────────────────────── -->
+    <h2 id="mtimepickermodal" class="mb-4 mt-14 text-headline-small font-medium">MTimePickerModal</h2>
+
+    <ComponentDemo
+      title="Time Picker Modal"
+      description="Modal time picker with clock dial and keyboard input modes. Supports AM/PM toggle and 24h format."
+      :code="`<template>
+  <MButton @click=&quot;show = true&quot;>Pick time</MButton>
+  <MTimePickerModal v-model=&quot;time&quot; v-model:show=&quot;show&quot; />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton @click="showTimePicker = true">Pick time (12h)</MButton>
+        <span v-if="timeModalVal" class="text-body-medium text-on-surface-variant">{{ timeModalVal }}</span>
+      </div>
+      <MTimePickerModal v-model="timeModalVal" v-model:show="showTimePicker" />
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="timePickerModalProps" />
 
     <!-- ── MColorPicker ─────────────────────────────────────────────────── -->
     <h2 id="mcolorpicker" class="mb-4 mt-14 text-headline-small font-medium">MColorPicker</h2>
@@ -886,5 +1041,30 @@ const val = ref(3.5)`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="colorPickerProps" />
+
+    <!-- ── MColorPickerModal ───────────────────────────────────────────── -->
+    <h2 id="mcolorpickermodal" class="mb-4 mt-14 text-headline-small font-medium">MColorPickerModal</h2>
+
+    <ComponentDemo
+      title="Color Picker Modal"
+      description="Modal color picker with saturation/brightness area, hue slider, hex input and preset swatches. Only emits on confirm."
+      :code="`<template>
+  <MButton @click=&quot;show = true&quot;>Pick color</MButton>
+  <MColorPickerModal v-model=&quot;color&quot; v-model:show=&quot;show&quot; />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton @click="showColorPicker = true">Pick color</MButton>
+        <span
+          class="h-10 w-10 rounded-full border border-outline-variant"
+          :style="{ backgroundColor: colorModalVal }"
+        />
+        <span class="text-body-medium text-on-surface-variant">{{ colorModalVal }}</span>
+      </div>
+      <MColorPickerModal v-model="colorModalVal" v-model:show="showColorPicker" />
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="colorPickerModalProps" />
   </div>
 </template>

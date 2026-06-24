@@ -158,6 +158,7 @@ const listProps: PropDef[] = [
   { name: 'dense', type: 'boolean', default: 'false', description: 'Compact vertical padding' },
   { name: 'dividers', type: "boolean | 'inset'", default: 'false', description: 'Show separators between items' },
   { name: 'nav', type: 'boolean', default: 'false', description: 'Navigation variant with rounded active items' },
+  { name: 'segmented', type: 'boolean', default: 'false', description: 'Segmented style — items have individual backgrounds and rounded corners' },
   { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable single-item selection' },
   { name: 'selected', type: 'string | number | null', description: 'Currently selected item value' },
   { name: 'lines', type: '1 | 2 | 3', description: 'Default line count for child items' },
@@ -195,26 +196,32 @@ const listSubheaderProps: PropDef[] = [
 const selectedEmoji = ref('')
 
 const carouselItems: CarouselItem[] = [
-  { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=450&fit=crop', title: 'Mountain Vista', subtitle: 'Swiss Alps at sunrise' },
-  { src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=450&fit=crop', title: 'Tropical Beach', subtitle: 'Crystal clear waters' },
-  { src: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=450&fit=crop', title: 'Starry Night', subtitle: 'Milky way over the mountains' },
-  { src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=450&fit=crop', title: 'Green Valley', subtitle: 'Rolling hills in summer' },
+  { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=450&fit=crop', label: 'Mountain Vista', supportingText: 'Swiss Alps at sunrise' },
+  { src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=450&fit=crop', label: 'Tropical Beach', supportingText: 'Crystal clear waters' },
+  { src: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=450&fit=crop', label: 'Starry Night', supportingText: 'Milky way over the mountains' },
+  { src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=450&fit=crop', label: 'Green Valley', supportingText: 'Rolling hills in summer' },
+  { src: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=800&h=450&fit=crop', label: 'Autumn Forest', supportingText: 'Golden canopy' },
 ]
 
-const carouselSimple: CarouselItem[] = [
-  { src: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=800&h=450&fit=crop' },
-  { src: 'https://images.unsplash.com/photo-1524781289445-ddf8f5695861?w=800&h=450&fit=crop' },
-  { src: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=800&h=450&fit=crop' },
+const carouselMultiRatio: CarouselItem[] = [
+  { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop', label: 'Wide', ratio: 1.5 },
+  { src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=500&fit=crop', label: 'Tall', ratio: 0.8 },
+  { src: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=500&h=500&fit=crop', label: 'Square', ratio: 1 },
+  { src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=700&h=350&fit=crop', label: 'Panoramic', ratio: 2 },
+  { src: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=400&h=600&fit=crop', label: 'Portrait', ratio: 0.7 },
 ]
 
 const carouselProps: PropDef[] = [
-  { name: 'items', type: 'CarouselItem[]', description: '{ src, alt?, title?, subtitle? }' },
+  { name: 'items', type: 'CarouselItem[]', description: '{ src, alt?, label?, supportingText?, ratio? }' },
+  { name: 'layout', type: "'hero' | 'multi-browse' | 'uncontained'", default: "'hero'", description: 'Carousel layout style' },
+  { name: 'height', type: 'string', default: "'320px'", description: 'Container height' },
   { name: 'autoplay', type: 'boolean', default: 'false', description: 'Auto-advance slides' },
   { name: 'interval', type: 'number', default: '5000', description: 'Autoplay interval in ms' },
   { name: 'showArrows', type: 'boolean', default: 'true', description: 'Show prev/next arrow buttons' },
   { name: 'showIndicators', type: 'boolean', default: 'true', description: 'Show dot indicators' },
-  { name: 'aspectRatio', type: 'string', default: "'16/9'", description: 'CSS aspect-ratio for the container' },
-  { name: 'rounded', type: 'boolean', default: 'true', description: 'Apply rounded corners' },
+  { name: 'gap', type: 'number', default: '8', description: 'Gap between items in pixels' },
+  { name: 'visibleItems', type: 'number', default: '3', description: 'Number of visible items (multi-browse)' },
+  { name: 'animated', type: 'boolean', default: 'false', description: 'Enable dynamic resize on scroll (uncontained layout)' },
 ]
 
 const chatBubbleProps: PropDef[] = [
@@ -1502,6 +1509,35 @@ const nodes = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Segmented"
+      description="Each item has its own background and rounded corners, visually grouping them as separate segments."
+      :code="`<MList :segmented=&quot;true&quot; :selectable=&quot;true&quot; v-model:selected=&quot;selected&quot;>
+  <MListItem title=&quot;General&quot; icon=&quot;settings&quot; value=&quot;general&quot; />
+  <MListItem title=&quot;Privacy&quot; icon=&quot;lock&quot; value=&quot;privacy&quot; />
+</MList>`"
+    >
+      <div class="grid w-full gap-6 sm:grid-cols-2">
+        <MCard class="p-0">
+          <p class="px-4 pt-4 pb-1 text-title-small font-medium text-on-surface">Settings</p>
+          <MList :segmented="true" :selectable="true" v-model:selected="listSelected">
+            <MListItem title="General" subtitle="App preferences" icon="settings" value="general" />
+            <MListItem title="Notifications" subtitle="Alerts and sounds" icon="notifications" value="notifications" />
+            <MListItem title="Privacy" subtitle="Data and permissions" icon="lock" value="privacy" />
+            <MListItem title="Storage" subtitle="Manage local data" icon="storage" value="storage" />
+          </MList>
+        </MCard>
+        <MCard class="p-0">
+          <p class="px-4 pt-4 pb-1 text-title-small font-medium text-on-surface">Account</p>
+          <MList :segmented="true">
+            <MListItem title="Profile" subtitle="fadel@example.com" icon="person" :clickable="true" trailing-icon="chevron_right" />
+            <MListItem title="Security" subtitle="Password and 2FA" icon="shield" :clickable="true" trailing-icon="chevron_right" />
+            <MListItem title="Sign out" icon="logout" :clickable="true" />
+          </MList>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">MList Props</h3>
     <PropsTable :props="listProps" />
 
@@ -1613,49 +1649,52 @@ const nodes = [
     <h2 id="mcarousel" class="mb-4 mt-14 text-headline-small font-medium">MCarousel</h2>
 
     <ComponentDemo
-      title="Carousel with Overlays"
-      description="Image carousel with title/subtitle overlays, arrow navigation, and dot indicators. Supports swipe on touch devices."
-      :code="`<MCarousel :items=&quot;items&quot; />`"
-      :script="`import { MCarousel } from '@m3ui-vue/m3ui-vue'
-import type { CarouselItem } from '@m3ui-vue/m3ui-vue'
-
-const items: CarouselItem[] = [
-  { src: '/photo1.jpg', title: 'Mountain Vista', subtitle: 'Swiss Alps at sunrise' },
-  { src: '/photo2.jpg', title: 'Tropical Beach', subtitle: 'Crystal clear waters' },
-  { src: '/photo3.jpg', title: 'Starry Night', subtitle: 'Milky way over the mountains' },
-]`"
+      title="Hero"
+      description="One prominent item with adjacent items peeking from the sides. Items scale and parallax as you scroll. Default layout."
+      :code="`<MCarousel :items=&quot;items&quot; layout=&quot;hero&quot; />`"
     >
       <div class="w-full">
-        <MCarousel :items="carouselItems" />
+        <MCarousel :items="carouselItems" layout="hero" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Multi-browse"
+      description="Multiple items visible at once. Configure how many with visibleItems."
+      :code="`<MCarousel :items=&quot;items&quot; layout=&quot;multi-browse&quot; :visible-items=&quot;3&quot; />`"
+    >
+      <div class="w-full">
+        <MCarousel :items="carouselItems" layout="multi-browse" :visible-items="3" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Uncontained Multi-Aspect Ratio"
+      description="Items with different widths based on their ratio property. Static widths."
+      :code="`<MCarousel :items=&quot;items&quot; layout=&quot;uncontained&quot; />`"
+    >
+      <div class="w-full">
+        <MCarousel :items="carouselMultiRatio" layout="uncontained" height="260px" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Uncontained Animated"
+      description="With animated prop, items smoothly grow as they approach the center and shrink as they move away. The protagonist item expands while others contract."
+      :code="`<MCarousel :items=&quot;items&quot; layout=&quot;uncontained&quot; :animated=&quot;true&quot; />`"
+    >
+      <div class="w-full">
+        <MCarousel :items="carouselMultiRatio" layout="uncontained" height="260px" :animated="true" />
       </div>
     </ComponentDemo>
 
     <ComponentDemo
       title="Autoplay"
-      description="Auto-advance slides every 3 seconds. Pauses on hover and touch."
+      description="Auto-advance with hero layout. Pauses on hover."
       :code="`<MCarousel :items=&quot;items&quot; :autoplay=&quot;true&quot; :interval=&quot;3000&quot; />`"
-      :script="`import { MCarousel } from '@m3ui-vue/m3ui-vue'
-import type { CarouselItem } from '@m3ui-vue/m3ui-vue'
-
-const items: CarouselItem[] = [
-  { src: '/photo1.jpg' },
-  { src: '/photo2.jpg' },
-  { src: '/photo3.jpg' },
-]`"
     >
       <div class="w-full">
-        <MCarousel :items="carouselSimple" :autoplay="true" :interval="3000" />
-      </div>
-    </ComponentDemo>
-
-    <ComponentDemo
-      title="Minimal"
-      description="No arrows, no indicators — just swipe or use keyboard arrows."
-      :code="`<MCarousel :items=&quot;items&quot; :show-arrows=&quot;false&quot; :show-indicators=&quot;false&quot; aspect-ratio=&quot;4/3&quot; />`"
-      :script="`import { MCarousel } from '@m3ui-vue/m3ui-vue'`"
-    >
-      <div class="mx-auto w-full max-w-md">
-        <MCarousel :items="carouselSimple" :show-arrows="false" :show-indicators="false" aspect-ratio="4/3" />
+        <MCarousel :items="carouselItems" :autoplay="true" :interval="3000" />
       </div>
     </ComponentDemo>
 
