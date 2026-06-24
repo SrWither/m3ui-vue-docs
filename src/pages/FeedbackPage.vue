@@ -130,10 +130,13 @@ const notificationProps: PropDef[] = [
   { name: 'error(msg, opts?)', type: 'function', description: 'Show an error notification' },
   { name: 'warning(msg, opts?)', type: 'function', description: 'Show a warning notification' },
   { name: 'info(msg, opts?)', type: 'function', description: 'Show an info notification' },
-  { name: 'loading(msg, opts?)', type: 'function', description: 'Show a notification with spinner (persists until update/dismiss)' },
+  { name: 'loading(msg, opts?)', type: 'function', description: 'Show with spinner (persists until update/dismiss, closable: false by default)' },
   { name: 'update(id, patch)', type: 'function', description: 'Update a notification (message, variant, loading, etc.)' },
   { name: 'position', type: 'Ref<NotificationPosition>', default: "'top-right'", description: 'Where notifications appear on screen' },
   { name: 'dismiss(id)', type: 'function', description: 'Dismiss a notification by id' },
+  { name: 'opts.action', type: '{ label, onClick }', description: 'Action button inside the notification' },
+  { name: 'opts.closable', type: 'boolean', default: 'true', description: 'Show close button (false hides it)' },
+  { name: 'opts.duration', type: 'number', default: '3000', description: 'Auto-dismiss in ms (0 = persistent)' },
 ]
 </script>
 
@@ -315,7 +318,7 @@ toast.update(id, { message: 'Uploaded!', variant: 'success' })
 
     <ComponentDemo
       title="Notifications"
-      description="Compact, pill-shaped notifications. Shorter duration (3s) and smaller than toasts."
+      description="Compact notifications with squared corners. Supports actions, close button, and auto-dismiss."
       :code="`<script setup>
 import { useNotification } from '@m3ui-vue/m3ui-vue'
 
@@ -389,6 +392,32 @@ notif.update(id, { message: 'Saved!', variant: 'success' })
       <div class="flex flex-wrap gap-3">
         <MButton variant="tonal" icon="save" @click="demoNotifLoading('success')">Loading → Success</MButton>
         <MButton variant="tonal" icon="error" color="error" @click="demoNotifLoading('error')">Loading → Error</MButton>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="With Actions"
+      description="Add an action button to the notification. The close button is shown by default (closable: true) and can be hidden."
+      :code="`<script setup>
+import { useNotification } from '@m3ui-vue/m3ui-vue'
+
+const notif = useNotification()
+
+notif.info('File deleted', {
+  action: { label: 'Undo', onClick: () => restore() },
+})
+
+// No close button
+notif.warning('Update available', {
+  closable: false,
+  action: { label: 'Install', onClick: () => install() },
+})
+<\/script>`"
+    >
+      <div class="flex flex-wrap gap-3">
+        <MButton variant="tonal" icon="delete" @click="notif.info('File deleted', { action: { label: 'Undo', onClick: () => notif.success('Restored!') }, duration: 5000 })">With Undo</MButton>
+        <MButton variant="tonal" icon="system_update" @click="notif.warning('Update available', { closable: false, action: { label: 'Install', onClick: () => notif.success('Installing...') }, duration: 6000 })">No close button</MButton>
+        <MButton variant="tonal" icon="wifi_off" color="error" @click="notif.error('Connection lost', { action: { label: 'Retry', onClick: () => notif.info('Reconnecting...') }, duration: 0 })">Persistent + action</MButton>
       </div>
     </ComponentDemo>
 
