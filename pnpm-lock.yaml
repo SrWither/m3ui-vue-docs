@@ -42,8 +42,8 @@ importers:
         specifier: ^6.43.1
         version: 6.43.1
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.3.1
-        version: 0.3.1(ccf8050d44bfdd8567278bc864724d7b)
+        specifier: ^0.4.0
+        version: 0.4.0(ccf8050d44bfdd8567278bc864724d7b)
       '@tailwindcss/vite':
         specifier: ^4.3.1
         version: 4.3.1(vite@8.0.16(jiti@2.7.0))
@@ -246,8 +246,8 @@ packages:
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
 
-  '@m3ui-vue/m3ui-vue@0.3.1':
-    resolution: {integrity: sha512-JZgY2Z8CW/TtE4D5zlvmujnpK+xw77m3hE5bdHcJ6vQmmUr+zhf/2qMSFGtYpbW4B9E1v6te/P2QMV76E2cCQQ==}
+  '@m3ui-vue/m3ui-vue@0.4.0':
+    resolution: {integrity: sha512-W25z5j5pn3YnMu7zDkUVxB2oiq7wwanCbIaq4LAa6w5GH0GX+K/fJ47BevVgCAJOrPoadbzZmRcBE3VolMcNnQ==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-css': '*'
@@ -950,8 +950,8 @@ packages:
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
-  nanoid@3.3.14:
-    resolution: {integrity: sha512-U9kYi5bpVMEI31yC8iw4bJJp0avcHXA0W8/wNfLfnvJYzihQo2ZRPYPvpAAd570HAcCBjCTN7vnr+v4StKl1IQ==}
+  nanoid@3.3.15:
+    resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -1334,7 +1334,7 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.3.1(ccf8050d44bfdd8567278bc864724d7b)':
+  '@m3ui-vue/m3ui-vue@0.4.0(ccf8050d44bfdd8567278bc864724d7b)':
     dependencies:
       tailwindcss: 4.3.1
       vue: 3.5.38(typescript@6.0.3)
@@ -1911,7 +1911,7 @@ snapshots:
 
   muggle-string@0.4.1: {}
 
-  nanoid@3.3.14: {}
+  nanoid@3.3.15: {}
 
   orderedmap@2.1.1: {}
 
@@ -1923,7 +1923,7 @@ snapshots:
 
   postcss@8.5.15:
     dependencies:
-      nanoid: 3.3.14
+      nanoid: 3.3.15
       picocolors: 1.1.1
       source-map-js: 1.2.1
 

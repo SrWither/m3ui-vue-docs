@@ -82,6 +82,9 @@ const menuProps: PropDef[] = [
 const menuItemProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the item' },
+  { name: 'danger', type: 'boolean', default: 'false', description: 'Danger/destructive styling (error color)' },
+  { name: '#children', type: 'slot', description: 'Nested submenu items — hover to expand' },
 ]
 
 const contextMenuProps: PropDef[] = [
@@ -372,7 +375,7 @@ const appBarProps: PropDef[] = [
 
     <ComponentDemo
       title="Primary Tabs"
-      description="Underline-style tabs with a sliding indicator."
+      description="Underline indicator shorter than the tab, with a stretch animation when switching. Icons and text pushed up from the indicator."
       :code="`<MTabs
     v-model=&quot;active&quot;
     :tabs=&quot;[
@@ -399,18 +402,16 @@ const appBarProps: PropDef[] = [
 
     <ComponentDemo
       title="Secondary Tabs"
-      description="Pill-style tabs with a filled indicator."
-      :code="`<template>
-  <MTabs
-    v-model=&quot;active&quot;
-    variant=&quot;secondary&quot;
-    :tabs=&quot;[
-      { value: 'all', label: 'All' },
-      { value: 'active', label: 'Active' },
-      { value: 'done', label: 'Done' },
-    ]&quot;
-  />
-</template>`"
+      description="Full-width underline indicator spanning the entire tab. Text-only, simpler style. No icons."
+      :code="`<MTabs
+  v-model=&quot;active&quot;
+  variant=&quot;secondary&quot;
+  :tabs=&quot;[
+    { value: 'all', label: 'All' },
+    { value: 'active', label: 'Active' },
+    { value: 'done', label: 'Done' },
+  ]&quot;
+/>`"
     >
       <div class="w-full">
         <MTabs
@@ -423,7 +424,28 @@ const appBarProps: PropDef[] = [
             { value: 'archived', label: 'Archived', disabled: true },
           ]"
         />
-        <div class="mt-3 text-body-medium text-on-surface-variant">Active: {{ secondaryTab }}</div>
+        <div class="p-4 text-body-medium text-on-surface-variant">Active: {{ secondaryTab }}</div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Many Tabs (Scrollable)"
+      description="Tabs scroll horizontally when there are too many to fit."
+      :code="`<MTabs v-model=&quot;active&quot; :tabs=&quot;manyTabs&quot; />`"
+    >
+      <div class="w-full max-w-md">
+        <MTabs
+          v-model="activeTab"
+          :tabs="[
+            { value: 'tab1', label: 'Overview' },
+            { value: 'tab2', label: 'Features' },
+            { value: 'tab3', label: 'Pricing' },
+            { value: 'tab4', label: 'Reviews' },
+            { value: 'tab5', label: 'Support' },
+            { value: 'tab6', label: 'Changelog' },
+            { value: 'tab7', label: 'Docs' },
+          ]"
+        />
       </div>
     </ComponentDemo>
 
@@ -464,6 +486,63 @@ const appBarProps: PropDef[] = [
         <MMenuItem icon="person">Profile</MMenuItem>
         <MMenuItem icon="settings">Settings</MMenuItem>
         <MMenuItem icon="logout">Log out</MMenuItem>
+      </MMenu>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Submenus"
+      description="Menu items can have nested children via the #children slot. Hover to expand."
+      :code="`<MMenu>
+  <template #trigger>
+    <MButton>Open</MButton>
+  </template>
+  <MMenuItem icon=&quot;file_open&quot;>Open</MMenuItem>
+  <MMenuItem icon=&quot;share&quot;>
+    Share
+    <template #children>
+      <MMenuItem icon=&quot;email&quot;>Email</MMenuItem>
+      <MMenuItem icon=&quot;link&quot;>Copy link</MMenuItem>
+    </template>
+  </MMenuItem>
+</MMenu>`"
+    >
+      <MMenu>
+        <template #trigger>
+          <MButton variant="tonal" icon="menu">Menu with subs</MButton>
+        </template>
+        <MMenuItem icon="file_open">Open</MMenuItem>
+        <MMenuItem icon="edit">Edit</MMenuItem>
+        <MMenuItem icon="share">
+          Share
+          <template #children>
+            <MMenuItem icon="email">Email</MMenuItem>
+            <MMenuItem icon="link">Copy link</MMenuItem>
+            <MMenuItem icon="chat">
+              Social
+              <template #children>
+                <MMenuItem icon="flutter_dash">Twitter</MMenuItem>
+                <MMenuItem icon="public">Facebook</MMenuItem>
+                <MMenuItem icon="code">LinkedIn</MMenuItem>
+              </template>
+            </MMenuItem>
+          </template>
+        </MMenuItem>
+        <MMenuItem icon="drive_file_move">
+          Move to
+          <template #children>
+            <MMenuItem icon="folder">Documents</MMenuItem>
+            <MMenuItem icon="folder">
+              Projects
+              <template #children>
+                <MMenuItem icon="folder">Frontend</MMenuItem>
+                <MMenuItem icon="folder">Backend</MMenuItem>
+                <MMenuItem icon="folder">Design</MMenuItem>
+              </template>
+            </MMenuItem>
+            <MMenuItem icon="folder">Archive</MMenuItem>
+          </template>
+        </MMenuItem>
+        <MMenuItem icon="delete" danger>Delete</MMenuItem>
       </MMenu>
     </ComponentDemo>
 
