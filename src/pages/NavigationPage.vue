@@ -1475,6 +1475,7 @@ const sections = [
   iconSize?: number                 // Override icon size (px) for this item
   labelClass?: string               // Override label CSS class (e.g. 'text-label-large')
   py?: string                       // Override vertical padding class (e.g. 'py-2.5')
+  click?: () =&gt; void               // Per-item callback (fires before @select)
 }
 
 interface DrawerSection {
@@ -1497,6 +1498,14 @@ interface DrawerSection {
 
 #default  — Free content rendered at the end of the scrollable area,
             after all sections. Use for footers, logout buttons, etc.</code></pre>
+    </MCard>
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Events</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>@select(value: string | number)  — Fires when an item is clicked.
+                                    Use to track the selected item.
+
+@update:modelValue(open: boolean) — Open/closed state for v-model.</code></pre>
     </MCard>
 
     <!-- ── MNavigationRail ─────────────────────────────────────────────── -->

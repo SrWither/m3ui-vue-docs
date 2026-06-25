@@ -126,6 +126,13 @@ const categories = [
       </MStack>
     </section>
 
+    <!-- ══ DOCS NOTICE ════════════════════════════════════════════ -->
+    <MAlert variant="outlined" tone="warning" icon="construction" :closable="false">
+      <strong>Documentation in progress</strong> — These docs are still being built out.
+      Some components, props, events, and slots may exist in the library but are not yet documented here.
+      If something seems missing, check the source types or open an issue on GitHub.
+    </MAlert>
+
     <!-- ══ LIVE THEME SWITCHER ═══════════════════════════════════ -->
     <section>
       <MStack gap="md">
