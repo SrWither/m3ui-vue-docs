@@ -18,6 +18,29 @@ const textPassword = ref('')
 const textMultiline = ref('')
 const textError = ref('bad value')
 const textClearable = ref('Hello world')
+const textDebounce = ref('')
+const debounceLog = ref('')
+function onDebounced(v: string) {
+  debounceLog.value = `@debounced at ${new Date().toLocaleTimeString()}: "${v}"`
+}
+
+const numDebounce = ref<number | null>(50)
+const numDebounceLog = ref('')
+function onNumDebounced(v: number | null) { numDebounceLog.value = `@debounced: ${v}` }
+
+const maskDebounce = ref('')
+const maskDebounceLog = ref('')
+function onMaskDebounced(v: string) { maskDebounceLog.value = `@debounced: "${v}"` }
+
+const autoDebounceLog = ref('')
+function onAutoDebounced(v: string) { autoDebounceLog.value = `@debounced: "${v}"` }
+
+const multiAutoDebounceLog = ref('')
+function onMultiAutoDebounced(v: string) { multiAutoDebounceLog.value = `@debounced: "${v}"` }
+
+const tagsDebounce = ref<string[]>(['Vue'])
+const tagsDebounceLog = ref('')
+function onTagsDebounced(v: string[]) { tagsDebounceLog.value = `@debounced: [${v.join(', ')}]` }
 
 const selectClearable = ref<unknown>('a')
 const multiClearable = ref<unknown[]>(['vue', 'svelte'])
@@ -133,6 +156,7 @@ const textFieldProps: PropDef[] = [
   { name: 'rows', type: 'number', default: '3', description: 'Textarea rows (when multiline)' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol shown before the input' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button when the field has a value' },
+  { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before firing the @debounced event. v-model always updates immediately' },
 ]
 
 const numberFieldProps: PropDef[] = [
@@ -146,6 +170,7 @@ const numberFieldProps: PropDef[] = [
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'hint', type: 'string', description: 'Hint text' },
+  { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before firing the @debounced event' },
 ]
 
 const maskFieldProps: PropDef[] = [
@@ -157,6 +182,7 @@ const maskFieldProps: PropDef[] = [
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
   { name: 'error', type: 'string', description: 'Error message' },
   { name: 'hint', type: 'string', description: 'Hint text' },
+  { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before firing the @debounced event' },
 ]
 
 const selectProps: PropDef[] = [
@@ -198,6 +224,7 @@ const autocompleteProps: PropDef[] = [
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Text when no options match' },
+  { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before filtering and firing @debounced. Selection is always instant' },
 ]
 
 const multiAutocompleteProps: PropDef[] = [
@@ -215,6 +242,7 @@ const multiAutocompleteProps: PropDef[] = [
   { name: 'maxChips', type: 'number', default: '3', description: 'Max visible chips before "+N"' },
   { name: 'noResultsText', type: 'string', default: "'No results'", description: 'Text when no options match' },
   { name: 'hideSelected', type: 'boolean', default: 'false', description: 'Remove already-selected options from the dropdown' },
+  { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before filtering and firing @debounced. Selection is always instant' },
 ]
 
 const tagInputProps: PropDef[] = [
@@ -229,6 +257,7 @@ const tagInputProps: PropDef[] = [
   { name: 'duplicates', type: 'boolean', default: 'false', description: 'Allow duplicate tags' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear-all button' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
+  { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before firing the @debounced event' },
 ]
 
 const checkboxProps: PropDef[] = [
@@ -431,6 +460,41 @@ const text = ref('Hello world')`"
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Debounce"
+      description="v-model updates immediately, but the @debounced event only fires after the user stops typing. Useful for search inputs that trigger API calls."
+      :code='`<MTextField
+  v-model=&quot;search&quot;
+  label=&quot;Search API&quot;
+  leading-icon=&quot;search&quot;
+  :debounce=&quot;500&quot;
+  @debounced=&quot;fetchResults&quot;
+/>`'
+      :script='`import { MTextField } from &apos;@m3ui-vue/m3ui-vue&apos;
+
+const search = ref(&apos;&apos;)
+
+function fetchResults(value: string) {
+  // Only fires after 500ms of inactivity
+  api.search(value)
+}`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MTextField
+          v-model="textDebounce"
+          label="Search (500ms debounce)"
+          leading-icon="search"
+          :debounce="500"
+          @debounced="onDebounced"
+        />
+        <div class="flex items-center">
+          <p class="text-body-medium text-on-surface-variant">
+            {{ debounceLog || 'Type something — @debounced fires after 500ms of inactivity' }}
+          </p>
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="textFieldProps" />
 
@@ -464,6 +528,19 @@ const val = ref(25)`"
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Debounce"
+      description="Fires @debounced after the user stops typing. Stepper buttons emit instantly."
+      :code='`<MNumberField v-model=&quot;qty&quot; label=&quot;Quantity&quot; :debounce=&quot;400&quot; @debounced=&quot;onDebounced&quot; />`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MNumberField v-model="numDebounce" label="Quantity (400ms)" :debounce="400" @debounced="onNumDebounced" />
+        <div class="flex items-center">
+          <p class="text-body-medium text-on-surface-variant">{{ numDebounceLog || 'Type a number — @debounced fires after 400ms' }}</p>
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="numberFieldProps" />
 
@@ -484,6 +561,19 @@ const val = ref(25)`"
         <MMaskField v-model="maskPhone" label="Phone" mask="phone" leading-icon="phone" :clearable="true" variant="outlined" />
         <MMaskField v-model="maskDate" label="Birthday" mask="date" leading-icon="calendar_today" hint="MM/DD/YYYY" />
         <MMaskField v-model="maskCustom" label="Custom Code" mask="##-###-####" variant="outlined" hint="Pattern: ##-###-####" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Debounce"
+      description="Debounce the masked value. Useful for validating card numbers or phone lookups."
+      :code='`<MMaskField v-model=&quot;phone&quot; label=&quot;Phone&quot; mask=&quot;phone&quot; :debounce=&quot;500&quot; @debounced=&quot;validatePhone&quot; />`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMaskField v-model="maskDebounce" label="Phone (500ms)" mask="phone" leading-icon="phone" :debounce="500" @debounced="onMaskDebounced" />
+        <div class="flex items-center">
+          <p class="text-body-medium text-on-surface-variant">{{ maskDebounceLog || 'Type a phone number — @debounced fires after 500ms' }}</p>
+        </div>
       </div>
     </ComponentDemo>
 
@@ -696,6 +786,25 @@ const countries = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Debounce"
+      description="Debounce the search filtering. Use @debounced to fetch options from an API after the user pauses typing."
+      :code='`<MAutocomplete
+  v-model=&quot;country&quot;
+  :options=&quot;options&quot;
+  label=&quot;Search country&quot;
+  :debounce=&quot;400&quot;
+  @debounced=&quot;fetchCountries&quot;
+/>`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MAutocomplete v-model="autoVal" :options="autoOptions" label="Country (400ms)" leading-icon="public" :debounce="400" @debounced="onAutoDebounced" />
+        <div class="flex items-center">
+          <p class="text-body-medium text-on-surface-variant">{{ autoDebounceLog || 'Type to search — filtering and @debounced fire after 400ms' }}</p>
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="autocompleteProps" />
 
@@ -758,6 +867,25 @@ const countries = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Debounce"
+      description="Debounce the search filtering. Selections are always instant."
+      :code='`<MMultiAutocomplete
+  v-model=&quot;selected&quot;
+  :options=&quot;options&quot;
+  label=&quot;Countries&quot;
+  :debounce=&quot;400&quot;
+  @debounced=&quot;fetchCountries&quot;
+/>`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MMultiAutocomplete v-model="multiAutoVal" :options="autoOptions" label="Countries (400ms)" leading-icon="public" :debounce="400" @debounced="onMultiAutoDebounced" />
+        <div class="flex items-center">
+          <p class="text-body-medium text-on-surface-variant">{{ multiAutoDebounceLog || 'Type to search — filtering and @debounced fire after 400ms' }}</p>
+        </div>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="multiAutocompleteProps" />
 
@@ -778,6 +906,24 @@ const countries = [
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MTagInput v-model="tags" label="Skills" leading-icon="sell" placeholder="Add a skill..." />
         <MTagInput v-model="tags" label="Skills (outlined)" leading-icon="sell" variant="outlined" :clearable="true" placeholder="Add a skill..." />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Debounce"
+      description="Debounce tag changes. Tags appear instantly but @debounced fires after the user stops adding/removing."
+      :code='`<MTagInput
+  v-model=&quot;tags&quot;
+  label=&quot;Skills&quot;
+  :debounce=&quot;500&quot;
+  @debounced=&quot;saveTags&quot;
+/>`'
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MTagInput v-model="tagsDebounce" label="Skills (500ms)" leading-icon="sell" placeholder="Add a skill..." :debounce="500" @debounced="onTagsDebounced" />
+        <div class="flex items-center">
+          <p class="text-body-medium text-on-surface-variant">{{ tagsDebounceLog || 'Add/remove tags — @debounced fires after 500ms' }}</p>
+        </div>
       </div>
     </ComponentDemo>
 

@@ -42,8 +42,8 @@ importers:
         specifier: ^6.43.1
         version: 6.43.2
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.4.2
-        version: 0.4.2(b888b6ddf54bc38bab9d91fc90e5d3dd)
+        specifier: ^0.4.3
+        version: 0.4.3(b888b6ddf54bc38bab9d91fc90e5d3dd)
       '@tailwindcss/vite':
         specifier: ^4.3.1
         version: 4.3.1(vite@8.1.0(jiti@2.7.0))
@@ -246,8 +246,8 @@ packages:
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
 
-  '@m3ui-vue/m3ui-vue@0.4.2':
-    resolution: {integrity: sha512-dChz6TL3Vx9Pm22DuI28PJjs/WFlLeW43dg19CcFkmOHW8SG31NoiD86UAOaevVS8/4qfb5uRs9a3ZiOpdZMUw==}
+  '@m3ui-vue/m3ui-vue@0.4.3':
+    resolution: {integrity: sha512-ubRbchV8AwDakL2rlbIiTvRkV+sAdYnKy+fFQmDnZp+J2zgkRJzybqK741htIWOMnC+gIsW2m5kFwkvotGVuUA==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-css': '*'
@@ -1334,7 +1334,7 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.4.2(b888b6ddf54bc38bab9d91fc90e5d3dd)':
+  '@m3ui-vue/m3ui-vue@0.4.3(b888b6ddf54bc38bab9d91fc90e5d3dd)':
     dependencies:
       tailwindcss: 4.3.1
       vue: 3.5.38(typescript@6.0.3)
