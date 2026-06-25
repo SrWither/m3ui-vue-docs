@@ -25,6 +25,50 @@ app.use(createM3UI({
 }))
 app.mount('#app')`
 
+const dynamicLocaleCode = `// src/locale.ts — shared reactive locale
+import { ref } from 'vue'
+import { esLocale } from '@m3ui-vue/m3ui-vue/locales'
+
+export const currentLocale = ref(esLocale)`
+
+const dynamicMainCode = `// main.ts
+import { createApp } from 'vue'
+import { createM3UI } from '@m3ui-vue/m3ui-vue'
+import { currentLocale } from './locale'
+import App from './App.vue'
+
+const app = createApp(App)
+app.use(createM3UI({ locale: currentLocale }))
+app.mount('#app')`
+
+const dynamicSettingsCode = `<script setup>
+// Settings.vue — change locale from any component
+import { currentLocale } from '../locale'
+import { esLocale, frLocale, deLocale } from '@m3ui-vue/m3ui-vue/locales'
+
+const languages = [
+  { label: 'Spanish', locale: esLocale },
+  { label: 'French', locale: frLocale },
+  { label: 'German', locale: deLocale },
+]
+
+function setLanguage(lang) {
+  currentLocale.value = lang.locale // all components update instantly
+}
+<\/script>`
+
+const dynamicComputedCode = `// You can also use a computed ref
+import { computed } from 'vue'
+import { esLocale, frLocale } from '@m3ui-vue/m3ui-vue/locales'
+
+const userLang = ref('es')
+
+const currentLocale = computed(() =>
+  userLang.value === 'es' ? esLocale : frLocale
+)
+
+app.use(createM3UI({ locale: currentLocale }))`
+
 const perInstanceCode = `<!-- Per-instance override (takes priority over global locale) -->
 <MDataTable
   :columns="cols"
@@ -208,6 +252,35 @@ const fullSpanishCode = `app.use(createM3UI({
     </p>
     <MCodeEditor :model-value="presetsCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" class="mb-6" />
     <MCodeEditor :model-value="availablePresetsCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-10" />
+
+    <!-- Dynamic locale -->
+    <h2 class="mb-4 text-headline-small font-medium">Dynamic locale</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Pass a <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">ref</code> or
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">computed</code> instead of a plain object
+      to enable runtime locale switching. All components update automatically when the ref changes.
+    </p>
+
+    <p class="mb-2 text-label-large text-on-surface">1. Create a shared reactive locale</p>
+    <MCodeEditor :model-value="dynamicLocaleCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="200px" class="mb-4" />
+
+    <p class="mb-2 text-label-large text-on-surface">2. Pass it to the plugin</p>
+    <MCodeEditor :model-value="dynamicMainCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="200px" class="mb-4" />
+
+    <p class="mb-2 text-label-large text-on-surface">3. Change it from any component</p>
+    <MCodeEditor :model-value="dynamicSettingsCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" class="mb-4" />
+
+    <MCard class="mb-6 flex items-start gap-3 p-4">
+      <MIcon name="lightbulb" :size="22" class="mt-0.5 shrink-0 text-tertiary" />
+      <div>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">Using computed</p>
+        <p class="text-body-medium text-on-surface-variant">
+          You can also use a <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">computed</code>
+          to derive the locale from other reactive state, such as a user preference or route param.
+        </p>
+      </div>
+    </MCard>
+    <MCodeEditor :model-value="dynamicComputedCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-10" />
 
     <!-- Per-instance -->
     <h2 class="mb-4 text-headline-small font-medium">Per-instance override</h2>
