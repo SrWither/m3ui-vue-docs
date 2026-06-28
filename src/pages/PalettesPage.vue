@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import {
   MCard,
   MButton,
@@ -9,9 +10,32 @@ import {
 } from '@m3ui-vue/m3ui-vue'
 import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
+import PaletteBuilder from '../components/PaletteBuilder.vue'
+import PaletteShowcase from '../components/PaletteShowcase.vue'
+import palettesCss from '@m3ui-vue/m3ui-vue/palettes?raw'
 
 const { palette, palettes, set } = useColorPalette()
 const { theme } = useTheme()
+
+// ── Built-in palette CSS copy ────────────────────────────────────────────────
+
+const copiedPalette = ref<string | null>(null)
+
+function extractPaletteCSS(id: string): string {
+  const light = palettesCss.match(
+    new RegExp(`\\[data-palette='${id}'\\](?!\\.dark)\\s*\\{[\\s\\S]*?\\}`)
+  )?.[0] ?? ''
+  const dark = palettesCss.match(
+    new RegExp(`\\[data-palette='${id}'\\]\\.dark\\s*\\{[\\s\\S]*?\\}`)
+  )?.[0] ?? ''
+  return [light, dark].filter(Boolean).join('\n\n')
+}
+
+async function copyPaletteCSS(id: string) {
+  await navigator.clipboard.writeText(extractPaletteCSS(id))
+  copiedPalette.value = id
+  setTimeout(() => { copiedPalette.value = null }, 2000)
+}
 
 const themeOptions: SegmentedOption[] = [
   { value: 'light', label: 'Light', icon: 'light_mode' },
@@ -170,25 +194,39 @@ const allTokens = [
     <!-- Palette grid -->
     <h2 class="mb-4 text-headline-small font-medium">Available Palettes</h2>
     <div class="mb-10 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5">
-      <button
+      <div
         v-for="p in palettes"
         :key="p.id"
-        type="button"
-        class="flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all hover:shadow-elevation-1"
+        class="group relative rounded-xl border-2 transition-all hover:shadow-elevation-1"
         :class="p.id === palette
           ? 'border-primary bg-primary-container/30'
           : 'border-outline-variant bg-surface-container'"
-        @click="set(p.id)"
       >
-        <span
-          class="h-8 w-8 shrink-0 rounded-full shadow-sm"
-          :style="{ backgroundColor: p.seed }"
-        />
-        <div class="text-left">
-          <span class="text-label-large font-medium">{{ p.label }}</span>
-          <span class="block text-label-small text-on-surface-variant">{{ p.id }}</span>
-        </div>
-      </button>
+        <button
+          type="button"
+          class="flex w-full cursor-pointer items-center gap-3 p-3 text-left"
+          @click="set(p.id)"
+        >
+          <span
+            class="h-8 w-8 shrink-0 rounded-full shadow-sm"
+            :style="{ backgroundColor: p.seed }"
+          />
+          <div>
+            <span class="text-label-large font-medium">{{ p.label }}</span>
+            <span class="block text-label-small text-on-surface-variant">{{ p.id }}</span>
+          </div>
+        </button>
+        <!-- Copy CSS button -->
+        <button
+          type="button"
+          class="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-surface-container-high px-1.5 py-1 text-label-small text-on-surface-variant opacity-0 transition-opacity group-hover:opacity-100 hover:text-primary"
+          :title="`Copy CSS for ${p.label}`"
+          @click.stop="copyPaletteCSS(p.id)"
+        >
+          <MIcon :name="copiedPalette === p.id ? 'check' : 'content_copy'" :size="14" />
+          <span>{{ copiedPalette === p.id ? 'Copied' : 'CSS' }}</span>
+        </button>
+      </div>
     </div>
 
     <!-- Color tokens preview -->
@@ -316,6 +354,21 @@ const allTokens = [
         for components to render correctly.
       </p>
     </MCard>
+
+    <!-- Palette builder -->
+    <h2 class="mb-2 mt-14 text-headline-small font-medium">Palette Builder</h2>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      Pick your seed colors, see every generated token, and preview the palette on this very page.
+      Copy the CSS when you're happy and drop it into your project.
+    </p>
+    <PaletteBuilder />
+
+    <!-- Component showcase -->
+    <h2 class="mb-2 mt-14 text-headline-small font-medium">Component Preview</h2>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      All components below react to the active palette in real time — including your custom preview from the builder above.
+    </p>
+    <PaletteShowcase />
 
     <!-- Dark mode -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">Dark Mode</h2>
