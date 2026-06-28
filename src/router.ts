@@ -71,6 +71,10 @@ const router = createRouter({
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
     },
+    {
+      path: '/styles/palette-builder',
+      component: () => import('./pages/PaletteBuilderPage.vue'),
+    },
   ],
 })
 

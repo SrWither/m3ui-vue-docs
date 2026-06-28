@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import { MCard, MButton, MIcon, MSegmentedButton, MTooltip, MCheckbox } from '@m3ui-vue/m3ui-vue'
+import { MCard, MButton, MIcon, MSegmentedButton, MTooltip, MCheckbox, MTextField, useDevice } from '@m3ui-vue/m3ui-vue'
 import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
-import { MColorPicker } from '@m3ui-vue/m3ui-vue'
+import { MColorPicker, MColorPickerModal } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
+
+const { isMobile } = useDevice()
 
 // ── Color math ────────────────────────────────────────────────────────────────
 
@@ -229,6 +231,19 @@ function getManualToken(token: string): string {
   return map[token] ?? '#000000'
 }
 
+// ── Modal state (mobile) ──────────────────────────────────────────────────────
+
+const showPrimaryModal   = ref(false)
+const showSecondaryModal = ref(false)
+const showTertiaryModal  = ref(false)
+const showManualModal    = ref(false)
+const activeManualToken  = ref('')
+
+function openManualModal(token: string) {
+  activeManualToken.value = token
+  showManualModal.value = true
+}
+
 // ── Effective tokens (used for preview + export) ──────────────────────────────
 
 const effectiveLight = computed(() =>
@@ -370,12 +385,12 @@ function tokenColor(key: string, dark: boolean): string {
       <!-- Top row: name + mode -->
       <div class="mb-5 flex flex-wrap items-end gap-4">
         <div class="flex-1" style="min-width: 160px">
-          <label class="mb-1 block text-label-large font-medium">Palette name</label>
-          <input
+          <MTextField
             v-model="paletteName"
-            type="text"
+            label="Palette name"
             placeholder="my-brand"
-            class="w-full rounded-lg border border-outline-variant bg-surface-container px-3 py-2 text-body-medium text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            variant="outlined"
+            field-bg="var(--color-surface-container)"
           />
         </div>
         <MSegmentedButton v-model="builderMode" :options="modeOptions" />
@@ -385,32 +400,87 @@ function tokenColor(key: string, dark: boolean): string {
       <template v-if="builderMode === 'generated'">
         <div class="mb-6 grid gap-4 sm:grid-cols-3">
           <!-- Primary -->
-          <MColorPicker
-            v-model="primaryHex"
-            label="Primary (seed)"
-            field-bg="var(--color-surface-container)"
-          />
+          <div>
+            <template v-if="!isMobile">
+              <MColorPicker
+                v-model="primaryHex"
+                label="Primary (seed)"
+                field-bg="var(--color-surface-container)"
+              />
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 rounded-lg border border-outline-variant bg-surface-container p-3 text-left"
+                @click="showPrimaryModal = true"
+              >
+                <div class="h-9 w-9 shrink-0 rounded-full border border-outline-variant/50 shadow-sm" :style="{ backgroundColor: primaryHex }" />
+                <div class="min-w-0">
+                  <p class="text-label-large font-medium">Primary (seed)</p>
+                  <p class="font-mono text-label-small text-on-surface-variant">{{ primaryHex }}</p>
+                </div>
+                <MIcon name="colorize" :size="18" class="ml-auto shrink-0 text-on-surface-variant" />
+              </button>
+              <MColorPickerModal v-model="primaryHex" v-model:show="showPrimaryModal" title="Primary (seed)" />
+            </template>
+          </div>
 
           <!-- Secondary -->
           <div>
-            <MColorPicker
-              v-model="secondaryHex"
-              :label="autoSecondary ? 'Secondary (auto)' : 'Secondary'"
-              field-bg="var(--color-surface-container)"
-              :disabled="autoSecondary"
-            />
-            <MCheckbox v-model="autoSecondary" label="Derive automatically" class="mt-1.5 px-1 text-label-small text-on-surface-variant" />
+            <template v-if="!isMobile">
+              <MColorPicker
+                v-model="secondaryHex"
+                :label="autoSecondary ? 'Secondary (auto)' : 'Secondary'"
+                field-bg="var(--color-surface-container)"
+                :disabled="autoSecondary"
+              />
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 rounded-lg border border-outline-variant bg-surface-container p-3 text-left"
+                :class="autoSecondary ? 'opacity-50 pointer-events-none' : ''"
+                @click="showSecondaryModal = true"
+              >
+                <div class="h-9 w-9 shrink-0 rounded-full border border-outline-variant/50 shadow-sm" :style="{ backgroundColor: effectiveSecondaryHex }" />
+                <div class="min-w-0">
+                  <p class="text-label-large font-medium">{{ autoSecondary ? 'Secondary (auto)' : 'Secondary' }}</p>
+                  <p class="font-mono text-label-small text-on-surface-variant">{{ effectiveSecondaryHex }}</p>
+                </div>
+                <MIcon name="colorize" :size="18" class="ml-auto shrink-0 text-on-surface-variant" />
+              </button>
+              <MColorPickerModal v-model="secondaryHex" v-model:show="showSecondaryModal" title="Secondary" />
+            </template>
+            <MCheckbox v-model="autoSecondary" label="Derive automatically" class="mt-1.5 px-1" />
           </div>
 
           <!-- Tertiary -->
           <div>
-            <MColorPicker
-              v-model="tertiaryHex"
-              :label="autoTertiary ? 'Tertiary (auto)' : 'Tertiary'"
-              field-bg="var(--color-surface-container)"
-              :disabled="autoTertiary"
-            />
-            <MCheckbox v-model="autoTertiary" label="Derive automatically" class="mt-1.5 px-1 text-label-small text-on-surface-variant" />
+            <template v-if="!isMobile">
+              <MColorPicker
+                v-model="tertiaryHex"
+                :label="autoTertiary ? 'Tertiary (auto)' : 'Tertiary'"
+                field-bg="var(--color-surface-container)"
+                :disabled="autoTertiary"
+              />
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 rounded-lg border border-outline-variant bg-surface-container p-3 text-left"
+                :class="autoTertiary ? 'opacity-50 pointer-events-none' : ''"
+                @click="showTertiaryModal = true"
+              >
+                <div class="h-9 w-9 shrink-0 rounded-full border border-outline-variant/50 shadow-sm" :style="{ backgroundColor: effectiveTertiaryHex }" />
+                <div class="min-w-0">
+                  <p class="text-label-large font-medium">{{ autoTertiary ? 'Tertiary (auto)' : 'Tertiary' }}</p>
+                  <p class="font-mono text-label-small text-on-surface-variant">{{ effectiveTertiaryHex }}</p>
+                </div>
+                <MIcon name="colorize" :size="18" class="ml-auto shrink-0 text-on-surface-variant" />
+              </button>
+              <MColorPickerModal v-model="tertiaryHex" v-model:show="showTertiaryModal" title="Tertiary" />
+            </template>
+            <MCheckbox v-model="autoTertiary" label="Derive automatically" class="mt-1.5 px-1" />
           </div>
         </div>
 
@@ -423,32 +493,20 @@ function tokenColor(key: string, dark: boolean): string {
               <div class="flex gap-1.5">
                 <div v-for="t in g.tokens" :key="t.key" class="flex flex-col items-center gap-1">
                   <div class="flex">
-                    <MTooltip :rich="true" :text="t.key" placement="top" :delay="300">
+                    <MTooltip :text="`${t.key} · ${tokenColor(t.key, false)}`" placement="top" :delay="200">
                       <div
                         class="h-8 w-7 cursor-default rounded-l-full border border-outline-variant/50"
                         :style="{ backgroundColor: tokenColor(t.key, false) }"
                       />
-                      <template #content>
-                        <div class="flex flex-col gap-0.5">
-                          <span class="text-label-small text-on-surface-variant">Light</span>
-                          <span class="font-mono text-body-small">{{ tokenColor(t.key, false) }}</span>
-                        </div>
-                      </template>
                     </MTooltip>
-                    <MTooltip :rich="true" :text="t.key" placement="top" :delay="300">
+                    <MTooltip :text="`${t.key} (dark) · ${tokenColor(t.key, true)}`" placement="top" :delay="200">
                       <div
                         class="h-8 w-7 cursor-default rounded-r-full border border-outline-variant/50"
                         :style="{ backgroundColor: tokenColor(t.key, true) }"
                       />
-                      <template #content>
-                        <div class="flex flex-col gap-0.5">
-                          <span class="text-label-small text-on-surface-variant">Dark</span>
-                          <span class="font-mono text-body-small">{{ tokenColor(t.key, true) }}</span>
-                        </div>
-                      </template>
                     </MTooltip>
                   </div>
-                  <span class="text-center text-on-surface-variant" style="font-size:9px; line-height:1.2">{{ t.label }}</span>
+                  <span class="text-center text-label-small text-on-surface-variant">{{ t.label }}</span>
                 </div>
               </div>
             </div>
@@ -471,27 +529,42 @@ function tokenColor(key: string, dark: boolean): string {
             <!-- Group header -->
             <div class="mb-3 flex items-center justify-between">
               <p class="text-label-large font-medium">{{ group.label }}</p>
-              <button
-                type="button"
-                class="flex items-center gap-1 text-label-small text-primary hover:underline"
-                @click="resetGroup(group.tokens)"
-              >
+              <MButton variant="text" @click="resetGroup(group.tokens)">
                 <MIcon name="refresh" :size="14" />
                 Reset group
-              </button>
+              </MButton>
             </div>
 
             <!-- Token pickers -->
-            <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              <MColorPicker
-                v-for="token in group.tokens"
-                :key="token + themeMode"
-                :model-value="getManualToken(token)"
-                :label="token"
-                field-bg="var(--color-surface-container)"
-                @update:model-value="setManualToken(token, $event)"
-              />
-            </div>
+            <template v-if="!isMobile">
+              <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <MColorPicker
+                  v-for="token in group.tokens"
+                  :key="token + themeMode"
+                  :model-value="getManualToken(token)"
+                  :label="token"
+                  field-bg="var(--color-surface-container)"
+                  @update:model-value="setManualToken(token, $event)"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  v-for="token in group.tokens"
+                  :key="token + themeMode"
+                  type="button"
+                  class="flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container px-3 py-2 text-left"
+                  @click="openManualModal(token)"
+                >
+                  <div class="h-7 w-7 shrink-0 rounded-full border border-outline-variant/50" :style="{ backgroundColor: getManualToken(token) }" />
+                  <div class="min-w-0">
+                    <p class="truncate text-label-small font-medium">{{ token }}</p>
+                    <p class="font-mono text-label-small text-on-surface-variant">{{ getManualToken(token) }}</p>
+                  </div>
+                </button>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -502,6 +575,15 @@ function tokenColor(key: string, dark: boolean): string {
             Reset all from generated
           </MButton>
         </div>
+
+        <!-- Shared modal for mobile manual editing -->
+        <MColorPickerModal
+          v-if="isMobile"
+          :model-value="getManualToken(activeManualToken)"
+          v-model:show="showManualModal"
+          :title="activeManualToken"
+          @update:model-value="setManualToken(activeManualToken, $event)"
+        />
       </template>
 
       <!-- ── Actions ────────────────────────────────────────────────────── -->

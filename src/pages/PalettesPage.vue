@@ -10,8 +10,6 @@ import {
 } from '@m3ui-vue/m3ui-vue'
 import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
-import PaletteBuilder from '../components/PaletteBuilder.vue'
-import PaletteShowcase from '../components/PaletteShowcase.vue'
 import palettesCss from '@m3ui-vue/m3ui-vue/palettes?raw'
 
 const { palette, palettes, set } = useColorPalette()
@@ -354,21 +352,6 @@ const allTokens = [
         for components to render correctly.
       </p>
     </MCard>
-
-    <!-- Palette builder -->
-    <h2 class="mb-2 mt-14 text-headline-small font-medium">Palette Builder</h2>
-    <p class="mb-6 text-body-large text-on-surface-variant">
-      Pick your seed colors, see every generated token, and preview the palette on this very page.
-      Copy the CSS when you're happy and drop it into your project.
-    </p>
-    <PaletteBuilder />
-
-    <!-- Component showcase -->
-    <h2 class="mb-2 mt-14 text-headline-small font-medium">Component Preview</h2>
-    <p class="mb-6 text-body-large text-on-surface-variant">
-      All components below react to the active palette in real time — including your custom preview from the builder above.
-    </p>
-    <PaletteShowcase />
 
     <!-- Dark mode -->
     <h2 class="mb-4 mt-14 text-headline-small font-medium">Dark Mode</h2>
