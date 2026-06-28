@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import { MCard, MButton, MIcon, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
+import { MCard, MButton, MIcon, MSegmentedButton, MTooltip, MCheckbox } from '@m3ui-vue/m3ui-vue'
 import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import { MColorPicker } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
@@ -370,7 +370,7 @@ function tokenColor(key: string, dark: boolean): string {
       <!-- Top row: name + mode -->
       <div class="mb-5 flex flex-wrap items-end gap-4">
         <div class="flex-1" style="min-width: 160px">
-          <label class="mb-1 block text-label-large font-medium">Nombre de paleta</label>
+          <label class="mb-1 block text-label-large font-medium">Palette name</label>
           <input
             v-model="paletteName"
             type="text"
@@ -399,10 +399,7 @@ function tokenColor(key: string, dark: boolean): string {
               field-bg="var(--color-surface-container)"
               :disabled="autoSecondary"
             />
-            <label class="mt-1.5 flex cursor-pointer items-center gap-1.5 px-1 text-label-small text-on-surface-variant">
-              <input v-model="autoSecondary" type="checkbox" class="accent-primary" />
-              Derivar automáticamente
-            </label>
+            <MCheckbox v-model="autoSecondary" label="Derive automatically" class="mt-1.5 px-1 text-label-small text-on-surface-variant" />
           </div>
 
           <!-- Tertiary -->
@@ -413,39 +410,50 @@ function tokenColor(key: string, dark: boolean): string {
               field-bg="var(--color-surface-container)"
               :disabled="autoTertiary"
             />
-            <label class="mt-1.5 flex cursor-pointer items-center gap-1.5 px-1 text-label-small text-on-surface-variant">
-              <input v-model="autoTertiary" type="checkbox" class="accent-primary" />
-              Derivar automáticamente
-            </label>
+            <MCheckbox v-model="autoTertiary" label="Derive automatically" class="mt-1.5 px-1 text-label-small text-on-surface-variant" />
           </div>
         </div>
 
         <!-- Token swatches preview -->
         <div class="mb-6 space-y-3">
-          <p class="text-label-large font-medium">Tokens generados</p>
+          <p class="text-label-large font-medium">Generated tokens</p>
           <div class="flex flex-wrap gap-x-6 gap-y-3">
             <div v-for="g in swatchGroups" :key="g.label">
               <p class="mb-1.5 text-label-small text-on-surface-variant">{{ g.label }}</p>
               <div class="flex gap-1.5">
                 <div v-for="t in g.tokens" :key="t.key" class="flex flex-col items-center gap-1">
                   <div class="flex">
-                    <div
-                      :title="`${t.key} (light): ${tokenColor(t.key, false)}`"
-                      class="h-8 w-7 rounded-l-full border border-outline-variant/50"
-                      :style="{ backgroundColor: tokenColor(t.key, false) }"
-                    />
-                    <div
-                      :title="`${t.key} (dark): ${tokenColor(t.key, true)}`"
-                      class="h-8 w-7 rounded-r-full border border-outline-variant/50"
-                      :style="{ backgroundColor: tokenColor(t.key, true) }"
-                    />
+                    <MTooltip :rich="true" :text="t.key" placement="top" :delay="300">
+                      <div
+                        class="h-8 w-7 cursor-default rounded-l-full border border-outline-variant/50"
+                        :style="{ backgroundColor: tokenColor(t.key, false) }"
+                      />
+                      <template #content>
+                        <div class="flex flex-col gap-0.5">
+                          <span class="text-label-small text-on-surface-variant">Light</span>
+                          <span class="font-mono text-body-small">{{ tokenColor(t.key, false) }}</span>
+                        </div>
+                      </template>
+                    </MTooltip>
+                    <MTooltip :rich="true" :text="t.key" placement="top" :delay="300">
+                      <div
+                        class="h-8 w-7 cursor-default rounded-r-full border border-outline-variant/50"
+                        :style="{ backgroundColor: tokenColor(t.key, true) }"
+                      />
+                      <template #content>
+                        <div class="flex flex-col gap-0.5">
+                          <span class="text-label-small text-on-surface-variant">Dark</span>
+                          <span class="font-mono text-body-small">{{ tokenColor(t.key, true) }}</span>
+                        </div>
+                      </template>
+                    </MTooltip>
                   </div>
                   <span class="text-center text-on-surface-variant" style="font-size:9px; line-height:1.2">{{ t.label }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <p class="text-label-small text-on-surface-variant">Mitad izquierda = light · Mitad derecha = dark</p>
+          <p class="text-label-small text-on-surface-variant">Left half = light · Right half = dark</p>
         </div>
       </template>
 
@@ -453,7 +461,7 @@ function tokenColor(key: string, dark: boolean): string {
       <template v-else>
         <div class="mb-5">
           <p class="mb-1 text-label-medium text-on-surface-variant">
-            Edita cada token individualmente. Inicializados desde los valores generados.
+            Edit each token individually. Initialized from generated values.
           </p>
           <MSegmentedButton v-model="themeMode" :options="themeModeOptions" class="mt-3" />
         </div>
@@ -469,7 +477,7 @@ function tokenColor(key: string, dark: boolean): string {
                 @click="resetGroup(group.tokens)"
               >
                 <MIcon name="refresh" :size="14" />
-                Reset grupo
+                Reset group
               </button>
             </div>
 
@@ -491,7 +499,7 @@ function tokenColor(key: string, dark: boolean): string {
         <div class="mb-2 flex justify-end">
           <MButton variant="text" @click="seedManual">
             <MIcon name="refresh" :size="16" />
-            Reset todo desde generados
+            Reset all from generated
           </MButton>
         </div>
       </template>
@@ -511,10 +519,10 @@ function tokenColor(key: string, dark: boolean): string {
 
     <!-- CSS export -->
     <div class="mb-2 flex items-center justify-between">
-      <p class="text-label-large font-medium">CSS generado</p>
+      <p class="text-label-large font-medium">Generated CSS</p>
       <MButton variant="tonal" @click="copyCSS">
         <MIcon :name="copied ? 'check' : 'content_copy'" :size="16" />
-        {{ copied ? 'Copiado!' : 'Copiar' }}
+        {{ copied ? 'Copied!' : 'Copy' }}
       </MButton>
     </div>
     <MCodeEditor
