@@ -361,9 +361,9 @@ function tokenColor(key: string, dark: boolean): string {
     >
       <div class="flex items-center gap-2 text-body-medium">
         <MIcon name="palette" :size="18" class="text-primary" />
-        Previewing <strong class="text-primary">{{ paletteName || 'my-brand' }}</strong> — toda la página usa tu paleta.
+        Previewing <strong class="text-primary">{{ paletteName || 'my-brand' }}</strong> — the entire page is using your palette.
       </div>
-      <MButton variant="tonal" @click="clearPreview">Restaurar</MButton>
+      <MButton variant="tonal" @click="clearPreview">Restore</MButton>
     </div>
 
     <MCard class="mb-6 p-5">
@@ -500,11 +500,11 @@ function tokenColor(key: string, dark: boolean): string {
       <div class="flex flex-wrap items-center gap-3 border-t border-outline-variant pt-4">
         <MButton v-if="!isPreviewing" @click="applyPreview">
           <MIcon name="visibility" :size="18" />
-          Preview en la página
+          Preview on page
         </MButton>
         <MButton v-else variant="tonal" color="error" @click="clearPreview">
           <MIcon name="visibility_off" :size="18" />
-          Quitar preview
+          Remove preview
         </MButton>
       </div>
     </MCard>
