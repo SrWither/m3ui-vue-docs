@@ -75,6 +75,10 @@ const router = createRouter({
       path: '/styles/palette-builder',
       component: () => import('./pages/PaletteBuilderPage.vue'),
     },
+    {
+      path: '/changelog',
+      component: () => import('./pages/ChangelogPage.vue'),
+    },
   ],
 })
 

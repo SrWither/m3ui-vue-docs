@@ -132,6 +132,14 @@ const sections: DrawerSection[] = [
       { value: '/styles/palette-builder', label: 'Palette Builder', icon: 'auto_fix_high', to: '/styles/palette-builder' },
     ],
   },
+  {
+    title: 'More',
+    icon: 'info',
+    collapsible: true,
+    items: [
+      { value: '/changelog', label: 'Changelog', icon: 'history', to: '/changelog' },
+    ],
+  },
 ]
 </script>
 
