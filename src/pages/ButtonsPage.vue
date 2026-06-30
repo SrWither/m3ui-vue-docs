@@ -3,7 +3,9 @@ import { ref } from 'vue'
 import { MButton, MIconButton, MFab, MSplitButton, MButtonGroup, MSegmentedButton, MCard, MIcon } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
+import SlotsTable from '@/components/SlotsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
+import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const segmentedValue = ref('day')
 const segmentedMulti = ref<string[]>(['bold'])
@@ -104,7 +106,10 @@ const splitButtonProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables both parts' },
   { name: 'items', type: 'SplitButtonItem[]', description: 'Dropdown menu items { label, icon?, disabled?, onClick? }' },
   { name: '@click', type: 'event', description: 'Emitted when the main (left) button is clicked' },
-  { name: '#menu', type: 'slot', description: 'Custom dropdown content. Receives { close } to dismiss. Used instead of items.' },
+]
+
+const splitButtonSlots: SlotDef[] = [
+  { name: '#menu', scope: '{ close: () => void }', description: 'Custom dropdown content. Used instead of items. Call close() to dismiss.' },
 ]
 
 const buttonGroupProps: PropDef[] = [
@@ -594,6 +599,9 @@ const segmentedProps: PropDef[] = [
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="splitButtonProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
+    <SlotsTable :slots="splitButtonSlots" />
 
     <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
       <p class="mb-2 text-title-small font-medium">SplitButtonItem interface</p>

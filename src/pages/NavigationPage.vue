@@ -8,7 +8,9 @@ import {
 import type { ContextMenuItem, BreadcrumbItem, StepItem, NavBarItem, DrawerSection, NavRailItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
+import SlotsTable from '@/components/SlotsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
+import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const activeTab = ref<string | number>('home')
 const secondaryTab = ref<string | number>('all')
@@ -84,7 +86,10 @@ const menuItemProps: PropDef[] = [
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the item' },
   { name: 'danger', type: 'boolean', default: 'false', description: 'Danger/destructive styling (error color)' },
-  { name: '#children', type: 'slot', description: 'Nested submenu items — hover to expand' },
+]
+
+const menuItemSlots: SlotDef[] = [
+  { name: '#children', description: 'Nested submenu items — renders as a hover-expandable submenu.' },
 ]
 
 const contextMenuProps: PropDef[] = [
@@ -551,6 +556,9 @@ const appBarProps: PropDef[] = [
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">MMenuItem Props</h3>
     <PropsTable :props="menuItemProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMenuItem Slots</h3>
+    <SlotsTable :slots="menuItemSlots" />
 
     <!-- ── MContextMenu ─────────────────────────────────────────────────── -->
     <h2 id="mcontextmenu" class="mb-4 mt-14 text-headline-small font-medium">MContextMenu</h2>
