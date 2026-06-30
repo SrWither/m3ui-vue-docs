@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  MTabs, MMenu, MMenuItem, MContextMenu, MBreadcrumbs, MStepper,
+  MTabs, MMenu, MMenuItem, MMenuDivider, MContextMenu, MBreadcrumbs, MStepper,
   MPagination, MButton, MIconButton, MIcon, MCard, MFab, MAvatar,
   MNavigationBar, MNavigationDrawer, MNavigationRail, MToolbar, MTopAppBar, MAppBar, MDivider, MTextField,
 } from '@m3ui-vue/m3ui-vue'
-import type { ContextMenuItem, BreadcrumbItem, StepItem, NavBarItem, DrawerSection, NavRailItem } from '@m3ui-vue/m3ui-vue'
+import type { BreadcrumbItem, StepItem, NavBarItem, DrawerSection, NavRailItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -14,46 +14,6 @@ import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const activeTab = ref<string | number>('home')
 const secondaryTab = ref<string | number>('all')
-
-const contextMenuRef = ref<InstanceType<typeof MContextMenu>>()
-const contextItems: ContextMenuItem[] = [
-  { label: 'Cut', icon: 'content_cut', shortcut: 'Ctrl+X', onClick: () => {} },
-  { label: 'Copy', icon: 'content_copy', shortcut: 'Ctrl+C', onClick: () => {} },
-  { label: 'Paste', icon: 'content_paste', shortcut: 'Ctrl+V', onClick: () => {} },
-  { divider: true },
-  {
-    label: 'Insert',
-    icon: 'add',
-    children: [
-      { label: 'Image', icon: 'image', onClick: () => {} },
-      { label: 'Video', icon: 'videocam', onClick: () => {} },
-      { label: 'Link', icon: 'link', onClick: () => {} },
-      { divider: true },
-      {
-        label: 'Code',
-        icon: 'code',
-        children: [
-          { label: 'JavaScript', onClick: () => {} },
-          { label: 'TypeScript', onClick: () => {} },
-          { label: 'Python', onClick: () => {} },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Transform',
-    icon: 'transform',
-    children: [
-      { label: 'Uppercase', onClick: () => {} },
-      { label: 'Lowercase', onClick: () => {} },
-      { label: 'Title Case', onClick: () => {} },
-    ],
-  },
-  { divider: true },
-  { label: 'Select All', shortcut: 'Ctrl+A', onClick: () => {} },
-  { divider: true },
-  { label: 'Delete', icon: 'delete', danger: true, onClick: () => {} },
-]
 
 const breadcrumbs: BreadcrumbItem[] = [
   { label: 'Home', icon: 'home', to: '/' },
@@ -83,17 +43,20 @@ const menuProps: PropDef[] = [
 
 const menuItemProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
+  { name: 'shortcut', type: 'string', description: 'Keyboard shortcut hint displayed on the right (e.g. "Ctrl+C")' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the item' },
   { name: 'danger', type: 'boolean', default: 'false', description: 'Danger/destructive styling (error color)' },
 ]
 
 const menuItemSlots: SlotDef[] = [
+  { name: '#default', description: 'Item label text.' },
   { name: '#children', description: 'Nested submenu items — renders as a hover-expandable submenu.' },
 ]
 
-const contextMenuProps: PropDef[] = [
-  { name: 'items', type: 'ContextMenuItem[]', description: 'Array of menu items (see interface below)' },
+const contextMenuSlots: SlotDef[] = [
+  { name: '#trigger', description: 'The element(s) that respond to right-click. MContextMenu intercepts contextmenu events automatically.' },
+  { name: '#default', description: 'Menu items — use MMenuItem, MMenuDivider, or any element.' },
 ]
 
 const breadcrumbsProps: PropDef[] = [
@@ -565,63 +528,85 @@ const appBarProps: PropDef[] = [
 
     <ComponentDemo
       title="Context Menu"
-      description="Right-click menu with icons, shortcuts, dividers, and danger items."
-      :code="`<div @contextmenu.prevent=&quot;menuRef.show($event)&quot;>
-    Right-click here
-  </div>
-  <MContextMenu ref=&quot;menuRef&quot; :items=&quot;items&quot; />`"
-      :script="`const menuRef = ref()
-const items = [
-  { label: 'Cut', icon: 'content_cut', shortcut: 'Ctrl+X' },
-  { label: 'Copy', icon: 'content_copy', shortcut: 'Ctrl+C' },
-  { divider: true },
-  {
-    label: 'Insert',
-    icon: 'add',
-    children: [
-      { label: 'Image', icon: 'image', onClick: () => {} },
-      { label: 'Video', icon: 'videocam', onClick: () => {} },
-      {
-        label: 'Code',
-        icon: 'code',
-        children: [
-          { label: 'JavaScript', onClick: () => {} },
-          { label: 'TypeScript', onClick: () => {} },
-        ],
-      },
-    ],
-  },
-  { divider: true },
-  { label: 'Delete', icon: 'delete', danger: true },
-]`"
+      description="Right-click menu composed with MMenuItem — same pattern as MMenu."
+      :code="`<MContextMenu>
+  <template #trigger>
+    <div>Right-click anywhere here</div>
+  </template>
+
+  <MMenuItem icon=&quot;content_cut&quot; shortcut=&quot;Ctrl+X&quot;>Cut</MMenuItem>
+  <MMenuItem icon=&quot;content_copy&quot; shortcut=&quot;Ctrl+C&quot;>Copy</MMenuItem>
+  <MMenuItem icon=&quot;content_paste&quot; shortcut=&quot;Ctrl+V&quot;>Paste</MMenuItem>
+  <MMenuDivider />
+  <MMenuItem icon=&quot;add&quot;>
+    Insert
+    <template #children>
+      <MMenuItem icon=&quot;image&quot;>Image</MMenuItem>
+      <MMenuItem icon=&quot;videocam&quot;>Video</MMenuItem>
+      <MMenuDivider />
+      <MMenuItem icon=&quot;code&quot;>
+        Code
+        <template #children>
+          <MMenuItem>JavaScript</MMenuItem>
+          <MMenuItem>TypeScript</MMenuItem>
+        </template>
+      </MMenuItem>
+    </template>
+  </MMenuItem>
+  <MMenuDivider />
+  <MMenuItem shortcut=&quot;Ctrl+A&quot;>Select All</MMenuItem>
+  <MMenuDivider />
+  <MMenuItem icon=&quot;delete&quot; danger>Delete</MMenuItem>
+</MContextMenu>`"
     >
-      <div
-        class="flex w-full items-center justify-center rounded-lg border-2 border-dashed border-outline-variant p-8 text-body-medium text-on-surface-variant transition-colors hover:border-primary hover:bg-primary-container/10"
-        @contextmenu.prevent="contextMenuRef?.show($event)"
-      >
-        <MIcon name="mouse" :size="20" class="mr-2" />
-        Right-click anywhere in this area
-      </div>
-      <MContextMenu ref="contextMenuRef" :items="contextItems" />
+      <MContextMenu>
+        <template #trigger>
+          <div
+            class="flex w-full cursor-default items-center justify-center rounded-lg border-2 border-dashed border-outline-variant p-8 text-body-medium text-on-surface-variant transition-colors hover:border-primary hover:bg-primary-container/10"
+          >
+            <MIcon name="mouse" :size="20" class="mr-2" />
+            Right-click anywhere in this area
+          </div>
+        </template>
+
+        <MMenuItem icon="content_cut" shortcut="Ctrl+X">Cut</MMenuItem>
+        <MMenuItem icon="content_copy" shortcut="Ctrl+C">Copy</MMenuItem>
+        <MMenuItem icon="content_paste" shortcut="Ctrl+V">Paste</MMenuItem>
+        <MMenuDivider />
+        <MMenuItem icon="add">
+          Insert
+          <template #children>
+            <MMenuItem icon="image">Image</MMenuItem>
+            <MMenuItem icon="videocam">Video</MMenuItem>
+            <MMenuItem icon="link">Link</MMenuItem>
+            <MMenuDivider />
+            <MMenuItem icon="code">
+              Code
+              <template #children>
+                <MMenuItem>JavaScript</MMenuItem>
+                <MMenuItem>TypeScript</MMenuItem>
+                <MMenuItem>Python</MMenuItem>
+              </template>
+            </MMenuItem>
+          </template>
+        </MMenuItem>
+        <MMenuItem icon="transform">
+          Transform
+          <template #children>
+            <MMenuItem>Uppercase</MMenuItem>
+            <MMenuItem>Lowercase</MMenuItem>
+            <MMenuItem>Title Case</MMenuItem>
+          </template>
+        </MMenuItem>
+        <MMenuDivider />
+        <MMenuItem shortcut="Ctrl+A">Select All</MMenuItem>
+        <MMenuDivider />
+        <MMenuItem icon="delete" danger>Delete</MMenuItem>
+      </MContextMenu>
     </ComponentDemo>
 
-    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
-    <PropsTable :props="contextMenuProps" />
-
-    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
-      <p class="mb-2 text-title-small font-medium">ContextMenuItem interface</p>
-      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>interface ContextMenuItem {
-  label?: string           // Item text
-  icon?: string            // Material Symbol icon
-  shortcut?: string        // Keyboard shortcut hint (e.g. 'Ctrl+C')
-  disabled?: boolean       // Grayed out, not clickable
-  danger?: boolean         // Red/error color for destructive actions
-  divider?: boolean        // Renders a separator line instead of an item
-  to?: string | Record&lt;string, any&gt;  // Vue Router destination (renders as RouterLink)
-  children?: ContextMenuItem[]       // Nested submenu items (recursive)
-  onClick?: () => void     // Click handler
-}</code></pre>
-    </MCard>
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
+    <SlotsTable :slots="contextMenuSlots" />
 
     <!-- ── MBreadcrumbs ─────────────────────────────────────────────────── -->
     <h2 id="mbreadcrumbs" class="mb-4 mt-14 text-headline-small font-medium">MBreadcrumbs</h2>

@@ -148,7 +148,8 @@ const textFieldProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'type', type: 'string', default: "'text'", description: 'HTML input type' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
-  { name: 'error', type: 'string', description: 'Error message — shows below the field' },
+  { name: 'error', type: 'boolean', description: 'Puts the field in error state (red border and label)' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown below the field (only visible when error is true)' },
   { name: 'hint', type: 'string', description: 'Hint text shown below the field' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
   { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required' },
@@ -168,7 +169,8 @@ const numberFieldProps: PropDef[] = [
   { name: 'step', type: 'number', default: '1', description: 'Increment/decrement step' },
   { name: 'stepper', type: 'boolean', default: 'true', description: 'Show +/- buttons' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Hint text' },
   { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before firing the @debounced event' },
 ]
@@ -180,7 +182,8 @@ const maskFieldProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show clear button' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Hint text' },
   { name: 'debounce', type: 'number', default: '0', description: 'Delay (ms) before firing the @debounced event' },
 ]
@@ -193,7 +196,8 @@ const selectProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
   { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the select' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button to reset the selection' },
 ]
 
@@ -219,7 +223,8 @@ const autocompleteProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
   { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Helper text below field' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
@@ -235,7 +240,8 @@ const multiAutocompleteProps: PropDef[] = [
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
   { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'Dropdown mode: docked (inline) or modal (dialog)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Helper text below field' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear-all button' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
@@ -251,7 +257,8 @@ const tagInputProps: PropDef[] = [
   { name: 'placeholder', type: 'string', description: 'Input placeholder' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Helper text below field' },
   { name: 'maxTags', type: 'number', description: 'Max number of tags allowed' },
   { name: 'duplicates', type: 'boolean', default: 'false', description: 'Allow duplicate tags' },
@@ -316,7 +323,8 @@ const datePickerProps: PropDef[] = [
   { name: 'min', type: 'string', description: 'Minimum date (YYYY-MM-DD)' },
   { name: 'max', type: 'string', description: 'Maximum date (YYYY-MM-DD)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
   { name: 'placeholder', type: 'string', default: "'Select date'", description: 'Placeholder when no date selected' },
   { name: 'prevMonthLabel', type: 'string', default: "'Previous month'", description: 'Aria label for previous month button' },
@@ -359,7 +367,8 @@ const timePickerProps: PropDef[] = [
   { name: 'modelValue', type: 'string | null', description: 'Selected time (HH:MM)' },
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'minuteStep', type: 'number', default: '5', description: 'Minute increment step' },
   { name: 'use24h', type: 'boolean', default: 'true', description: 'Use 24-hour format' },
   { name: 'placeholder', type: 'string', default: "'Select time'", description: 'Placeholder when no time selected' },
@@ -378,7 +387,8 @@ const colorPickerProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'presets', type: 'string[]', description: '18 preset color swatches' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
-  { name: 'error', type: 'string', description: 'Error message' },
+  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
 ]
 
 const colorPickerModalProps: PropDef[] = [
@@ -431,13 +441,13 @@ const colorPickerModalProps: PropDef[] = [
       title="States"
       description="Error, disabled, and multiline."
       :code="`<template>
-  <MTextField v-model=&quot;val&quot; label=&quot;Username&quot; error=&quot;Already taken&quot; />
+  <MTextField v-model=&quot;val&quot; label=&quot;Username&quot; :error=&quot;true&quot; error-label=&quot;Already taken&quot; />
   <MTextField v-model=&quot;val&quot; label=&quot;Disabled&quot; :disabled=&quot;true&quot; />
   <MTextField v-model=&quot;val&quot; label=&quot;Bio&quot; :multiline=&quot;true&quot; :rows=&quot;3&quot; />
 </template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MTextField v-model="textError" label="Username" error="Already taken" />
+        <MTextField v-model="textError" label="Username" :error="true" error-label="Already taken" />
         <MTextField model-value="Can't edit this" label="Disabled" :disabled="true" />
       </div>
       <div class="mt-4 grid w-full gap-4 sm:grid-cols-2">
