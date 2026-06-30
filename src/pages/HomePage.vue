@@ -154,11 +154,11 @@ const categories = [
               <button
                 type="button"
                 class="flex aspect-square w-full cursor-pointer items-center justify-center rounded-full transition-all duration-150 hover:scale-110"
-                :class="palette === p.id ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface scale-110' : ''"
+                :class="palette.value === p.id ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface scale-110' : ''"
                 :style="{ backgroundColor: p.seed }"
                 @click="setPalette(p.id)"
               >
-                <MIcon v-if="palette === p.id" name="check" :size="18" class="text-white" />
+                <MIcon v-if="palette.value === p.id" name="check" :size="18" class="text-white" />
               </button>
             </MTooltip>
           </div>
@@ -258,7 +258,7 @@ const categories = [
               />
               <MFlex align="center" justify="between">
                 <span class="text-body-medium">Dark mode</span>
-                <MSwitch :model-value="theme === 'dark'" @update:model-value="cycle" />
+                <MSwitch :model-value="theme.value === 'dark'" @update:model-value="cycle" />
               </MFlex>
               <MSlider v-model="sliderVal" label="Volume" :show-value="true" />
             </MStack>

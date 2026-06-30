@@ -14,6 +14,25 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.5.0',
+    date: '2026-06-30',
+    changes: {
+      added: [
+        'New component: MMenuDivider — horizontal divider for MMenu and MContextMenu',
+        'shortcut prop on MMenuItem — displays a keyboard shortcut label aligned to the right',
+        'MContextMenu rewritten to slot-based composition — uses MMenuItem + #children slots like MMenu (removes items prop)',
+        'MTreeTable expand/collapse animation — height + opacity transition matching MTree and MExpansionPanel',
+        'errorLabel prop on all input components — separates the error message from the boolean error state',
+      ],
+      fixed: [
+        'MSlider range variant: crossing thumbs then clicking near the crossed position caused the wrong thumb to jump',
+        'MCircleProgressBar indeterminate: trailing end trembled at minimum arc size — fixed via stroke-dashoffset animation',
+        'MAbsolute defaults to top/left 8px when no position props are passed',
+        'MWindow corner resize handles enlarged (12→20px) and edges (5→8px) for easier grabbing',
+      ],
+    },
+  },
+  {
     version: '0.4.7',
     date: '2026-06-30',
     changes: {
