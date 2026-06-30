@@ -42,8 +42,8 @@ importers:
         specifier: ^6.43.1
         version: 6.43.4
       '@m3ui-vue/m3ui-vue':
-        specifier: link:../m3ui-vue
-        version: link:../m3ui-vue
+        specifier: ^0.5.0
+        version: 0.5.0(1739393982c30d4de83f8995cb71e323)
       '@tailwindcss/vite':
         specifier: ^4.3.1
         version: 4.3.2(vite@8.1.0(jiti@2.7.0))
@@ -245,6 +245,97 @@ packages:
 
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
+
+  '@m3ui-vue/m3ui-vue@0.5.0':
+    resolution: {integrity: sha512-Um7ZkY0CO3/Pnr8f5Ta+QCRbB9kRXb8g0k9AyOCYHj+aThczfaZS0CpC4Ek67VrPqmYZOY4bYYIySDF6j0SduQ==}
+    peerDependencies:
+      '@codemirror/commands': '*'
+      '@codemirror/lang-css': '*'
+      '@codemirror/lang-html': '*'
+      '@codemirror/lang-javascript': '*'
+      '@codemirror/lang-json': '*'
+      '@codemirror/lang-python': '*'
+      '@codemirror/lang-vue': '*'
+      '@codemirror/language': '*'
+      '@codemirror/state': '*'
+      '@codemirror/theme-one-dark': '*'
+      '@codemirror/view': '*'
+      '@tiptap/extension-color': '*'
+      '@tiptap/extension-highlight': '*'
+      '@tiptap/extension-image': '*'
+      '@tiptap/extension-link': '*'
+      '@tiptap/extension-placeholder': '*'
+      '@tiptap/extension-text-align': '*'
+      '@tiptap/extension-text-style': '*'
+      '@tiptap/extension-underline': '*'
+      '@tiptap/starter-kit': '*'
+      '@tiptap/vue-3': '*'
+      '@xterm/addon-fit': '*'
+      '@xterm/xterm': '*'
+      chart.js: '*'
+      codemirror: '*'
+      highlight.js: '*'
+      markdown-it: '*'
+      tailwindcss: ^4.0.0
+      vue: ^3.5.0
+      vue-chartjs: '*'
+    peerDependenciesMeta:
+      '@codemirror/commands':
+        optional: true
+      '@codemirror/lang-css':
+        optional: true
+      '@codemirror/lang-html':
+        optional: true
+      '@codemirror/lang-javascript':
+        optional: true
+      '@codemirror/lang-json':
+        optional: true
+      '@codemirror/lang-python':
+        optional: true
+      '@codemirror/lang-vue':
+        optional: true
+      '@codemirror/language':
+        optional: true
+      '@codemirror/state':
+        optional: true
+      '@codemirror/theme-one-dark':
+        optional: true
+      '@codemirror/view':
+        optional: true
+      '@tiptap/extension-color':
+        optional: true
+      '@tiptap/extension-highlight':
+        optional: true
+      '@tiptap/extension-image':
+        optional: true
+      '@tiptap/extension-link':
+        optional: true
+      '@tiptap/extension-placeholder':
+        optional: true
+      '@tiptap/extension-text-align':
+        optional: true
+      '@tiptap/extension-text-style':
+        optional: true
+      '@tiptap/extension-underline':
+        optional: true
+      '@tiptap/starter-kit':
+        optional: true
+      '@tiptap/vue-3':
+        optional: true
+      '@xterm/addon-fit':
+        optional: true
+      '@xterm/xterm':
+        optional: true
+      chart.js:
+        optional: true
+      codemirror:
+        optional: true
+      highlight.js:
+        optional: true
+      markdown-it:
+        optional: true
+      vue-chartjs:
+        optional: true
 
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
@@ -1242,6 +1333,39 @@ snapshots:
       '@lezer/common': 1.5.2
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
+
+  '@m3ui-vue/m3ui-vue@0.5.0(1739393982c30d4de83f8995cb71e323)':
+    dependencies:
+      tailwindcss: 4.3.2
+      vue: 3.5.39(typescript@6.0.3)
+    optionalDependencies:
+      '@codemirror/commands': 6.10.4
+      '@codemirror/lang-css': 6.3.1
+      '@codemirror/lang-html': 6.4.11
+      '@codemirror/lang-javascript': 6.2.5
+      '@codemirror/lang-json': 6.0.2
+      '@codemirror/lang-python': 6.2.1
+      '@codemirror/lang-vue': 0.1.3
+      '@codemirror/language': 6.12.4
+      '@codemirror/state': 6.7.0
+      '@codemirror/theme-one-dark': 6.1.3
+      '@codemirror/view': 6.43.4
+      '@tiptap/extension-color': 3.27.1(@tiptap/extension-text-style@3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1)))
+      '@tiptap/extension-highlight': 3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))
+      '@tiptap/extension-image': 3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))
+      '@tiptap/extension-link': 3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))(@tiptap/pm@3.27.1)
+      '@tiptap/extension-placeholder': 3.27.1(@tiptap/extensions@3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))(@tiptap/pm@3.27.1))
+      '@tiptap/extension-text-align': 3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))
+      '@tiptap/extension-text-style': 3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))
+      '@tiptap/extension-underline': 3.27.1(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))
+      '@tiptap/starter-kit': 3.27.1
+      '@tiptap/vue-3': 3.27.1(@floating-ui/dom@1.7.6)(@tiptap/core@3.27.1(@tiptap/pm@3.27.1))(@tiptap/pm@3.27.1)(vue@3.5.39(typescript@6.0.3))
+      '@xterm/addon-fit': 0.11.0
+      '@xterm/xterm': 6.0.0
+      chart.js: 4.5.1
+      codemirror: 6.0.2
+      markdown-it: 14.2.0
+      vue-chartjs: 5.3.3(chart.js@4.5.1)(vue@3.5.39(typescript@6.0.3))
 
   '@marijn/find-cluster-break@1.0.3': {}
 
