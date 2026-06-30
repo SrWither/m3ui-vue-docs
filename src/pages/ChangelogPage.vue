@@ -14,6 +14,26 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.4.7',
+    date: '2026-06-30',
+    changes: {
+      added: [
+        'New component: MCircleProgressBar — animated ring progress with wavy (bumpy wave) and circle (smooth arc) variants',
+        'MCircleProgressBar default slot — embed any content centered inside the ring; percentage label hidden automatically',
+        'MCircleProgressBar indeterminate state — M3-style spinning arc with subtle grow/shrink breathing animation',
+        'thickness prop for MCircleProgressBar and MProgressBar to control stroke width',
+        'MProgressBar wavy variant — wave appears smoothly above 10% and fades at 100%, margin animates in sync',
+        'Toast and notification deduplication — identical messages show a count badge instead of stacking',
+        'icon: null option in useToast and useNotification to suppress the icon entirely',
+      ],
+      fixed: [
+        'MColorPicker and MColorPickerModal: drag not working on mobile (touch-action: none)',
+        'MCircleProgressBar: edge gap now scales sub-linearly with thickness to stay proportional',
+        'MProgressBar wavy variant: inactive track overlapping wave due to Vue style / rAF conflict',
+      ],
+    },
+  },
+  {
     version: '0.4.6',
     date: '2026-06-25',
     changes: {
