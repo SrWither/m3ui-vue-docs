@@ -14,6 +14,17 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.5.1',
+    date: '2026-07-01',
+    changes: {
+      fixed: [
+        'MContextMenu now closes when the page is scrolled instead of staying anchored to a stale position',
+        'Toast and notification duplicate-count badge no longer gets clipped mid-animation when dismissed, and fades out in sync with the item instead of popping off abruptly',
+        'MColorPicker and MColorPickerModal: dragging past the saturation/brightness area edge no longer triggers native text selection on the page',
+      ],
+    },
+  },
+  {
     version: '0.5.0',
     date: '2026-06-30',
     changes: {
