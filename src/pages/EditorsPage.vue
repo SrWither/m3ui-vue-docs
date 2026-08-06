@@ -143,6 +143,19 @@ const richTextProps: PropDef[] = [
     <!-- ── MCodeEditor ─────────────────────────────────────────────────── -->
     <h2 id="mcodeeditor" class="mb-4 text-headline-small font-medium">MCodeEditor</h2>
 
+    <MCard variant="outlined" class="mb-6 p-4">
+      <div class="flex items-start gap-3">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container text-label-small font-medium">!</span>
+        <div>
+          <p class="text-body-medium font-medium">Peer dependencies required</p>
+          <p class="mt-1 text-body-medium text-on-surface-variant">
+            MCodeEditor requires CodeMirror as a peer dependency. Install it with:
+            <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">pnpm add codemirror @codemirror/view @codemirror/state @codemirror/commands @codemirror/language @codemirror/lang-javascript @codemirror/lang-json @codemirror/lang-html @codemirror/lang-css @codemirror/lang-python @codemirror/lang-vue @codemirror/theme-one-dark</code>
+          </p>
+        </div>
+      </div>
+    </MCard>
+
     <ComponentDemo
       title="Basic Editor"
       description="Editable code editor with syntax highlighting and line numbers."
@@ -188,6 +201,19 @@ const code = ref(\`function greet(name: string) {
 
     <!-- ── MJsonEditor ─────────────────────────────────────────────────── -->
     <h2 id="mjsoneditor" class="mb-4 mt-14 text-headline-small font-medium">MJsonEditor</h2>
+
+    <MCard variant="outlined" class="mb-6 p-4">
+      <div class="flex items-start gap-3">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container text-label-small font-medium">!</span>
+        <div>
+          <p class="text-body-medium font-medium">Peer dependencies required</p>
+          <p class="mt-1 text-body-medium text-on-surface-variant">
+            MJsonEditor is built on top of MCodeEditor, so it requires the same CodeMirror peer dependencies. Install them with:
+            <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">pnpm add codemirror @codemirror/view @codemirror/state @codemirror/commands @codemirror/language @codemirror/lang-javascript @codemirror/lang-json @codemirror/lang-html @codemirror/lang-css @codemirror/lang-python @codemirror/lang-vue @codemirror/theme-one-dark</code>
+          </p>
+        </div>
+      </div>
+    </MCard>
 
     <ComponentDemo
       title="JSON Editor"

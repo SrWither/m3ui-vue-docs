@@ -72,7 +72,7 @@ import { MRichTextEditor } from '@m3ui-vue/m3ui-vue/rich-text-editor'
 import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'`
 
 const optionalDeps = [
-  { sub: 'code-editor', components: 'MCodeEditor, MJsonEditor', install: 'pnpm add codemirror @codemirror/view @codemirror/state @codemirror/commands @codemirror/language @codemirror/lang-javascript @codemirror/lang-json @codemirror/lang-html @codemirror/lang-css @codemirror/lang-python @codemirror/theme-one-dark' },
+  { sub: 'code-editor', components: 'MCodeEditor, MJsonEditor', install: 'pnpm add codemirror @codemirror/view @codemirror/state @codemirror/commands @codemirror/language @codemirror/lang-javascript @codemirror/lang-json @codemirror/lang-html @codemirror/lang-css @codemirror/lang-python @codemirror/lang-vue @codemirror/theme-one-dark' },
   { sub: 'chart', components: 'MChart', install: 'pnpm add chart.js vue-chartjs' },
   { sub: 'markdown', components: 'MMarkdown', install: 'pnpm add markdown-it' },
   { sub: 'rich-text-editor', components: 'MRichTextEditor', install: 'pnpm add @tiptap/vue-3 @tiptap/starter-kit @tiptap/extension-placeholder @tiptap/extension-underline @tiptap/extension-text-align @tiptap/extension-link @tiptap/extension-image @tiptap/extension-color @tiptap/extension-text-style @tiptap/extension-highlight' },
