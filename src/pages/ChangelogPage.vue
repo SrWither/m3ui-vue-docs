@@ -14,6 +14,80 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.5.9',
+    date: '2026-08-19',
+    changes: {
+      added: [
+        'New component: MShader — Shadertoy-style GLSL fragment shaders on WebGL2, with optional WGSL shaders on WebGPU when available',
+        'MShader custom uniforms alongside built-in iTime, iResolution, iMouse, and iFrame',
+        'MShader paused and pixelRatio props, loading/fallback/error slots, and ready/error events',
+      ],
+    },
+  },
+  {
+    version: '0.5.8',
+    date: '2026-07-30',
+    changes: {
+      fixed: [
+        'MDataTable no longer caches whether the row-actions/row-expand slots are present, so adding or removing them dynamically updates the table immediately instead of requiring a full remount',
+      ],
+    },
+  },
+  {
+    version: '0.5.7',
+    date: '2026-07-30',
+    changes: {
+      added: ['MTimePicker now emits a value as soon as an hour is picked, using the currently selected minute'],
+      fixed: ['createM3UI no longer overwrites a palette the user already chose on every app boot'],
+    },
+  },
+  {
+    version: '0.5.6',
+    date: '2026-07-21',
+    changes: {
+      fixed: [
+        'MDataTable minHeight no longer defaults to 20rem — tables size to their content unless minHeight is explicitly set',
+        'MDataTable empty state has a sensible minimum height by default even without minHeight',
+      ],
+    },
+  },
+  {
+    version: '0.5.5',
+    date: '2026-07-21',
+    changes: {
+      fixed: [
+        'MDataTable loading skeleton row count now matches the reserved minHeight instead of always showing a full page of rows',
+        'MDataTable empty-state message now centers vertically within the reserved height',
+      ],
+    },
+  },
+  {
+    version: '0.5.4',
+    date: '2026-07-18',
+    changes: {
+      fixed: ['MNavigationDrawer static section titles no longer get compressed when space is tight'],
+    },
+  },
+  {
+    version: '0.5.3',
+    date: '2026-07-18',
+    changes: {
+      fixed: ['MNavigationDrawer long content no longer overflows its scrollable sections'],
+    },
+  },
+  {
+    version: '0.5.2',
+    date: '2026-07-09',
+    changes: {
+      fixed: [
+        'MJsonEditor and MJsonViewer text is now localized instead of hardcoded in Spanish',
+        'MJsonEditor no longer overwrites freshly formatted/minified text with a stale copy',
+        'MCodeEditor text selection is now visibly highlighted',
+        'MCircleProgressBar wavy variant wave now travels in the correct direction',
+      ],
+    },
+  },
+  {
     version: '0.5.1',
     date: '2026-07-01',
     changes: {
