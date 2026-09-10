@@ -14,6 +14,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.5.10',
+    date: '2026-09-09',
+    changes: {
+      fixed: [
+        'Bumped vue to ^3.5.42 and vue-tsc to ^3.3.11 (latest stable); typescript stays on ~6.0.3 since TypeScript 7\'s native compiler drops the classic API vue-tsc needs for .vue type-checking',
+      ],
+    },
+  },
+  {
     version: '0.5.9',
     date: '2026-08-19',
     changes: {
