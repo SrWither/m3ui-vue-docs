@@ -42,8 +42,8 @@ importers:
         specifier: ^6.43.8
         version: 6.43.11
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.5.10
-        version: 0.5.10(e88d636f7584004da4cf8ccb46ac55fe)
+        specifier: ^0.6.0
+        version: 0.6.0(a08e401fcfe6f32be6597d8c89d66824)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.2(jiti@2.7.0))
@@ -243,8 +243,8 @@ packages:
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
 
-  '@m3ui-vue/m3ui-vue@0.5.10':
-    resolution: {integrity: sha512-fe0afoUGzXRKKsoFIqZdsa3kaqpTTixi/QbJgZTWdJ+2TJnEUTbwXArsmBzYJvbJUiZ9dnaxkfBlCl9WaSpM3g==}
+  '@m3ui-vue/m3ui-vue@0.6.0':
+    resolution: {integrity: sha512-Pyic8BsFuyeDX+fj+hhTBjlvlnizBsAbPI+oWY0xRXEHgbdtBBFum/8OiteSSHxQsJdMb4Nan9cDLlCL8gg86A==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-css': '*'
@@ -272,7 +272,10 @@ packages:
       chart.js: '*'
       codemirror: '*'
       highlight.js: '*'
+      jsbarcode: '*'
       markdown-it: '*'
+      material-symbols: '*'
+      qrcode-generator: '*'
       tailwindcss: ^4.0.0
       vue: ^3.5.0
       vue-chartjs: '*'
@@ -329,7 +332,13 @@ packages:
         optional: true
       highlight.js:
         optional: true
+      jsbarcode:
+        optional: true
       markdown-it:
+        optional: true
+      material-symbols:
+        optional: true
+      qrcode-generator:
         optional: true
       vue-chartjs:
         optional: true
@@ -1645,7 +1654,7 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.5.10(e88d636f7584004da4cf8ccb46ac55fe)':
+  '@m3ui-vue/m3ui-vue@0.6.0(a08e401fcfe6f32be6597d8c89d66824)':
     dependencies:
       tailwindcss: 4.3.3
       vue: 3.5.42(typescript@7.0.2)
@@ -1675,7 +1684,9 @@ snapshots:
       '@xterm/xterm': 6.0.0
       chart.js: 4.5.1
       codemirror: 6.0.2
+      jsbarcode: 3.12.3
       markdown-it: 14.3.1
+      qrcode-generator: 2.0.4
       vue-chartjs: 5.3.4(chart.js@4.5.1)(vue@3.5.42(typescript@7.0.2))
 
   '@marijn/find-cluster-break@1.0.4': {}
