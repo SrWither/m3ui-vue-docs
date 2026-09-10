@@ -14,6 +14,26 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.5.11',
+    date: '2026-09-09',
+    changes: {
+      added: [
+        'New component: MPinInput — OTP/PIN code input with one box per character, auto-advance on type, smart backspace, arrow-key navigation, and full-code paste support',
+        'MPinInput type prop (numeric/alphanumeric) and masked prop (password-style dots) for PIN vs. verification-code use cases',
+        'MPinInput groups prop (segment sizes, e.g. [2, 4, 2, 3, 1, 3]) with a configurable separator for license/activation-key style layouts — length is derived as the sum of the groups',
+        'MPinInput complete event, fired once with the full value as soon as every box is filled',
+        'material-symbols listed as an optional peer dependency, documented as a self-hosted/offline alternative to the Google Fonts CDN for Material Symbols Outlined',
+        'New component: MCopyButton — copy-to-clipboard icon button with temporary success feedback, copied/error events',
+        'New component: MPasswordMeter — password strength meter (length + character variety heuristic), 5 levels with customizable labels, emits score',
+        'New component: MRelativeTime — auto-updating "3 minutes ago" / "in 2 hours" text using the native Intl.RelativeTimeFormat, with an adaptive refresh cadence',
+        'M3Locale gained a lang field (BCP-47 tag) set by every packaged locale — MRelativeTime reads it via useLocale() to auto-match the app locale without a locale prop on every instance',
+        'New component: MQRCode — QR code generator rendered as inline SVG, available from the @m3ui-vue/m3ui-vue/qrcode entry point with qrcode-generator as an optional peer dependency',
+        'MQRCode rounded prop (default true) rounds the outer container corners, independent of the scannable pattern itself',
+        'MQRCode moduleStyle prop (square/dots, default square): dots rounds each module corner individually based on its neighbors, so connected runs (the finder-pattern squares especially) merge into smooth shapes instead of showing notches; both styles scan identically',
+      ],
+    },
+  },
+  {
     version: '0.5.10',
     date: '2026-09-09',
     changes: {
