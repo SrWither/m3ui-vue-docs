@@ -5,7 +5,7 @@ import {
   MCheckbox, MSwitch, MRadioGroup, MSlider, MRating,
   MDatePicker, MDatePickerModal, MDateRangePicker, MDateRangePickerModal,
   MTimePicker, MTimePickerModal, MColorPicker, MColorPickerModal, MButton,
-  MNumberField, MMaskField, MPinInput,
+  MNumberField, MMaskField, MPinInput, MPasswordMeter,
 } from '@m3ui-vue/m3ui-vue'
 import type { DateRange } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -83,6 +83,9 @@ function onPinComplete(v: string) { pinCompleteLog.value = `@complete: "${v}"` }
 const pinGrouped = ref('')
 const pinGroupedCustom = ref('')
 const pinAlphaGrouped = ref('A1B2C3')
+
+const pwMeterWeak = ref('abc')
+const pwMeterStrong = ref('Sup3r$ecure!')
 
 const selectVal = ref<unknown>(null)
 const selectOptions = [
@@ -213,6 +216,12 @@ const pinInputProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables every box' },
   { name: 'autoFocus', type: 'boolean', default: 'false', description: 'Focuses the first box on mount' },
   { name: 'label', type: 'string', description: 'aria-label for the group of boxes' },
+]
+
+const passwordMeterProps: PropDef[] = [
+  { name: 'value', type: 'string', description: 'Password to score' },
+  { name: 'labels', type: 'string[]', default: "['Very weak', 'Weak', 'Fair', 'Good', 'Strong']", description: '5 labels, weakest to strongest' },
+  { name: 'minLength', type: 'number', default: '8', description: 'Length considered "long enough" — also used (+4) as the "very long" bonus threshold' },
 ]
 
 const selectProps: PropDef[] = [
@@ -694,6 +703,39 @@ const pin = ref('')`"
 
     <p class="mt-3 text-body-medium text-on-surface-variant">
       <strong>Event:</strong> <code>complete</code> — fires with the full code once every box has a value.
+    </p>
+
+    <!-- ── MPasswordMeter ──────────────────────────────────────────────── -->
+    <h2 id="mpasswordmeter" class="mb-4 mt-14 text-headline-small font-medium">MPasswordMeter</h2>
+
+    <ComponentDemo
+      title="Password strength"
+      description="Pair with MTextField type=&quot;password&quot;. Scores length + character variety (0-4) and emits score so you can gate a submit button on it."
+      :code="`<MTextField v-model=&quot;password&quot; label=&quot;Password&quot; type=&quot;password&quot; leading-icon=&quot;lock&quot; />
+<MPasswordMeter :value=&quot;password&quot; @score=&quot;onScore&quot; />`"
+      :script="`const password = ref('')
+
+function onScore(score: number) {
+  // -1 (empty) to 4 (strongest) — e.g. disable submit while score < 2
+}`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <div class="flex flex-col gap-2">
+          <MTextField v-model="pwMeterWeak" label="Password" type="password" leading-icon="lock" />
+          <MPasswordMeter :value="pwMeterWeak" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <MTextField v-model="pwMeterStrong" label="Password" type="password" leading-icon="lock" variant="outlined" />
+          <MPasswordMeter :value="pwMeterStrong" />
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="passwordMeterProps" />
+
+    <p class="mt-3 text-body-medium text-on-surface-variant">
+      <strong>Event:</strong> <code>score</code> — emitted whenever the value changes, with <code>-1</code> for an empty value or <code>0-4</code> otherwise.
     </p>
 
     <!-- ── MSelect ──────────────────────────────────────────────────────── -->
