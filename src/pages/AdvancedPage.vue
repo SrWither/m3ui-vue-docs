@@ -6,6 +6,7 @@ import {
 } from '@m3ui-vue/m3ui-vue'
 import { MChart } from '@m3ui-vue/m3ui-vue/chart'
 import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
+import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'
 import type { CalendarEvent, SchedulerEvent, KanbanColumn, CommandItem, SpotlightResult, SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -211,6 +212,19 @@ const qrCodeProps: PropDef[] = [
   { name: 'background', type: 'string', default: "'#ffffff'", description: 'Light module / background color' },
   { name: 'rounded', type: 'boolean', default: 'true', description: 'Rounds the outer container corners' },
   { name: 'moduleStyle', type: "'square' | 'dots'", default: "'square'", description: 'Classic scannable pixel grid, or rounded ("dots") modules for a softer look — still fully scannable' },
+  { name: 'label', type: 'string', description: 'aria-label for the svg. Defaults to value' },
+]
+
+const barcodeProps: PropDef[] = [
+  { name: 'value', type: 'string', description: 'Data to encode' },
+  { name: 'format', type: 'string', default: "'CODE128'", description: "Symbology: 'CODE128', 'EAN13', 'EAN8', 'UPC', 'CODE39', 'ITF14', 'MSI', 'pharmacode', 'codabar', and others supported by jsbarcode" },
+  { name: 'width', type: 'number', default: '2', description: 'Width of the narrowest bar, in px' },
+  { name: 'height', type: 'number', default: '80', description: 'Bar height in px' },
+  { name: 'displayValue', type: 'boolean', default: 'true', description: 'Show the encoded text below the bars' },
+  { name: 'color', type: 'string', default: "'#000000'", description: 'Bar color' },
+  { name: 'background', type: 'string', default: "'#ffffff'", description: 'Background color' },
+  { name: 'margin', type: 'number', default: '10', description: 'Quiet zone around the barcode, in px' },
+  { name: 'fontSize', type: 'number', default: '20', description: 'Font size for the displayed value' },
   { name: 'label', type: 'string', description: 'aria-label for the svg. Defaults to value' },
 ]
 
@@ -1202,6 +1216,31 @@ const swirl = \`${swirlGlsl.replace(/`/g, '\\`')}\``"
 
     <p class="mt-3 text-body-medium text-on-surface-variant">
       <strong>Slot:</strong> <code>error</code> — shown instead of the SVG when <code>value</code> is too large to encode at the given <code>errorCorrectionLevel</code>.
+    </p>
+
+    <!-- ── MBarcode ─────────────────────────────────────────────────────── -->
+    <h2 id="mbarcode" class="mb-4 mt-14 text-headline-small font-medium">MBarcode</h2>
+
+    <ComponentDemo
+      title="Barcode generator"
+      description="Renders as inline SVG via jsbarcode (optional peer dependency), available from the /barcode entry point. Supports CODE128, EAN13, EAN8, UPC, CODE39, ITF14, MSI, pharmacode, codabar and more."
+      :code="`<MBarcode value=&quot;123456789012&quot; format=&quot;CODE128&quot; />
+<MBarcode value=&quot;5901234123457&quot; format=&quot;EAN13&quot; />
+<MBarcode value=&quot;ORDER-4821&quot; format=&quot;CODE39&quot; :height=&quot;60&quot; color=&quot;#6750a4&quot; />`"
+      :script="`import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'`"
+    >
+      <div class="flex flex-wrap items-end gap-6">
+        <MBarcode value="123456789012" format="CODE128" />
+        <MBarcode value="5901234123457" format="EAN13" />
+        <MBarcode value="ORDER-4821" format="CODE39" :height="60" color="#6750a4" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="barcodeProps" />
+
+    <p class="mt-3 text-body-medium text-on-surface-variant">
+      <strong>Slot:</strong> <code>error</code> — shown instead of the SVG when <code>value</code> is invalid for the given <code>format</code> (e.g. a non-numeric EAN13).
     </p>
   </div>
 </template>

@@ -37,6 +37,7 @@
     "@xterm/xterm": "^6.0.0",
     "chart.js": "^4.5.1",
     "codemirror": "^6.0.2",
+    "jsbarcode": "^3.12.3",
     "markdown-it": "^14.3.0",
     "qrcode-generator": "^2.0.4",
     "tailwindcss": "^4.3.3",

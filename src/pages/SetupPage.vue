@@ -74,7 +74,8 @@ import { MChart } from '@m3ui-vue/m3ui-vue/chart'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { MRichTextEditor } from '@m3ui-vue/m3ui-vue/rich-text-editor'
 import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'
-import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'`
+import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
+import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'`
 
 const optionalDeps = [
   { sub: 'code-editor', components: 'MCodeEditor, MJsonEditor', install: 'pnpm add codemirror @codemirror/view @codemirror/state @codemirror/commands @codemirror/language @codemirror/lang-javascript @codemirror/lang-json @codemirror/lang-html @codemirror/lang-css @codemirror/lang-python @codemirror/lang-vue @codemirror/theme-one-dark' },
@@ -83,6 +84,7 @@ const optionalDeps = [
   { sub: 'rich-text-editor', components: 'MRichTextEditor', install: 'pnpm add @tiptap/vue-3 @tiptap/starter-kit @tiptap/extension-placeholder @tiptap/extension-underline @tiptap/extension-text-align @tiptap/extension-link @tiptap/extension-image @tiptap/extension-color @tiptap/extension-text-style @tiptap/extension-highlight' },
   { sub: 'terminal', components: 'MTerminal', install: 'pnpm add @xterm/xterm @xterm/addon-fit' },
   { sub: 'qrcode', components: 'MQRCode', install: 'pnpm add qrcode-generator' },
+  { sub: 'barcode', components: 'MBarcode', install: 'pnpm add jsbarcode' },
 ]
 </script>
 

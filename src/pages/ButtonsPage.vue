@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MButton, MIconButton, MFab, MSplitButton, MButtonGroup, MSegmentedButton, MCopyButton, MCard, MIcon } from '@m3ui-vue/m3ui-vue'
+import { MButton, MIconButton, MFab, MSplitButton, MButtonGroup, MSegmentedButton, MCopyButton, MExportButton, MCard, MIcon } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -9,6 +9,15 @@ import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const copyButtonLog = ref('')
 function onCopyButtonCopied(value: string) { copyButtonLog.value = `@copied: "${value}"` }
+
+const exportRows = [
+  { name: 'Ada Lovelace', role: 'Engineer' },
+  { name: 'Grace Hopper', role: 'Admiral' },
+]
+const exportLog = ref('')
+function onExported({ format, filename }: { format: string; filename: string }) {
+  exportLog.value = `@exported: ${format} → ${filename}`
+}
 
 const segmentedValue = ref('day')
 const segmentedMulti = ref<string[]>(['bold'])
@@ -144,6 +153,17 @@ const copyButtonProps: PropDef[] = [
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | number", default: "'sm'", description: 'Button size' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the button' },
   { name: 'resetDelay', type: 'number', default: '2000', description: 'Milliseconds before the icon reverts to idle after copying' },
+]
+
+const exportButtonProps: PropDef[] = [
+  { name: 'data', type: 'Record<string, unknown>[]', description: 'Array of objects to export' },
+  { name: 'format', type: "'csv' | 'json'", default: "'csv'", description: 'Export format' },
+  { name: 'filename', type: 'string', default: "'export'", description: 'Filename without extension — the extension is added automatically' },
+  { name: 'label', type: 'string', default: "'Export'", description: 'Button label (overridden by the default slot)' },
+  { name: 'icon', type: 'string', default: "'download'", description: 'Leading Material Symbol icon' },
+  { name: 'variant', type: "'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'", default: "'outlined'", description: 'Visual style (same as MButton)' },
+  { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: 'Button size' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the button' },
 ]
 </script>
 
@@ -904,5 +924,32 @@ const fileFilters = ref(['images'])
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="copyButtonProps" />
+
+    <!-- ── MExportButton ────────────────────────────────────────────────── -->
+    <h2 id="mexportbutton" class="mb-4 mt-14 text-headline-small font-medium">MExportButton</h2>
+
+    <ComponentDemo
+      title="Export to CSV / JSON"
+      description="Serializes the data prop and triggers a real browser download — no dependencies. CSV fields are escaped (commas, quotes, newlines). Emits exported with the format/filename, or error."
+      :code="`<MExportButton :data=&quot;rows&quot; filename=&quot;users&quot; />
+<MExportButton :data=&quot;rows&quot; filename=&quot;users&quot; format=&quot;json&quot; variant=&quot;tonal&quot;>Export JSON</MExportButton>`"
+      :script="`const rows = [
+  { name: 'Ada Lovelace', role: 'Engineer' },
+  { name: 'Grace Hopper', role: 'Admiral' },
+]`"
+    >
+      <div class="flex items-center gap-4">
+        <MExportButton :data="exportRows" filename="users" @exported="onExported" />
+        <MExportButton :data="exportRows" filename="users" format="json" variant="tonal">Export JSON</MExportButton>
+        <span class="text-body-medium text-on-surface-variant">{{ exportLog }}</span>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="exportButtonProps" />
+
+    <p class="mt-3 text-body-medium text-on-surface-variant">
+      <strong>Slot:</strong> <code>default</code> — replaces the label text prop.
+    </p>
   </div>
 </template>

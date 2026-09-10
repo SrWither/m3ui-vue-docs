@@ -14,6 +14,18 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.5.12',
+    date: '2026-09-09',
+    changes: {
+      added: [
+        'New component: MExportButton — exports an array of objects to CSV or JSON with one click (real browser download), exported/error events, no dependencies',
+        'New component: MSignaturePad — canvas signature capture with pointer events, clear()/undo()/isEmpty()/toDataURL() exposed via template ref, begin/end/change events',
+        'New component: MKbd — keyboard-shortcut hint chip; accepts a \'+\'-delimited string or an array of keys, with a customizable separator',
+        'New component: MBarcode — barcode generator (Code128, EAN13, UPC, CODE39, and other symbologies) rendered as inline SVG, available from the @m3ui-vue/m3ui-vue/barcode entry point with jsbarcode as an optional peer dependency, with an error slot for values invalid in the given format',
+      ],
+    },
+  },
+  {
     version: '0.5.11',
     date: '2026-09-09',
     changes: {

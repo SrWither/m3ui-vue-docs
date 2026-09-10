@@ -5,7 +5,7 @@ import {
   MCheckbox, MSwitch, MRadioGroup, MSlider, MRating,
   MDatePicker, MDatePickerModal, MDateRangePicker, MDateRangePickerModal,
   MTimePicker, MTimePickerModal, MColorPicker, MColorPickerModal, MButton,
-  MNumberField, MMaskField, MPinInput, MPasswordMeter,
+  MNumberField, MMaskField, MPinInput, MPasswordMeter, MSignaturePad, MCard,
 } from '@m3ui-vue/m3ui-vue'
 import type { DateRange } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -86,6 +86,10 @@ const pinAlphaGrouped = ref('A1B2C3')
 
 const pwMeterWeak = ref('abc')
 const pwMeterStrong = ref('Sup3r$ecure!')
+
+const signaturePad = ref<InstanceType<typeof MSignaturePad>>()
+const signatureLog = ref('')
+function onSignatureEnd() { signatureLog.value = '@end fired — signature captured' }
 
 const selectVal = ref<unknown>(null)
 const selectOptions = [
@@ -222,6 +226,16 @@ const passwordMeterProps: PropDef[] = [
   { name: 'value', type: 'string', description: 'Password to score' },
   { name: 'labels', type: 'string[]', default: "['Very weak', 'Weak', 'Fair', 'Good', 'Strong']", description: '5 labels, weakest to strongest' },
   { name: 'minLength', type: 'number', default: '8', description: 'Length considered "long enough" — also used (+4) as the "very long" bonus threshold' },
+]
+
+const signaturePadProps: PropDef[] = [
+  { name: 'width', type: 'number', default: '400', description: 'Canvas width in px' },
+  { name: 'height', type: 'number', default: '200', description: 'Canvas height in px' },
+  { name: 'lineWidth', type: 'number', default: '2.5', description: 'Stroke width' },
+  { name: 'color', type: 'string', default: "'#000000'", description: 'Stroke color' },
+  { name: 'background', type: 'string', default: "'#ffffff'", description: 'Canvas background color' },
+  { name: 'variant', type: "'filled' | 'outlined'", default: "'outlined'", description: 'Container border style' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables drawing' },
 ]
 
 const selectProps: PropDef[] = [
@@ -736,6 +750,46 @@ function onScore(score: number) {
 
     <p class="mt-3 text-body-medium text-on-surface-variant">
       <strong>Event:</strong> <code>score</code> — emitted whenever the value changes, with <code>-1</code> for an empty value or <code>0-4</code> otherwise.
+    </p>
+
+    <!-- ── MSignaturePad ───────────────────────────────────────────────── -->
+    <h2 id="msignaturepad" class="mb-4 mt-14 text-headline-small font-medium">MSignaturePad</h2>
+
+    <ComponentDemo
+      title="Signature capture"
+      description="A bordered canvas that captures pointer strokes. clear(), undo(), isEmpty() and toDataURL() are exposed via a template ref — there's no v-model, since a signature isn't a simple value."
+      :code="`<MSignaturePad ref=&quot;pad&quot; @end=&quot;onSignatureEnd&quot; />
+<MButton @click=&quot;pad.clear()&quot;>Clear</MButton>
+<MButton @click=&quot;pad.undo()&quot;>Undo</MButton>`"
+      :script="`const pad = ref()
+
+function onSignatureEnd(dataUrl: string) {
+  // Called after each stroke — dataUrl is a PNG data: URL
+}`"
+    >
+      <div class="flex flex-col items-start gap-3">
+        <MSignaturePad ref="signaturePad" @end="onSignatureEnd" />
+        <div class="flex items-center gap-2">
+          <MButton variant="outlined" size="sm" icon="undo" @click="signaturePad?.undo()">Undo</MButton>
+          <MButton variant="outlined" size="sm" icon="delete" @click="signaturePad?.clear()">Clear</MButton>
+          <span class="text-body-medium text-on-surface-variant">{{ signatureLog }}</span>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="signaturePadProps" />
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Exposed (via template ref)</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>clear()                          — Erases every stroke
+undo()                           — Removes only the last stroke
+isEmpty(): boolean               — True if no strokes have been drawn
+toDataURL(type?, quality?): string — Same signature as HTMLCanvasElement.toDataURL()</code></pre>
+    </MCard>
+
+    <p class="mt-3 text-body-medium text-on-surface-variant">
+      <strong>Events:</strong> <code>begin</code> (first pointerdown of a stroke), <code>end</code> and <code>change</code> (both fired after a stroke ends, with the data URL).
     </p>
 
     <!-- ── MSelect ──────────────────────────────────────────────────────── -->

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import {
   MContainer, MGrid, MStack, MSplitter, MMasonry, MCard, MButton,
-  MText, MTitle, MSubtitle, MFlex, MSpacer, MCenter, MBox, MSection, MResponsive,
+  MText, MTitle, MSubtitle, MKbd, MFlex, MSpacer, MCenter, MBox, MSection, MResponsive,
   MIconButton, MSpinner, MRelative, MAbsolute, MFixed, MSticky, MFullscreen,
   MScrollable, MAspectRatio, MAppLayout, MFooter, MOverlay, MIcon, MBadge, MFab, MDivider,
 } from '@m3ui-vue/m3ui-vue'
@@ -84,6 +84,12 @@ const subtitleProps: PropDef[] = [
   { name: 'color', type: "'on-surface' | 'on-surface-variant' | 'primary' | 'secondary' | 'tertiary' | 'error' | 'inherit'", default: "'on-surface-variant'", description: 'Text color' },
   { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: 'Text alignment' },
   { name: 'truncate', type: 'boolean', default: 'false', description: 'Truncate text with ellipsis on overflow' },
+]
+
+const kbdProps: PropDef[] = [
+  { name: 'keys', type: 'string | string[]', description: "A '+'-delimited string (\"Ctrl+Shift+K\") or an array of keys" },
+  { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Key chip size' },
+  { name: 'separator', type: 'string', default: "'+'", description: 'Separator rendered between keys' },
 ]
 
 const flexProps: PropDef[] = [
@@ -562,6 +568,26 @@ const showOverlay = ref(false)
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="subtitleProps" />
+
+    <!-- ── MKbd ────────────────────────────────────────────────────────── -->
+    <h2 id="mkbd" class="mb-4 mt-14 text-headline-small font-medium">MKbd</h2>
+
+    <ComponentDemo
+      title="Keyboard shortcut hint"
+      description="Pass a '+'-delimited string or an array of keys. Purely presentational — pairs well with MHotkeys or MCommandPalette to show the shortcut that triggers an action."
+      :code="`<MKbd keys=&quot;Ctrl+K&quot; />
+<MKbd :keys=&quot;['Cmd', 'Shift', 'P']&quot; size=&quot;lg&quot; />
+<MKbd keys=&quot;Esc&quot; size=&quot;sm&quot; />`"
+    >
+      <div class="flex flex-wrap items-center gap-6">
+        <MKbd keys="Ctrl+K" />
+        <MKbd :keys="['Cmd', 'Shift', 'P']" size="lg" />
+        <MKbd keys="Esc" size="sm" />
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="kbdProps" />
 
     <!-- ── MFlex ───────────────────────────────────────────────────────── -->
     <h2 id="mflex" class="mb-4 mt-14 text-headline-small font-medium">MFlex</h2>
