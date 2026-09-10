@@ -4,12 +4,15 @@ import {
   MCard, MChip, MBadge, MAvatar, MIcon, MDivider, MButton, MIconButton,
   MStatCard, MTimeline, MSkeleton, MEmptyState, MResult, MTree,
   MList, MListItem, MListSubheader, MSwitch,
-  MEmoji, MEmojiButton, MEmojiSelector, MCarousel, MChatBubble,
+  MEmoji, MEmojiButton, MEmojiSelector, MCarousel, MChatBubble, MRelativeTime,
 } from '@m3ui-vue/m3ui-vue'
 import type { TimelineItem, TreeNode, CarouselItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
+
+const relTimePast = ref(new Date(Date.now() - 5 * 60_000))
+const relTimeFuture = ref(new Date(Date.now() + 2 * 3_600_000))
 
 const chipSelected = ref(true)
 const removableChips = ref(['Vue', 'React', 'Svelte'])
@@ -236,6 +239,11 @@ const chatBubbleProps: PropDef[] = [
   { name: 'tail', type: 'boolean', default: 'true', description: 'Show bubble tail (rounded corner notch)' },
   { name: 'size', type: "'small' | 'medium' | 'large'", default: "'medium'", description: 'Text size (body-small / body-medium / body-large)' },
   { name: 'maxWidth', type: 'string', default: "'320px'", description: 'Max bubble width (px, %, or var()). Supports CSS variables for responsive control.' },
+]
+
+const relativeTimeProps: PropDef[] = [
+  { name: 'value', type: 'string | number | Date', description: 'The timestamp to format (ISO string, epoch ms, or a Date)' },
+  { name: 'locale', type: 'string', description: "BCP-47 locale tag (e.g. 'es-ES'). Defaults to the browser's locale" },
 ]
 
 const emojiProps: PropDef[] = [
@@ -1848,5 +1856,26 @@ const nodes = [
       <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>#default  — Custom content inside the bubble (replaces the text prop).
            Use for images, files, buttons, or any custom layout.</code></pre>
     </MCard>
+
+    <!-- ── MRelativeTime ────────────────────────────────────────────────── -->
+    <h2 id="mrelativetime" class="mb-4 mt-14 text-headline-small font-medium">MRelativeTime</h2>
+
+    <ComponentDemo
+      title="Auto-updating relative time"
+      description="Renders as a semantic <time> element. Formatting comes from the native Intl.RelativeTimeFormat — fully localized with no locale-file changes needed — and it re-renders itself at a cadence that matches how recent the value is."
+      :code="`<MRelativeTime :value=&quot;comment.createdAt&quot; />
+<MRelativeTime :value=&quot;event.startsAt&quot; locale=&quot;es-ES&quot; />`"
+      :script="`const comment = { createdAt: new Date(Date.now() - 5 * 60_000) } // 5 minutes ago
+const event = { startsAt: new Date(Date.now() + 2 * 3_600_000) } // in 2 hours`"
+    >
+      <div class="flex flex-wrap items-center gap-6 text-body-medium">
+        <span>Posted <MRelativeTime :value="relTimePast" class="font-medium text-primary" /></span>
+        <span>Starts <MRelativeTime :value="relTimeFuture" class="font-medium text-primary" /></span>
+        <span>En español: <MRelativeTime :value="relTimePast" locale="es-ES" class="font-medium text-primary" /></span>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="relativeTimeProps" />
   </div>
 </template>

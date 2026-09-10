@@ -29,7 +29,7 @@ watch(() => route.path, (path) => {
 }, { immediate: true })
 
 const iconMap: Record<string, string> = {
-  MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on',
+  MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MCopyButton: 'content_copy',
   MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box',
   MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
   MDatePickerModal: 'event', MDateRangePickerModal: 'date_range',
@@ -54,7 +54,7 @@ const iconMap: Record<string, string> = {
   MResponsive: 'devices', MRelative: 'photo_size_select_large', MSticky: 'push_pin',
   MAbsolute: 'open_with', MAspectRatio: 'aspect_ratio', MFixed: 'picture_in_picture', MFooter: 'call_to_action',
   MResult: 'check_circle', MDateRangePicker: 'date_range', MAppBar: 'web',
-  MNumberField: 'pin', MMaskField: 'password', MPinInput: 'dialpad', MCarousel: 'view_carousel',
+  MNumberField: 'pin', MMaskField: 'password', MPinInput: 'dialpad', MPasswordMeter: 'security', MRelativeTime: 'schedule', MQRCode: 'qr_code_2', MCarousel: 'view_carousel',
   MChatBubble: 'chat_bubble', MBottomSheet: 'drag_handle', MSideSheet: 'dock_to_right', MLoadingOverlay: 'hourglass_top', MWindow: 'picture_in_picture',
   MTable: 'table_chart', MDataTable: 'table_view', MTreeTable: 'account_tree', MVirtualTable: 'view_list',
   MFileUpload: 'upload_file', MDragDropList: 'drag_indicator', MTransferList: 'swap_horiz',
@@ -91,13 +91,13 @@ const sections: DrawerSection[] = [
     collapsible: true,
     items: [
       { value: '/components/buttons', label: 'Buttons', icon: 'smart_button', to: '/components/buttons',
-        children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MSplitButton', 'MButtonGroup', 'MSegmentedButton']) },
+        children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MSplitButton', 'MButtonGroup', 'MSegmentedButton', 'MCopyButton']) },
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
-        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MColorPicker', 'MColorPickerModal']) },
+        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MColorPicker', 'MColorPickerModal']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
         children: ch('/components/feedback', ['MAlert', 'useToast', 'useNotification', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MCircleProgressBar', 'MSpinner', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',
-        children: ch('/components/data-display', ['MCard', 'MChip', 'MBadge', 'MAvatar', 'MIcon', 'MDivider', 'MStatCard', 'MTimeline', 'MSkeleton', 'MEmptyState', 'MResult', 'MTree', 'MList', 'MEmoji', 'MEmojiButton', 'MEmojiSelector', 'MCarousel', 'MChatBubble']) },
+        children: ch('/components/data-display', ['MCard', 'MChip', 'MBadge', 'MAvatar', 'MIcon', 'MDivider', 'MStatCard', 'MTimeline', 'MSkeleton', 'MEmptyState', 'MResult', 'MTree', 'MList', 'MEmoji', 'MEmojiButton', 'MEmojiSelector', 'MCarousel', 'MChatBubble', 'MRelativeTime']) },
       { value: '/components/navigation', label: 'Navigation', icon: 'menu_open', to: '/components/navigation',
         children: ch('/components/navigation', ['MTabs', 'MMenu', 'MContextMenu', 'MBreadcrumbs', 'MStepper', 'MPagination', 'MNavigationBar', 'MNavigationDrawer', 'MNavigationRail', 'MToolbar', 'MTopAppBar', 'MAppBar']) },
       { value: '/components/layout', label: 'Layout', icon: 'grid_view', to: '/components/layout',
@@ -111,7 +111,7 @@ const sections: DrawerSection[] = [
       { value: '/components/editors', label: 'Editors', icon: 'code', to: '/components/editors',
         children: ch('/components/editors', ['MCodeEditor', 'MJsonEditor', 'MJsonViewer', 'MMarkdown', 'MTerminal', 'MRichTextEditor']) },
       { value: '/components/advanced', label: 'Advanced', icon: 'auto_awesome', to: '/components/advanced',
-        children: ch('/components/advanced', ['MCalendar', 'MScheduler', 'MKanban', 'MCommandPalette', 'MSpotlightSearch', 'MChart', 'MShader']) },
+        children: ch('/components/advanced', ['MCalendar', 'MScheduler', 'MKanban', 'MCommandPalette', 'MSpotlightSearch', 'MChart', 'MShader', 'MQRCode']) },
     ],
   },
   {

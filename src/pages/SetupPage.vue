@@ -22,6 +22,10 @@ const fontsCode = `<link
   rel="stylesheet"
 />`
 
+const fontsOfflineInstallCode = `pnpm add material-symbols`
+
+const fontsOfflineCssCode = `@import 'material-symbols/outlined.css';`
+
 const tailwindInstallCode = `pnpm add tailwindcss @tailwindcss/vite
 # or
 npm install tailwindcss @tailwindcss/vite`
@@ -69,7 +73,8 @@ import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MChart } from '@m3ui-vue/m3ui-vue/chart'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { MRichTextEditor } from '@m3ui-vue/m3ui-vue/rich-text-editor'
-import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'`
+import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'
+import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'`
 
 const optionalDeps = [
   { sub: 'code-editor', components: 'MCodeEditor, MJsonEditor', install: 'pnpm add codemirror @codemirror/view @codemirror/state @codemirror/commands @codemirror/language @codemirror/lang-javascript @codemirror/lang-json @codemirror/lang-html @codemirror/lang-css @codemirror/lang-python @codemirror/lang-vue @codemirror/theme-one-dark' },
@@ -77,6 +82,7 @@ const optionalDeps = [
   { sub: 'markdown', components: 'MMarkdown', install: 'pnpm add markdown-it' },
   { sub: 'rich-text-editor', components: 'MRichTextEditor', install: 'pnpm add @tiptap/vue-3 @tiptap/starter-kit @tiptap/extension-placeholder @tiptap/extension-underline @tiptap/extension-text-align @tiptap/extension-link @tiptap/extension-image @tiptap/extension-color @tiptap/extension-text-style @tiptap/extension-highlight' },
   { sub: 'terminal', components: 'MTerminal', install: 'pnpm add @xterm/xterm @xterm/addon-fit' },
+  { sub: 'qrcode', components: 'MQRCode', install: 'pnpm add qrcode-generator' },
 ]
 </script>
 
@@ -128,11 +134,26 @@ const optionalDeps = [
     <div class="mb-8 flex gap-4">
       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary text-label-large font-medium">2</span>
       <div class="flex-1">
-        <h2 class="mb-2 text-title-large font-medium">Add Google Fonts</h2>
+        <h2 class="mb-2 text-title-large font-medium">Add the fonts</h2>
+        <p class="mb-3 text-body-medium text-on-surface-variant">
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MIcon</code> and every icon-rendering component rely on the
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">material-symbols-outlined</code> class from <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">theme.css</code> — M3UI Vue ships the CSS rule but not the font file itself, so pick one of the two options below.
+        </p>
+        <p class="mb-2 text-label-large font-medium text-on-surface">Option A — Google Fonts CDN (default, simplest)</p>
         <p class="mb-3 text-body-medium text-on-surface-variant">
           Add this to the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;head&gt;</code> of your <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">index.html</code>:
         </p>
-        <MCodeEditor :model-value="fontsCode" language="html" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" />
+        <MCodeEditor :model-value="fontsCode" language="html" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" class="mb-4" />
+        <p class="mb-2 text-label-large font-medium text-on-surface">Option B — self-hosted (offline / no third-party requests)</p>
+        <p class="mb-3 text-body-medium text-on-surface-variant">
+          The CDN link needs network access to <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">fonts.googleapis.com</code>, which won't work offline or behind a restrictive firewall. Install
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">material-symbols</code> (an optional peer dependency that ships the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">.woff2</code> files locally) and import it from your main stylesheet instead:
+        </p>
+        <MCodeEditor :model-value="fontsOfflineInstallCode" language="javascript" :readonly="true" :line-numbers="false" min-height="50px" max-height="80px" class="mb-3" />
+        <MCodeEditor :model-value="fontsOfflineCssCode" language="css" :readonly="true" :line-numbers="false" min-height="50px" max-height="80px" />
+        <p class="mt-3 text-body-medium text-on-surface-variant">
+          This only covers the icon font — if you also want <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">Roboto</code> offline, pair it with something like <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@fontsource/roboto</code>.
+        </p>
       </div>
     </div>
 

@@ -95,6 +95,9 @@ importers:
       markdown-it:
         specifier: ^14.3.0
         version: 14.3.1
+      qrcode-generator:
+        specifier: ^2.0.4
+        version: 2.0.4
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
@@ -1266,6 +1269,9 @@ packages:
   punycode.js@2.3.1:
     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
     engines: {node: '>=6'}
+
+  qrcode-generator@2.0.4:
+    resolution: {integrity: sha512-mZSiP6RnbHl4xL2Ap5HfkjLnmxfKcPWpWe/c+5XxCuetEenqmNFf1FH/ftXPCtFG5/TDobjsjz6sSNL0Sr8Z9g==}
 
   quansync@0.2.11:
     resolution: {integrity: sha512-AifT7QEbW9Nri4tAwR5M/uzpBuqfZf+zwaEM/QkzEjj7NBuFD2rBuy0K3dE+8wltbezDV7JMA0WfnCPYRSYbXA==}
@@ -2480,6 +2486,8 @@ snapshots:
       prosemirror-transform: 1.12.1
 
   punycode.js@2.3.1: {}
+
+  qrcode-generator@2.0.4: {}
 
   quansync@0.2.11: {}
 
