@@ -14,19 +14,7 @@ interface Version {
 
 const versions: Version[] = [
   {
-    version: '0.5.12',
-    date: '2026-09-09',
-    changes: {
-      added: [
-        'New component: MExportButton — exports an array of objects to CSV or JSON with one click (real browser download), exported/error events, no dependencies',
-        'New component: MSignaturePad — canvas signature capture with pointer events, clear()/undo()/isEmpty()/toDataURL() exposed via template ref, begin/end/change events',
-        'New component: MKbd — keyboard-shortcut hint chip; accepts a \'+\'-delimited string or an array of keys, with a customizable separator',
-        'New component: MBarcode — barcode generator (Code128, EAN13, UPC, CODE39, and other symbologies) rendered as inline SVG, available from the @m3ui-vue/m3ui-vue/barcode entry point with jsbarcode as an optional peer dependency, with an error slot for values invalid in the given format',
-      ],
-    },
-  },
-  {
-    version: '0.5.11',
+    version: '0.6.0',
     date: '2026-09-09',
     changes: {
       added: [
@@ -42,6 +30,10 @@ const versions: Version[] = [
         'New component: MQRCode — QR code generator rendered as inline SVG, available from the @m3ui-vue/m3ui-vue/qrcode entry point with qrcode-generator as an optional peer dependency',
         'MQRCode rounded prop (default true) rounds the outer container corners, independent of the scannable pattern itself',
         'MQRCode moduleStyle prop (square/dots, default square): dots rounds each module corner individually based on its neighbors, so connected runs (the finder-pattern squares especially) merge into smooth shapes instead of showing notches; both styles scan identically',
+        'New component: MExportButton — exports an array of objects to CSV or JSON with one click (real browser download), exported/error events, no dependencies',
+        'New component: MSignaturePad — canvas signature capture with pointer events, clear()/undo()/isEmpty()/toDataURL() exposed via template ref, begin/end/change events',
+        'New component: MKbd — keyboard-shortcut hint chip; accepts a \'+\'-delimited string or an array of keys, with a customizable separator',
+        'New component: MBarcode — barcode generator (Code128, EAN13, UPC, CODE39, and other symbologies) rendered as inline SVG, available from the @m3ui-vue/m3ui-vue/barcode entry point with jsbarcode as an optional peer dependency, with an error slot for values invalid in the given format',
       ],
     },
   },
