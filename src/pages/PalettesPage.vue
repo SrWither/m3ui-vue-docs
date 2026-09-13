@@ -75,6 +75,13 @@ const pluginCode = `import { createM3UI } from '@m3ui-vue/m3ui-vue'
 
 app.use(createM3UI({ palette: 'teal' }))`
 
+const pluginFixedCode = `import { createM3UI } from '@m3ui-vue/m3ui-vue'
+
+// Always boots with 'teal', ignoring any palette a returning visitor
+// already has stored in localStorage. set() still works live within
+// the session — it just stops persisting while this is on.
+app.use(createM3UI({ palette: 'teal', persistPalette: false }))`
+
 const customPaletteCode = `/* Add this to your main CSS file, after the m3ui imports */
 
 /* Light mode */
@@ -284,6 +291,14 @@ const allTokens = [
     </div>
 
     <h3 class="mb-2 text-title-medium font-medium">2a. Set palette via plugin</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">palette</code> only seeds the
+      <em>first visit</em> — once a user switches palettes (e.g. with
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">set()</code>), that choice is
+      persisted to <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">localStorage</code>
+      and wins over <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">palette</code> on
+      every later boot.
+    </p>
     <div class="mb-6">
       <MCodeEditor
         :model-value="pluginCode"
@@ -295,8 +310,23 @@ const allTokens = [
       />
     </div>
 
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      To force a fixed palette that always wins regardless of what's stored, pass
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">persistPalette: false</code>:
+    </p>
+    <div class="mb-6">
+      <MCodeEditor
+        :model-value="pluginFixedCode"
+        language="typescript"
+        :readonly="true"
+        :line-numbers="false"
+        min-height="80px"
+        max-height="200px"
+      />
+    </div>
+
     <h3 class="mb-2 text-title-medium font-medium">2b. Or switch at runtime</h3>
-    <div class="mb-10">
+    <div class="mb-4">
       <MCodeEditor
         :model-value="usageCode"
         language="typescript"
@@ -306,6 +336,12 @@ const allTokens = [
         max-height="200px"
       />
     </div>
+    <p class="mb-10 text-body-medium text-on-surface-variant">
+      Selection is persisted to <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">localStorage</code>
+      by default. Toggle that at runtime with
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useColorPalette().setPersistPalette(true | false)</code>
+      — <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">set()</code> keeps applying the palette live either way, it's only the "remember it for next time" part that gets disabled.
+    </p>
 
     <!-- Custom palette -->
     <h2 class="mb-4 text-headline-small font-medium">Custom Palette</h2>
