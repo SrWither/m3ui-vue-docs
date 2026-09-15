@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { MTopAppBar, MIconButton, MMenu, MTooltip, MIcon, useTheme, useColorPalette } from '@m3ui-vue/m3ui-vue'
+import { spotlightOpen } from '@/composables/useSpotlightSearch'
 
 defineEmits<{ menuClick: [] }>()
 
@@ -35,6 +36,17 @@ const themeLabel = computed(() => {
     </template>
 
     <template #actions>
+      <button
+        type="button"
+        class="mr-1 hidden items-center gap-2 rounded-full border border-outline-variant bg-surface-container px-3 py-1.5 text-label-medium text-on-surface-variant transition-colors hover:bg-surface-container-high sm:flex"
+        @click="spotlightOpen = true"
+      >
+        <MIcon name="search" :size="18" />
+        <span>Search…</span>
+        <kbd class="rounded border border-outline-variant bg-surface px-1.5 py-0.5 font-mono text-label-small">/</kbd>
+      </button>
+      <MIconButton icon="search" label="Search" class="sm:hidden" @click="spotlightOpen = true" />
+
       <MTooltip text="GitHub">
         <a
           href="https://github.com/SrWither/m3ui-vue"

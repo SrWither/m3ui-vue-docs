@@ -14,6 +14,30 @@ interface Version {
 
 const versions: Version[] = [
   {
+  version: '0.6.2',
+  date: '2026-09-14',
+  changes: {
+    added: [
+      'New component: MPageProgress — thin top loading bar for page/route transitions with a trickle-then-complete animation',
+      'MPageProgress auto-detects vue-router and automatically wires itself to beforeEach/afterEach/onError without adding vue-router as a dependency',
+      'New composable: usePageProgress() — shared progress state with start(), set(pct), and done() for manual or router-driven page progress',
+      'MPageProgress auto prop (default true) controls vue-router auto-wiring',
+      'MPageProgress position prop (top | bottom, default top) controls which edge of the viewport the progress bar is pinned to',
+      'New component: MBar — draggable Electron title bar for frameless windows, with customizable icon, title, alignment, trailing content, and window controls',
+      'MBar platform prop supports Windows and macOS title bar conventions, including native macOS traffic-light spacing',
+      'MBar icon automatically detects image sources (URL, data URI, or file path) versus Material Symbol names',
+      'MBar supports minimize/maximize/close controls with corresponding events, configurable button visibility, maximized state, and double-click-to-maximize behavior',
+      'MSlider corner stop dots now hide once the fill passes them, and the standard variant no longer shows a start indicator, matching the official M3 slider',
+      'MSlider thumb now maintains a constant margin from the track ends, with matching fill gaps at 0% and 100%',
+      'MSlider standard variant now uses fully rounded outer fill corners and square corners facing the thumb, matching the official M3 slider',
+      'MSlider gained fillColor and thumbColor props for independently customizing the filled track and thumb colors',
+      'MSlider gained thumbIcon to replace the draggable bar thumb with a Material Symbol icon',
+      'MSlider corner icon now uses its own edge inset and is naturally covered by the thumb when overlapping',
+      'MSlider stops variant now hides the stop currently under the thumb, including both thumbs in range mode',
+    ],
+  },
+},
+  {
     version: '0.6.1',
     date: '2026-09-13',
     changes: {

@@ -352,8 +352,11 @@ const sliderProps: PropDef[] = [
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'xs'", description: 'Track and thumb size' },
   { name: 'variant', type: "'standard' | 'centered' | 'range'", default: "'standard'", description: 'Standard, centered (from middle), or range (two thumbs)' },
   { name: 'stops', type: 'boolean', default: 'false', description: 'Show stop dots at each step (max 30 visible)' },
-  { name: 'icon', type: 'string', description: 'Material Symbol icon shown before the slider' },
-  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Track color' },
+  { name: 'icon', type: 'string', description: 'Material Symbol icon shown before the slider — hides once the fill reaches it' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Base color — used for the fill and thumb unless overridden by fillColor/thumbColor' },
+  { name: 'fillColor', type: 'string', description: 'Custom color (hex, rgb(), a CSS var…) for the filled/active track and corner dot — not limited to the 4 M3 roles. Defaults to color' },
+  { name: 'thumbColor', type: 'string', description: 'Custom color (hex, rgb(), a CSS var…) for the thumb (bar or icon) — not limited to the 4 M3 roles. Defaults to color' },
+  { name: 'thumbIcon', type: 'string', description: 'Replaces the draggable bar thumb with a Material Symbol icon' },
 ]
 
 const ratingProps: PropDef[] = [
@@ -1301,12 +1304,42 @@ const val = ref(true)`"
 
     <ComponentDemo
       title="With Icon"
-      description="Optional inset icon displayed before the slider."
+      description="Optional inset icon displayed before the slider. It fades out once the fill reaches it, same as the corner dot."
       :code="`<MSlider v-model=&quot;val&quot; icon=&quot;volume_up&quot; :show-tooltip=&quot;true&quot; />`"
     >
       <div class="w-full space-y-6">
         <MSlider v-model="sliderVal" icon="volume_up" :show-tooltip="true" size="sm" />
         <MSlider v-model="sliderVal" icon="brightness_6" :show-tooltip="true" size="md" color="tertiary" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Independent Colors"
+      description="color picks an M3 role and is the shared default for both the fill and the thumb. fillColor and thumbColor override each independently — unlike color, they accept any CSS color (hex, rgb(), a var…), not just the four M3 roles, so you can match an arbitrary brand color. The unfilled track shade is derived automatically from it via color-mix()."
+      :code="`<MSlider v-model=&quot;val&quot; color=&quot;tertiary&quot; :show-value=&quot;true&quot; label=&quot;color (M3 role)&quot; />
+<MSlider v-model=&quot;val&quot; fill-color=&quot;#e63946&quot; :show-value=&quot;true&quot; label=&quot;fillColor (hex)&quot; />
+<MSlider v-model=&quot;val&quot; thumb-color=&quot;#4361ee&quot; :show-value=&quot;true&quot; label=&quot;thumbColor (hex)&quot; />
+<MSlider v-model=&quot;val&quot; fill-color=&quot;#2a9d8f&quot; thumb-color=&quot;#f4a261&quot; :show-value=&quot;true&quot; label=&quot;both, independent hex&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderVal" color="tertiary" :show-value="true" label="color (M3 role)" />
+        <MSlider v-model="sliderVal" fill-color="#e63946" :show-value="true" label="fillColor (hex)" />
+        <MSlider v-model="sliderVal" thumb-color="#4361ee" :show-value="true" label="thumbColor (hex)" />
+        <MSlider v-model="sliderVal" fill-color="#2a9d8f" thumb-color="#f4a261" :show-value="true" label="both, independent hex" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Thumb Icon"
+      description="thumbIcon replaces the draggable bar with a Material Symbol icon, with its own thumbColor. It keeps the same edge margin as the bar thumb, and grows slightly on press instead of pinching thin."
+      :code="`<MSlider v-model=&quot;val&quot; thumb-icon=&quot;drag_indicator&quot; :show-value=&quot;true&quot; />
+<MSlider v-model=&quot;val&quot; thumb-icon=&quot;volume_up&quot; thumb-color=&quot;#e76f51&quot; :show-value=&quot;true&quot; />
+<MSlider v-model=&quot;range&quot; variant=&quot;range&quot; thumb-icon=&quot;drag_indicator&quot; thumb-color=&quot;#264653&quot; :show-value=&quot;true&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <MSlider v-model="sliderVal" thumb-icon="drag_indicator" :show-value="true" label="Default" />
+        <MSlider v-model="sliderVal" thumb-icon="volume_up" thumb-color="#e76f51" :show-value="true" label="Custom color (hex)" />
+        <MSlider v-model="sliderRange" variant="range" thumb-icon="drag_indicator" thumb-color="#264653" :show-value="true" label="Range" />
       </div>
     </ComponentDemo>
 

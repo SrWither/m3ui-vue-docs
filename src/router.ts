@@ -82,13 +82,21 @@ const router = createRouter({
   ],
 })
 
+// Target pages are lazy-loaded chunks, some with 100+ demo blocks to render —
+// a single fixed-delay check (as this used to be) gives up before the anchor
+// exists on a cold chunk load, so poll for it instead.
 router.afterEach((to) => {
-  if (to.hash) {
-    setTimeout(() => {
-      const el = document.querySelector(to.hash)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 150)
+  if (!to.hash) return
+  let attempts = 0
+  const tryScroll = () => {
+    const el = document.querySelector(to.hash)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } else if (attempts++ < 40) {
+      setTimeout(tryScroll, 75)
+    }
   }
+  setTimeout(tryScroll, 50)
 })
 
 export default router
