@@ -3,9 +3,10 @@ import { ref } from 'vue'
 import {
   MAlert, MDialog, MConfirmDialog, MTooltip, MProgressBar, MCircleProgressBar,
   MSpinner, MExpansionPanel, MButton, MIconButton, MCard, MSegmentedButton,
-  MTextField, MSelect, MSwitch, MIcon,
-  useToast, useNotification,
+  MTextField, MSelect, MSwitch, MIcon, MSlider,
+  useToast, useNotification, usePageProgress,
 } from '@m3ui-vue/m3ui-vue'
+import { pageProgressPosition, pageProgressThickness, pageProgressColor } from '@/composables/usePageProgressDemo'
 import type { ToastPosition, NotificationPosition } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -130,6 +131,22 @@ const progressProps: PropDef[] = [
   { name: 'variant', type: "'linear' | 'wavy'", default: "'linear'", description: 'Bar style' },
   { name: 'thickness', type: 'number', description: 'Stroke width in px. Defaults to 4 for linear, 3 for wavy.' },
   { name: 'label', type: 'string', description: 'Label text above the bar' },
+]
+
+const pageProgress = usePageProgress()
+let pageProgressAutoTimer: ReturnType<typeof setTimeout> | null = null
+
+function demoPageProgressAuto() {
+  pageProgress.start()
+  if (pageProgressAutoTimer) clearTimeout(pageProgressAutoTimer)
+  pageProgressAutoTimer = setTimeout(() => pageProgress.done(), 1500)
+}
+
+const pageProgressProps: PropDef[] = [
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Bar color' },
+  { name: 'thickness', type: 'number', default: '3', description: 'Bar height in px' },
+  { name: 'position', type: "'top' | 'bottom'", default: "'top'", description: 'Which edge of the viewport the bar is pinned to' },
+  { name: 'auto', type: 'boolean', default: 'true', description: "Auto-wire to vue-router's beforeEach/afterEach/onError when a router is detected on the app instance. Set to false to drive it entirely through usePageProgress()." },
 ]
 
 const circleProgressProps: PropDef[] = [
@@ -828,6 +845,56 @@ const progress = ref(50)`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="progressProps" />
+
+    <!-- ── MPageProgress ─────────────────────────────────────────────────── -->
+    <h2 id="mpageprogress" class="mb-4 mt-14 text-headline-small font-medium">MPageProgress</h2>
+
+    <ComponentDemo
+      title="Auto-wired to this site's router"
+      description="Mounted once in App.vue with the default auto prop. Navigate anywhere in these docs — including with the button below — and the bar animates on its own via vue-router's beforeEach/afterEach hooks. No wiring needed beyond dropping the component in your root layout. Toggle position below to move the real bar between the top and bottom edges of the page."
+      :code="`<!-- App.vue — mounted once, persists across route changes -->
+<template>
+  <MPageProgress position=&quot;top&quot; :thickness=&quot;3&quot; />
+  <RouterView />
+</template>`"
+      :script="`import { MPageProgress } from '@m3ui-vue/m3ui-vue'`"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <MButton variant="tonal" icon="menu_book" to="/components/data-display">Navigate to Data Display</MButton>
+        <MSegmentedButton
+          v-model="pageProgressPosition"
+          :options="[{ value: 'top', label: 'Top' }, { value: 'bottom', label: 'Bottom' }]"
+        />
+        <MSegmentedButton
+          v-model="pageProgressColor"
+          :options="[{ value: 'primary', label: 'Primary' }, { value: 'secondary', label: 'Secondary' }, { value: 'tertiary', label: 'Tertiary' }, { value: 'error', label: 'Error' }]"
+        />
+      </div>
+      <div class="mt-4 w-full">
+        <MSlider v-model="pageProgressThickness" :min="1" :max="12" :step="1" label="Thickness" show-value />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Manual control via usePageProgress()"
+      description="Same shared state MPageProgress reads internally — call start() when work begins, done() when it finishes, or set(pct) if you know real progress (e.g. an upload). Useful without vue-router, or alongside it for non-navigation loading (a fetch, a background job)."
+      :code="`<MButton @click=&quot;start()&quot;>Start</MButton>
+<MButton @click=&quot;set(50)&quot;>Set 50%</MButton>
+<MButton @click=&quot;done()&quot;>Done</MButton>`"
+      :script="`import { usePageProgress } from '@m3ui-vue/m3ui-vue'
+
+const { start, set, done } = usePageProgress()`"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <MButton variant="tonal" icon="play_arrow" @click="pageProgress.start()">start()</MButton>
+        <MButton variant="tonal" icon="percent" @click="pageProgress.set(50)">set(50)</MButton>
+        <MButton variant="tonal" icon="check" @click="pageProgress.done()">done()</MButton>
+        <MButton variant="text" icon="bolt" @click="demoPageProgressAuto()">Simulate a 1.5s load</MButton>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="pageProgressProps" />
 
     <!-- ── MCircleProgressBar ─────────────────────────────────────────────── -->
     <h2 id="mcircleprogressbar" class="mb-4 mt-14 text-headline-small font-medium">MCircleProgressBar</h2>

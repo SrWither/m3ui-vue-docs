@@ -2,7 +2,8 @@
 import { onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import AppShell from '@/components/layout/AppShell.vue'
-import { palettes, useColorPalette } from '@m3ui-vue/m3ui-vue'
+import { palettes, useColorPalette, MPageProgress } from '@m3ui-vue/m3ui-vue'
+import { pageProgressPosition, pageProgressThickness, pageProgressColor } from '@/composables/usePageProgressDemo'
 
 const route = useRoute()
 const { set } = useColorPalette()
@@ -14,6 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <MPageProgress :position="pageProgressPosition" :thickness="pageProgressThickness" :color="pageProgressColor" />
   <AppShell>
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
