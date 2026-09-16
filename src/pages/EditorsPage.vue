@@ -114,6 +114,35 @@ const markdownProps: PropDef[] = [
 /* ── MTerminal ───────────────────────────────────────────────────────── */
 const terminalLines = ['$ npm install @m3ui-vue/m3ui-vue', 'added 42 packages in 3.2s', '$ echo "Ready!"', 'Ready!']
 
+const interactiveTerminalRef = ref<InstanceType<typeof MTerminal>>()
+const interactivePrompt = 'guest@m3ui-vue:~$ '
+const interactiveWelcome = [
+  'M3UI interactive terminal — try: help, echo <text>, date, whoami, clear',
+  interactivePrompt,
+]
+
+function runTerminalCommand(input: string) {
+  const term = interactiveTerminalRef.value
+  if (!term) return
+  const cmd = input.trim()
+
+  if (cmd === 'clear') {
+    term.clear()
+  } else if (cmd === 'help') {
+    term.writeln('Available commands: help, echo <text>, date, whoami, clear')
+  } else if (cmd.startsWith('echo ')) {
+    term.writeln(cmd.slice(5))
+  } else if (cmd === 'date') {
+    term.writeln(new Date().toString())
+  } else if (cmd === 'whoami') {
+    term.writeln('guest')
+  } else if (cmd !== '') {
+    term.writeln(`command not found: ${cmd}`)
+  }
+
+  term.write(interactivePrompt)
+}
+
 const terminalProps: PropDef[] = [
   { name: 'lines', type: 'string[]', default: '[]', description: 'Initial lines to display' },
   { name: 'readonly', type: 'boolean', default: 'false', description: 'Disable input' },
@@ -325,6 +354,60 @@ const lines = [
     >
       <div class="w-full">
         <MTerminal :lines="terminalLines" :readonly="true" title="Installation" min-height="200px" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Interactive Terminal"
+      description="Terminal that accepts real keyboard input — click inside and try typing a command."
+      :code="`<MTerminal
+  ref=&quot;terminalRef&quot;
+  :lines=&quot;welcomeLines&quot;
+  :readonly=&quot;false&quot;
+  title=&quot;Interactive&quot;
+  @line=&quot;onLine&quot;
+/>`"
+      :script="`import { ref } from 'vue'
+import { MTerminal } from '@m3ui-vue/m3ui-vue/terminal'
+
+const terminalRef = ref<InstanceType<typeof MTerminal>>()
+const prompt = 'guest@m3ui-vue:~$ '
+const welcomeLines = [
+  'M3UI interactive terminal — try: help, echo &lt;text&gt;, date, whoami, clear',
+  prompt,
+]
+
+function onLine(input: string) {
+  const term = terminalRef.value
+  if (!term) return
+  const cmd = input.trim()
+
+  if (cmd === 'clear') {
+    term.clear()
+  } else if (cmd === 'help') {
+    term.writeln('Available commands: help, echo &lt;text&gt;, date, whoami, clear')
+  } else if (cmd.startsWith('echo ')) {
+    term.writeln(cmd.slice(5))
+  } else if (cmd === 'date') {
+    term.writeln(new Date().toString())
+  } else if (cmd === 'whoami') {
+    term.writeln('guest')
+  } else if (cmd !== '') {
+    term.writeln(\`command not found: \${cmd}\`)
+  }
+
+  term.write(prompt)
+}`"
+    >
+      <div class="w-full">
+        <MTerminal
+          ref="interactiveTerminalRef"
+          :lines="interactiveWelcome"
+          :readonly="false"
+          title="Interactive"
+          min-height="240px"
+          @line="runTerminalCommand"
+        />
       </div>
     </ComponentDemo>
 

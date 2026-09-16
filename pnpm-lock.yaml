@@ -42,8 +42,8 @@ importers:
         specifier: ^6.43.11
         version: 6.43.11
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.6.2
-        version: 0.6.2(2e2d91b49f5d6d83ee0808ce8f15c00c)
+        specifier: ^0.6.3
+        version: 0.6.3(2e2d91b49f5d6d83ee0808ce8f15c00c)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.0(jiti@2.7.0))
@@ -116,7 +116,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
-        version: 6.0.8(vite@8.3.0(jiti@2.7.0))(vue@3.5.42(typescript@7.0.2))
+        version: 6.0.9(vite@8.3.0(jiti@2.7.0))(vue@3.5.42(typescript@7.0.2))
       '@vue/tsconfig':
         specifier: ^0.9.1
         version: 0.9.1(typescript@7.0.2)(vue@3.5.42(typescript@7.0.2))
@@ -243,8 +243,8 @@ packages:
   '@lezer/python@1.1.19':
     resolution: {integrity: sha512-MhQIURHRytsNzP/YXnqpYKW6la6voAH3kyplTOOiCdjyFY6cWWGFVmYVdHIPrElqSDf4iCDktQCockB9FxuhzQ==}
 
-  '@m3ui-vue/m3ui-vue@0.6.2':
-    resolution: {integrity: sha512-nSl8NR84t1NinNSjhPeGecpd5sHjTEZ3zuWif06v82WkHBwZ6IvM+5Xo7lwR77u15rsH+wNJZdbrO7IhXoM2EQ==}
+  '@m3ui-vue/m3ui-vue@0.6.3':
+    resolution: {integrity: sha512-DdElutQv6SBjbSJco8w0C3JRbB+gGuu4gHXe2QC7AzB1XoXKhYSzzSMsk1E43+P21kNRjLXSML6CShIncQl+AA==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-css': '*'
@@ -849,8 +849,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@vitejs/plugin-vue@6.0.8':
-    resolution: {integrity: sha512-0ZjgOg7oO6farnNGup7yvoM/YXZV84OZxHAwtflItNa/6zzQyVb5LNxyea3FEKEX2XlagIKzrlH7wwxkKgtiew==}
+  '@vitejs/plugin-vue@6.0.9':
+    resolution: {integrity: sha512-rD/MORlhaZMlXWW0rEn4FB4wMinWC0z/D7Ye160S5+Rs1mC8ZDAdcDp4SjKfUhG5t8q1ktcPVw4xuTkPRlzrSA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -1654,7 +1654,7 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.6.2(2e2d91b49f5d6d83ee0808ce8f15c00c)':
+  '@m3ui-vue/m3ui-vue@0.6.3(2e2d91b49f5d6d83ee0808ce8f15c00c)':
     dependencies:
       tailwindcss: 4.3.3
       vue: 3.5.42(typescript@7.0.2)
@@ -2067,7 +2067,7 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@vitejs/plugin-vue@6.0.8(vite@8.3.0(jiti@2.7.0))(vue@3.5.42(typescript@7.0.2))':
+  '@vitejs/plugin-vue@6.0.9(vite@8.3.0(jiti@2.7.0))(vue@3.5.42(typescript@7.0.2))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.3.0(jiti@2.7.0)

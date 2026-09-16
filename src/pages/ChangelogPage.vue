@@ -14,6 +14,17 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.6.3',
+    date: '2026-09-15',
+    changes: {
+      fixed: [
+        'MWindow bring-to-front z-index counter is now shared across every instance (previously each window kept its own independent counter, so with 3+ windows open, clicking one to bring it to the front could fail to actually come to the top)',
+        'MWindow z-index range now starts lower, keeping it below the app-level overlay scale used by MDialog, the *Modal pickers, MSelect/MAutocomplete/MMultiSelect/MMultiAutocomplete, MSpotlightSearch, and MCommandPalette — windows no longer render on top of a real modal/spotlight/command palette',
+        'MTerminal: the last line of the initial lines prop no longer forces a trailing newline, so the cursor sits right after that line instead of dropping to an empty line below it — useful for a prompt as the last line in an interactive shell-style demo',
+      ],
+    },
+  },
+  {
   version: '0.6.2',
   date: '2026-09-14',
   changes: {

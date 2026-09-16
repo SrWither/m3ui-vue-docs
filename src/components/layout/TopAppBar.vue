@@ -38,11 +38,13 @@ const themeLabel = computed(() => {
     <template #actions>
       <button
         type="button"
-        class="mr-1 hidden items-center gap-2 rounded-full border border-outline-variant bg-surface-container px-3 py-1.5 text-label-medium text-on-surface-variant transition-colors hover:bg-surface-container-high sm:flex"
+        class="mr-1 hidden w-64 items-center justify-between gap-2 rounded-full border border-outline-variant bg-surface-container px-3 py-1.5 text-label-medium text-on-surface-variant transition-colors hover:bg-surface-container-high sm:flex"
         @click="spotlightOpen = true"
       >
-        <MIcon name="search" :size="18" />
-        <span>Search…</span>
+        <span class="flex items-center gap-2">
+          <MIcon name="search" :size="18" />
+          <span>Search…</span>
+        </span>
         <kbd class="rounded border border-outline-variant bg-surface px-1.5 py-0.5 font-mono text-label-small">/</kbd>
       </button>
       <MIconButton icon="search" label="Search" class="sm:hidden" @click="spotlightOpen = true" />
