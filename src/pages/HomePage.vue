@@ -60,23 +60,23 @@ console.log(greeting)
 | Feature | Status |
 |---------|--------|
 | Dark mode | Ready |
-| Palettes | 20 built-in |`
+| Palettes | 30 built-in |`
 
 const todoDone = ref([false, true, false])
 const todoItems = ['Ship new release', 'Write tests', 'Update docs']
 
 const categories = [
-  { label: 'Buttons & Actions', icon: 'smart_button', count: 6, to: '/components/buttons' },
-  { label: 'Inputs & Forms', icon: 'input', count: 20, to: '/components/inputs' },
-  { label: 'Data Display', icon: 'dashboard', count: 18, to: '/components/data-display' },
-  { label: 'Feedback', icon: 'feedback', count: 9, to: '/components/feedback' },
+  { label: 'Buttons & Actions', icon: 'smart_button', count: 8, to: '/components/buttons' },
+  { label: 'Inputs & Forms', icon: 'input', count: 23, to: '/components/inputs' },
+  { label: 'Data Display', icon: 'dashboard', count: 20, to: '/components/data-display' },
+  { label: 'Feedback', icon: 'feedback', count: 11, to: '/components/feedback' },
   { label: 'Navigation', icon: 'menu_open', count: 12, to: '/components/navigation' },
-  { label: 'Layout', icon: 'grid_view', count: 24, to: '/components/layout' },
-  { label: 'Overlays', icon: 'layers', count: 4, to: '/components/overlays' },
+  { label: 'Layout', icon: 'grid_view', count: 25, to: '/components/layout' },
+  { label: 'Overlays', icon: 'layers', count: 5, to: '/components/overlays' },
   { label: 'Tables', icon: 'table_chart', count: 4, to: '/components/tables' },
-  { label: 'Utility', icon: 'build', count: 6, to: '/components/utility' },
+  { label: 'Utility', icon: 'build', count: 7, to: '/components/utility' },
   { label: 'Editors', icon: 'code', count: 6, to: '/components/editors' },
-  { label: 'Advanced', icon: 'auto_awesome', count: 6, to: '/components/advanced' },
+  { label: 'Advanced', icon: 'auto_awesome', count: 9, to: '/components/advanced' },
 ]
 </script>
 
@@ -99,7 +99,7 @@ const categories = [
         </MFlex>
 
         <p class="max-w-2xl text-title-medium text-on-primary-container/80">
-          70+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
+          135+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
           Beautiful, accessible, tree-shakeable. With 30 color palettes, dark mode, i18n, and full TypeScript support.
         </p>
 
@@ -118,7 +118,7 @@ const categories = [
         <!-- Stats -->
         <MFlex gap="sm" wrap class="mt-4 justify-center">
           <MChip v-if="version" icon="new_releases" tone="primary">v{{ version }}</MChip>
-          <MChip icon="widgets" tone="primary">70+ Components</MChip>
+          <MChip icon="widgets" tone="primary">135+ Components</MChip>
           <MChip icon="palette" tone="secondary">30 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>
           <MChip icon="code">TypeScript</MChip>
@@ -331,7 +331,7 @@ const categories = [
               </MFlex>
               <MStack gap="sm">
                 <MExpansionPanel v-model="panelOpen" title="What is M3UI?" icon="help">
-                  A Material Design 3 component library for Vue 3 + Tailwind CSS v4 with 70+ components.
+                  A Material Design 3 component library for Vue 3 + Tailwind CSS v4 with 135+ components.
                 </MExpansionPanel>
                 <MExpansionPanel v-model="panelFreeOpen" title="Is it free?" icon="payments">
                   Absolutely! M3UI Vue is MIT licensed — use it in personal projects, commercial apps, SaaS products, or anything else. No attribution required, no strings attached.
