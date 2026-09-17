@@ -14,6 +14,17 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.6.4',
+    date: '2026-09-16',
+    changes: {
+      fixed: [
+        'MSlider centered and range variants: the fill next to a thumb now follows that thumb\'s actual pinned position near 0%/100%, instead of occasionally creeping past it and closing the gap around it',
+        'MSlider centered and range variants: track segment corners now match the standard variant — rounded where a segment touches the real track end, square where it meets a thumb, and square on both ends for a segment sitting between two thumbs',
+        'MSlider track-end corners are now a touch rounder/softer across all variants',
+      ],
+    },
+  },
+  {
     version: '0.6.3',
     date: '2026-09-15',
     changes: {
