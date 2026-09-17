@@ -43,7 +43,7 @@ importers:
         version: 6.43.12
       '@m3ui-vue/m3ui-vue':
         specifier: ^0.6.4
-        version: 0.6.4(4d97bd6ce12fbfef2d90f5d5d90e511e)
+        version: 0.6.4(756952d3ce4b30adff7acbb4118e0c11)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.0(jiti@2.7.0))
@@ -98,6 +98,9 @@ importers:
       markdown-it:
         specifier: ^15.0.2
         version: 15.0.2
+      material-symbols:
+        specifier: ^0.47.3
+        version: 0.47.3
       qrcode-generator:
         specifier: ^2.0.4
         version: 2.0.4
@@ -1196,6 +1199,9 @@ packages:
     resolution: {integrity: sha512-q4IGxMv56jCqT4OCRCADBoDP3LO4MhmTXjFbphHPXs4g3j9Xg5RDnxqN8IF/3vIWEU+VCnUq+7JUg/cfy2E6Qw==}
     hasBin: true
 
+  material-symbols@0.47.3:
+    resolution: {integrity: sha512-I5XSwmoNz6mrL4kawe/JqL2o8TQpo7uYEoBl6eBU3C+FNwv6T+/MwWBs//LH9T6T5dH9WkCrLV7b09QbpEYNrA==}
+
   mdurl@2.1.0:
     resolution: {integrity: sha512-1+HBaOx0zi/dQWht8rNv9MYf9qqpqL/kxI0hXImU6Y547zM6Sni8BQibt7ifgMcYtQg41ao3Ivd6cnSM86inpg==}
 
@@ -1654,7 +1660,7 @@ snapshots:
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
 
-  '@m3ui-vue/m3ui-vue@0.6.4(4d97bd6ce12fbfef2d90f5d5d90e511e)':
+  '@m3ui-vue/m3ui-vue@0.6.4(756952d3ce4b30adff7acbb4118e0c11)':
     dependencies:
       tailwindcss: 4.3.3
       vue: 3.5.42(typescript@7.0.2)
@@ -1686,6 +1692,7 @@ snapshots:
       codemirror: 6.0.2
       jsbarcode: 3.12.3
       markdown-it: 15.0.2
+      material-symbols: 0.47.3
       qrcode-generator: 2.0.4
       vue-chartjs: 5.3.4(chart.js@4.5.1)(vue@3.5.42(typescript@7.0.2))
 
@@ -2384,6 +2391,8 @@ snapshots:
       mdurl: 2.1.0
       punycode.js: 2.3.1
       uc.micro: 3.0.0
+
+  material-symbols@0.47.3: {}
 
   mdurl@2.1.0: {}
 

@@ -39,6 +39,7 @@
     "codemirror": "^6.0.2",
     "jsbarcode": "^3.12.3",
     "markdown-it": "^15.0.2",
+    "material-symbols": "^0.47.3",
     "qrcode-generator": "^2.0.4",
     "tailwindcss": "^4.3.3",
     "vue": "^3.5.42",
