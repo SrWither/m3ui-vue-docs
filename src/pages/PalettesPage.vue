@@ -184,7 +184,7 @@ const allTokens = [
   { group: 'Secondary', tokens: ['secondary', 'on-secondary', 'secondary-container', 'on-secondary-container'] },
   { group: 'Tertiary', tokens: ['tertiary', 'on-tertiary', 'tertiary-container', 'on-tertiary-container'] },
   { group: 'Surface', tokens: ['surface', 'on-surface', 'surface-variant', 'on-surface-variant', 'surface-dim', 'surface-bright', 'surface-container-lowest', 'surface-container-low', 'surface-container', 'surface-container-high', 'surface-container-highest'] },
-  { group: 'Other', tokens: ['background', 'on-background', 'outline', 'outline-variant', 'inverse-surface', 'inverse-on-surface', 'inverse-primary'] },
+  { group: 'Other', tokens: ['background', 'on-background', 'outline', 'outline-variant', 'inverse-surface', 'inverse-on-surface', 'inverse-primary', 'shadow', 'scrim'] },
 ]
 </script>
 

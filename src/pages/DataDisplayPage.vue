@@ -338,7 +338,7 @@ const emojiSelectorProps: PropDef[] = [
 
     <ComponentDemo
       title="Clickable"
-      description="Cards with hover elevation feedback."
+      description="Cards with hover elevation feedback plus an M3 state layer (8% hover / 12% pressed overlay), same as MButton/MListItem."
       :code="`<template>
   <MCard :clickable=&quot;true&quot; class=&quot;p-6&quot;>
     Click me — I have hover feedback
@@ -348,11 +348,11 @@ const emojiSelectorProps: PropDef[] = [
       <div class="grid w-full gap-4 sm:grid-cols-2">
         <MCard :clickable="true" class="p-6">
           <h3 class="text-title-medium font-medium">Clickable elevated</h3>
-          <p class="mt-1 text-body-medium text-on-surface-variant">Hover to see elevation change</p>
+          <p class="mt-1 text-body-medium text-on-surface-variant">Hover/press to see the elevation change + state layer</p>
         </MCard>
         <MCard :clickable="true" variant="outlined" class="p-6">
           <h3 class="text-title-medium font-medium">Clickable outlined</h3>
-          <p class="mt-1 text-body-medium text-on-surface-variant">Hover to see shadow appear</p>
+          <p class="mt-1 text-body-medium text-on-surface-variant">Hover/press to see the shadow + state layer appear</p>
         </MCard>
       </div>
     </ComponentDemo>

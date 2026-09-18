@@ -322,12 +322,14 @@ const checkboxProps: PropDef[] = [
   { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Indeterminate state' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the checkbox' },
   { name: 'label', type: 'string', description: 'Label text' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Checked/indeterminate color' },
 ]
 
 const switchProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Toggle state' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the switch' },
   { name: 'label', type: 'string', description: 'Label text' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Track/thumb color when on' },
 ]
 
 const radioGroupProps: PropDef[] = [
@@ -1145,8 +1147,8 @@ const countries = [
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="tagInputProps" />
 
-    <!-- ── MCheckbox & MSwitch ──────────────────────────────────────────── -->
-    <h2 id="mcheckbox" class="mb-4 mt-14 text-headline-small font-medium">MCheckbox &amp; MSwitch</h2>
+    <!-- ── MCheckbox ────────────────────────────────────────────────────── -->
+    <h2 id="mcheckbox" class="mb-4 mt-14 text-headline-small font-medium">MCheckbox</h2>
 
     <ComponentDemo
       title="Checkbox"
@@ -1165,8 +1167,29 @@ const val = ref(false)`"
       <MCheckbox :model-value="false" :disabled="true" label="Disabled" />
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Checkbox Colors"
+      description="color accepts any of the 4 M3 roles — tie a checkbox to a semantic meaning (e.g. error) without hardcoding a custom hex."
+      :code="`<template>
+  <MCheckbox :model-value=&quot;true&quot; color=&quot;primary&quot; label=&quot;Primary&quot; />
+  <MCheckbox :model-value=&quot;true&quot; color=&quot;secondary&quot; label=&quot;Secondary&quot; />
+  <MCheckbox :model-value=&quot;true&quot; color=&quot;tertiary&quot; label=&quot;Tertiary&quot; />
+  <MCheckbox :model-value=&quot;true&quot; color=&quot;error&quot; label=&quot;Error&quot; />
+</template>`"
+    >
+      <div class="flex flex-wrap items-center gap-4">
+        <MCheckbox :model-value="true" color="primary" label="Primary" />
+        <MCheckbox :model-value="true" color="secondary" label="Secondary" />
+        <MCheckbox :model-value="true" color="tertiary" label="Tertiary" />
+        <MCheckbox :model-value="true" color="error" label="Error" />
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Checkbox Props</h3>
     <PropsTable :props="checkboxProps" />
+
+    <!-- ── MSwitch ──────────────────────────────────────────────────────── -->
+    <h2 id="mswitch" class="mb-4 mt-14 text-headline-small font-medium">MSwitch</h2>
 
     <ComponentDemo
       title="Switch"
@@ -1181,6 +1204,24 @@ const val = ref(true)`"
     >
       <MSwitch v-model="switchVal" label="Notifications" />
       <MSwitch :model-value="false" :disabled="true" label="Disabled" />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Switch Colors"
+      description="Same 4 named colors as MCheckbox/MRadio, applied to the track, thumb, and on-check icon."
+      :code="`<template>
+  <MSwitch :model-value=&quot;true&quot; color=&quot;primary&quot; label=&quot;Primary&quot; />
+  <MSwitch :model-value=&quot;true&quot; color=&quot;secondary&quot; label=&quot;Secondary&quot; />
+  <MSwitch :model-value=&quot;true&quot; color=&quot;tertiary&quot; label=&quot;Tertiary&quot; />
+  <MSwitch :model-value=&quot;true&quot; color=&quot;error&quot; label=&quot;Error&quot; />
+</template>`"
+    >
+      <div class="flex flex-wrap items-center gap-4">
+        <MSwitch :model-value="true" color="primary" label="Primary" />
+        <MSwitch :model-value="true" color="secondary" label="Secondary" />
+        <MSwitch :model-value="true" color="tertiary" label="Tertiary" />
+        <MSwitch :model-value="true" color="error" label="Error" />
+      </div>
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Switch Props</h3>

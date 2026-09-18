@@ -14,6 +14,26 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.7.1',
+    date: '2026-09-18',
+    changes: {
+      added: [
+        'New --color-scrim design token — M3 keeps scrim distinct from shadow even though both are black in the baseline theme. 17 backdrop-rendering components (MDialog, MBottomSheet, MSideSheet, MNavigationDrawer, MOverlay, MFab, MTour, MCommandPalette, MSpotlightSearch, the *Modal pickers, MSelect/MAutocomplete/MMultiSelect/MMultiAutocomplete) now use it instead of a hardcoded black overlay',
+        'MCheckbox and MSwitch gained a color prop (primary/secondary/tertiary/error), matching MRadio',
+      ],
+      fixed: [
+        'MCheckbox, MRadio, and MSwitch now have a full 48×48px touch target around their visual control, matching M3\'s minimum — previously the small visible control itself was the only clickable area',
+        'Disabled MButton/MIconButton/MChip/MCheckbox no longer just go translucent (a disabled filled-primary button used to still read as blue) — content now dims to on-surface 38%, container to on-surface 12%, matching the real M3 split',
+        'MCard\'s clickable state now shows a proper hover/pressed state-layer overlay, not just the elevation change',
+        'MFab\'s extended (icon+label) layout padding corrected to M3\'s exact asymmetric spacing plus its minimum width',
+        'MSlider\'s inactive track no longer tints toward whatever color is active (e.g. an error-colored slider\'s empty track is no longer reddish) — it\'s a fixed secondary-container tone, matching the real M3 slider',
+        'MSlider disabled state now dims content and track separately instead of one flat opacity',
+        'MSlider had no visible keyboard-focus indicator at all — it now narrows and rings the handle on focus, matching its existing drag-press behavior',
+        'MSlider\'s default size now uses the exact M3 handle height/gap/press-ratio instead of approximated values',
+      ],
+    },
+  },
+  {
     version: '0.7.0',
     date: '2026-09-17',
     changes: {

@@ -2,7 +2,7 @@ import type { DrawerSection, DrawerItem, SpotlightResult } from '@m3ui-vue/m3ui-
 
 export const iconMap: Record<string, string> = {
   MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MCopyButton: 'content_copy', MExportButton: 'file_download',
-  MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box',
+  MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box', MSwitch: 'toggle_on',
   MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
   MDatePickerModal: 'event', MDateRangePickerModal: 'date_range',
   MTimePicker: 'schedule', MTimePickerModal: 'schedule',
@@ -65,7 +65,7 @@ export const sections: DrawerSection[] = [
       { value: '/components/buttons', label: 'Buttons', icon: 'smart_button', to: '/components/buttons',
         children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MFabMenu', 'MSplitButton', 'MButtonGroup', 'MSegmentedButton', 'MCopyButton', 'MExportButton']) },
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
-        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSignaturePad', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MColorPicker', 'MColorPickerModal']) },
+        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSignaturePad', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MSwitch', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MColorPicker', 'MColorPickerModal']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
         children: ch('/components/feedback', ['MAlert', 'useToast', 'useNotification', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MPageProgress', 'MCircleProgressBar', 'MSpinner', 'MLoadingIndicator', 'MPullToRefresh', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',
