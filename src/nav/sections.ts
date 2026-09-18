@@ -1,7 +1,7 @@
 import type { DrawerSection, DrawerItem, SpotlightResult } from '@m3ui-vue/m3ui-vue'
 
 export const iconMap: Record<string, string> = {
-  MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MCopyButton: 'content_copy', MExportButton: 'file_download',
+  MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MCopyButton: 'content_copy', MExportButton: 'file_download',
   MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box',
   MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
   MDatePickerModal: 'event', MDateRangePickerModal: 'date_range',
@@ -9,7 +9,7 @@ export const iconMap: Record<string, string> = {
   MColorPicker: 'palette', MColorPickerModal: 'palette',
   MAlert: 'warning', useToast: 'chat_bubble', useNotification: 'notifications_active',
   MDialog: 'open_in_new', MConfirmDialog: 'help', MTooltip: 'info',
-  MProgressBar: 'linear_scale', MPageProgress: 'route', MCircleProgressBar: 'donut_large', MSpinner: 'progress_activity', MExpansionPanel: 'expand_more',
+  MProgressBar: 'linear_scale', MPageProgress: 'route', MCircleProgressBar: 'donut_large', MSpinner: 'progress_activity', MLoadingIndicator: 'blur_on', MPullToRefresh: 'swipe_down_alt', MExpansionPanel: 'expand_more',
   MCard: 'crop_square', MChip: 'label', MBadge: 'notifications', MAvatar: 'account_circle',
   MIcon: 'emoji_symbols', MDivider: 'horizontal_rule', MStatCard: 'analytics', MTimeline: 'timeline',
   MSkeleton: 'rectangle', MEmptyState: 'inbox', MTree: 'account_tree', MList: 'list',
@@ -63,11 +63,11 @@ export const sections: DrawerSection[] = [
     collapsible: true,
     items: [
       { value: '/components/buttons', label: 'Buttons', icon: 'smart_button', to: '/components/buttons',
-        children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MSplitButton', 'MButtonGroup', 'MSegmentedButton', 'MCopyButton', 'MExportButton']) },
+        children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MFabMenu', 'MSplitButton', 'MButtonGroup', 'MSegmentedButton', 'MCopyButton', 'MExportButton']) },
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
         children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSignaturePad', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MRadioGroup', 'MSlider', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MColorPicker', 'MColorPickerModal']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
-        children: ch('/components/feedback', ['MAlert', 'useToast', 'useNotification', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MPageProgress', 'MCircleProgressBar', 'MSpinner', 'MExpansionPanel']) },
+        children: ch('/components/feedback', ['MAlert', 'useToast', 'useNotification', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MPageProgress', 'MCircleProgressBar', 'MSpinner', 'MLoadingIndicator', 'MPullToRefresh', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',
         children: ch('/components/data-display', ['MCard', 'MChip', 'MBadge', 'MAvatar', 'MIcon', 'MDivider', 'MStatCard', 'MTimeline', 'MSkeleton', 'MEmptyState', 'MResult', 'MTree', 'MList', 'MEmoji', 'MEmojiButton', 'MEmojiSelector', 'MCarousel', 'MLightbox', 'MChatBubble', 'MRelativeTime']) },
       { value: '/components/navigation', label: 'Navigation', icon: 'menu_open', to: '/components/navigation',

@@ -14,6 +14,20 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.6.5',
+    date: '2026-09-17',
+    changes: {
+      added: [
+        'MLoadingIndicator documented on the Feedback page — color variants, the contained variant, and a dedicated sizes example',
+        'MPullToRefresh (beta) documented on the Feedback page, with notes on when it actually applies (nested scroll containers, or app shells where the browser\'s native gesture doesn\'t fire) versus a plain page scroll, which already gets pull-to-refresh for free on mobile, and on its known reliability limits as a touch drag in an actual mobile browser tab',
+        'MFabMenu documented on the Buttons page — the M3 FAB Menu, built on top of MFab\'s #content slot, with examples for the independent size/itemSize props, colors (including per-item overrides), the extended (icon+label) trigger, the scrim toggle, direction/alignment combinations, and a functional note-actions example (edit/duplicate/share/delete)',
+      ],
+      fixed: [
+        'Docs site now self-hosts Material Symbols via the material-symbols npm package instead of the Google Fonts CDN, so icons render offline and without a third-party request',
+      ],
+    },
+  },
+  {
     version: '0.6.4',
     date: '2026-09-16',
     changes: {
