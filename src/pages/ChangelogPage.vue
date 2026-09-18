@@ -14,16 +14,19 @@ interface Version {
 
 const versions: Version[] = [
   {
-    version: '0.6.5',
+    version: '0.7.0',
     date: '2026-09-17',
     changes: {
       added: [
         'MLoadingIndicator documented on the Feedback page — color variants, the contained variant, and a dedicated sizes example',
         'MPullToRefresh (beta) documented on the Feedback page, with notes on when it actually applies (nested scroll containers, or app shells where the browser\'s native gesture doesn\'t fire) versus a plain page scroll, which already gets pull-to-refresh for free on mobile, and on its known reliability limits as a touch drag in an actual mobile browser tab',
         'MFabMenu documented on the Buttons page — the M3 FAB Menu, built on top of MFab\'s #content slot, with examples for the independent size/itemSize props, colors (including per-item overrides), the extended (icon+label) trigger, the scrim toggle, direction/alignment combinations, and a functional note-actions example (edit/duplicate/share/delete)',
+        'MSearchBar documented on the Navigation page — the M3 search bar, with docked and fullscreen examples, one showing it embedded in MTopAppBar\'s #title slot, and one for the iconPosition/textAlign props',
       ],
       fixed: [
         'Docs site now self-hosts Material Symbols via the material-symbols npm package instead of the Google Fonts CDN, so icons render offline and without a third-party request',
+        'MTopAppBar\'s navigation icon had a hardcoded Spanish aria-label regardless of the active locale; now translated, and its medium/large variants use the exact M3 container heights instead of a slightly-short approximation',
+        'MTabs primary/secondary indicator now uses the same physics as the real M3 component (two independent springs for offset and width, matching androidx.compose.material3.TabRow) instead of a hand-made stretch animation, and no longer loses its animation to a race with the tabs-list watcher',
       ],
     },
   },

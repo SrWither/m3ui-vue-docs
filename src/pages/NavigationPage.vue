@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import {
   MTabs, MMenu, MMenuItem, MMenuDivider, MContextMenu, MBreadcrumbs, MStepper,
   MPagination, MButton, MIconButton, MIcon, MCard, MFab, MAvatar,
-  MNavigationBar, MNavigationDrawer, MNavigationRail, MToolbar, MTopAppBar, MAppBar, MDivider, MTextField,
+  MNavigationBar, MNavigationDrawer, MNavigationRail, MToolbar, MTopAppBar, MAppBar, MSearchBar, MDivider, MTextField,
 } from '@m3ui-vue/m3ui-vue'
 import type { BreadcrumbItem, StepItem, NavBarItem, DrawerSection, NavRailItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -14,6 +14,23 @@ import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const activeTab = ref<string | number>('home')
 const secondaryTab = ref<string | number>('all')
+
+// Hoisted rather than inline `:tabs="[...]"` — passing a fresh array literal
+// straight in a template recreates it (a new reference) on every unrelated
+// re-render of this page, which is exactly what surfaced MTabs' animation
+// race in the first place.
+const primaryTabsDemo = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'explore', label: 'Explore', icon: 'explore' },
+  { value: 'library', label: 'Library', icon: 'video_library' },
+  { value: 'settings', label: 'Settings', icon: 'settings' },
+]
+const secondaryTabsDemo = [
+  { value: 'all', label: 'All' },
+  { value: 'active', label: 'Active' },
+  { value: 'done', label: 'Done' },
+  { value: 'archived', label: 'Archived', disabled: true },
+]
 
 const breadcrumbs: BreadcrumbItem[] = [
   { label: 'Home', icon: 'home', to: '/' },
@@ -319,9 +336,32 @@ const topAppBarProps: PropDef[] = [
   { name: 'title', type: 'string', description: 'App bar title' },
   { name: 'variant', type: "'center' | 'small' | 'medium' | 'large'", default: "'small'", description: 'Title layout variant' },
   { name: 'navigationIcon', type: 'string', description: 'Leading icon (e.g. menu, arrow_back)' },
+  { name: 'navigationLabel', type: 'string', description: "Accessible label for the navigation icon — defaults to the locale's \"Menu\"; override when navigationIcon is a back arrow instead" },
   { name: 'elevated', type: 'boolean', default: 'false', description: 'Add shadow elevation' },
   { name: 'bordered', type: 'boolean', default: 'false', description: 'Add a bottom border (border-outline-variant)' },
 ]
+
+const searchBarProps: PropDef[] = [
+  { name: 'modelValue', type: 'string', default: "''", description: 'Search query (v-model)' },
+  { name: 'expanded', type: 'boolean', description: 'Controls the expanded/collapsed state (v-model:expanded) — also works uncontrolled if omitted' },
+  { name: 'placeholder', type: 'string', description: "Defaults to the locale's \"Search...\"" },
+  { name: 'variant', type: "'docked' | 'fullscreen'", default: "'docked'", description: "'docked' grows into a rounded panel anchored below the bar; 'fullscreen' takes over the viewport (the mobile M3 pattern)" },
+  { name: 'leadingIcon', type: 'string', default: "'search'", description: 'Icon shown in the collapsed bar' },
+  { name: 'iconPosition', type: "'start' | 'end'", default: "'start'", description: "Which side of the collapsed bar the leading icon sits on. The expanded panel's back button always stays at the start" },
+  { name: 'textAlign', type: "'start' | 'center'", default: "'start'", description: 'Centers the input/placeholder text (an iOS-style look) instead of the M3-standard start alignment' },
+  { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a spinner in the expanded header instead of the clear button' },
+  { name: 'clearable', type: 'boolean', default: 'true', description: 'Shows a clear (×) button once there is a query' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the collapsed bar' },
+]
+
+const searchBarSlots: SlotDef[] = [
+  { name: '#leading', description: 'Overrides the collapsed bar\'s leading icon' },
+  { name: '#trailing', description: 'Trailing content in both the collapsed bar and the expanded header (e.g. an avatar)' },
+  { name: '#default', description: 'Results/suggestions content, shown below the input while expanded' },
+]
+
+const searchBarQuery = ref('')
+const searchBarResults = ['Apple pie', 'Apple juice', 'Apple watch', 'Applesauce']
 
 const appBarProps: PropDef[] = [
   { name: 'color', type: "'surface' | 'primary' | 'secondary' | 'tertiary'", default: "'surface'", description: 'Background color' },
@@ -355,15 +395,7 @@ const appBarProps: PropDef[] = [
       :script="`const active = ref('home')`"
     >
       <div class="w-full">
-        <MTabs
-          v-model="activeTab"
-          :tabs="[
-            { value: 'home', label: 'Home', icon: 'home' },
-            { value: 'explore', label: 'Explore', icon: 'explore' },
-            { value: 'library', label: 'Library', icon: 'video_library' },
-            { value: 'settings', label: 'Settings', icon: 'settings' },
-          ]"
-        />
+        <MTabs v-model="activeTab" :tabs="primaryTabsDemo" />
         <div class="p-4 text-body-medium text-on-surface-variant">Active: {{ activeTab }}</div>
       </div>
     </ComponentDemo>
@@ -382,16 +414,7 @@ const appBarProps: PropDef[] = [
 />`"
     >
       <div class="w-full">
-        <MTabs
-          v-model="secondaryTab"
-          variant="secondary"
-          :tabs="[
-            { value: 'all', label: 'All' },
-            { value: 'active', label: 'Active' },
-            { value: 'done', label: 'Done' },
-            { value: 'archived', label: 'Archived', disabled: true },
-          ]"
-        />
+        <MTabs v-model="secondaryTab" variant="secondary" :tabs="secondaryTabsDemo" />
         <div class="p-4 text-body-medium text-on-surface-variant">Active: {{ secondaryTab }}</div>
       </div>
     </ComponentDemo>
@@ -1856,6 +1879,108 @@ const items = [
 #navigation   — Custom leading area (default: MIconButton from navigationIcon prop)
 #actions      — Trailing action buttons</code></pre>
     </MCard>
+
+    <!-- ── MSearchBar ──────────────────────────────────────────────────── -->
+    <h2 id="msearchbar" class="mb-4 mt-14 text-headline-small font-medium">MSearchBar</h2>
+
+    <ComponentDemo
+      title="Docked (default)"
+      description="Click to expand into a rounded panel anchored below the bar, with results shown underneath. Escape, clicking outside, or scrolling away collapses it."
+      :code="`<template>
+  <MSearchBar v-model=&quot;query&quot;>
+    <div v-for=&quot;result in results&quot; :key=&quot;result&quot; class=&quot;px-4 py-3 text-body-large text-on-surface hover:bg-on-surface/8 cursor-pointer&quot;>
+      {{ result }}
+    </div>
+  </MSearchBar>
+</template>`"
+      :script="`const query = ref('')
+const results = ['Apple pie', 'Apple juice', 'Apple watch', 'Applesauce']`"
+    >
+      <div class="w-full max-w-md">
+        <MSearchBar v-model="searchBarQuery">
+          <div
+            v-for="result in searchBarResults.filter(r => r.toLowerCase().includes(searchBarQuery.toLowerCase()))"
+            :key="result"
+            class="cursor-pointer px-4 py-3 text-body-large text-on-surface hover:bg-on-surface/8"
+          >
+            {{ result }}
+          </div>
+        </MSearchBar>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Icon position and text alignment"
+      description="iconPosition moves the leading icon to the end of the collapsed bar; textAlign centers the input/placeholder text (an iOS-style look) instead of the M3-standard start alignment."
+      :code="`<template>
+  <MSearchBar v-model=&quot;query&quot; icon-position=&quot;end&quot; text-align=&quot;center&quot; placeholder=&quot;Search&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-md">
+        <MSearchBar v-model="searchBarQuery" icon-position="end" text-align="center" placeholder="Search" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Fullscreen"
+      description="variant=&quot;fullscreen&quot; takes over the whole viewport when expanded, matching M3's mobile search pattern — a taller header with a back button instead of a docked dropdown."
+      :code="`<template>
+  <MSearchBar v-model=&quot;query&quot; variant=&quot;fullscreen&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-md">
+        <MSearchBar v-model="searchBarQuery" variant="fullscreen">
+          <div
+            v-for="result in searchBarResults.filter(r => r.toLowerCase().includes(searchBarQuery.toLowerCase()))"
+            :key="result"
+            class="cursor-pointer px-4 py-3 text-body-large text-on-surface hover:bg-on-surface/8"
+          >
+            {{ result }}
+          </div>
+        </MSearchBar>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Inside a top app bar"
+      description="MSearchBar is a plain standalone component — drop it in MTopAppBar's #title slot to get the common 'search bar embedded in the app bar' layout, no special integration needed."
+      :code="`<template>
+  <MTopAppBar navigation-icon=&quot;menu&quot;>
+    <template #title>
+      <MSearchBar v-model=&quot;query&quot; class=&quot;max-w-md&quot;>
+        <div v-for=&quot;result in results&quot; :key=&quot;result&quot;>{{ result }}</div>
+      </MSearchBar>
+    </template>
+  </MTopAppBar>
+</template>`"
+    >
+      <div class="w-full">
+        <MCard variant="outlined">
+          <MTopAppBar navigation-icon="menu">
+            <template #title>
+              <MSearchBar v-model="searchBarQuery" class="max-w-md">
+                <div
+                  v-for="result in searchBarResults.filter(r => r.toLowerCase().includes(searchBarQuery.toLowerCase()))"
+                  :key="result"
+                  class="cursor-pointer px-4 py-3 text-body-large text-on-surface hover:bg-on-surface/8"
+                >
+                  {{ result }}
+                </div>
+              </MSearchBar>
+            </template>
+            <template #actions>
+              <MAvatar fallback="AL" :size="32" />
+            </template>
+          </MTopAppBar>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
+    <PropsTable :props="searchBarProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
+    <SlotsTable :slots="searchBarSlots" />
 
     <!-- ── MAppBar ─────────────────────────────────────────────────────── -->
     <h2 id="mappbar" class="mb-4 mt-14 text-headline-small font-medium">MAppBar</h2>
