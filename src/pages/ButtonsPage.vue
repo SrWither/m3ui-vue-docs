@@ -77,8 +77,8 @@ const buttonProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a spinner and disables the button' },
   { name: 'icon', type: 'string', description: 'Material Symbol icon name shown before the label' },
-  { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: 'Button size (xs: 32px, sm: 40px, md: 48px, lg: 56px, xl: 64px)' },
-  { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill) or squared (rounded-md)' },
+  { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: "M3's 5-tier expressive button sizing (xs: 32px, sm: 40px, md: 56px, lg: 96px, xl: 136px) — lg/xl are meant for hero-style prominent buttons, not everyday UI" },
+  { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
 ]
 
@@ -86,8 +86,8 @@ const iconButtonProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'label', type: 'string', description: 'Accessible label (aria-label and title)' },
   { name: 'variant', type: "'standard' | 'filled' | 'tonal' | 'outlined'", default: "'standard'", description: 'Visual style' },
-  { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded or squared (rounded-md)' },
-  { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | number", default: "'sm'", description: 'Preset size or custom pixel value (xs:32, sm:40, md:48, lg:56, xl:64)' },
+  { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
+  { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | number", default: "'sm'", description: "M3's 5-tier icon button sizing (xs:32, sm:40, md:56, lg:96, xl:136), or a custom pixel value" },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
 ]
@@ -343,7 +343,7 @@ const exportButtonProps: PropDef[] = [
 
     <ComponentDemo
       title="Shape"
-      description="Rounded (pill, default) or squared (rounded-lg) shape."
+      description="Rounded (pill, default) or squared shape — the squared corner radius scales with size (12px xs/sm, 16px md, 28px lg/xl), matching each M3 size tier's own ContainerShapeSquare token."
       :code="`<MButton shape=&quot;rounded&quot;>Rounded</MButton>
 <MButton shape=&quot;squared&quot;>Squared</MButton>`"
     >

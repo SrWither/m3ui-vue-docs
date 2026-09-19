@@ -28,7 +28,8 @@ function resetChips() {
 
 const cardProps: PropDef[] = [
   { name: 'variant', type: "'elevated' | 'filled' | 'outlined'", default: "'elevated'", description: 'Card surface style' },
-  { name: 'clickable', type: 'boolean', default: 'false', description: 'Adds hover elevation and cursor pointer' },
+  { name: 'clickable', type: 'boolean', default: 'false', description: 'Makes the card an interactive element — hover/press elevation (varies by variant per M3), a focus ring/border on keyboard focus, and reachable/activatable via Tab + Enter/Space, not just mouse' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disabled visual state (own per-variant color, not just a dimmed one) and, when combined with clickable, blocks interaction entirely' },
   { name: 'image', type: 'string', description: 'URL for a full-bleed header image' },
   { name: 'imageAlt', type: 'string', description: 'Alt text for the header image' },
   { name: 'imageHeight', type: 'string', description: 'Tailwind height class for the image (default h-48)' },
@@ -338,7 +339,7 @@ const emojiSelectorProps: PropDef[] = [
 
     <ComponentDemo
       title="Clickable"
-      description="Cards with hover elevation feedback plus an M3 state layer (8% hover / 12% pressed overlay), same as MButton/MListItem."
+      description="Cards with hover/press elevation (varies by variant, per M3 — elevated reaches a higher elevation than filled/outlined) plus an M3 state layer (8% hover / 12% pressed overlay), same as MButton/MListItem. Also Tab-focusable and activatable with Enter/Space, with a focus ring (or border color, for outlined) on keyboard focus — try tabbing to one instead of clicking."
       :code="`<template>
   <MCard :clickable=&quot;true&quot; class=&quot;p-6&quot;>
     Click me — I have hover feedback
@@ -353,6 +354,38 @@ const emojiSelectorProps: PropDef[] = [
         <MCard :clickable="true" variant="outlined" class="p-6">
           <h3 class="text-title-medium font-medium">Clickable outlined</h3>
           <p class="mt-1 text-body-medium text-on-surface-variant">Hover/press to see the shadow + state layer appear</p>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Disabled"
+      description="The disabled prop uses each variant's own M3 disabled color (elevated swaps to plain surface, filled to surface-variant, both at 38% opacity) — not just a dimmed version of the resting one — and, combined with clickable, blocks all interaction (mouse, keyboard focus, and the hover/press state layer)."
+      :code="`<template>
+  <MCard variant=&quot;elevated&quot; disabled class=&quot;p-6&quot;>Disabled elevated</MCard>
+  <MCard variant=&quot;filled&quot; disabled class=&quot;p-6&quot;>Disabled filled</MCard>
+  <MCard variant=&quot;outlined&quot; disabled class=&quot;p-6&quot;>Disabled outlined</MCard>
+  <MCard variant=&quot;elevated&quot; :clickable=&quot;true&quot; disabled class=&quot;p-6&quot;>
+    Disabled + clickable — no hover/press/focus at all
+  </MCard>
+</template>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MCard variant="elevated" disabled class="p-6">
+          <h3 class="text-title-medium font-medium">Disabled elevated</h3>
+          <p class="mt-1 text-body-medium text-on-surface-variant">Swaps to plain surface at 38%</p>
+        </MCard>
+        <MCard variant="filled" disabled class="p-6">
+          <h3 class="text-title-medium font-medium">Disabled filled</h3>
+          <p class="mt-1 text-body-medium text-on-surface-variant">Swaps to surface-variant at 38%</p>
+        </MCard>
+        <MCard variant="outlined" disabled class="p-6">
+          <h3 class="text-title-medium font-medium">Disabled outlined</h3>
+          <p class="mt-1 text-body-medium text-on-surface-variant">Background stays put, only the border dims (12%)</p>
+        </MCard>
+        <MCard variant="elevated" :clickable="true" disabled class="p-6">
+          <h3 class="text-title-medium font-medium">Disabled + clickable</h3>
+          <p class="mt-1 text-body-medium text-on-surface-variant">No hover, press, or keyboard focus at all</p>
         </MCard>
       </div>
     </ComponentDemo>

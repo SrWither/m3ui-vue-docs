@@ -35,6 +35,7 @@ function demoNotifLoading(result: 'success' | 'error') {
 
 const alertVisible = ref(true)
 const dialogOpen = ref(false)
+const iconDialogOpen = ref(false)
 const confirmOpen = ref(false)
 const confirmDanger = ref(false)
 const confirmLoading = ref(false)
@@ -61,10 +62,11 @@ const alertProps: PropDef[] = [
 const dialogProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state' },
   { name: 'title', type: 'string', description: 'Dialog title' },
-  { name: 'maxWidth', type: 'string', default: "'max-w-md'", description: 'Tailwind max-width class' },
+  { name: 'maxWidth', type: 'string', default: "'max-w-[560px]'", description: 'Tailwind max-width class (M3 AlertDialogDefaults.DialogMaxWidth = 560dp); min-width is fixed at 280px (DialogMinWidth)' },
   { name: 'persistent', type: 'boolean', default: 'false', description: 'Prevent closing by clicking scrim or X' },
   { name: 'fullscreen', type: 'boolean', default: 'false', description: 'Full-screen variant — slides up, covers entire viewport' },
   { name: 'closeLabel', type: 'string', default: "'Close'", description: 'Label for close button' },
+  { name: 'closable', type: 'boolean', default: 'true', description: 'Show the header close (X) button — a library addition, not part of the M3 AlertDialog spec, so it can be turned off' },
 ]
 
 const fullscreenDialog = ref(false)
@@ -82,6 +84,7 @@ const confirmProps: PropDef[] = [
   { name: 'cancelLabel', type: 'string', default: "'Cancel'", description: 'Cancel button label' },
   { name: 'danger', type: 'boolean', default: 'false', description: 'Error color for destructive actions' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show spinner on confirm button' },
+  { name: 'closable', type: 'boolean', default: 'true', description: 'Passed through to MDialog — show/hide the header close (X) button' },
 ]
 
 const tooltipProps: PropDef[] = [
@@ -537,6 +540,37 @@ notif.warning('Update available', {
         <template #actions>
           <MButton variant="text" @click="dialogOpen = false">Cancel</MButton>
           <MButton @click="dialogOpen = false">OK</MButton>
+        </template>
+      </MDialog>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Dialog with Icon"
+      description="M3 AlertDialog's optional #icon slot (Secondary color, 24dp) — its presence also centers the title, per spec."
+      :code="`<MButton @click=&quot;open = true&quot;>Open</MButton>
+  <MDialog v-model=&quot;open&quot; title=&quot;Delete file?&quot; max-width=&quot;max-w-sm&quot;>
+    <template #icon>
+      <MIcon name=&quot;warning&quot; :size=&quot;24&quot; />
+    </template>
+    <p>This action can't be undone.</p>
+    <template #actions>
+      <MButton variant=&quot;text&quot; @click=&quot;open = false&quot;>Cancel</MButton>
+      <MButton color=&quot;error&quot; @click=&quot;open = false&quot;>Delete</MButton>
+    </template>
+  </MDialog>`"
+      :script="`const open = ref(false)`"
+    >
+      <MButton @click="iconDialogOpen = true">Open Dialog</MButton>
+      <MDialog v-model="iconDialogOpen" title="Delete file?" max-width="max-w-sm">
+        <template #icon>
+          <MIcon name="warning" :size="24" />
+        </template>
+        <p class="text-body-medium text-on-surface-variant">
+          This action can't be undone.
+        </p>
+        <template #actions>
+          <MButton variant="text" @click="iconDialogOpen = false">Cancel</MButton>
+          <MButton color="error" @click="iconDialogOpen = false">Delete</MButton>
         </template>
       </MDialog>
     </ComponentDemo>
