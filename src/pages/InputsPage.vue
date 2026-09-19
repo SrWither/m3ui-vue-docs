@@ -127,6 +127,7 @@ const multiObjectOptions = [
 const checked = ref(false)
 const indeterminate = ref(true)
 const switchVal = ref(true)
+const switchNoIconVal = ref(true)
 
 const radioVal = ref('a')
 const radioOptions = [
@@ -330,6 +331,7 @@ const switchProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the switch' },
   { name: 'label', type: 'string', description: 'Label text' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Track/thumb color when on' },
+  { name: 'icon', type: 'boolean', default: 'true', description: "M3 officially has two Switch variants — with a check icon inside the thumb, and without (Compose's actual default). Set to false for the plain/no-icon variant." },
 ]
 
 const radioGroupProps: PropDef[] = [
@@ -1222,6 +1224,17 @@ const val = ref(true)`"
         <MSwitch :model-value="true" color="tertiary" label="Tertiary" />
         <MSwitch :model-value="true" color="error" label="Error" />
       </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Without Icon"
+      description="M3 officially has two Switch variants — with a check icon inside the thumb (the default here, for backwards compatibility) and without (actually Compose's own default — pass icon=false to match it)."
+      :code="`<template>
+  <MSwitch v-model=&quot;val&quot; :icon=&quot;false&quot; label=&quot;No icon&quot; />
+</template>`"
+      :script="`const val = ref(true)`"
+    >
+      <MSwitch v-model="switchNoIconVal" :icon="false" label="No icon" />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Switch Props</h3>
