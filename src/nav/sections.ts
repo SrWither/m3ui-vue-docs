@@ -43,7 +43,7 @@ export const iconMap: Record<string, string> = {
 // add a section's base path here once its components/<section>/*.vue pages
 // exist, so its sidebar children stop pointing at hash anchors that no
 // longer have a matching heading.
-const migratedSections = new Set(['/components/buttons', '/components/tables', '/components/feedback'])
+const migratedSections = new Set(['/components/buttons', '/components/tables', '/components/feedback', '/components/editors'])
 
 function ch(base: string, names: string[]): DrawerItem[] {
   const separator = migratedSections.has(base) ? '/' : '#'
