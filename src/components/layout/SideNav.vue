@@ -17,7 +17,11 @@ function syncDrawer(drawer: InstanceType<typeof MNavigationDrawer> | undefined, 
   if (!oi) return
   for (const key of Object.keys(oi)) oi[key] = false
   const allItems = sections.flatMap(s => s.items)
-  const match = allItems.find(i => i.children?.length && i.value === path)
+  // Exact match covers hash-anchored (not-yet-migrated) sections, whose route path
+  // never changes as you scroll between anchors. startsWith covers migrated sections,
+  // where each component now lives on its own sub-route (e.g. /components/buttons/mfab)
+  // instead of staying on the section's own path.
+  const match = allItems.find(i => i.children?.length && (i.value === path || path.startsWith(`${i.value}/`)))
   if (match) oi[match.value] = true
 }
 
