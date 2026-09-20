@@ -49,20 +49,20 @@ const iconProps: PropDef[] = [
   <MIcon name=&quot;star&quot; :size=&quot;48&quot; />
 </template>`"
     >
-      <div class="flex items-end gap-4">
-        <div class="flex flex-col items-center gap-1">
+      <div class="flex flex-col items-start gap-3">
+        <div class="flex items-center gap-2">
           <MIcon name="star" :size="16" class="text-primary" />
           <span class="text-label-small text-on-surface-variant">16</span>
         </div>
-        <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-2">
           <MIcon name="star" :size="24" class="text-primary" />
           <span class="text-label-small text-on-surface-variant">24</span>
         </div>
-        <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-2">
           <MIcon name="star" :size="32" class="text-primary" />
           <span class="text-label-small text-on-surface-variant">32</span>
         </div>
-        <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-2">
           <MIcon name="star" :size="48" class="text-primary" />
           <span class="text-label-small text-on-surface-variant">48</span>
         </div>

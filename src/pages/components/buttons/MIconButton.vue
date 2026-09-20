@@ -48,7 +48,7 @@ const iconButtonProps: PropDef[] = [
 <MIconButton icon=&quot;favorite&quot; size=&quot;lg&quot; variant=&quot;tonal&quot; />
 <MIconButton icon=&quot;favorite&quot; size=&quot;xl&quot; variant=&quot;tonal&quot; />`"
     >
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-col items-start gap-3">
         <MIconButton icon="favorite" label="XS" size="xs" variant="tonal" />
         <MIconButton icon="favorite" label="SM" size="sm" variant="tonal" />
         <MIconButton icon="favorite" label="MD" size="md" variant="tonal" />

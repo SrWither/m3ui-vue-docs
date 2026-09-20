@@ -110,7 +110,7 @@ const buttonProps: PropDef[] = [
 <MButton size=&quot;lg&quot;>Large</MButton>
 <MButton size=&quot;xl&quot;>Extra Large</MButton>`"
     >
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-col items-start gap-3">
         <MButton size="xs" icon="add">Extra Small</MButton>
         <MButton size="sm" icon="add">Small</MButton>
         <MButton size="md" icon="add">Medium</MButton>

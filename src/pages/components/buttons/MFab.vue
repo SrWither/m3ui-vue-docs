@@ -75,10 +75,12 @@ function toggleLayer(id: string) {
   <MFab icon=&quot;add&quot; size=&quot;large&quot; />
 </template>`"
     >
-      <MFab icon="add" size="small" />
-      <MFab icon="add" size="regular" />
-      <MFab icon="add" size="medium" />
-      <MFab icon="add" size="large" />
+      <div class="flex flex-col items-start gap-4">
+        <MFab icon="add" size="small" />
+        <MFab icon="add" size="regular" />
+        <MFab icon="add" size="medium" />
+        <MFab icon="add" size="large" />
+      </div>
     </ComponentDemo>
 
     <ComponentDemo

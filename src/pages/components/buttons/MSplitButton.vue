@@ -130,7 +130,7 @@ const splitItems = [
 <MSplitButton label=&quot;Send&quot; size=&quot;lg&quot; :items=&quot;items&quot; />
 <MSplitButton label=&quot;Send&quot; size=&quot;xl&quot; :items=&quot;items&quot; />`"
     >
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-col items-start gap-3">
         <MSplitButton label="XS" icon="send" size="xs" :items="splitItems" />
         <MSplitButton label="SM" icon="send" size="sm" :items="splitItems" />
         <MSplitButton label="MD" icon="send" size="md" :items="splitItems" />

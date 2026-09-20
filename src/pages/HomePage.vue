@@ -209,7 +209,7 @@ const categories = [
         </p>
 
         <MGrid :cols="1" :md="2" gap="md">
-          <MCodeEditor v-model="sampleCode" language="typescript" min-height="220px" max-height="300px" class="h-full" />
+          <MCodeEditor v-model="sampleCode" language="typescript" min-height="220px" max-height="600px" class="h-full" />
           <MCard variant="outlined" class="overflow-hidden p-5">
             <MMarkdown :source="markdownDemo" />
           </MCard>
