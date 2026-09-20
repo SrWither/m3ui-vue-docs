@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MNavigationDrawer, MButton, MIconButton, MIcon, MAvatar } from '@m3ui-vue/m3ui-vue'
+import { MNavigationDrawer, MButton, MIconButton, MIcon, MAvatar, MAlert } from '@m3ui-vue/m3ui-vue'
 import type { DrawerSection } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -545,6 +545,10 @@ const sections = [
         </div>
       </div>
     </ComponentDemo>
+
+    <MAlert type="info" title="Tip" class="mb-6">
+      Not loving the default 360px (22.5rem) width? Try <code class="rounded bg-surface-container-high px-1 py-0.5 text-body-small text-primary">width="18rem"</code> — it reads noticeably tighter without feeling cramped. It's what this very docs site uses for its own sidebar.
+    </MAlert>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="drawerProps" />
