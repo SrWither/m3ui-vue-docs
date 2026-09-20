@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { MTopAppBar, MIconButton, MMenu, MTooltip, MIcon, useTheme, useColorPalette } from '@m3ui-vue/m3ui-vue'
 import { spotlightOpen } from '@/composables/useSpotlightSearch'
+import { activeLocaleId, localeOptions, setSiteLocale } from '@/composables/useSiteLocale'
 
 defineEmits<{ menuClick: [] }>()
 
@@ -76,6 +77,30 @@ const themeLabel = computed(() => {
               </button>
             </MTooltip>
           </div>
+        </div>
+      </MMenu>
+
+      <MMenu>
+        <template #trigger="{ open }">
+          <MIconButton
+            icon="translate"
+            label="Language"
+            :class="open && 'bg-on-surface/8'"
+          />
+        </template>
+        <div class="px-2 py-2">
+          <p class="px-2 text-label-large font-medium text-on-surface">Language</p>
+          <p class="mb-1 px-2 text-label-small text-on-surface-variant">Components only — this site's own text stays in English for now</p>
+          <button
+            v-for="l in localeOptions"
+            :key="l.id"
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-left text-body-medium transition-colors hover:bg-on-surface/8"
+            @click="setSiteLocale(l.id)"
+          >
+            <span>{{ l.label }}</span>
+            <MIcon v-if="activeLocaleId === l.id" name="check" :size="18" class="text-primary" />
+          </button>
         </div>
       </MMenu>
 

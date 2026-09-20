@@ -14,6 +14,7 @@ import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
 import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'
+import { activeLocaleId, localeOptions, setSiteLocale } from '@/composables/useSiteLocale'
 import { onMounted } from 'vue'
 
 const version = ref('')
@@ -195,23 +196,25 @@ const categories = [
           </MFlex>
         </MCard>
 
-        <MCard variant="outlined" class="flex flex-col gap-3 p-6">
-          <MIcon name="verified" :size="32" class="text-primary" />
-          <h3 class="text-title-medium font-medium">Actually spec-accurate</h3>
-          <p class="text-body-medium text-on-surface-variant">
-            Every color role, shape token, and motion curve checked against Google's own
-            <code class="rounded bg-surface-container-high px-1 py-0.5 text-body-small text-primary">androidx</code>
-            Material 3 source — not eyeballed from screenshots.
+        <MCard variant="outlined" class="p-5">
+          <MFlex align="center" gap="sm" class="mb-1">
+            <MIcon name="translate" :size="22" class="text-primary" />
+            <h3 class="text-title-medium font-medium">Pick a Language</h3>
+          </MFlex>
+          <p class="mb-3 text-body-small text-on-surface-variant">
+            Switches every component's built-in strings — dates, validation, empty states — live. This page's own text stays in English for now.
           </p>
-          <MStack gap="xs" class="mt-1">
-            <MFlex align="center" gap="xs">
-              <MIcon name="check_circle" :size="18" class="text-tertiary" />
-              <span class="text-body-small text-on-surface-variant">Real spring-physics motion, not CSS easing</span>
-            </MFlex>
-            <MFlex align="center" gap="xs">
-              <MIcon name="check_circle" :size="18" class="text-tertiary" />
-              <span class="text-body-small text-on-surface-variant">Expressive + Standard token sets, per component</span>
-            </MFlex>
+          <MStack gap="0">
+            <button
+              v-for="l in localeOptions"
+              :key="l.id"
+              type="button"
+              class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-left text-body-medium transition-colors hover:bg-on-surface/8"
+              @click="setSiteLocale(l.id)"
+            >
+              <span>{{ l.label }}</span>
+              <MIcon v-if="activeLocaleId === l.id" name="check_circle" :size="18" class="text-primary" />
+            </button>
           </MStack>
         </MCard>
       </MGrid>
