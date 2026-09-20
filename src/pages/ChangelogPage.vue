@@ -71,6 +71,7 @@ const versions: Version[] = [
         'MCodeEditor\'s placeholder prop was declared but never actually did anything — it\'s now wired up to show placeholder text when the editor is empty',
         'MChatBubble\'s avatarSrc prop was dead code (the MAvatar it renders internally has no way to show an image) — removed',
         'Two type exports (JsonEditorLabels, JsonViewerLabels) that should have been importable from the package weren\'t actually reachable — fixed',
+        'MCodeEditor\'s line-number gutter didn\'t reach the full height of the editor, leaving a mismatched blank strip below it whenever there was more empty space than lines of code (most visible with few lines, a tall minHeight, or stretching the whole component to match a taller sibling) — fixed, and the component now properly fills a stretched container instead of just sitting at its own minimum height',
       ],
     },
   },
