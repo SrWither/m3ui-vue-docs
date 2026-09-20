@@ -4,12 +4,12 @@ import {
   MButton, MCard, MIcon, MChip, MFab,
   MIconButton, MAvatar, MProgressBar, MSpinner,
   MAlert, MTooltip, MRating, MExpansionPanel, useToast,
-  MStack, MFlex, MGrid, MDivider,
+  MStack, MFlex, MGrid, MDivider, MTree,
   MEmoji, MEmojiButton, MDialog,
-  MStatCard, MTimeline, MDatePicker, MColorPicker, MTagInput,
+  MDatePicker, MColorPicker, MTagInput,
   useTheme, useColorPalette,
 } from '@m3ui-vue/m3ui-vue'
-import type { TimelineItem } from '@m3ui-vue/m3ui-vue'
+import type { TreeNode } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
@@ -66,16 +66,28 @@ console.log(greeting)
 | Dark mode | Ready |
 | Palettes | 40 built-in |`
 
-const statItems = [
-  { title: 'Components', value: '135+', icon: 'widgets', color: 'primary' as const },
-  { title: 'Palettes', value: '40', icon: 'palette', trend: 33, trendLabel: 'vs last release', color: 'tertiary' as const },
-  { title: 'Locales', value: '8', icon: 'translate', color: 'secondary' as const },
-]
 
-const timelineItems: TimelineItem[] = [
-  { title: 'v0.8.0 — full M3 spec audit', description: '40 color palettes, dozens of components brought exactly in line with the real Material 3 tokens', date: 'Latest', icon: 'verified', color: 'primary' },
-  { title: 'Docs restructured', description: 'Every component now gets its own page instead of one giant list', date: 'This week', icon: 'menu_book', color: 'secondary' },
-  { title: 'v0.7.0 — navigation & tabs', description: 'Wide navigation rail, modal rail, scrollable tabs', date: 'Last release', icon: 'rocket_launch', color: 'tertiary' },
+const projectTree: TreeNode[] = [
+  {
+    id: 'src', label: 'src', icon: 'folder', children: [
+      {
+        id: 'components', label: 'components', icon: 'folder', children: [
+          { id: 'MButton', label: 'MButton.vue', icon: 'description' },
+          { id: 'MCard', label: 'MCard.vue', icon: 'description' },
+          { id: 'MDialog', label: 'MDialog.vue', icon: 'description' },
+          { id: 'MTree', label: 'MTree.vue', icon: 'description' },
+        ],
+      },
+      {
+        id: 'composables', label: 'composables', icon: 'folder', children: [
+          { id: 'useTheme', label: 'useTheme.ts', icon: 'description' },
+          { id: 'useColorPalette', label: 'useColorPalette.ts', icon: 'description' },
+        ],
+      },
+      { id: 'indexts', label: 'index.ts', icon: 'description' },
+    ],
+  },
+  { id: 'packagejson', label: 'package.json', icon: 'description' },
 ]
 
 const categories = [
@@ -183,9 +195,25 @@ const categories = [
           </MFlex>
         </MCard>
 
-        <MStack gap="md">
-          <MStatCard v-for="s in statItems" :key="s.title" v-bind="s" />
-        </MStack>
+        <MCard variant="outlined" class="flex flex-col gap-3 p-6">
+          <MIcon name="verified" :size="32" class="text-primary" />
+          <h3 class="text-title-medium font-medium">Actually spec-accurate</h3>
+          <p class="text-body-medium text-on-surface-variant">
+            Every color role, shape token, and motion curve checked against Google's own
+            <code class="rounded bg-surface-container-high px-1 py-0.5 text-body-small text-primary">androidx</code>
+            Material 3 source — not eyeballed from screenshots.
+          </p>
+          <MStack gap="xs" class="mt-1">
+            <MFlex align="center" gap="xs">
+              <MIcon name="check_circle" :size="18" class="text-tertiary" />
+              <span class="text-body-small text-on-surface-variant">Real spring-physics motion, not CSS easing</span>
+            </MFlex>
+            <MFlex align="center" gap="xs">
+              <MIcon name="check_circle" :size="18" class="text-tertiary" />
+              <span class="text-body-small text-on-surface-variant">Expressive + Standard token sets, per component</span>
+            </MFlex>
+          </MStack>
+        </MCard>
       </MGrid>
     </section>
 
@@ -233,15 +261,15 @@ const categories = [
       </MStack>
     </section>
 
-    <!-- ══ BENTO ROW B — activity timeline (wide) + codes (narrow) ══ -->
+    <!-- ══ BENTO ROW B — file tree (wide) + codes (narrow) ══ -->
     <section>
       <MGrid :cols="1" :md="3" gap="md">
         <MCard variant="outlined" class="p-5 md:col-span-2">
           <MFlex align="center" gap="sm" class="mb-4">
-            <MIcon name="history" :size="24" class="text-primary" />
-            <h2 class="text-title-large font-medium">What's New</h2>
+            <MIcon name="account_tree" :size="24" class="text-primary" />
+            <h2 class="text-title-large font-medium">Familiar Building Blocks</h2>
           </MFlex>
-          <MTimeline :items="timelineItems" />
+          <MTree :nodes="projectTree" :default-expanded="['src', 'components']" />
         </MCard>
 
         <MCard variant="outlined" class="flex flex-col items-center gap-4 p-5">
@@ -255,19 +283,19 @@ const categories = [
       </MGrid>
     </section>
 
-    <!-- ══ BENTO ROW C — pickers (wide) + fun/social (narrow) ══ -->
+    <!-- ══ BENTO ROW C — pickers + fun/social, 50/50 ══ -->
     <section>
-      <MGrid :cols="1" :md="3" gap="md">
-        <MCard variant="outlined" class="p-5 md:col-span-2">
+      <MGrid :cols="1" :md="2" gap="md">
+        <MCard variant="outlined" class="p-5">
           <MFlex align="center" gap="sm" class="mb-4">
             <MIcon name="tune" :size="24" class="text-primary" />
-            <h2 class="text-title-large font-medium">Pickers & Tags</h2>
+            <h2 class="text-title-medium font-medium">Pickers & Tags</h2>
           </MFlex>
-          <MGrid :cols="1" :sm="3" gap="md">
+          <MStack gap="md">
             <MDatePicker v-model="pickedDate" label="Release date" />
             <MColorPicker v-model="pickedColor" label="Brand color" />
             <MTagInput v-model="tags" label="Tags" placeholder="Add a tag…" />
-          </MGrid>
+          </MStack>
         </MCard>
 
         <MCard variant="outlined" class="p-5">
