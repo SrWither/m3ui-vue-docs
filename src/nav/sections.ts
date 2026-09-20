@@ -37,12 +37,21 @@ export const iconMap: Record<string, string> = {
   MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MShader: 'gradient',
 }
 
+// Sections migrated to the new one-page-per-component structure (real routes,
+// e.g. /components/buttons/mbutton). Everything else still lives as anchored
+// sections on one big page per category (#mbutton) until it gets migrated —
+// add a section's base path here once its components/<section>/*.vue pages
+// exist, so its sidebar children stop pointing at hash anchors that no
+// longer have a matching heading.
+const migratedSections = new Set(['/components/buttons'])
+
 function ch(base: string, names: string[]): DrawerItem[] {
+  const separator = migratedSections.has(base) ? '/' : '#'
   return names.map(n => ({
-    value: `${base}#${n.toLowerCase().replace(/[&\s]+/g, '-')}`,
+    value: `${base}${separator}${n.toLowerCase().replace(/[&\s]+/g, '-')}`,
     label: n,
     icon: iconMap[n] ?? 'code',
-    to: `${base}#${n.toLowerCase().replace(/[&\s]+/g, '-')}`,
+    to: `${base}${separator}${n.toLowerCase().replace(/[&\s]+/g, '-')}`,
   }))
 }
 
@@ -113,6 +122,20 @@ export const sections: DrawerSection[] = [
     ],
   },
 ]
+
+// Flattened, in order, from just the Components section's per-component
+// entries — used by ComponentPager for Prev/Next links. Derived from the
+// same `sections` the sidebar renders, so it can't drift out of sync.
+export const componentPageOrder: { name: string; to: string; section: string }[] =
+  sections
+    .find((s) => s.title === 'Components')!
+    .items.flatMap((item) =>
+      (item.children ?? []).map((child) => ({
+        name: child.label,
+        to: String(child.to),
+        section: item.label,
+      })),
+    )
 
 // Flattened once from the same `sections` the sidebar renders, so search
 // results and the nav tree can never drift out of sync with each other.
