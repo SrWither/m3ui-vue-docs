@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import {
-  MButton, MCard, MIcon, MTextField, MSwitch, MChip, MFab,
-  MIconButton, MBadge, MAvatar, MSelect, MProgressBar, MSpinner,
-  MAlert, MTooltip, MSlider, MRating, MExpansionPanel, useToast,
-  MStack, MFlex, MGrid, MCenter, MDivider, MCheckbox,
-  MEmoji, MEmojiButton, MEmojiSelector, MDialog,
+  MButton, MCard, MIcon, MChip, MFab,
+  MIconButton, MAvatar, MProgressBar, MSpinner,
+  MAlert, MTooltip, MRating, MExpansionPanel, useToast,
+  MStack, MFlex, MGrid, MDivider,
+  MEmoji, MEmojiButton, MDialog,
+  MStatCard, MTimeline, MDatePicker, MColorPicker, MTagInput,
   useTheme, useColorPalette,
 } from '@m3ui-vue/m3ui-vue'
+import type { TimelineItem } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
+import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
+import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'
 import { onMounted } from 'vue'
 
 const version = ref('')
@@ -29,15 +33,15 @@ const themeIcon = computed(() =>
   theme.value === 'dark' ? 'dark_mode' : theme.value === 'light' ? 'light_mode' : 'brightness_auto',
 )
 
-const email = ref('')
-const selectVal = ref<string | number | null>(null)
-const notifications = ref(true)
-const sliderVal = ref(60)
 const ratingVal = ref(4)
 const panelOpen = ref(true)
 const panelFreeOpen = ref(false)
 const pickedEmoji = ref('')
 const dialogOpen = ref(false)
+
+const pickedDate = ref<string | null>(null)
+const pickedColor = ref('#6750a4')
+const tags = ref(['vue', 'm3'])
 
 const sampleCode = ref(`import { MButton, MCard } from '@m3ui-vue/m3ui-vue'
 
@@ -62,8 +66,17 @@ console.log(greeting)
 | Dark mode | Ready |
 | Palettes | 40 built-in |`
 
-const todoDone = ref([false, true, false])
-const todoItems = ['Ship new release', 'Write tests', 'Update docs']
+const statItems = [
+  { title: 'Components', value: '135+', icon: 'widgets', color: 'primary' as const },
+  { title: 'Palettes', value: '40', icon: 'palette', trend: 33, trendLabel: 'vs last release', color: 'tertiary' as const },
+  { title: 'Locales', value: '8', icon: 'translate', color: 'secondary' as const },
+]
+
+const timelineItems: TimelineItem[] = [
+  { title: 'v0.8.0 — full M3 spec audit', description: '40 color palettes, dozens of components brought exactly in line with the real Material 3 tokens', date: 'Latest', icon: 'verified', color: 'primary' },
+  { title: 'Docs restructured', description: 'Every component now gets its own page instead of one giant list', date: 'This week', icon: 'menu_book', color: 'secondary' },
+  { title: 'v0.7.0 — navigation & tabs', description: 'Wide navigation rail, modal rail, scrollable tabs', date: 'Last release', icon: 'rocket_launch', color: 'tertiary' },
+]
 
 const categories = [
   { label: 'Buttons & Actions', icon: 'smart_button', count: 8, to: '/components/buttons' },
@@ -133,19 +146,18 @@ const categories = [
       If something seems missing, check the source types or open an issue on GitHub.
     </MAlert>
 
-    <!-- ══ LIVE THEME SWITCHER ═══════════════════════════════════ -->
+    <!-- ══ BENTO ROW A — theme switcher (wide) + stats (narrow) ══ -->
     <section>
-      <MStack gap="md">
-        <MFlex align="center" gap="sm">
-          <MIcon name="palette" :size="28" class="text-primary" />
-          <h2 class="text-headline-small font-medium">Live Theme Switching</h2>
-        </MFlex>
-        <p class="text-body-large text-on-surface-variant">
-          Pick a color — the entire page updates instantly. Works with dark mode too.
-        </p>
-
-        <MCard variant="outlined" class="p-6">
-          <MFlex align="center" justify="between" class="mb-4">
+      <MGrid :cols="1" :md="3" gap="md">
+        <MCard variant="outlined" class="p-6 md:col-span-2">
+          <MFlex align="center" gap="sm" class="mb-1">
+            <MIcon name="palette" :size="24" class="text-primary" />
+            <h2 class="text-title-large font-medium">Live Theme Switching</h2>
+          </MFlex>
+          <p class="mb-4 text-body-medium text-on-surface-variant">
+            Pick a color — the entire page updates instantly. Works with dark mode too.
+          </p>
+          <MFlex align="center" justify="between" class="mb-3">
             <span class="text-title-small font-medium">Active palette</span>
             <MIconButton :icon="themeIcon" label="Toggle theme" @click="cycle" />
           </MFlex>
@@ -170,7 +182,11 @@ const categories = [
             <MFab icon="add" size="small" />
           </MFlex>
         </MCard>
-      </MStack>
+
+        <MStack gap="md">
+          <MStatCard v-for="s in statItems" :key="s.title" v-bind="s" />
+        </MStack>
+      </MGrid>
     </section>
 
     <!-- ══ COMPONENT CATEGORIES ══════════════════════════════════ -->
@@ -217,85 +233,70 @@ const categories = [
       </MStack>
     </section>
 
-    <!-- ══ INTERACTIVE DEMOS ═════════════════════════════════════ -->
+    <!-- ══ BENTO ROW B — activity timeline (wide) + codes (narrow) ══ -->
     <section>
-      <MStack gap="md">
-        <MFlex align="center" gap="sm">
-          <MIcon name="touch_app" :size="28" class="text-primary" />
-          <h2 class="text-headline-small font-medium">Interactive Components</h2>
-        </MFlex>
+      <MGrid :cols="1" :md="3" gap="md">
+        <MCard variant="outlined" class="p-5 md:col-span-2">
+          <MFlex align="center" gap="sm" class="mb-4">
+            <MIcon name="history" :size="24" class="text-primary" />
+            <h2 class="text-title-large font-medium">What's New</h2>
+          </MFlex>
+          <MTimeline :items="timelineItems" />
+        </MCard>
 
-        <MGrid :cols="1" :md="2" :lg="3" gap="md">
-          <!-- Mini todo -->
-          <MCard class="p-5">
-            <MStack gap="sm">
-              <MFlex align="center" justify="between">
-                <h3 class="text-title-medium font-medium">Quick Tasks</h3>
-                <MBadge :count="todoDone.filter(d => !d).length" color="primary">
-                  <MIcon name="checklist" :size="22" class="text-on-surface-variant" />
-                </MBadge>
-              </MFlex>
-              <MStack gap="xs">
-                <MFlex v-for="(item, i) in todoItems" :key="i" align="center" gap="sm" class="rounded-lg p-2 transition-colors hover:bg-on-surface/4">
-                  <MCheckbox v-model="todoDone[i]!" />
-                  <span class="text-body-medium" :class="todoDone[i] ? 'line-through opacity-50' : ''">{{ item }}</span>
-                </MFlex>
-              </MStack>
-              <MProgressBar :value="Math.round(todoDone.filter(d => d).length / todoDone.length * 100)" />
-            </MStack>
-          </MCard>
+        <MCard variant="outlined" class="flex flex-col items-center gap-4 p-5">
+          <MFlex align="center" gap="sm" class="w-full">
+            <MIcon name="qr_code_2" :size="24" class="text-primary" />
+            <h2 class="text-title-medium font-medium">Generate Codes</h2>
+          </MFlex>
+          <MQRCode value="https://github.com/SrWither/m3ui-vue" :size="120" label="M3UI Vue on GitHub" />
+          <MBarcode value="M3UI-VUE" format="CODE128" :height="50" :width="1.5" />
+        </MCard>
+      </MGrid>
+    </section>
 
-          <!-- Inputs showcase -->
-          <MCard class="p-5">
-            <MStack gap="sm">
-              <h3 class="text-title-medium font-medium">Form Controls</h3>
-              <MTextField v-model="email" label="Email" leading-icon="mail" variant="outlined" />
-              <MSelect
-                v-model="selectVal"
-                :options="[{ label: 'Vue 3', value: 'vue' }, { label: 'React', value: 'react' }, { label: 'Svelte', value: 'svelte' }]"
-                label="Framework"
-                variant="outlined"
-              />
-              <MFlex align="center" justify="between">
-                <span class="text-body-medium">Dark mode</span>
-                <MSwitch :model-value="theme.value === 'dark'" @update:model-value="cycle" />
-              </MFlex>
-              <MSlider v-model="sliderVal" label="Volume" :show-value="true" />
-            </MStack>
-          </MCard>
+    <!-- ══ BENTO ROW C — pickers (wide) + fun/social (narrow) ══ -->
+    <section>
+      <MGrid :cols="1" :md="3" gap="md">
+        <MCard variant="outlined" class="p-5 md:col-span-2">
+          <MFlex align="center" gap="sm" class="mb-4">
+            <MIcon name="tune" :size="24" class="text-primary" />
+            <h2 class="text-title-large font-medium">Pickers & Tags</h2>
+          </MFlex>
+          <MGrid :cols="1" :sm="3" gap="md">
+            <MDatePicker v-model="pickedDate" label="Release date" />
+            <MColorPicker v-model="pickedColor" label="Brand color" />
+            <MTagInput v-model="tags" label="Tags" placeholder="Add a tag…" />
+          </MGrid>
+        </MCard>
 
-          <!-- Emoji + Social card -->
-          <MCard class="p-5">
-            <MStack gap="md">
-              <h3 class="text-title-medium font-medium">Fun Stuff</h3>
+        <MCard variant="outlined" class="p-5">
+          <MStack gap="md">
+            <h2 class="text-title-medium font-medium">Fun Stuff</h2>
 
-              <MFlex align="center" gap="md">
-                <MStack align="center" gap="xs">
-                  <MEmojiButton emoji="😎" :size="36" category="smileys" @click="(e: string) => pickedEmoji = e" />
-                  <span class="text-label-small text-on-surface-variant">Hover me</span>
-                </MStack>
-                <MEmojiButton emoji="🐱" :size="36" category="animals" @click="(e: string) => pickedEmoji = e" />
-                <MEmojiButton emoji="🍕" :size="36" category="food" @click="(e: string) => pickedEmoji = e" />
-                <MEmojiButton emoji="🚀" :size="36" category="travel" @click="(e: string) => pickedEmoji = e" />
-                <span v-if="pickedEmoji" class="text-headline-large">{{ pickedEmoji }}</span>
-              </MFlex>
+            <MFlex align="center" gap="sm" wrap>
+              <MEmojiButton emoji="😎" :size="32" category="smileys" @click="(e: string) => pickedEmoji = e" />
+              <MEmojiButton emoji="🐱" :size="32" category="animals" @click="(e: string) => pickedEmoji = e" />
+              <MEmojiButton emoji="🍕" :size="32" category="food" @click="(e: string) => pickedEmoji = e" />
+              <MEmojiButton emoji="🚀" :size="32" category="travel" @click="(e: string) => pickedEmoji = e" />
+              <span v-if="pickedEmoji" class="text-headline-medium">{{ pickedEmoji }}</span>
+            </MFlex>
 
-              <MDivider />
+            <MDivider />
 
-              <MFlex align="center" gap="sm">
-                <div class="flex -space-x-2">
-                  <MAvatar name="Alice" :size="36" />
-                  <MAvatar name="Bob" :size="36" />
-                  <MAvatar name="Carol" :size="36" />
-                </div>
-                <span class="text-body-small text-on-surface-variant">3 contributors</span>
-              </MFlex>
+            <MFlex align="center" gap="sm">
+              <div class="flex -space-x-2">
+                <MAvatar name="Alice" :size="32" />
+                <MAvatar name="Bob" :size="32" />
+                <MAvatar name="Carol" :size="32" />
+              </div>
+              <span class="text-body-small text-on-surface-variant">3 contributors</span>
+            </MFlex>
 
-              <MRating v-model="ratingVal" :half-increments="true" />
-            </MStack>
-          </MCard>
-        </MGrid>
-      </MStack>
+            <MRating v-model="ratingVal" :half-increments="true" />
+          </MStack>
+        </MCard>
+      </MGrid>
     </section>
 
     <!-- ══ FEEDBACK & OVERLAYS ═══════════════════════════════════ -->
