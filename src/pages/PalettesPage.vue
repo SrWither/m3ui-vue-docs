@@ -192,7 +192,7 @@ const allTokens = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">Color Palettes</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      M3UI ships with 30 pre-built color palettes (including 10 monochromatic neutrals), each with light and dark variants.
+      M3UI ships with 40 pre-built color palettes (including a dedicated pure black-and-white Monochrome and 11 muted neutrals), each with light and dark variants.
       Click any palette below to apply it — the entire page updates instantly.
     </p>
 

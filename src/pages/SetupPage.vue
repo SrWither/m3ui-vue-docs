@@ -41,7 +41,7 @@ export default defineConfig({
 
 const cssCode = `@import 'tailwindcss';
 @import '@m3ui-vue/m3ui-vue/theme';
-@import '@m3ui-vue/m3ui-vue/palettes'; /* optional — 30 color palettes */
+@import '@m3ui-vue/m3ui-vue/palettes'; /* optional — 40 color palettes */
 @import '@m3ui-vue/m3ui-vue/styles';   /* component transitions & animations */`
 
 const pluginCode = `// main.ts

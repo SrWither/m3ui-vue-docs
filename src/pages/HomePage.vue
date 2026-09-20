@@ -60,7 +60,7 @@ console.log(greeting)
 | Feature | Status |
 |---------|--------|
 | Dark mode | Ready |
-| Palettes | 30 built-in |`
+| Palettes | 40 built-in |`
 
 const todoDone = ref([false, true, false])
 const todoItems = ['Ship new release', 'Write tests', 'Update docs']
@@ -100,7 +100,7 @@ const categories = [
 
         <p class="max-w-2xl text-title-medium text-on-primary-container/80">
           135+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
-          Beautiful, accessible, tree-shakeable. With 30 color palettes, dark mode, i18n, and full TypeScript support.
+          Beautiful, accessible, tree-shakeable. With 40 color palettes, dark mode, i18n, and full TypeScript support.
         </p>
 
         <MFlex gap="sm" wrap class="mt-2 justify-center">
@@ -119,7 +119,7 @@ const categories = [
         <MFlex gap="sm" wrap class="mt-4 justify-center">
           <MChip v-if="version" icon="new_releases" tone="primary">v{{ version }}</MChip>
           <MChip icon="widgets" tone="primary">135+ Components</MChip>
-          <MChip icon="palette" tone="secondary">30 Palettes</MChip>
+          <MChip icon="palette" tone="secondary">40 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>
           <MChip icon="code">TypeScript</MChip>
         </MFlex>

@@ -18,6 +18,7 @@ const versions: Version[] = [
     date: '2026-09-18',
     changes: {
       added: [
+        '10 new color palettes, bringing the total to 40: a hand-authored Monochrome (true pure black-and-white, no hue tint at all, distinct from the library\'s existing muted-gray palettes) plus 9 new jewel-tone colors — Rust, Gold, Emerald, Turquoise, Cobalt, Sapphire, Amethyst, Magenta, and Mauve — generated the same way as the existing 30 to fill real gaps in the color spectrum',
         'MTabs gained a scrollable prop (default false): tabs now evenly fill the available width with no scrolling by default, matching M3\'s Fixed TabRow — pass scrollable to restore the previous natural-width, scroll-on-overflow behavior (M3\'s Scrollable TabRow). This changes the default look for existing usage with many tabs',
         'MMenu and MContextMenu support keyboard navigation now — opening a menu focuses its first item, and ArrowUp/ArrowDown move focus between items',
         'MNavigationRail gained an expanded prop, matching M3\'s wide navigation rail: items switch from a narrow centered icon to a full-width row with the icon and label side by side, and the rail widens from 80px to 220px. Row height stays constant so toggling never shifts other items, and the label reveals with a left-to-right wipe growing out from the icon. Doesn\'t include the real component\'s draggable resize or its modal/overlay mode for narrow screens yet — a modal rail variant is planned separately',
