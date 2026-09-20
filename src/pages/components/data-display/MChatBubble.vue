@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MChatBubble, MChip, MIcon, MCard } from '@m3ui-vue/m3ui-vue'
+import { MChatBubble, MChip, MIcon } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -13,7 +13,6 @@ const chatBubbleProps: PropDef[] = [
   { name: 'time', type: 'string', description: 'Timestamp string (e.g. "10:32")' },
   { name: 'side', type: "'left' | 'right'", default: "'left'", description: 'Left = received, right = sent' },
   { name: 'avatar', type: 'string', description: 'Avatar name — shows an MAvatar with these initials (left-side only)' },
-  { name: 'avatarSrc', type: 'string', description: 'Declared but currently unused — MAvatar (used internally) has no image-src prop, so this has no visible effect. See note below.' },
   { name: 'status', type: "'sent' | 'delivered' | 'read'", description: 'Message status icon next to the timestamp (right-side only)' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary'", default: "'primary'", description: 'Bubble color for sent (right-side) messages' },
   { name: 'tail', type: 'boolean', default: 'true', description: 'Show the bubble tail (a sharper corner on the side nearest the sender)' },
@@ -33,13 +32,6 @@ const chatBubbleSlots: SlotDef[] = [
       A chat message bubble — sender name, avatar, timestamp, and read status, for left (received)
       or right (sent) messages.
     </p>
-
-    <MCard class="mb-6 border-l-4 border-l-tertiary p-4">
-      <p class="flex items-center gap-2 text-body-medium text-on-surface-variant">
-        <MIcon name="bug_report" :size="18" class="shrink-0 text-tertiary" />
-        <span><code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">avatarSrc</code> is declared as a prop but never wired to anything in the component's template — MAvatar only renders initials, so passing an image URL currently does nothing visible.</span>
-      </p>
-    </MCard>
 
     <ComponentDemo
       title="Chat Conversation"

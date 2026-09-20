@@ -12,6 +12,7 @@ import type { EventDef } from '@/components/EventsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const sampleCode = ref(`function greet(name: string) {\n  return \`Hello, \${name}!\`\n}`)
+const emptyCode = ref('')
 
 const codeEditorProps: PropDef[] = [
   { name: 'modelValue', type: 'string', description: 'Editor content (v-model)' },
@@ -21,7 +22,7 @@ const codeEditorProps: PropDef[] = [
   { name: 'theme', type: "'light' | 'dark'", default: "'light'", description: 'Color theme' },
   { name: 'minHeight', type: 'string', default: "'200px'", description: 'Minimum editor height' },
   { name: 'maxHeight', type: 'string', default: "'600px'", description: 'Maximum editor height' },
-  { name: 'placeholder', type: 'string', description: 'Placeholder text — declared but currently unused by the editor internals, has no visible effect' },
+  { name: 'placeholder', type: 'string', description: 'Placeholder text shown via CodeMirror when the editor is empty' },
   { name: 'wrap', type: 'boolean', default: 'true', description: 'Word wrap' },
 ]
 
@@ -101,6 +102,16 @@ const code = ref(\`function greet(name: string) {
     >
       <div class="w-full">
         <MCodeEditor :model-value="sampleCode" language="typescript" theme="dark" :readonly="true" min-height="100px" max-height="220px" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Placeholder"
+      description="Shown by CodeMirror whenever the document is empty."
+      :code="`<MCodeEditor v-model=&quot;code&quot; language=&quot;javascript&quot; placeholder=&quot;// Write some code...&quot; />`"
+    >
+      <div class="w-full">
+        <MCodeEditor v-model="emptyCode" language="javascript" placeholder="// Write some code..." min-height="100px" max-height="200px" />
       </div>
     </ComponentDemo>
 
