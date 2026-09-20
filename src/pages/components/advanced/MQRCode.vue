@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MCard } from '@m3ui-vue/m3ui-vue'
 import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -29,10 +30,22 @@ const qrCodeSlots: SlotDef[] = [
     <h1 class="mb-2 text-headline-large font-medium">MQRCode</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       Renders a QR code as inline SVG — crisp at any size, no canvas or image assets. Available from the
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">/qrcode</code> entry point
-      with <code class="text-body-small">qrcode-generator</code> as an optional peer dependency, so it never
-      adds weight to the main bundle.
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">/qrcode</code> entry point,
+      so it never adds weight to the main bundle.
     </p>
+
+    <MCard variant="outlined" class="mb-6 p-4">
+      <div class="flex items-start gap-3">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container text-label-small font-medium">!</span>
+        <div>
+          <p class="text-body-medium font-medium">Peer dependency required</p>
+          <p class="mt-1 text-body-medium text-on-surface-variant">
+            MQRCode requires qrcode-generator as a peer dependency. Install it with:
+            <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">pnpm add qrcode-generator</code>
+          </p>
+        </div>
+      </div>
+    </MCard>
 
     <ComponentDemo
       title="QR code generator"

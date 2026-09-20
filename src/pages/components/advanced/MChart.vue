@@ -87,10 +87,21 @@ const chartProps: PropDef[] = [
     <p class="mb-8 text-body-large text-on-surface-variant">
       A thin Chart.js wrapper — line, bar, pie, doughnut, and radar types, with legend/tooltip/axis colors that
       automatically track the active M3 theme (light/dark, and any palette swap). Available from the
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">/chart</code> entry point, with
-      <code class="text-body-small">chart.js</code> and <code class="text-body-small">vue-chartjs</code> as
-      optional peer dependencies.
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">/chart</code> entry point.
     </p>
+
+    <MCard variant="outlined" class="mb-6 p-4">
+      <div class="flex items-start gap-3">
+        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container text-label-small font-medium">!</span>
+        <div>
+          <p class="text-body-medium font-medium">Peer dependencies required</p>
+          <p class="mt-1 text-body-medium text-on-surface-variant">
+            MChart requires Chart.js and vue-chartjs as peer dependencies. Install them with:
+            <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">pnpm add chart.js vue-chartjs</code>
+          </p>
+        </div>
+      </div>
+    </MCard>
 
     <ComponentDemo
       title="Bar & Line"
@@ -199,11 +210,6 @@ const options = {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="chartProps" />
-
-    <MCard class="mt-4 overflow-hidden border-l-4 border-l-tertiary p-5">
-      <p class="mb-2 text-title-small font-medium">Peer Dependencies</p>
-      <pre class="rounded-lg bg-surface-container p-3 text-body-small"><code>chart.js  vue-chartjs</code></pre>
-    </MCard>
 
     <ComponentPager current="MChart" />
   </div>
