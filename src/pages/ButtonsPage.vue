@@ -96,7 +96,7 @@ const fabProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'label', type: 'string', description: 'Extended FAB label text' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'surface'", default: "'primary'", description: 'Color scheme' },
-  { name: 'size', type: "'small' | 'regular' | 'large'", default: "'regular'", description: 'FAB size' },
+  { name: 'size', type: "'small' | 'regular' | 'medium' | 'large'", default: "'regular'", description: 'FAB size' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items (see interface below)' },
   { name: 'direction', type: "'up' | 'down' | 'left' | 'right' | 'radial'", default: "'up'", description: 'Speed-dial expand direction' },

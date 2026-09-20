@@ -14,6 +14,26 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.0',
+    date: '2026-09-18',
+    changes: {
+      added: [
+        'MTabs gained a scrollable prop (default false): tabs now evenly fill the available width with no scrolling by default, matching M3\'s Fixed TabRow — pass scrollable to restore the previous natural-width, scroll-on-overflow behavior (M3\'s Scrollable TabRow). This changes the default look for existing usage with many tabs',
+        'MMenu and MContextMenu support keyboard navigation now — opening a menu focuses its first item, and ArrowUp/ArrowDown move focus between items',
+        'MNavigationRail gained an expanded prop, matching M3\'s wide navigation rail: items switch from a narrow centered icon to a full-width row with the icon and label side by side, and the rail widens from 80px to 220px. Row height stays constant so toggling never shifts other items, and the label reveals with a left-to-right wipe growing out from the icon. Doesn\'t include the real component\'s draggable resize or its modal/overlay mode for narrow screens yet — a modal rail variant is planned separately',
+      ],
+      fixed: [
+        'All text-field-shaped inputs — MTextField, MSelect, MAutocomplete, MMultiSelect, MMultiAutocomplete, MNumberField, MMaskField, MTagInput, MPinInput, and the date/time/color pickers\' trigger fields — shared the same corner radius (8px instead of M3\'s 4px), leading icon size (20px instead of 24dp), and disabled-state bugs (one flat opacity instead of M3\'s split values for text/label/border/background, which made filled fields look far more washed out and outlined borders far more visible than they should). Also added a tinted text caret, which was missing everywhere',
+        'MSelect\'s empty-dropdown text was hardcoded in Spanish regardless of locale; now goes through the same locale system as the rest of the library',
+        'MMultiSelect/MMultiAutocomplete let you remove a chip by its × even while the whole field was disabled',
+        'MNavigationBar/MNavigationRail\'s active item label was tinted the same as its icon; M3 actually uses a different color for each',
+        'MNavigationDrawer: default width was 288px instead of M3\'s 360px, the modal variant had the wrong surface color and far too much shadow, active rows were shorter than spec, and the far edge had no corner rounding',
+        'MTabs: label typography, icon size, the icon-tab height (primary), and the secondary indicator thickness all corrected to match M3 exactly',
+        'MMenu/MMenuItem/MContextMenu\'s dropdown panels had the same corner-radius bug as the text fields above, and menu items had no visible keyboard-focus ring at all',
+      ],
+    },
+  },
+  {
     version: '0.7.1',
     date: '2026-09-18',
     changes: {

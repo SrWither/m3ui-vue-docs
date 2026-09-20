@@ -171,7 +171,8 @@ const listProps: PropDef[] = [
 ]
 
 const listItemProps: PropDef[] = [
-  { name: 'title', type: 'string', description: 'Primary text' },
+  { name: 'title', type: 'string', description: 'Primary text (headline)' },
+  { name: 'overline', type: 'string', description: 'Small label above the title' },
   { name: 'subtitle', type: 'string', description: 'Secondary text (line 2)' },
   { name: 'description', type: 'string', description: 'Tertiary text (line 3)' },
   { name: 'lines', type: '1 | 2 | 3', description: 'Number of text lines (auto-detected)' },
@@ -1633,6 +1634,7 @@ const nodes = [
         <tbody>
           <tr><td class="py-2 pr-4 font-mono text-body-small">MList</td><td class="py-2 pr-4 font-mono text-body-small">#default</td><td class="py-2 text-on-surface-variant">List items and subheaders</td></tr>
           <tr><td class="py-2 pr-4 font-mono text-body-small">MListItem</td><td class="py-2 pr-4 font-mono text-body-small">#default</td><td class="py-2 text-on-surface-variant">Custom content (overrides title/subtitle)</td></tr>
+          <tr><td class="py-2 pr-4 font-mono text-body-small">MListItem</td><td class="py-2 pr-4 font-mono text-body-small">#overline</td><td class="py-2 text-on-surface-variant">Custom overline content (overrides overline prop)</td></tr>
           <tr><td class="py-2 pr-4 font-mono text-body-small">MListItem</td><td class="py-2 pr-4 font-mono text-body-small">#leading</td><td class="py-2 text-on-surface-variant">Custom leading element</td></tr>
           <tr><td class="py-2 pr-4 font-mono text-body-small">MListItem</td><td class="py-2 pr-4 font-mono text-body-small">#trailing</td><td class="py-2 text-on-surface-variant">Custom trailing element</td></tr>
           <tr><td class="py-2 pr-4 font-mono text-body-small">MListItem</td><td class="py-2 pr-4 font-mono text-body-small">#children</td><td class="py-2 text-on-surface-variant">Expandable nested content (requires expandable prop)</td></tr>

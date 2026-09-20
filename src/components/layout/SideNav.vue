@@ -39,6 +39,7 @@ watch(() => route.path, (path) => {
       :collapsed="!expanded"
       :selected="selected"
       :sections="sections"
+      width="18rem"
     >
       <template #toggle>
         <MIconButton
@@ -56,6 +57,7 @@ watch(() => route.path, (path) => {
     :model-value="drawerOpen ?? false"
     :sections="sections"
     :selected="selected"
+    width="18rem"
     @update:model-value="!$event && $emit('drawerClose')"
   >
     <template #header>

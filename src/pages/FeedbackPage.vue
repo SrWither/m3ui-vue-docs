@@ -132,7 +132,7 @@ const progressProps: PropDef[] = [
   { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Indeterminate animation' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Bar color' },
   { name: 'variant', type: "'linear' | 'wavy'", default: "'linear'", description: 'Bar style' },
-  { name: 'thickness', type: 'number', description: 'Stroke width in px. Defaults to 4 for linear, 3 for wavy.' },
+  { name: 'thickness', type: 'number', description: 'Stroke width in px. Defaults to 4dp, matching the real M3 token for both variants.' },
   { name: 'label', type: 'string', description: 'Label text above the bar' },
 ]
 
@@ -157,8 +157,8 @@ const circleProgressProps: PropDef[] = [
   { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Spinning arc — no value needed. Identical for both variants.' },
   { name: 'variant', type: "'wavy' | 'circle'", default: "'wavy'", description: 'wavy: animated bumpy ring that fades to circle near 0 % and 100 %; circle: smooth arc' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Ring color' },
-  { name: 'size', type: 'number', default: '80', description: 'Diameter in px' },
-  { name: 'thickness', type: 'number', default: '3', description: 'Stroke width of the ring/wave in px' },
+  { name: 'size', type: 'number', default: "48 wavy / 40 circle", description: 'Diameter in px — matches the real M3 WaveSize/Size tokens per variant' },
+  { name: 'thickness', type: 'number', default: '4', description: 'Stroke width of the ring/wave in px, matching the real M3 token' },
   { name: 'label', type: 'string', description: 'Label text below the circle' },
 ]
 
@@ -875,7 +875,7 @@ const progress = ref(50)`"
 
     <ComponentDemo
       title="Thickness"
-      description="Use the thickness prop to control the stroke width. Each variant has its own default (4 for linear, 3 for wavy)."
+      description="Use the thickness prop to control the stroke width. Both variants default to 4dp, matching the real M3 token."
       :code="`<!-- Linear -->
 <MProgressBar :value=&quot;60&quot; :thickness=&quot;2&quot; label=&quot;linear · thickness 2&quot; />
 <MProgressBar :value=&quot;60&quot; label=&quot;linear · thickness 4 (default)&quot; />

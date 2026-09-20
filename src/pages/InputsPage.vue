@@ -154,6 +154,8 @@ const dateRange = ref<DateRange>({ start: null, end: null })
 const timeVal = ref<string | null>(null)
 const showTimePicker = ref(false)
 const timeModalVal = ref<string | null>(null)
+const showTimePicker24h = ref(false)
+const timeModalVal24h = ref<string | null>(null)
 const showDatePicker = ref(false)
 const dateModalVal = ref<string | null>(null)
 const showDateRangePicker = ref(false)
@@ -1610,13 +1612,23 @@ const val = ref(3.5)`"
       :code="`<template>
   <MButton @click=&quot;show = true&quot;>Pick time</MButton>
   <MTimePickerModal v-model=&quot;time&quot; v-model:show=&quot;show&quot; />
+
+  <MButton @click=&quot;show24 = true&quot;>Pick time</MButton>
+  <MTimePickerModal v-model=&quot;time24&quot; v-model:show=&quot;show24&quot; use24h />
 </template>`"
     >
-      <div class="flex items-center gap-4">
-        <MButton @click="showTimePicker = true">Pick time (12h)</MButton>
-        <span v-if="timeModalVal" class="text-body-medium text-on-surface-variant">{{ timeModalVal }}</span>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-4">
+          <MButton @click="showTimePicker = true">Pick time (12h)</MButton>
+          <span v-if="timeModalVal" class="text-body-medium text-on-surface-variant">{{ timeModalVal }}</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <MButton @click="showTimePicker24h = true">Pick time (24h)</MButton>
+          <span v-if="timeModalVal24h" class="text-body-medium text-on-surface-variant">{{ timeModalVal24h }}</span>
+        </div>
       </div>
       <MTimePickerModal v-model="timeModalVal" v-model:show="showTimePicker" />
+      <MTimePickerModal v-model="timeModalVal24h" v-model:show="showTimePicker24h" use24h />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
