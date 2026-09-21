@@ -10,6 +10,7 @@ const components = [
   { name: 'MSplitButton', description: 'A main action plus a dropdown of alternatives.' },
   { name: 'MButtonGroup', description: 'A set of buttons sharing selection state, standard or connected.' },
   { name: 'MSegmentedButton', description: 'Joined segments for choosing between a small set of options.' },
+  { name: 'MToggleButton', description: 'A standalone toggle button that morphs shape and color on check.' },
   { name: 'MCopyButton', description: 'Copies a value to the clipboard, swaps to a checkmark on success.' },
   { name: 'MExportButton', description: 'Serializes data and triggers a real CSV/JSON download.' },
 ]

@@ -131,7 +131,7 @@ const projectTree: TreeNode[] = [
 ]
 
 const categories = [
-  { label: 'Buttons & Actions', icon: 'smart_button', count: 8, to: '/components/buttons' },
+  { label: 'Buttons & Actions', icon: 'smart_button', count: 9, to: '/components/buttons' },
   { label: 'Inputs & Forms', icon: 'input', count: 23, to: '/components/inputs' },
   { label: 'Data Display', icon: 'dashboard', count: 20, to: '/components/data-display' },
   { label: 'Feedback', icon: 'feedback', count: 11, to: '/components/feedback' },
