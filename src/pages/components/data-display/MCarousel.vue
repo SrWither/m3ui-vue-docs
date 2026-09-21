@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MCarousel } from '@m3ui-vue/m3ui-vue'
+import { MCarousel, MCard, MIcon } from '@m3ui-vue/m3ui-vue'
 import type { CarouselItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -63,6 +63,16 @@ const carouselItems: CarouselItem[] = [
       slides. For a simpler fixed-width slide deck, see
       <router-link to="/components/data-display/msimplecarousel" class="text-primary underline">MSimpleCarousel</router-link>.
     </p>
+
+    <MCard class="mb-6 flex items-start gap-3 p-4">
+      <MIcon name="science" :size="22" class="mt-0.5 shrink-0 text-error" />
+      <p class="text-body-medium text-on-surface">
+        <strong>This component is in beta.</strong> The arrangement math is a simplified triangular
+        falloff from the focal item rather than the real <code>Arrangement.findLowestCostArrangement</code>
+        combinatorial search Compose uses, so sizing at unusual width/item-count combinations may not
+        match the real component exactly — treat the API and behavior as subject to change.
+      </p>
+    </MCard>
 
     <ComponentDemo
       title="Multi-Browse"
