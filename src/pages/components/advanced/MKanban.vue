@@ -38,6 +38,7 @@ const kanbanColumns = ref<KanbanColumn[]>([
 
 const kanbanProps: PropDef[] = [
   { name: 'modelValue', type: 'KanbanColumn[]', description: 'Columns with their cards (v-model). Required — there is no default.' },
+  { name: 'emptyText', type: 'string', description: "Text shown in a column with no cards. Falls back to the app's configured locale's noItems string" },
 ]
 
 const kanbanEvents: EventDef[] = [

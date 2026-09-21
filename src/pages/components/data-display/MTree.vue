@@ -19,7 +19,7 @@ const treeProps: PropDef[] = [
   { name: 'checked', type: '(string | number)[]', description: 'Checked leaf node ids (v-model:checked, checkable mode)' },
   { name: 'checkable', type: 'boolean', default: 'false', description: 'Show checkboxes with cascade selection (checking a branch checks/unchecks all its leaves)' },
   { name: 'defaultExpanded', type: "(string | number)[] | 'all' | 'none'", default: "'none'", description: 'Which nodes start expanded' },
-  { name: 'emptyText', type: 'string', default: "'Sin elementos'", description: 'Text shown when nodes is empty' },
+  { name: 'emptyText', type: 'string', description: "Text shown when nodes is empty. Falls back to the app's configured locale's noItems string" },
 ]
 
 const treeEvents: EventDef[] = [

@@ -20,6 +20,7 @@ const treeTableProps: PropDef[] = [
   { name: 'defaultExpanded', type: 'boolean', default: 'false', description: 'Expand all nodes with children by default' },
   { name: 'indent', type: 'number', default: '24', description: 'Indentation per depth level, in px' },
   { name: 'dense', type: 'boolean', default: 'false', description: 'Compact row height' },
+  { name: 'emptyText', type: 'string', description: "Text shown when rows is empty. Falls back to the app's configured locale's noResults string" },
 ]
 
 const treeTableEvents: EventDef[] = [
