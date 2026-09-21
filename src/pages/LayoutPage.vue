@@ -24,6 +24,7 @@ const components = [
   { name: 'MSticky', description: 'Sticks content to the top of its scroll container.' },
   { name: 'MScrollable', description: 'A constrained scroll area — vertical, horizontal, or both.' },
   { name: 'MAspectRatio', description: 'Maintains a consistent aspect ratio for media or containers.' },
+  { name: 'MShape', description: "Clips content into one of M3's 35 expressive shapes, with spring-animated morphing." },
   { name: 'MAppLayout', description: 'Full app shell — drawer, header, content, footer, and fab slots.' },
   { name: 'MFooter', description: 'Page footer with brand, content, social, and bottom-bar slots.' },
   { name: 'MOverlay', description: 'Full-screen overlay with scrim and teleport to body.' },
