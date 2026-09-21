@@ -15,7 +15,7 @@ import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
 import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'
 import { activeLocaleId, localeOptions, setSiteLocale } from '@/composables/useSiteLocale'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 
 const version = ref('')
 onMounted(async () => {
@@ -25,6 +25,45 @@ onMounted(async () => {
     version.value = data.version
   } catch { /* fallback: chip hidden via v-if */ }
 })
+
+// Hero blobs: driven by continuous sine/cosine functions on a rAF loop instead of CSS
+// @keyframes — a handful of keyframe waypoints (even many of them) is still a finite set of
+// sampled points with a direction change at every one, which reads as a subtle stutter/tremble
+// no matter the easing. A real trig function has no waypoints to begin with, so there's nothing
+// to be discontinuous at — this is the same "real per-frame motion, not CSS" convention the
+// library's own spring-driven components (MProgressBar, MTabs, etc.) already follow.
+const blob1 = ref<HTMLElement | null>(null)
+const blob2 = ref<HTMLElement | null>(null)
+const blob3 = ref<HTMLElement | null>(null)
+let blobRafId = 0
+onMounted(() => {
+  const start = performance.now()
+  const TAU = Math.PI * 2
+  function tick(now: number) {
+    const t = (now - start) / 1000
+    if (blob1.value) {
+      const x = Math.sin(t * (TAU / 13)) * 26
+      const y = Math.cos(t * (TAU / 9)) * 20
+      const s = 1 + Math.sin(t * (TAU / 7)) * 0.06
+      blob1.value.style.transform = `translate(${x}px, ${y}px) scale(${s})`
+    }
+    if (blob2.value) {
+      const x = Math.cos(t * (TAU / 15)) * -22
+      const y = Math.sin(t * (TAU / 11)) * 18
+      const s = 1 + Math.cos(t * (TAU / 8.5)) * 0.08
+      blob2.value.style.transform = `translate(${x}px, ${y}px) scale(${s})`
+    }
+    if (blob3.value) {
+      const x = Math.sin(t * (TAU / 18) + 1) * 20
+      const y = Math.cos(t * (TAU / 12.5) + 1) * 16
+      const s = 1 + Math.sin(t * (TAU / 10)) * 0.1
+      blob3.value.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${s})`
+    }
+    blobRafId = requestAnimationFrame(tick)
+  }
+  blobRafId = requestAnimationFrame(tick)
+})
+onUnmounted(() => cancelAnimationFrame(blobRafId))
 
 const toast = useToast()
 const { theme, cycle } = useTheme()
@@ -111,9 +150,9 @@ const categories = [
     <!-- ══ HERO ══════════════════════════════════════════════════ -->
     <section class="relative overflow-hidden rounded-2xl bg-primary-container px-6 py-16 text-center md:px-12 md:py-20">
       <div class="absolute inset-0 opacity-10">
-        <div class="hero-blob absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary" />
-        <div class="hero-blob hero-blob-2 absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-tertiary" />
-        <div class="hero-blob hero-blob-3 absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary" />
+        <div ref="blob1" class="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary" />
+        <div ref="blob2" class="absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-tertiary" />
+        <div ref="blob3" class="absolute top-1/2 left-1/2 h-48 w-48 rounded-full bg-secondary" style="transform: translate(-50%, -50%)" />
       </div>
 
       <MStack align="center" gap="md" class="relative">
@@ -412,50 +451,3 @@ const categories = [
   </MStack>
 </template>
 
-<style>
-/* Many evenly-spaced waypoints tracing a smooth loop, animated with `linear` — a small
-   number of `ease-in-out` waypoints decelerates to a dead stop and re-accelerates at every
-   single one of them (that's what "tremble" was: a visible stall + jerk each ~3-4s), since
-   ease-in-out's zero-velocity endpoints apply per *segment*, not just at the animation's own
-   start/end. Piecewise-linear through enough points reads as continuous, flowing motion. */
-@keyframes hero-float {
-  0%   { transform: translate(0px, 0px) scale(1); }
-  12.5%  { transform: translate(16px, -12px) scale(1.02); }
-  25%  { transform: translate(28px, -19px) scale(1.05); }
-  37.5%  { transform: translate(18px, -6px) scale(1.03); }
-  50%  { transform: translate(-8px, 10px) scale(0.98); }
-  62.5%  { transform: translate(-20px, 17px) scale(0.95); }
-  75%  { transform: translate(2px, 24px) scale(1.03); }
-  87.5%  { transform: translate(14px, 14px) scale(1.06); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
-@keyframes hero-float-2 {
-  0%   { transform: translate(0px, 0px) scale(1); }
-  12.5%  { transform: translate(-14px, 11px) scale(1.04); }
-  25%  { transform: translate(-24px, 19px) scale(1.1); }
-  37.5%  { transform: translate(-8px, 8px) scale(1.03); }
-  50%  { transform: translate(14px, -10px) scale(0.95); }
-  62.5%  { transform: translate(20px, -16px) scale(0.92); }
-  75%  { transform: translate(2px, -22px) scale(0.98); }
-  87.5%  { transform: translate(-10px, -12px) scale(1.05); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
-@keyframes hero-float-3 {
-  0%   { transform: translate(-50%, -50%) scale(1); }
-  16.6%  { transform: translate(calc(-50% + 16px), calc(-50% - 12px)) scale(1.06); }
-  33%  { transform: translate(calc(-50% + 24px), calc(-50% - 19px)) scale(1.12); }
-  50%  { transform: translate(calc(-50% + 4px), calc(-50% - 2px)) scale(1.04); }
-  66%  { transform: translate(calc(-50% - 19px), calc(-50% + 14px)) scale(0.9); }
-  83.3%  { transform: translate(calc(-50% - 8px), calc(-50% + 20px)) scale(0.96); }
-  100% { transform: translate(-50%, -50%) scale(1); }
-}
-.hero-blob {
-  animation: hero-float 12s linear infinite;
-}
-.hero-blob-2 {
-  animation: hero-float-2 15s linear infinite;
-}
-.hero-blob-3 {
-  animation: hero-float-3 18s linear infinite;
-}
-</style>
