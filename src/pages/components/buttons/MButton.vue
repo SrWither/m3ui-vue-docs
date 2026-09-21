@@ -11,7 +11,8 @@ const buttonProps: PropDef[] = [
   { name: 'type', type: "'button' | 'submit' | 'reset'", default: "'button'", description: 'HTML button type' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a spinner and disables the button' },
-  { name: 'icon', type: 'string', description: 'Material Symbol icon name shown before the label' },
+  { name: 'icon', type: 'string', description: 'Material Symbol icon name shown next to the label' },
+  { name: 'iconPos', type: "'leading' | 'trailing'", default: "'leading'", description: 'Which side of the label the icon renders on' },
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: "M3's 5-tier expressive button sizing (xs: 32px, sm: 40px, md: 56px, lg: 96px, xl: 136px) — lg/xl are meant for hero-style prominent buttons, not everyday UI" },
   { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
@@ -55,6 +56,18 @@ const buttonProps: PropDef[] = [
       <MButton icon="add">Create</MButton>
       <MButton variant="tonal" icon="edit">Edit</MButton>
       <MButton variant="outlined" icon="delete">Delete</MButton>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Trailing Icon"
+      description="iconPos='trailing' puts the icon after the label instead of before it — useful for a 'Next' or 'Open' style button."
+      :code="`<template>
+  <MButton icon=&quot;arrow_forward&quot; icon-pos=&quot;trailing&quot;>Next</MButton>
+  <MButton variant=&quot;outlined&quot; icon=&quot;open_in_new&quot; icon-pos=&quot;trailing&quot;>Open</MButton>
+</template>`"
+    >
+      <MButton icon="arrow_forward" icon-pos="trailing">Next</MButton>
+      <MButton variant="outlined" icon="open_in_new" icon-pos="trailing">Open</MButton>
     </ComponentDemo>
 
     <ComponentDemo
