@@ -14,6 +14,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.1',
+    date: '2026-09-20',
+    changes: {
+      fixed: [
+        'MTopAppBar\'s navigation icon (and trailing action icons) sat noticeably closer to the bar\'s edge than M3\'s real spacing — the row padding only accounted for the app bar\'s own edge padding, missing the extra invisible margin a real M3 icon button gets from its minimum touch-target size. Now corrected to the exact 16dp inset',
+      ],
+    },
+  },
+  {
     version: '0.8.0',
     date: '2026-09-18',
     changes: {
