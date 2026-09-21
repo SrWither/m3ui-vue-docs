@@ -28,6 +28,7 @@ const versions: Version[] = [
       added: [
         'MButton gained an iconPos prop (\'leading\' | \'trailing\', default \'leading\') so a button\'s icon can sit after the label instead of before it — useful for a "Next" or "Open" style button — matching a capability real M3 buttons already support',
         'New component: MShape — clips its content (or renders a filled shape with no content) into one of Material 3\'s 35 real "expressive" shapes (Cookie9Sided, Clover4Leaf, Gem, Sunny, Heart, and 30 more), fully responsive rather than locked to a fixed pixel size. Changing the shape prop spring-morphs into the new outline with real physics instead of a CSS transition, and a new speed prop tunes how fast that morph plays out',
+        'New component: MShortNavigationBar — Material 3 Expressive\'s shorter navigation bar (64dp vs. MNavigationBar\'s classic 80dp), with two real, independent options: arrangement (\'equal\' fills the bar edge to edge for small screens, \'centered\' groups items toward the middle for medium/landscape screens) and iconPosition (\'top\' stacks the icon above the label, \'start\' places it beside the label in one pill — typically paired with a centered arrangement)',
       ],
     },
   },
