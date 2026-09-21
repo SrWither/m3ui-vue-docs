@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MShape, MSelect, MSwitch, shapeNames } from '@m3ui-vue/m3ui-vue'
+import { MShape, MSelect, MSwitch, MSlider, shapeNames } from '@m3ui-vue/m3ui-vue'
 import type { ShapeName } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -9,8 +9,9 @@ import type { PropDef } from '@/components/PropsTable.vue'
 
 const shapeProps: PropDef[] = [
   { name: 'shape', type: 'ShapeName', description: "One of M3's 35 expressive shapes — e.g. 'Cookie9Sided', 'Clover4Leaf', 'Gem', 'Sunny', 'Heart'" },
-  { name: 'fill', type: 'string', default: "'currentColor'", description: 'Fill color used only when there is no default slot content (a decorative solid shape)' },
+  { name: 'fill', type: 'string', default: "'currentColor'", description: "SVG fill used only when there's no default slot content (a decorative solid shape) — not a background-color, so color it with a text-* class or the fill prop directly, not bg-*" },
   { name: 'animate', type: 'boolean', default: 'true', description: 'Spring-morph into the new outline when shape changes — false snaps instantly instead' },
+  { name: 'speed', type: 'number', default: '1', description: "Multiplier on the morph spring's speed. Scales stiffness/damping together so the spring keeps the same character, just faster or slower" },
 ]
 
 const cycle: ShapeName[] = ['Circle', 'Cookie9Sided', 'Gem', 'Clover4Leaf', 'Sunny', 'Heart']
@@ -18,6 +19,7 @@ const step = ref(0)
 
 const playShape = ref<ShapeName>('Cookie9Sided')
 const playAnimate = ref(true)
+const playSpeed = ref(1)
 const shapeOptions = shapeNames.map(s => ({ label: s, value: s }))
 </script>
 
@@ -34,7 +36,7 @@ const shapeOptions = shapeNames.map(s => ({ label: s, value: s }))
       description="Real spring physics per frame, not a CSS transition — click the shape."
       :code="`<template>
   <button @click=&quot;step++&quot;>
-    <MShape :shape=&quot;cycle[step % cycle.length]&quot; class=&quot;h-16 w-16 bg-tertiary&quot; />
+    <MShape :shape=&quot;cycle[step % cycle.length]&quot; class=&quot;h-32 w-32 text-tertiary&quot; />
   </button>
 </template>
 
@@ -44,39 +46,51 @@ const step = ref(0)
 <\/script>`"
     >
       <button type="button" class="cursor-pointer" @click="step++">
-        <MShape :shape="cycle[step % cycle.length]" class="h-16 w-16 bg-tertiary" />
+        <MShape :shape="cycle[step % cycle.length]" class="h-32 w-32 text-tertiary" />
       </button>
     </ComponentDemo>
 
     <ComponentDemo
-      title="Clip an Image"
-      description="With a default slot, MShape clips whatever's inside it — fully responsive, not locked to a fixed pixel box."
-      :code="`<MShape shape=&quot;Cookie9Sided&quot; class=&quot;h-16 w-16&quot;>
+      title="Clip Content"
+      description="With a default slot, MShape clips whatever's inside it — an image, a gradient, anything — fully responsive, not locked to a fixed pixel box."
+      :code="`<MShape shape=&quot;Cookie9Sided&quot; class=&quot;h-32 w-32&quot;>
   <img src=&quot;/avatar.jpg&quot; class=&quot;h-full w-full object-cover&quot; />
+</MShape>
+<MShape shape=&quot;Gem&quot; class=&quot;h-32 w-32&quot;>
+  <div class=&quot;h-full w-full bg-linear-to-br from-tertiary to-primary&quot; />
 </MShape>`"
     >
-      <div class="flex items-center gap-4">
-        <MShape shape="Cookie9Sided" class="h-16 w-16">
+      <div class="flex flex-wrap items-center gap-6">
+        <MShape shape="Cookie9Sided" class="h-32 w-32">
           <img src="https://picsum.photos/seed/m3ui/200" class="h-full w-full object-cover" />
         </MShape>
-        <MShape shape="Gem" class="h-16 w-16 bg-linear-to-br from-tertiary to-primary" />
-        <MShape shape="Clover4Leaf" class="h-16 w-16 bg-linear-to-br from-secondary to-primary" />
+        <MShape shape="Gem" class="h-32 w-32">
+          <div class="h-full w-full bg-linear-to-br from-tertiary to-primary" />
+        </MShape>
+        <MShape shape="Clover4Leaf" class="h-32 w-32">
+          <div class="h-full w-full bg-linear-to-br from-secondary to-primary" />
+        </MShape>
       </div>
     </ComponentDemo>
 
     <ComponentDemo
       title="Playground"
-      description="Pick a shape and toggle animate to feel the spring for yourself."
+      description="Pick a shape, tune the morph speed, and toggle animate to feel the spring for yourself."
       :code="`<template>
-  <MShape :shape=&quot;shape&quot; :animate=&quot;animate&quot; class=&quot;h-20 w-20 bg-primary&quot; />
+  <MShape :shape=&quot;shape&quot; :animate=&quot;animate&quot; :speed=&quot;speed&quot; class=&quot;h-20 w-20 text-primary&quot; />
   <MSelect v-model=&quot;shape&quot; :options=&quot;shapeOptions&quot; />
+  <MSlider v-model=&quot;speed&quot; :min=&quot;0.25&quot; :max=&quot;2&quot; :step=&quot;0.25&quot; />
   <MSwitch v-model=&quot;animate&quot; label=&quot;Animate&quot; />
 </template>`"
     >
-      <div class="flex w-full flex-col items-center gap-5">
-        <MShape :shape="playShape" :animate="playAnimate" class="h-20 w-20 bg-primary" />
-        <div class="flex flex-wrap items-center justify-center gap-4">
-          <MSelect v-model="playShape" :options="shapeOptions" label="Shape" class="w-44" />
+      <div class="flex w-full flex-col items-center gap-6">
+        <MShape :shape="playShape" :animate="playAnimate" :speed="playSpeed" class="h-20 w-20 text-primary" />
+        <div class="flex w-64 flex-col items-center gap-5">
+          <MSelect v-model="playShape" :options="shapeOptions" label="Shape" class="w-64" />
+          <div class="w-full">
+            <p class="mb-2 text-body-medium text-on-surface-variant">Speed: {{ playSpeed }}x</p>
+            <MSlider v-model="playSpeed" :min="0.25" :max="2" :step="0.25" />
+          </div>
           <MSwitch v-model="playAnimate" label="Animate" />
         </div>
       </div>
@@ -85,10 +99,12 @@ const step = ref(0)
     <ComponentDemo
       title="All 35 Shapes"
       description="The full MaterialShapes.kt catalog."
-      :code="`<MShape v-for=&quot;s in shapeNames&quot; :key=&quot;s&quot; :shape=&quot;s&quot; class=&quot;h-7 w-7 bg-primary&quot; />`"
+      :code="`<div class=&quot;bg-surface-container-highest&quot;>
+  <MShape v-for=&quot;s in shapeNames&quot; :key=&quot;s&quot; :shape=&quot;s&quot; class=&quot;h-20 w-20 text-primary&quot; />
+</div>`"
     >
-      <div class="flex flex-wrap gap-2.5">
-        <MShape v-for="s in shapeNames" :key="s" :shape="s" class="h-7 w-7 bg-primary" />
+      <div class="flex flex-wrap gap-4 rounded-2xl bg-surface-container-highest p-5">
+        <MShape v-for="s in shapeNames" :key="s" :shape="s" class="h-20 w-20 text-primary" />
       </div>
     </ComponentDemo>
 
