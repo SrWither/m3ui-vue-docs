@@ -10,6 +10,7 @@ const components = [
   { name: 'MStepper', description: 'A horizontal or vertical multi-step wizard.' },
   { name: 'MPagination', description: 'Previous/next page navigation with a computed range label.' },
   { name: 'MNavigationBar', description: 'A mobile bottom navigation bar with a pill indicator and badges.' },
+  { name: 'MShortNavigationBar', description: "M3 Expressive's shorter (64dp) navigation bar, with equal/centered arrangement and top/start icon position." },
   { name: 'MNavigationDrawer', description: 'A slide-out or inline drawer of grouped, nestable navigation items.' },
   { name: 'MNavigationRail', description: 'Compact vertical navigation with expanded and modal flyout variants.' },
   { name: 'MToolbar', description: 'Docked or floating container for grouping icon buttons, with an optional FAB.' },
