@@ -41,24 +41,21 @@ onMounted(() => {
   const TAU = Math.PI * 2
   function tick(now: number) {
     const t = (now - start) / 1000
-    // Rounded to whole pixels — Firefox's compositor visibly shimmers on large, low-contrast,
-    // blurred-looking elements (these are 10%-opacity 192-320px circles) driven by continuously
-    // varying sub-pixel transform values, even though the underlying motion is smooth math.
     if (blob1.value) {
-      const x = Math.round(Math.sin(t * (TAU / 13)) * 26)
-      const y = Math.round(Math.cos(t * (TAU / 9)) * 20)
+      const x = Math.sin(t * (TAU / 13)) * 26
+      const y = Math.cos(t * (TAU / 9)) * 20
       const s = 1 + Math.sin(t * (TAU / 7)) * 0.06
       blob1.value.style.transform = `translate(${x}px, ${y}px) scale(${s})`
     }
     if (blob2.value) {
-      const x = Math.round(Math.cos(t * (TAU / 15)) * -22)
-      const y = Math.round(Math.sin(t * (TAU / 11)) * 18)
+      const x = Math.cos(t * (TAU / 15)) * -22
+      const y = Math.sin(t * (TAU / 11)) * 18
       const s = 1 + Math.cos(t * (TAU / 8.5)) * 0.08
       blob2.value.style.transform = `translate(${x}px, ${y}px) scale(${s})`
     }
     if (blob3.value) {
-      const x = Math.round(Math.sin(t * (TAU / 18) + 1) * 20)
-      const y = Math.round(Math.cos(t * (TAU / 12.5) + 1) * 16)
+      const x = Math.sin(t * (TAU / 18) + 1) * 20
+      const y = Math.cos(t * (TAU / 12.5) + 1) * 16
       const s = 1 + Math.sin(t * (TAU / 10)) * 0.1
       blob3.value.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${s})`
     }
@@ -153,9 +150,9 @@ const categories = [
     <!-- ══ HERO ══════════════════════════════════════════════════ -->
     <section class="relative overflow-hidden rounded-2xl bg-primary-container px-6 py-16 text-center md:px-12 md:py-20">
       <div class="absolute inset-0 opacity-10">
-        <div ref="blob1" class="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary will-change-transform" />
-        <div ref="blob2" class="absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-tertiary will-change-transform" />
-        <div ref="blob3" class="absolute top-1/2 left-1/2 h-48 w-48 rounded-full bg-secondary will-change-transform" style="transform: translate(-50%, -50%)" />
+        <div ref="blob1" class="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary" />
+        <div ref="blob2" class="absolute -right-16 -bottom-16 h-80 w-80 rounded-full bg-tertiary" />
+        <div ref="blob3" class="absolute top-1/2 left-1/2 h-48 w-48 rounded-full bg-secondary" style="transform: translate(-50%, -50%)" />
       </div>
 
       <MStack align="center" gap="md" class="relative">
