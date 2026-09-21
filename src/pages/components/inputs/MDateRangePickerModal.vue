@@ -17,7 +17,7 @@ const dateRangePickerModalProps: PropDef[] = [
   { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
   { name: 'min', type: 'string', description: 'Minimum selectable date (YYYY-MM-DD)' },
   { name: 'max', type: 'string', description: 'Maximum selectable date (YYYY-MM-DD)' },
-  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'locale', type: 'string', description: "Locale for month/day names. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'title', type: 'string', default: "'Select range'", description: 'Dialog title' },
 ]
 
@@ -49,7 +49,7 @@ const dateRangePickerModalEvents: EventDef[] = [
           {{ dateRangeModalVal.start }} → {{ dateRangeModalVal.end ?? '...' }}
         </span>
       </div>
-      <MDateRangePickerModal v-model="dateRangeModalVal" v-model:show="showDateRangePicker" locale="en-US" />
+      <MDateRangePickerModal v-model="dateRangeModalVal" v-model:show="showDateRangePicker" />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>

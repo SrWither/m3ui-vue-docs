@@ -16,7 +16,7 @@ const datePickerModalProps: PropDef[] = [
   { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
   { name: 'min', type: 'string', description: 'Minimum selectable date (YYYY-MM-DD)' },
   { name: 'max', type: 'string', description: 'Maximum selectable date (YYYY-MM-DD)' },
-  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'locale', type: 'string', description: "Locale for month/day names. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'title', type: 'string', default: "'Select date'", description: 'Dialog title' },
 ]
 
@@ -46,7 +46,7 @@ const datePickerModalEvents: EventDef[] = [
         <MButton @click="showDatePicker = true">Pick date</MButton>
         <span v-if="dateModalVal" class="text-body-medium text-on-surface-variant">{{ dateModalVal }}</span>
       </div>
-      <MDatePickerModal v-model="dateModalVal" v-model:show="showDatePicker" locale="en-US" />
+      <MDatePickerModal v-model="dateModalVal" v-model:show="showDatePicker" />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>

@@ -21,7 +21,7 @@ const dateRangeProps: PropDef[] = [
   { name: 'error', type: 'boolean', description: 'Error state' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Hint text below the field' },
-  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'locale', type: 'string', description: "Locale for month/day names. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'fieldBg', type: 'string', description: 'Overrides the auto-detected background color used to cut the floating label out of the border' },
   { name: 'prevMonthLabel', type: 'string', description: "Aria label for the previous-month button — defaults to the current locale's string" },
   { name: 'nextMonthLabel', type: 'string', description: "Aria label for the next-month button — defaults to the current locale's string" },
@@ -56,7 +56,7 @@ const dateRangeTypes: TypeDef[] = [
 </template>`"
     >
       <div class="w-full max-w-sm">
-        <MDateRangePicker v-model="dateRange" label="Period" locale="en-US" />
+        <MDateRangePicker v-model="dateRange" label="Period" />
       </div>
       <p v-if="dateRange.start" class="mt-2 text-body-medium text-on-surface-variant">
         {{ dateRange.start }} — {{ dateRange.end ?? '...' }}

@@ -19,7 +19,7 @@ const datePickerProps: PropDef[] = [
   { name: 'error', type: 'boolean', description: 'Error state' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'hint', type: 'string', description: 'Hint text below the field' },
-  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/day names' },
+  { name: 'locale', type: 'string', description: "Locale for month/day names. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'fieldBg', type: 'string', description: 'Overrides the auto-detected background color used to cut the floating label out of the border' },
   { name: 'prevMonthLabel', type: 'string', description: "Aria label for the previous-month button — defaults to the current locale's string" },
   { name: 'nextMonthLabel', type: 'string', description: "Aria label for the next-month button — defaults to the current locale's string" },
@@ -35,13 +35,13 @@ const datePickerProps: PropDef[] = [
 
     <ComponentDemo
       title="Date Picker"
-      description="Calendar-based date selection with locale support."
+      description="Calendar-based date selection. Month/day names follow the app's configured locale by default (left), or pass locale to override it independently (right)."
       :code="`<template>
   <MDatePicker v-model=&quot;date&quot; label=&quot;Birthday&quot; />
 </template>`"
     >
       <div class="grid w-full gap-4 sm:grid-cols-2">
-        <MDatePicker v-model="dateVal" label="Fecha" />
+        <MDatePicker v-model="dateVal" label="Date" />
         <MDatePicker v-model="dateVal" label="Date (en)" locale="en-US" />
       </div>
     </ComponentDemo>
@@ -52,7 +52,7 @@ const datePickerProps: PropDef[] = [
       :code="`<MDatePicker v-model=&quot;date&quot; label=&quot;Appointment&quot; min=&quot;2026-01-01&quot; max=&quot;2026-12-31&quot; />`"
     >
       <div class="w-full sm:w-80">
-        <MDatePicker v-model="dateMinMax" label="Appointment" min="2026-01-01" max="2026-12-31" locale="en-US" hint="Only 2026 dates are selectable" />
+        <MDatePicker v-model="dateMinMax" label="Appointment" min="2026-01-01" max="2026-12-31" hint="Only 2026 dates are selectable" />
       </div>
     </ComponentDemo>
 

@@ -19,7 +19,7 @@ const calendarEvents: CalendarEvent[] = [
 
 const calendarProps: PropDef[] = [
   { name: 'events', type: 'CalendarEvent[]', default: '[]', description: 'Array of events to render on the grid (see the type below)' },
-  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for month/weekday names, via Intl.DateTimeFormat' },
+  { name: 'locale', type: 'string', description: "Locale for month/weekday names, via Intl.DateTimeFormat. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'todayLabel', type: 'string', description: "Label for the Today button — falls back to the locale's own string when unset" },
   { name: 'prevMonthLabel', type: 'string', description: "Aria label for the previous-month button — falls back to the locale's own string when unset" },
   { name: 'nextMonthLabel', type: 'string', description: "Aria label for the next-month button — falls back to the locale's own string when unset" },
@@ -53,8 +53,8 @@ const calendarTypes: TypeDef[] = [
 
     <ComponentDemo
       title="Calendar with Events"
-      description="Monthly calendar view with color-coded events and icons."
-      :code="`<MCalendar :events=&quot;events&quot; locale=&quot;en-US&quot; />`"
+      description="Monthly calendar view with color-coded events and icons. Month/weekday names follow the app's configured locale automatically (try the language switcher)."
+      :code="`<MCalendar :events=&quot;events&quot; />`"
       :script="`import type { CalendarEvent } from '@m3ui-vue/m3ui-vue'
 
 const events: CalendarEvent[] = [
@@ -65,7 +65,7 @@ const events: CalendarEvent[] = [
 ]`"
     >
       <div class="w-full">
-        <MCalendar :events="calendarEvents" locale="en-US" />
+        <MCalendar :events="calendarEvents" />
       </div>
     </ComponentDemo>
 
@@ -82,7 +82,6 @@ const events: CalendarEvent[] = [
       <div class="w-full">
         <MCalendar
           :events="calendarEvents"
-          locale="en-US"
           today-label="Jump to today"
           prev-month-label="Go back a month"
           next-month-label="Go forward a month"

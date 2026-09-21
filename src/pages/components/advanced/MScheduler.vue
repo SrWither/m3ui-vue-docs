@@ -35,7 +35,7 @@ const schedulerProps: PropDef[] = [
   { name: 'view', type: "'week' | 'day'", default: "'week'", description: 'View mode' },
   { name: 'startHour', type: 'number', default: '7', description: 'First visible hour on the grid' },
   { name: 'endHour', type: 'number', default: '22', description: 'Last visible hour on the grid' },
-  { name: 'locale', type: 'string', default: "'es-ES'", description: 'Locale for date/time formatting, via Intl.DateTimeFormat' },
+  { name: 'locale', type: 'string', description: "Locale for date/time formatting, via Intl.DateTimeFormat. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'prevLabel', type: 'string', description: "Aria label for the previous-navigation button — falls back to the locale's own string when unset" },
   { name: 'nextLabel', type: 'string', description: "Aria label for the next-navigation button — falls back to the locale's own string when unset" },
   { name: 'todayLabel', type: 'string', description: "Label for the Today button — falls back to the locale's own string when unset" },
@@ -71,8 +71,8 @@ const schedulerTypes: TypeDef[] = [
 
     <ComponentDemo
       title="Weekly Scheduler"
-      description="Week view scheduler with time-based events. Events are placed on the grid based on their start/end ISO datetimes."
-      :code="`<MScheduler :events=&quot;events&quot; view=&quot;week&quot; :start-hour=&quot;8&quot; :end-hour=&quot;18&quot; locale=&quot;en-US&quot; />`"
+      description="Week view scheduler with time-based events. Events are placed on the grid based on their start/end ISO datetimes. Date/time formatting follows the app's configured locale automatically (try the language switcher)."
+      :code="`<MScheduler :events=&quot;events&quot; view=&quot;week&quot; :start-hour=&quot;8&quot; :end-hour=&quot;18&quot; />`"
       :script="`import type { SchedulerEvent } from '@m3ui-vue/m3ui-vue'
 
 function getWeekDate(dayOffset: number, hour: number, min = 0) {
@@ -91,17 +91,17 @@ const events: SchedulerEvent[] = [
 ]`"
     >
       <div class="w-full">
-        <MScheduler :events="schedulerEvents" view="week" :start-hour="8" :end-hour="18" locale="en-US" />
+        <MScheduler :events="schedulerEvents" view="week" :start-hour="8" :end-hour="18" />
       </div>
     </ComponentDemo>
 
     <ComponentDemo
       title="Day View"
       description="view='day' collapses the grid to a single column for the current day — the Day/Week toggle in the header lets the user switch at runtime too."
-      :code="`<MScheduler :events=&quot;events&quot; view=&quot;day&quot; :start-hour=&quot;8&quot; :end-hour=&quot;18&quot; locale=&quot;en-US&quot; />`"
+      :code="`<MScheduler :events=&quot;events&quot; view=&quot;day&quot; :start-hour=&quot;8&quot; :end-hour=&quot;18&quot; />`"
     >
       <div class="w-full">
-        <MScheduler :events="todayEvents" view="day" :start-hour="8" :end-hour="18" locale="en-US" />
+        <MScheduler :events="todayEvents" view="day" :start-hour="8" :end-hour="18" />
       </div>
     </ComponentDemo>
 

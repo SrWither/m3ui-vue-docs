@@ -19,6 +19,7 @@ const versions: Version[] = [
     changes: {
       fixed: [
         'MTopAppBar\'s navigation icon (and trailing action icons) sat noticeably closer to the bar\'s edge than M3\'s real spacing — the row padding only accounted for the app bar\'s own edge padding, missing the extra invisible margin a real M3 icon button gets from its minimum touch-target size. Now corrected to the exact 16dp inset',
+        'MCalendar, MScheduler, MDatePicker, MDatePickerModal, MDateRangePicker, and MDateRangePickerModal ignored the app\'s configured locale entirely — their month/weekday/time formatting used a hardcoded Spanish default instead of following createM3UI({ locale }) the way MRelativeTime already did. Now all six follow the app\'s active locale automatically (still overridable per-instance via their own locale prop)',
       ],
     },
   },
