@@ -413,30 +413,49 @@ const categories = [
 </template>
 
 <style>
+/* Many evenly-spaced waypoints tracing a smooth loop, animated with `linear` — a small
+   number of `ease-in-out` waypoints decelerates to a dead stop and re-accelerates at every
+   single one of them (that's what "tremble" was: a visible stall + jerk each ~3-4s), since
+   ease-in-out's zero-velocity endpoints apply per *segment*, not just at the animation's own
+   start/end. Piecewise-linear through enough points reads as continuous, flowing motion. */
 @keyframes hero-float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -20px) scale(1.05); }
-  50% { transform: translate(-20px, 15px) scale(0.95); }
-  75% { transform: translate(15px, 25px) scale(1.08); }
+  0%   { transform: translate(0px, 0px) scale(1); }
+  12.5%  { transform: translate(16px, -12px) scale(1.02); }
+  25%  { transform: translate(28px, -19px) scale(1.05); }
+  37.5%  { transform: translate(18px, -6px) scale(1.03); }
+  50%  { transform: translate(-8px, 10px) scale(0.98); }
+  62.5%  { transform: translate(-20px, 17px) scale(0.95); }
+  75%  { transform: translate(2px, 24px) scale(1.03); }
+  87.5%  { transform: translate(14px, 14px) scale(1.06); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 @keyframes hero-float-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(-25px, 20px) scale(1.1); }
-  50% { transform: translate(20px, -15px) scale(0.92); }
-  75% { transform: translate(-10px, -25px) scale(1.05); }
+  0%   { transform: translate(0px, 0px) scale(1); }
+  12.5%  { transform: translate(-14px, 11px) scale(1.04); }
+  25%  { transform: translate(-24px, 19px) scale(1.1); }
+  37.5%  { transform: translate(-8px, 8px) scale(1.03); }
+  50%  { transform: translate(14px, -10px) scale(0.95); }
+  62.5%  { transform: translate(20px, -16px) scale(0.92); }
+  75%  { transform: translate(2px, -22px) scale(0.98); }
+  87.5%  { transform: translate(-10px, -12px) scale(1.05); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 @keyframes hero-float-3 {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  33% { transform: translate(calc(-50% + 25px), calc(-50% - 20px)) scale(1.12); }
-  66% { transform: translate(calc(-50% - 20px), calc(-50% + 15px)) scale(0.9); }
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  16.6%  { transform: translate(calc(-50% + 16px), calc(-50% - 12px)) scale(1.06); }
+  33%  { transform: translate(calc(-50% + 24px), calc(-50% - 19px)) scale(1.12); }
+  50%  { transform: translate(calc(-50% + 4px), calc(-50% - 2px)) scale(1.04); }
+  66%  { transform: translate(calc(-50% - 19px), calc(-50% + 14px)) scale(0.9); }
+  83.3%  { transform: translate(calc(-50% - 8px), calc(-50% + 20px)) scale(0.96); }
+  100% { transform: translate(-50%, -50%) scale(1); }
 }
 .hero-blob {
-  animation: hero-float 12s ease-in-out infinite;
+  animation: hero-float 12s linear infinite;
 }
 .hero-blob-2 {
-  animation: hero-float-2 15s ease-in-out infinite;
+  animation: hero-float-2 15s linear infinite;
 }
 .hero-blob-3 {
-  animation: hero-float-3 18s ease-in-out infinite;
+  animation: hero-float-3 18s linear infinite;
 }
 </style>
