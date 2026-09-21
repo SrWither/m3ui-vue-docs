@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MShape } from '@m3ui-vue/m3ui-vue'
+import { MShape, MSelect, MSwitch, shapeNames } from '@m3ui-vue/m3ui-vue'
 import type { ShapeName } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -16,8 +16,9 @@ const shapeProps: PropDef[] = [
 const cycle: ShapeName[] = ['Circle', 'Cookie9Sided', 'Gem', 'Clover4Leaf', 'Sunny', 'Heart']
 const step = ref(0)
 
-const rowShapes: ShapeName[] = ['Pentagon', 'Bun', 'Flower', 'Boom', 'Oval', 'Arrow']
-const rowHover = ref<ShapeName | null>(null)
+const playShape = ref<ShapeName>('Cookie9Sided')
+const playAnimate = ref(true)
+const shapeOptions = shapeNames.map(s => ({ label: s, value: s }))
 </script>
 
 <template>
@@ -33,7 +34,7 @@ const rowHover = ref<ShapeName | null>(null)
       description="Real spring physics per frame, not a CSS transition — click the shape."
       :code="`<template>
   <button @click=&quot;step++&quot;>
-    <MShape :shape=&quot;cycle[step % cycle.length]&quot; class=&quot;h-16 w-16 bg-primary&quot; />
+    <MShape :shape=&quot;cycle[step % cycle.length]&quot; class=&quot;h-16 w-16 bg-tertiary&quot; />
   </button>
 </template>
 
@@ -43,7 +44,7 @@ const step = ref(0)
 <\/script>`"
     >
       <button type="button" class="cursor-pointer" @click="step++">
-        <MShape :shape="cycle[step % cycle.length]" class="h-16 w-16 bg-primary" />
+        <MShape :shape="cycle[step % cycle.length]" class="h-16 w-16 bg-tertiary" />
       </button>
     </ComponentDemo>
 
@@ -58,30 +59,36 @@ const step = ref(0)
         <MShape shape="Cookie9Sided" class="h-16 w-16">
           <img src="https://picsum.photos/seed/m3ui/200" class="h-full w-full object-cover" />
         </MShape>
-        <MShape shape="Gem" class="h-16 w-16 bg-linear-to-br from-primary to-tertiary" />
-        <MShape shape="Clover4Leaf" class="h-16 w-16 bg-linear-to-br from-secondary to-tertiary" />
+        <MShape shape="Gem" class="h-16 w-16 bg-linear-to-br from-tertiary to-primary" />
+        <MShape shape="Clover4Leaf" class="h-16 w-16 bg-linear-to-br from-secondary to-primary" />
       </div>
     </ComponentDemo>
 
     <ComponentDemo
-      title="A Few More"
-      description="A sample of the 35 available shapes — hover one."
-      :code="`<MShape
-  v-for=&quot;s in shapes&quot; :key=&quot;s&quot;
-  :shape=&quot;hovered === s ? 'Circle' : s&quot;
-  class=&quot;h-9 w-9 bg-on-surface-variant&quot;
-  @mouseenter=&quot;hovered = s&quot; @mouseleave=&quot;hovered = null&quot;
-/>`"
+      title="Playground"
+      description="Pick a shape and toggle animate to feel the spring for yourself."
+      :code="`<template>
+  <MShape :shape=&quot;shape&quot; :animate=&quot;animate&quot; class=&quot;h-20 w-20 bg-primary&quot; />
+  <MSelect v-model=&quot;shape&quot; :options=&quot;shapeOptions&quot; />
+  <MSwitch v-model=&quot;animate&quot; label=&quot;Animate&quot; />
+</template>`"
     >
-      <div class="flex flex-wrap gap-3">
-        <MShape
-          v-for="s in rowShapes"
-          :key="s"
-          :shape="rowHover === s ? 'Circle' : s"
-          class="h-9 w-9 cursor-pointer bg-on-surface-variant"
-          @mouseenter="rowHover = s"
-          @mouseleave="rowHover = null"
-        />
+      <div class="flex w-full flex-col items-center gap-5">
+        <MShape :shape="playShape" :animate="playAnimate" class="h-20 w-20 bg-primary" />
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <MSelect v-model="playShape" :options="shapeOptions" label="Shape" class="w-44" />
+          <MSwitch v-model="playAnimate" label="Animate" />
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="All 35 Shapes"
+      description="The full MaterialShapes.kt catalog."
+      :code="`<MShape v-for=&quot;s in shapeNames&quot; :key=&quot;s&quot; :shape=&quot;s&quot; class=&quot;h-7 w-7 bg-primary&quot; />`"
+    >
+      <div class="flex flex-wrap gap-2.5">
+        <MShape v-for="s in shapeNames" :key="s" :shape="s" class="h-7 w-7 bg-primary" />
       </div>
     </ComponentDemo>
 
