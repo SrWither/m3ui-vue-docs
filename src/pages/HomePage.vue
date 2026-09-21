@@ -96,7 +96,7 @@ const categories = [
   { label: 'Inputs & Forms', icon: 'input', count: 23, to: '/components/inputs' },
   { label: 'Data Display', icon: 'dashboard', count: 20, to: '/components/data-display' },
   { label: 'Feedback', icon: 'feedback', count: 11, to: '/components/feedback' },
-  { label: 'Navigation', icon: 'menu_open', count: 12, to: '/components/navigation' },
+  { label: 'Navigation', icon: 'menu_open', count: 13, to: '/components/navigation' },
   { label: 'Layout', icon: 'grid_view', count: 26, to: '/components/layout' },
   { label: 'Overlays', icon: 'layers', count: 5, to: '/components/overlays' },
   { label: 'Tables', icon: 'table_chart', count: 4, to: '/components/tables' },
