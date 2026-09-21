@@ -24,6 +24,9 @@ const versions: Version[] = [
         'MKanban\'s empty-column text was hardcoded in Spanish regardless of locale — while fixing that, found the same bug in MTree (its emptyText prop defaulted to a hardcoded Spanish string instead of following the locale) and MTreeTable (hardcoded text with no override prop at all). All three now follow the app\'s configured locale by default, same as the rest of the library, with emptyText still available as a per-instance override',
         'MCodeEditor: selecting text on the current line made the selection invisible — the active-line highlight was a fully opaque color painted over CodeMirror\'s selection layer, which renders behind the line content by design. The active-line highlight is now a subtle translucent tint instead, so a selection on that line shows through it correctly',
       ],
+      added: [
+        'MButton gained an iconPos prop (\'leading\' | \'trailing\', default \'leading\') so a button\'s icon can sit after the label instead of before it — useful for a "Next" or "Open" style button — matching a capability real M3 buttons already support',
+      ],
     },
   },
   {
