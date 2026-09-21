@@ -23,6 +23,7 @@ const favorite = ref(false)
 const bold = ref(true)
 const italic = ref(false)
 const underline = ref(false)
+const elevated = ref(true)
 </script>
 
 <template>
@@ -55,13 +56,14 @@ const underline = ref(false)
   <MToggleButton v-model:checked=&quot;bold&quot; variant=&quot;filled&quot; icon=&quot;format_bold&quot; />
   <MToggleButton v-model:checked=&quot;italic&quot; variant=&quot;tonal&quot; icon=&quot;format_italic&quot; />
   <MToggleButton v-model:checked=&quot;underline&quot; variant=&quot;outlined&quot; icon=&quot;format_underlined&quot; />
+  <MToggleButton v-model:checked=&quot;elevated&quot; variant=&quot;elevated&quot; icon=&quot;star&quot; />
 </template>`"
     >
       <div class="flex flex-wrap items-center gap-3">
         <MToggleButton v-model:checked="bold" variant="filled" icon="format_bold">Bold</MToggleButton>
         <MToggleButton v-model:checked="italic" variant="tonal" icon="format_italic">Italic</MToggleButton>
         <MToggleButton v-model:checked="underline" variant="outlined" icon="format_underlined">Underline</MToggleButton>
-        <MToggleButton :checked="true" variant="elevated" icon="star">Elevated</MToggleButton>
+        <MToggleButton v-model:checked="elevated" variant="elevated" icon="star">Elevated</MToggleButton>
       </div>
     </ComponentDemo>
 
