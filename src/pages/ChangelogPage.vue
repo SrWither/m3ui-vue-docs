@@ -3,6 +3,7 @@ import { MStack, MFlex, MChip, MIcon, MDivider, MCard } from '@m3ui-vue/m3ui-vue
 
 interface ChangeEntry {
   added?: string[]
+  changed?: string[]
   fixed?: string[]
 }
 
@@ -26,11 +27,15 @@ const versions: Version[] = [
         'MSelect, MAutocomplete, MMultiSelect, MMultiAutocomplete, and MSearchBar silently dropped any class (or other attribute) passed to them — each one\'s template renders the visible field and its dropdown/panel as two separate root elements, which Vue doesn\'t auto-forward attributes to without extra wiring these five were missing. In practice this meant something like a fixed-width class had no effect, and the field would silently resize itself based on its own content instead (e.g. the selected option\'s label length). All five now forward class/attrs correctly',
         'The Monochrome palette wasn\'t actually pure black-and-white despite the docs saying so — its primary and surface colors were near-black/near-white grays rather than true #000/#fff. Corrected to genuinely pure black and white for those roles',
       ],
+      changed: [
+        'Breaking: MCarousel (the old fixed-width slide carousel) is renamed to MSimpleCarousel — MCarousel now names the real M3 multi-browse carousel described below, and both couldn\'t keep the same name. Update your import if you were using the old fixed-width one',
+      ],
       added: [
         'MButton gained an iconPos prop (\'leading\' | \'trailing\', default \'leading\') so a button\'s icon can sit after the label instead of before it — useful for a "Next" or "Open" style button — matching a capability real M3 buttons already support',
         'New component: MShape — clips its content (or renders a filled shape with no content) into one of Material 3\'s 35 real "expressive" shapes (Cookie9Sided, Clover4Leaf, Gem, Sunny, Heart, and 30 more), fully responsive rather than locked to a fixed pixel size. Changing the shape prop spring-morphs into the new outline with real physics instead of a CSS transition, and a new speed prop tunes how fast that morph plays out',
         'New component: MShortNavigationBar — Material 3 Expressive\'s shorter navigation bar (64dp vs. MNavigationBar\'s classic 80dp), with two real, independent options: arrangement (\'equal\' fills the bar edge to edge for small screens, \'centered\' groups items toward the middle for medium/landscape screens) and iconPosition (\'top\' stacks the icon above the label, \'start\' places it beside the label in one pill — typically paired with a centered arrangement)',
         'New component: MToggleButton — Material 3 Expressive\'s standalone toggle button (filled/tonal/elevated/outlined variants, matching MButton\'s naming). Distinct from MSegmentedButton/MButtonGroup, which are groups of options — this is a single button. Morphs its own corner radius on a real spring between a full pill (unchecked), a squared corner (checked), and an even tighter squeeze while actively pressed, and swaps to genuinely different color tokens on check rather than just a highlighted version of the same color',
+        'MCarousel is now the real M3 multi-browse carousel — one large focal item at rest, with neighboring items continuously masked and resized toward a small "peek" size the further they scroll from the focal position, instead of fixed-size slides. Real defaults ported exactly: minSmallItemWidth/maxSmallItemWidth default to 40/56, itemSpacing defaults to 0, and the focal item sits at the scroll container\'s left edge rather than centered',
       ],
     },
   },
@@ -754,6 +759,24 @@ function isMajorMinor(v: Version) {
                   class="flex items-start gap-2 text-body-medium text-on-surface-variant"
                 >
                   <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-tertiary" />
+                  {{ item }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Changed -->
+            <div v-if="entry.changes.changed?.length">
+              <MFlex align="center" gap="xs" class="mb-2">
+                <MIcon name="swap_horiz" :size="16" class="text-primary" />
+                <span class="text-label-medium font-medium text-primary">Changed</span>
+              </MFlex>
+              <ul class="space-y-1 pl-1">
+                <li
+                  v-for="item in entry.changes.changed"
+                  :key="item"
+                  class="flex items-start gap-2 text-body-medium text-on-surface-variant"
+                >
+                  <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   {{ item }}
                 </li>
               </ul>
