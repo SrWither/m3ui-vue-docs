@@ -15,6 +15,31 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.2',
+    date: '2026-09-21',
+    changes: {
+      fixed: [
+        'MMenu and MContextMenu submenus were effectively unusable on touch — tapping an item inside a submenu could close the submenu before the tap actually registered on it, because the submenu opened and closed purely off desktop hover events, and touch taps fire a hover-exit signal on the parent item first. Hover handling now ignores touch/pen entirely, and tapping (or pressing Enter/Space on) a parent item toggles its submenu directly, giving touch and keyboard users a real way to open one instead of relying on hover alone',
+        'A menu nested inside another menu\'s own content (e.g. a "Language" or "Color palette" picker menu living inside a "More options" overflow menu, like the one in this site\'s own navbar) — clicking anything inside the nested menu closed the outer one first, before the click could apply, so the pick silently never took effect. Both render their popup independently at the very end of the page, so the outer menu had no way to tell a click inside the nested one apart from a click truly outside — now fixed for any nesting depth',
+        'MSpotlightSearch and MCommandPalette: having more than one of either mounted at the same time (e.g. an app-wide spotlight search plus a page that also demos the component) meant a single keypress opened all of them at once, since each listens for its own hotkey independently with no awareness of the others. Now only the first one to see the keypress opens',
+        'The push submenu navigation (submenuMode="push") didn\'t actually animate — the new level would just appear with no slide at all. Rewritten to drive the motion directly instead of relying on the framework\'s CSS-class-based transition system, which wasn\'t reliably completing in this particular setup',
+        'Grouped panels in the expressive menu variant had their shadow clipped on the left/right edges, and each group\'s background read as a slightly different, inconsistent shade next to the rest of the menu. Both fixed — groups now get proper breathing room for their shadow and match the menu\'s own background exactly',
+        'Two sibling menus sharing the same parent (like "Language" and "Color palette" both living inside the same "More options" overflow menu) could end up open at the same time — a side effect of the nested-menu fix above. Opening one now correctly closes any other already-open sibling under that same parent, without affecting unrelated menus elsewhere on the page',
+        'MMenu and MContextMenu\'s close animation still looked like an abrupt snap rather than a smooth shrink — the previous fix for this (0.8.1) used the wrong kind of motion curve entirely (a fixed-duration easing curve standing in for what\'s actually a physics-based spring in the real design system). Porting the spring faithfully still wasn\'t enough on its own: the fade-out settles faster than the shrink, so the panel was going invisible before the shrink even finished — you never actually saw it. Close is now the literal reverse playback of the open animation, so the shrink stays visible the whole time and mirrors open exactly',
+        'That same open/close animation flickered when toggled quickly (tapping to open and close repeatedly) — the animation in flight wasn\'t being stopped before a new one started, so two competing animations ran at once, each fighting over the same visual state every frame. It now always stops the previous one first, and picks up smoothly from wherever it currently was instead of snapping back to a fixed starting point',
+        'The close animation also had a noticeable pause before anything visibly happened — the tail end of the recorded motion (reused in reverse for close, see above) included a stretch that\'s already visually identical to fully open even though it\'s technically still settling, and reversed that landed right at the start of close as dead time before any real movement. Trimmed to where it\'s actually visually done instead',
+      ],
+      changed: [
+        'MMenu used to keep repositioning itself to follow its trigger while the page scrolled, only closing once the trigger scrolled fully offscreen. Now it closes immediately on scroll instead, matching MSelect/MAutocomplete/MMultiSelect and MContextMenu, which already worked that way',
+      ],
+      added: [
+        'MMenu and MContextMenu gained a submenuMode prop (\'flyout\' | \'push\', default \'flyout\', unchanged from before). \'push\' is a mobile-friendly alternative to the hover flyout: tapping an item with a submenu replaces the menu\'s own content in place with the submenu and a back header, instead of opening a separate side panel — works at any nesting depth, with a real directional slide (the new level slides in while the old one slides out, reversed when going back) rather than a static swap, and Escape (or the back row) stepping up one level at a time',
+        'MMenuItem gained a keepOpen prop (default false) for checkable/toggle items — when set, clicking the item no longer closes the menu, so a "Columns" or "Sort by" style menu can stay open while the user picks several options',
+        'MMenu and MContextMenu gained a variant prop (\'standard\' | \'expressive\', default \'standard\', unchanged from before). \'expressive\' switches Material 3\'s square-ish baseline corners for its newer, rounder "vertical menu" styling — pair it with a new gap prop on MMenuDivider (a no-op outside an expressive menu) to split the panel at that divider into two separately rounded, separately elevated groups with a visible gap between them, instead of an in-line divider line',
+      ],
+    },
+  },
+  {
     version: '0.8.1',
     date: '2026-09-20',
     changes: {
