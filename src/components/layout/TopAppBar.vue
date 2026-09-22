@@ -112,19 +112,20 @@ const themeLabel = computed(() => {
                 <button
                   type="button"
                   class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-all duration-150 hover:scale-110"
-                  :class="
+                  :class="[
                     palette === p.id
                       ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface'
-                      : ''
-                  "
-                  :style="{ backgroundColor: p.seed }"
+                      : '',
+                    p.id === 'monochrome' ? 'bg-black dark:bg-white' : '',
+                  ]"
+                  :style="p.id === 'monochrome' ? {} : { backgroundColor: p.seed }"
                   @click="setPalette(p.id)"
                 >
                   <MIcon
                     v-if="palette === p.id"
                     name="check"
                     :size="18"
-                    class="text-white"
+                    :class="p.id === 'monochrome' ? 'text-white dark:text-black' : 'text-white'"
                   />
                 </button>
               </MTooltip>
@@ -298,19 +299,20 @@ const themeLabel = computed(() => {
                     <button
                       type="button"
                       class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-all duration-150 hover:scale-110"
-                      :class="
+                      :class="[
                         palette === p.id
                           ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface'
-                          : ''
-                      "
-                      :style="{ backgroundColor: p.seed }"
+                          : '',
+                        p.id === 'monochrome' ? 'bg-black dark:bg-white' : '',
+                      ]"
+                      :style="p.id === 'monochrome' ? {} : { backgroundColor: p.seed }"
                       @click="setPalette(p.id)"
                     >
                       <MIcon
                         v-if="palette === p.id"
                         name="check"
                         :size="18"
-                        class="text-white"
+                        :class="p.id === 'monochrome' ? 'text-white dark:text-black' : 'text-white'"
                       />
                     </button>
                   </MTooltip>
