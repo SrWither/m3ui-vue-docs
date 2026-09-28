@@ -37,6 +37,7 @@ const staticPaths = [
   '/examples',
   '/examples/apps',
   '/styles/palettes',
+  '/styles/typography',
   '/styles/palette-builder',
   '/changelog',
 ]
