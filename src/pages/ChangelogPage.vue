@@ -24,6 +24,8 @@ const versions: Version[] = [
       fixed: [
         'Changing --font-sans to use a different font didn\'t reach every component — MChart (legend, tooltips) and MCircleProgressBar (percentage label) had Roboto hardcoded, and MCodeEditor/MMarkdown had Roboto Mono hardcoded. All of them now follow the font tokens, and MChart also picks up a font changed at runtime and redraws once web fonts finish loading',
         'MChart\'s axis labels and radar labels didn\'t use the app font at all — they rendered in Chart.js\'s own default (Helvetica). They now match the rest of the chart',
+        'MCodeEditor never actually showed Roboto Mono — CodeMirror\'s own base styles forced a generic monospace font on the inner scroll area, overriding the font set on the editor. Code now renders in the --font-mono font (Roboto Mono by default)',
+        'Scrolling inside a menu that lives inside another menu (like a long list in a submenu, or anything inside a mobile "More options" menu) closed the whole menu — the outer menu took the scroll for one outside it. Scrolling inside any nested menu now keeps them open. MContextMenu, which closed on any scroll at all (even inside itself), gets the same fix',
       ],
     },
   },

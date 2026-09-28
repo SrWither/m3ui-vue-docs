@@ -154,7 +154,7 @@ const themeLabel = computed(() => {
             />
           </template>
 
-          <div class="max-h-[70vh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto px-2 py-2">
+          <div class="max-h-[70vh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain px-2 py-2">
             <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
               Font
             </p>
@@ -415,7 +415,7 @@ const themeLabel = computed(() => {
                 </button>
               </template>
 
-              <div class="max-h-[70vh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto px-2 py-2">
+              <div class="max-h-[70vh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain px-2 py-2">
                 <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
                   Font
                 </p>
