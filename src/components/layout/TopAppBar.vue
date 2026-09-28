@@ -15,6 +15,13 @@ import {
   localeOptions,
   setSiteLocale,
 } from "@/composables/useSiteLocale";
+import {
+  activeFontId,
+  fontOptions,
+  fontStack,
+  loadFontPreviews,
+  setSiteFont,
+} from "@/composables/useSiteFont";
 
 defineEmits<{ menuClick: [] }>();
 
@@ -130,6 +137,42 @@ const themeLabel = computed(() => {
                 </button>
               </MTooltip>
             </div>
+          </div>
+        </MMenu>
+
+        <!-- Font -->
+        <MMenu>
+          <template #trigger="{ open }">
+            <MIconButton
+              icon="text_fields"
+              label="Font"
+              :class="open && 'bg-on-surface/8'"
+              @click="loadFontPreviews"
+            />
+          </template>
+
+          <div class="min-w-56 px-2 py-2">
+            <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
+              Font
+            </p>
+
+            <button
+              v-for="f in fontOptions"
+              :key="f.id"
+              type="button"
+              class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-left text-body-large transition-colors hover:bg-on-surface/8"
+              :style="{ fontFamily: fontStack(f) }"
+              @click="setSiteFont(f.id)"
+            >
+              <span>{{ f.label }}</span>
+
+              <MIcon
+                v-if="activeFontId === f.id"
+                name="check"
+                :size="18"
+                class="text-primary"
+              />
+            </button>
           </div>
         </MMenu>
 
@@ -317,6 +360,52 @@ const themeLabel = computed(() => {
                     </button>
                   </MTooltip>
                 </div>
+              </div>
+            </MMenu>
+
+            <!-- Font -->
+            <MMenu>
+              <template #trigger="{ open }">
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-body-medium text-on-surface transition-colors hover:bg-on-surface/8"
+                  :class="open && 'bg-on-surface/8'"
+                  @click="loadFontPreviews"
+                >
+                  <MIcon name="text_fields" :size="20" />
+
+                  <span class="flex-1"> Font </span>
+
+                  <MIcon
+                    name="chevron_right"
+                    :size="18"
+                    class="text-on-surface-variant"
+                  />
+                </button>
+              </template>
+
+              <div class="min-w-56 px-2 py-2">
+                <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
+                  Font
+                </p>
+
+                <button
+                  v-for="f in fontOptions"
+                  :key="f.id"
+                  type="button"
+                  class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-left text-body-large transition-colors hover:bg-on-surface/8"
+                  :style="{ fontFamily: fontStack(f) }"
+                  @click="setSiteFont(f.id)"
+                >
+                  <span>{{ f.label }}</span>
+
+                  <MIcon
+                    v-if="activeFontId === f.id"
+                    name="check"
+                    :size="18"
+                    class="text-primary"
+                  />
+                </button>
               </div>
             </MMenu>
 

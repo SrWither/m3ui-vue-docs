@@ -5,6 +5,7 @@ import { createM3UI } from '@m3ui-vue/m3ui-vue'
 import App from './App.vue'
 import router from './router'
 import { siteLocale } from './composables/useSiteLocale'
+import './composables/useSiteFont' // applies the saved font before mount
 
 const app = createApp(App)
 app.use(router)

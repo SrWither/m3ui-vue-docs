@@ -1,32 +1,13 @@
 <script setup lang="ts">
-import { ref, watch, onBeforeUnmount } from 'vue'
-import { MCard, MButton, MChip, MTextField, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
-import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
+import { ref, onMounted } from 'vue'
+import { MCard, MButton, MChip, MTextField } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
+import { activeFontId, fontOptions, fontStack, loadFontPreviews, setSiteFont } from '@/composables/useSiteFont'
 
-// ── Live font switcher (restored on leave so the rest of the site stays on Roboto) ──
+// Same site-wide font state as the navbar's font menu
+onMounted(loadFontPreviews)
 
-const fontStacks: Record<string, string> = {
-  roboto: "'Roboto', system-ui, -apple-system, sans-serif",
-  system: 'system-ui, -apple-system, sans-serif',
-  serif: "Georgia, 'Times New Roman', serif",
-}
-
-const fontOptions: SegmentedOption[] = [
-  { value: 'roboto', label: 'Roboto' },
-  { value: 'system', label: 'System UI' },
-  { value: 'serif', label: 'Serif' },
-]
-
-const activeFont = ref('roboto')
 const demoText = ref('Hello, Material 3')
-
-watch(activeFont, (id) => {
-  if (id === 'roboto') document.documentElement.style.removeProperty('--font-sans')
-  else document.documentElement.style.setProperty('--font-sans', fontStacks[id])
-})
-
-onBeforeUnmount(() => document.documentElement.style.removeProperty('--font-sans'))
 
 // ── Type scale ───────────────────────────────────────────────────────────────
 
@@ -123,10 +104,24 @@ document.documentElement.style.removeProperty('--font-sans')`
     <h2 class="mb-4 text-headline-small font-medium">Live Preview</h2>
     <MCard class="mb-10 p-6">
       <p class="mb-4 text-body-medium text-on-surface-variant">
-        Pick a font — the whole page switches by changing <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">--font-sans</code> on <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;html&gt;</code>.
-        It resets when you leave this page.
+        Pick a Google Font — the whole site switches by loading it and setting <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">--font-sans</code> on <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;html&gt;</code>.
+        Your choice is remembered, and you can also change it from the <strong>Font</strong> menu in the top bar.
       </p>
-      <MSegmentedButton v-model="activeFont" :options="fontOptions" class="mb-6" />
+      <div class="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+        <button
+          v-for="f in fontOptions"
+          :key="f.id"
+          type="button"
+          class="cursor-pointer rounded-xl border-2 px-3 py-2 text-left transition-colors"
+          :class="activeFontId === f.id
+            ? 'border-primary bg-primary-container/30'
+            : 'border-outline-variant bg-surface-container hover:bg-surface-container-high'"
+          @click="setSiteFont(f.id)"
+        >
+          <span class="block text-title-medium" :style="{ fontFamily: fontStack(f) }">{{ f.label }}</span>
+          <span class="block text-label-small text-on-surface-variant">{{ f.family ? 'Google Fonts' : 'Default' }}</span>
+        </button>
+      </div>
       <p class="mb-1 text-headline-medium">The quick brown fox</p>
       <p class="mb-4 text-body-large text-on-surface-variant">jumps over the lazy dog — 0123456789</p>
       <div class="flex flex-wrap items-center gap-3">
