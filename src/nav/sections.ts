@@ -110,6 +110,7 @@ export const sections: DrawerSection[] = [
     collapsible: true,
     items: [
       { value: '/styles/palettes', label: 'Palettes', icon: 'color_lens', to: '/styles/palettes' },
+      { value: '/styles/typography', label: 'Typography', icon: 'text_fields', to: '/styles/typography' },
       { value: '/styles/palette-builder', label: 'Palette Builder', icon: 'auto_fix_high', to: '/styles/palette-builder' },
     ],
   },

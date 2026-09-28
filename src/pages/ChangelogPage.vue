@@ -15,6 +15,19 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.3',
+    date: '2026-09-27',
+    changes: {
+      added: [
+        'A --font-mono token alongside the existing --font-sans, so the monospace font used for code in MCodeEditor and MMarkdown can be swapped just like the main one. New Typography page under Styles covering both tokens, self-hosting fonts, switching fonts at runtime, and the full M3 type scale',
+      ],
+      fixed: [
+        'Changing --font-sans to use a different font didn\'t reach every component — MChart (legend, tooltips) and MCircleProgressBar (percentage label) had Roboto hardcoded, and MCodeEditor/MMarkdown had Roboto Mono hardcoded. All of them now follow the font tokens, and MChart also picks up a font changed at runtime and redraws once web fonts finish loading',
+        'MChart\'s axis labels and radar labels didn\'t use the app font at all — they rendered in Chart.js\'s own default (Helvetica). They now match the rest of the chart',
+      ],
+    },
+  },
+  {
     version: '0.8.2',
     date: '2026-09-21',
     changes: {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { MCard, MIcon, MIconButton, useToast } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 
@@ -18,13 +19,17 @@ const installCode = `pnpm add @m3ui-vue/m3ui-vue@latest
 npm install @m3ui-vue/m3ui-vue@latest`
 
 const fontsCode = `<link
-  href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
   rel="stylesheet"
 />`
 
-const fontsOfflineInstallCode = `pnpm add material-symbols`
+const fontsOfflineInstallCode = `pnpm add material-symbols @fontsource/roboto @fontsource/roboto-mono`
 
-const fontsOfflineCssCode = `@import 'material-symbols/outlined.css';`
+const fontsOfflineCssCode = `@import 'material-symbols/outlined.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
+@import '@fontsource/roboto-mono/400.css'; /* only if you use MCodeEditor / MMarkdown */`
 
 const tailwindInstallCode = `pnpm add tailwindcss @tailwindcss/vite
 # or
@@ -138,8 +143,8 @@ const optionalDeps = [
       <div class="flex-1">
         <h2 class="mb-2 text-title-large font-medium">Add the fonts</h2>
         <p class="mb-3 text-body-medium text-on-surface-variant">
-          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MIcon</code> and every icon-rendering component rely on the
-          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">material-symbols-outlined</code> class from <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">theme.css</code> — M3UI Vue ships the CSS rule but not the font file itself, so pick one of the two options below.
+          M3UI Vue ships the CSS rules but not the font files, so you load them yourself: <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">Material Symbols Outlined</code> for
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MIcon</code> and every icon-rendering component, and <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">Roboto</code> (plus <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">Roboto Mono</code> for code) as the default text font. Pick one of the two options below.
         </p>
         <p class="mb-2 text-label-large font-medium text-on-surface">Option A — Google Fonts CDN (default, simplest)</p>
         <p class="mb-3 text-body-medium text-on-surface-variant">
@@ -149,12 +154,13 @@ const optionalDeps = [
         <p class="mb-2 text-label-large font-medium text-on-surface">Option B — self-hosted (offline / no third-party requests)</p>
         <p class="mb-3 text-body-medium text-on-surface-variant">
           The CDN link needs network access to <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">fonts.googleapis.com</code>, which won't work offline or behind a restrictive firewall. Install
-          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">material-symbols</code> (an optional peer dependency that ships the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">.woff2</code> files locally) and import it from your main stylesheet instead:
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">material-symbols</code> (icons) and <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@fontsource/*</code> (text) — they ship the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">.woff2</code> files locally — and import them from your main stylesheet instead:
         </p>
         <MCodeEditor :model-value="fontsOfflineInstallCode" language="javascript" :readonly="true" :line-numbers="false" min-height="50px" max-height="80px" class="mb-3" />
-        <MCodeEditor :model-value="fontsOfflineCssCode" language="css" :readonly="true" :line-numbers="false" min-height="50px" max-height="80px" />
+        <MCodeEditor :model-value="fontsOfflineCssCode" language="css" :readonly="true" :line-numbers="false" min-height="50px" max-height="160px" />
         <p class="mt-3 text-body-medium text-on-surface-variant">
-          This only covers the icon font — if you also want <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">Roboto</code> offline, pair it with something like <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@fontsource/roboto</code>.
+          Roboto isn't required — without it, text falls back to the system font. To use a different typeface (build time or runtime), see
+          <RouterLink to="/styles/typography" class="text-primary underline">Typography</RouterLink>.
         </p>
       </div>
     </div>

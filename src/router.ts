@@ -88,6 +88,10 @@ const router = createRouter({
       component: () => import('./pages/PalettesPage.vue'),
     },
     {
+      path: '/styles/typography',
+      component: () => import('./pages/TypographyPage.vue'),
+    },
+    {
       path: '/styles/palette-builder',
       component: () => import('./pages/PaletteBuilderPage.vue'),
     },
