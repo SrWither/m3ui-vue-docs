@@ -3,6 +3,9 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { MCard, MIcon, MIconButton, useToast } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
+import SetupExample from '@/components/SetupExample.vue'
+// Shown as the step-5 snippet, so the code on the page is exactly what the live preview runs
+import usageCode from '@/components/SetupExample.vue?raw'
 
 const toast = useToast()
 const copiedDep = ref<string | null>(null)
@@ -57,21 +60,6 @@ import App from './App.vue'
 const app = createApp(App)
 app.use(createM3UI({ palette: 'teal' })) // optional — sets initial palette
 app.mount('#app')`
-
-const usageCode = `<script setup>
-import { MButton, MCard, MTextField, useToast } from '@m3ui-vue/m3ui-vue'
-
-const toast = useToast()
-<\/script>
-
-<template>
-  <MCard>
-    <MTextField v-model="name" label="Name" />
-    <MButton icon="save" @click="toast.success('Saved!')">
-      Save
-    </MButton>
-  </MCard>
-</template>`
 
 const optionalCode = `// Only import what you need — these have their own entry points
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
@@ -205,7 +193,15 @@ const optionalDeps = [
       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary text-label-large font-medium">5</span>
       <div class="flex-1">
         <h2 class="mb-2 text-title-large font-medium">Use components</h2>
-        <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" />
+        <p class="mb-4 text-body-medium text-on-surface-variant">
+          Import what you need from <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@m3ui-vue/m3ui-vue</code> — every component is tree-shakeable.
+          Here's a small profile form with validation, a loading state and a toast (<code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useToast()</code> mounts its own host, no extra setup). Try it:
+        </p>
+        <!-- The example centers itself on a full screen; shrink that to fit the preview -->
+        <div class="mb-3 overflow-hidden rounded-xl border border-outline-variant [&>div]:min-h-0 [&>div]:py-8">
+          <SetupExample />
+        </div>
+        <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="500px" />
       </div>
     </div>
 
