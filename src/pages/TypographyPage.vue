@@ -2,12 +2,18 @@
 import { ref, onMounted } from 'vue'
 import { MCard, MButton, MChip, MTextField } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
-import { activeFontId, fontOptions, fontStack, loadFontPreviews, setSiteFont } from '@/composables/useSiteFont'
+import {
+  activeFontId, activeMonoFontId, fontOptions, monoFontOptions, fontStack, loadFontPreviews, setSiteFont, setSiteMonoFont,
+} from '@/composables/useSiteFont'
 
 // Same site-wide font state as the navbar's font menu
 onMounted(loadFontPreviews)
 
 const demoText = ref('Hello, Material 3')
+
+const monoSample = `function greet(name: string) {
+  return \`Hello, \${name}!\` // 0O 1lI {} => !== ===
+}`
 
 // ── Type scale ───────────────────────────────────────────────────────────────
 
@@ -104,7 +110,8 @@ document.documentElement.style.removeProperty('--font-sans')`
     <h2 class="mb-4 text-headline-small font-medium">Live Preview</h2>
     <MCard class="mb-10 p-6">
       <p class="mb-4 text-body-medium text-on-surface-variant">
-        Pick a Google Font — the whole site switches by loading it and setting <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">--font-sans</code> on <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;html&gt;</code>.
+        Pick a Google Font — the whole site switches by loading it and setting <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">--font-sans</code> (or <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">--font-mono</code>) on <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;html&gt;</code>.
+        This switcher is part of this docs site, not the library — M3UI only reads the tokens, so how your app picks fonts is up to you.
         Your choice is remembered, and you can also change it from the <strong>Font</strong> menu in the top bar.
       </p>
       <div class="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
@@ -130,6 +137,24 @@ document.documentElement.style.removeProperty('--font-sans')`
         <MChip>Chip</MChip>
         <MTextField v-model="demoText" label="Text field" class="w-64" />
       </div>
+
+      <p class="mb-3 mt-8 text-title-medium font-medium">Code font</p>
+      <div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+        <button
+          v-for="f in monoFontOptions"
+          :key="f.id"
+          type="button"
+          class="cursor-pointer rounded-xl border-2 px-3 py-2 text-left transition-colors"
+          :class="activeMonoFontId === f.id
+            ? 'border-primary bg-primary-container/30'
+            : 'border-outline-variant bg-surface-container hover:bg-surface-container-high'"
+          @click="setSiteMonoFont(f.id)"
+        >
+          <span class="block text-title-small" :style="{ fontFamily: fontStack(f, 'mono') }">{{ f.label }}</span>
+          <span class="block text-label-small text-on-surface-variant">{{ f.family ? 'Google Fonts' : 'Default' }}</span>
+        </button>
+      </div>
+      <MCodeEditor :model-value="monoSample" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="120px" />
     </MCard>
 
     <!-- Change the font -->

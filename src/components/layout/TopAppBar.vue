@@ -20,7 +20,10 @@ import {
   fontOptions,
   fontStack,
   loadFontPreviews,
+  monoFontOptions,
+  activeMonoFontId,
   setSiteFont,
+  setSiteMonoFont,
 } from "@/composables/useSiteFont";
 
 defineEmits<{ menuClick: [] }>();
@@ -151,28 +154,56 @@ const themeLabel = computed(() => {
             />
           </template>
 
-          <div class="min-w-56 px-2 py-2">
+          <div class="max-h-[70vh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto px-2 py-2">
             <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
               Font
             </p>
 
-            <button
-              v-for="f in fontOptions"
-              :key="f.id"
-              type="button"
-              class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-left text-body-large transition-colors hover:bg-on-surface/8"
-              :style="{ fontFamily: fontStack(f) }"
-              @click="setSiteFont(f.id)"
-            >
-              <span>{{ f.label }}</span>
+            <div class="grid grid-cols-2">
+              <button
+                v-for="f in fontOptions"
+                :key="f.id"
+                type="button"
+                class="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2 py-2 text-left text-body-large transition-colors hover:bg-on-surface/8"
+                :style="{ fontFamily: fontStack(f) }"
+                @click="setSiteFont(f.id)"
+              >
+                <span class="truncate">{{ f.label }}</span>
 
-              <MIcon
-                v-if="activeFontId === f.id"
-                name="check"
-                :size="18"
-                class="text-primary"
-              />
-            </button>
+                <MIcon
+                  v-if="activeFontId === f.id"
+                  name="check"
+                  :size="18"
+                  class="shrink-0 text-primary"
+                />
+              </button>
+            </div>
+
+            <div class="my-2 h-px bg-outline-variant" />
+
+            <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
+              Code font
+            </p>
+
+            <div class="grid grid-cols-2">
+              <button
+                v-for="f in monoFontOptions"
+                :key="f.id"
+                type="button"
+                class="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2 py-2 text-left text-body-medium transition-colors hover:bg-on-surface/8"
+                :style="{ fontFamily: fontStack(f, 'mono') }"
+                @click="setSiteMonoFont(f.id)"
+              >
+                <span class="truncate">{{ f.label }}</span>
+
+                <MIcon
+                  v-if="activeMonoFontId === f.id"
+                  name="check"
+                  :size="18"
+                  class="shrink-0 text-primary"
+                />
+              </button>
+            </div>
           </div>
         </MMenu>
 
@@ -384,28 +415,56 @@ const themeLabel = computed(() => {
                 </button>
               </template>
 
-              <div class="min-w-56 px-2 py-2">
+              <div class="max-h-[70vh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto px-2 py-2">
                 <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
                   Font
                 </p>
 
-                <button
-                  v-for="f in fontOptions"
-                  :key="f.id"
-                  type="button"
-                  class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-left text-body-large transition-colors hover:bg-on-surface/8"
-                  :style="{ fontFamily: fontStack(f) }"
-                  @click="setSiteFont(f.id)"
-                >
-                  <span>{{ f.label }}</span>
+                <div class="grid grid-cols-2">
+                  <button
+                    v-for="f in fontOptions"
+                    :key="f.id"
+                    type="button"
+                    class="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2 py-2 text-left text-body-large transition-colors hover:bg-on-surface/8"
+                    :style="{ fontFamily: fontStack(f) }"
+                    @click="setSiteFont(f.id)"
+                  >
+                    <span class="truncate">{{ f.label }}</span>
 
-                  <MIcon
-                    v-if="activeFontId === f.id"
-                    name="check"
-                    :size="18"
-                    class="text-primary"
-                  />
-                </button>
+                    <MIcon
+                      v-if="activeFontId === f.id"
+                      name="check"
+                      :size="18"
+                      class="shrink-0 text-primary"
+                    />
+                  </button>
+                </div>
+
+                <div class="my-2 h-px bg-outline-variant" />
+
+                <p class="mb-1 px-2 text-label-large font-medium text-on-surface">
+                  Code font
+                </p>
+
+                <div class="grid grid-cols-2">
+                  <button
+                    v-for="f in monoFontOptions"
+                    :key="f.id"
+                    type="button"
+                    class="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2 py-2 text-left text-body-medium transition-colors hover:bg-on-surface/8"
+                    :style="{ fontFamily: fontStack(f, 'mono') }"
+                    @click="setSiteMonoFont(f.id)"
+                  >
+                    <span class="truncate">{{ f.label }}</span>
+
+                    <MIcon
+                      v-if="activeMonoFontId === f.id"
+                      name="check"
+                      :size="18"
+                      class="shrink-0 text-primary"
+                    />
+                  </button>
+                </div>
               </div>
             </MMenu>
 
