@@ -17,7 +17,8 @@ const tableProps: PropDef[] = [
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show skeleton loading state' },
   { name: 'emptyText', type: 'string', description: 'Text when no rows (defaults to the locale string)' },
   { name: 'rowKey', type: 'string', default: "'id'", description: 'Unique key field in each row' },
-  { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection with checkboxes' },
+  { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection with checkboxes (by default only the checkbox toggles a row; clicking the row itself still emits row-click)' },
+  { name: 'selectOnRowClick', type: 'boolean', default: 'false', description: 'With selectable, clicking anywhere on a row toggles its selection instead of emitting row-click' },
   { name: 'modelValue', type: 'Record<string, any>[]', default: '[]', description: 'Selected rows (v-model)' },
   { name: 'perPage', type: 'number', default: '10', description: 'Rows per page' },
   { name: 'searchable', type: 'boolean', default: 'true', description: 'Show search input' },
@@ -31,6 +32,7 @@ const tableProps: PropDef[] = [
 const tableEvents: EventDef[] = [
   { name: 'update:modelValue', payload: 'Record<string, any>[]', description: 'Emitted when the selection changes — powers v-model' },
   { name: 'update:page', payload: 'number', description: 'Emitted when the page changes — powers v-model:page' },
+  { name: 'row-click', payload: 'Record<string, any>', description: 'Emitted when a row is clicked (outside its checkbox and actions), unless selectOnRowClick is on' },
   { name: 'fetch', payload: 'TableFetchParams', description: 'Emitted instead of filtering locally when serverSide is true' },
 ]
 
@@ -77,6 +79,8 @@ const allUsers = Array.from({ length: 53 }, (_, i) => ({
 }))
 
 const selectedRows = ref<Record<string, any>[]>([])
+const rowSelectedRows = ref<Record<string, any>[]>([])
+const lastClickedRow = ref('')
 
 const serverRows = ref<Record<string, any>[]>([])
 const serverTotal = ref(0)
@@ -238,7 +242,7 @@ const rows = [
 
     <ComponentDemo
       title="Row Selection"
-      description="Enable selectable to add checkboxes and drive selection via v-model."
+      description="Enable selectable to add checkboxes and drive selection via v-model. Only the checkbox toggles a row; clicking the row itself still emits row-click."
       :code="`<MTable v-model=&quot;selected&quot; :columns=&quot;columns&quot; :rows=&quot;rows&quot; :selectable=&quot;true&quot; :searchable=&quot;false&quot; />
 <p>Selected: {{ selected.length }}</p>`"
       :script="`const selected = ref([])`"
@@ -254,6 +258,51 @@ const rows = [
         <p class="text-body-medium text-on-surface-variant">
           Selected: {{ selectedRows.length }} row(s)
           <span v-if="selectedRows.length > 0">— {{ selectedRows.map(r => r.name).join(', ') }}</span>
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Select on Row Click"
+      description="With select-on-row-click, clicking anywhere on a row toggles its selection, not just the checkbox. row-click is not emitted in this mode."
+      :code="`<MTable
+  v-model=&quot;selected&quot;
+  :columns=&quot;columns&quot;
+  :rows=&quot;rows&quot;
+  :selectable=&quot;true&quot;
+  :select-on-row-click=&quot;true&quot;
+  :searchable=&quot;false&quot;
+/>`"
+      :script="`const selected = ref([])`"
+    >
+      <div class="w-full space-y-3">
+        <MTable
+          v-model="rowSelectedRows"
+          :columns="columns.slice(0, 4)"
+          :rows="rows.slice(0, 5)"
+          :selectable="true"
+          :select-on-row-click="true"
+          :searchable="false"
+        />
+        <p class="text-body-medium text-on-surface-variant">
+          Selected: {{ rowSelectedRows.length }} row(s)
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Row Click"
+      description="Clicking a row emits row-click with that row, also when selectable is on (selection then only happens through the checkbox, unless selectOnRowClick is set)."
+      :code="`<MTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :searchable=&quot;false&quot; @row-click=&quot;onRowClick&quot; />`"
+      :script="`function onRowClick(row) {
+  lastClickedRow.value = row.name
+}`"
+    >
+      <div class="w-full space-y-3">
+        <MTable :columns="columns.slice(0, 4)" :rows="rows.slice(0, 5)" :searchable="false" @row-click="lastClickedRow = $event.name" />
+        <p class="text-body-medium text-on-surface-variant">
+          Last clicked: <strong v-if="lastClickedRow" class="text-on-surface">{{ lastClickedRow }}</strong>
+          <span v-else class="text-outline">none yet</span>
         </p>
       </div>
     </ComponentDemo>

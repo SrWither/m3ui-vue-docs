@@ -15,6 +15,18 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.5',
+    date: 'Unreleased',
+    changes: {
+      changed: [
+        'MTable with selectable now works like MDataTable: clicking a row no longer selects it by default. Only its checkbox does. Clicking the row now emits the new row-click event, which MTable didn\'t have before, so a table can let you select rows and also open one by clicking it. The old click-anywhere-to-select behavior is still there with the new selectOnRowClick prop',
+      ],
+      fixed: [
+        'MMenu and MContextMenu could stay stuck on screen, open or half-closed, when an item closed the menu and then navigated to another page (like a "Log out" item that sends you to the login page). The menu was removed mid-animation and its panel was left behind. It now always goes away',
+      ],
+    },
+  },
+  {
     version: '0.8.4',
     date: '2026-10-04',
     changes: {
