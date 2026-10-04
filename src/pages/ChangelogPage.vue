@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.4',
+    date: '2026-10-04',
+    changes: {
+      changed: [
+        'MDataTable with selectable: clicking a row no longer selects it by default — only its checkbox does. Clicking the row now emits row-click, which before never fired while selectable was on, so a table couldn\'t let you select rows and also open one by clicking it. The old click-anywhere-to-select behavior is still there with the new selectOnRowClick prop',
+      ],
+    },
+  },
+  {
     version: '0.8.3',
     date: '2026-09-27',
     changes: {

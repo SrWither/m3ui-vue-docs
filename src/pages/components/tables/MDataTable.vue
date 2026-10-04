@@ -19,7 +19,8 @@ const dataTableProps: PropDef[] = [
   { name: 'loading', type: 'boolean', default: 'false', description: 'Show skeleton loading state' },
   { name: 'emptyText', type: 'string', description: 'Text when no rows (defaults to the locale string)' },
   { name: 'rowKey', type: 'string', default: "'id'", description: 'Unique key field in each row' },
-  { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection with checkboxes' },
+  { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection with checkboxes (by default only the checkbox toggles a row; clicking the row itself still emits row-click)' },
+  { name: 'selectOnRowClick', type: 'boolean', default: 'false', description: 'With selectable, clicking anywhere on a row toggles its selection instead of emitting row-click' },
   { name: 'modelValue', type: 'Record<string, any>[]', default: '[]', description: 'Selected rows (v-model)' },
   { name: 'perPage', type: 'number', default: '10', description: 'Rows per page' },
   { name: 'searchable', type: 'boolean', default: 'true', description: 'Show search input' },
@@ -46,7 +47,7 @@ const dataTableProps: PropDef[] = [
 const dataTableEvents: EventDef[] = [
   { name: 'update:modelValue', payload: 'Record<string, any>[]', description: 'Emitted when the selection changes — powers v-model' },
   { name: 'update:page', payload: 'number', description: 'Emitted when the page changes — powers v-model:page' },
-  { name: 'row-click', payload: 'Record<string, any>', description: 'Emitted when a row is clicked, only when selectable is false' },
+  { name: 'row-click', payload: 'Record<string, any>', description: 'Emitted when a row is clicked (outside its checkbox, expand button and actions), unless selectOnRowClick is on' },
   { name: 'fetch', payload: 'DataTableFetchParams', description: 'Emitted instead of filtering locally when serverSide is true' },
 ]
 
@@ -107,6 +108,7 @@ const dataTableColumns = [
 ] satisfies DataTableColumn[]
 
 const dataTableSelected = ref<Record<string, any>[]>([])
+const dataTableRowSelected = ref<Record<string, any>[]>([])
 
 const expandRows = [
   { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'Active', phone: '+1 555-0101', department: 'Engineering', joined: '2022-03-15', bio: 'Full-stack developer with 8 years of experience. Leads the platform team and mentors junior developers.' },
@@ -264,7 +266,7 @@ const rows = [
 
     <ComponentDemo
       title="Selectable Rows"
-      description="Enable row selection with checkboxes using v-model."
+      description="Enable row selection with checkboxes using v-model. Only the checkbox toggles a row, so row-click keeps working alongside selection."
       :code="`<MDataTable
     v-model=&quot;selected&quot;
     :columns=&quot;columns&quot;
@@ -293,8 +295,36 @@ const rows = [
     </ComponentDemo>
 
     <ComponentDemo
+      title="Select on Row Click"
+      description="With select-on-row-click, clicking anywhere on a row toggles its selection, not just the checkbox. row-click is not emitted in this mode."
+      :code="`<MDataTable
+    v-model=&quot;selected&quot;
+    :columns=&quot;columns&quot;
+    :rows=&quot;rows&quot;
+    :selectable=&quot;true&quot;
+    :select-on-row-click=&quot;true&quot;
+    :per-page=&quot;5&quot;
+  />`"
+      :script="`const selected = ref([])`"
+    >
+      <div class="w-full space-y-4">
+        <MDataTable
+          v-model="dataTableRowSelected"
+          :columns="dataTableColumns"
+          :rows="rows"
+          :selectable="true"
+          :select-on-row-click="true"
+          :per-page="5"
+        />
+        <p class="text-body-medium text-on-surface-variant">
+          Selected: {{ dataTableRowSelected.length }} row(s)
+        </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
       title="Row Click"
-      description="When selectable is false, clicking a row emits row-click instead of toggling selection."
+      description="Clicking a row emits row-click with that row, also when selectable is on (selection then only happens through the checkbox, unless selectOnRowClick is set)."
       :code="`<MDataTable :columns=&quot;columns&quot; :rows=&quot;rows&quot; :per-page=&quot;5&quot; @row-click=&quot;onRowClick&quot; />`"
       :script="`function onRowClick(row) {
   lastClickedRow.value = row.name
