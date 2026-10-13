@@ -23,6 +23,7 @@ const versions: Version[] = [
         'MRating can now be rated by dragging, with the mouse or a finger. Dragging past the first icon clears it back to 0',
         'MRating works with the keyboard: arrow keys move up or down by one (or by half with halfIncrements), Home and End jump to 0 and the maximum, and a focus ring shows when you tab to it. A readonly rating is no longer a tab stop, and screen readers announce its value',
         'MPullToRefresh is out of beta now that pulling with a finger works on mobile. Its docs page has five new examples: an inbox list, custom color/size/threshold, disabled, short content, and refreshing from a button',
+        'MResult\'s default titles and descriptions were always in Spanish. They now follow the language set with createM3UI, in English by default and translated in all the bundled locales. The info status also gets a default description now. Its docs page has new examples, all in English: order confirmed, not found, access denied, server error, empty state and payment failed',
       ],
       fixed: [
         'MRating with halfIncrements never showed a half icon. Halves, and any fraction (like a 4.3 average), now render exactly, with any icon, not just the star',
