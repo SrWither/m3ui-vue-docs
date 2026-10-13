@@ -22,10 +22,12 @@ const versions: Version[] = [
         'MRating was rebuilt with the same props, now designed with Material 3 building blocks. Empty icons now show as outlines, hovering or pressing an icon shows a soft circle in the rating\'s color instead of making it grow, and a disabled rating uses M3\'s disabled colors',
         'MRating can now be rated by dragging, with the mouse or a finger. Dragging past the first icon clears it back to 0',
         'MRating works with the keyboard: arrow keys move up or down by one (or by half with halfIncrements), Home and End jump to 0 and the maximum, and a focus ring shows when you tab to it. A readonly rating is no longer a tab stop, and screen readers announce its value',
+        'MPullToRefresh is out of beta now that pulling with a finger works on mobile. Its docs page has five new examples: an inbox list, custom color/size/threshold, disabled, short content, and refreshing from a button',
       ],
       fixed: [
         'MRating with halfIncrements never showed a half icon. Halves, and any fraction (like a 4.3 average), now render exactly, with any icon, not just the star',
         'Clicking the current MRating value a second time reset it to 0. It now keeps the value',
+        'MPullToRefresh couldn\'t be pulled with a finger in a mobile browser: the indicator started to follow, then jumped back up because the browser took the drag as a normal scroll. Pulling down at the top of the list now works, and swiping up still scrolls normally',
       ],
     },
   },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MPullToRefresh, MCard, MIcon, MChip } from '@m3ui-vue/m3ui-vue'
+import { MPullToRefresh, MCard, MIcon, MList, MListItem, MSwitch, MButton } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -15,6 +15,71 @@ function handlePullRefresh() {
   setTimeout(() => {
     ptrItems.value = [`New item · ${new Date().toLocaleTimeString()}`, ...ptrItems.value]
     ptrRefreshing.value = false
+  }, 1500)
+}
+
+// Inbox demo
+const senders = ['Ana Torres', 'Luis Gómez', 'Marta Ruiz', 'Diego Pérez', 'Sofía Lima', 'Pablo Ortiz', 'Carla Vidal', 'Jorge Molina']
+const subjects = ['Weekly sync notes', 'Invoice #2048', 'Design review', 'Lunch on Friday?', 'Release checklist', 'Re: API changes', 'Trip photos', 'Contract draft']
+let mailSeq = 0
+function makeMail() {
+  const i = mailSeq++
+  return { id: i, from: senders[i % senders.length]!, subject: subjects[(i * 3) % subjects.length]! }
+}
+const inbox = ref(Array.from({ length: 8 }, makeMail))
+const inboxRefreshing = ref(false)
+function refreshInbox() {
+  inboxRefreshing.value = true
+  setTimeout(() => {
+    inbox.value = [makeMail(), makeMail(), ...inbox.value]
+    inboxRefreshing.value = false
+  }, 1200)
+}
+
+// Color / size / threshold demo
+const tunedItems = Array.from({ length: 12 }, (_, i) => `Item ${i + 1}`)
+const tunedRefreshing = ref(false)
+const tunedCount = ref(0)
+function refreshTuned() {
+  tunedRefreshing.value = true
+  setTimeout(() => {
+    tunedCount.value++
+    tunedRefreshing.value = false
+  }, 1200)
+}
+
+// Disabled toggle demo
+const ptrEnabled = ref(true)
+const toggledRefreshing = ref(false)
+const toggledLast = ref<string | null>(null)
+function refreshToggled() {
+  toggledRefreshing.value = true
+  setTimeout(() => {
+    toggledLast.value = new Date().toLocaleTimeString()
+    toggledRefreshing.value = false
+  }, 1000)
+}
+
+// Short content demo
+const shortItems = ref(['Only item'])
+const shortRefreshing = ref(false)
+function refreshShort() {
+  shortRefreshing.value = true
+  setTimeout(() => {
+    shortItems.value = [...shortItems.value, `Item ${shortItems.value.length + 1}`]
+    shortRefreshing.value = false
+  }, 1000)
+}
+
+// Programmatic demo
+const progItems = ref(Array.from({ length: 10 }, (_, i) => `Row ${i + 1}`))
+const progRefreshing = ref(false)
+function refreshProg() {
+  if (progRefreshing.value) return
+  progRefreshing.value = true
+  setTimeout(() => {
+    progItems.value = [`Synced · ${new Date().toLocaleTimeString()}`, ...progItems.value]
+    progRefreshing.value = false
   }, 1500)
 }
 
@@ -33,24 +98,11 @@ const pullToRefreshEvents: EventDef[] = [
 
 <template>
   <div>
-    <h1 class="mb-2 flex items-center gap-2 text-headline-large font-medium">
-      MPullToRefresh
-      <MChip tone="error">Beta</MChip>
-    </h1>
+    <h1 class="mb-2 text-headline-large font-medium">MPullToRefresh</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       Wraps its own scrollable container and fires a refresh event when the user pulls past a threshold at
       the very top of the scroll.
     </p>
-
-    <MCard class="mb-6 flex items-start gap-3 p-4">
-      <MIcon name="science" :size="22" class="mt-0.5 shrink-0 text-error" />
-      <p class="text-body-medium text-on-surface">
-        <strong>This component is in beta.</strong> The gesture-detection approach it's built on is a known
-        hard problem on the open mobile web (see below) and hasn't been battle-tested across devices/browsers
-        yet — treat the API and behavior as subject to change, and test thoroughly on your actual target
-        devices before relying on it in production.
-      </p>
-    </MCard>
 
     <MCard class="mb-6 flex items-start gap-3 p-4">
       <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
@@ -64,20 +116,18 @@ const pullToRefreshEvents: EventDef[] = [
     </MCard>
 
     <MCard class="mb-6 flex items-start gap-3 p-4">
-      <MIcon name="warning" :size="22" class="mt-0.5 shrink-0 text-tertiary" />
+      <MIcon name="touch_app" :size="22" class="mt-0.5 shrink-0 text-tertiary" />
       <p class="text-body-medium text-on-surface">
-        The drag is implemented with Pointer Events, which works great with a mouse, in
-        Electron/Capacitor-style app shells, or anywhere else there's no competing gesture layer.
-        In an actual mobile browser tab, a touch drag can occasionally lose the race against the
-        browser's own scroll/overscroll gesture recognition and release early — a known limitation
-        of drag-based pull-to-refresh on the open mobile web, not something fully solvable from
-        userspace JS. It's most reliable in a wrapped app shell or on desktop.
+        The pull is a drag at the top of the list: touch on mobile, click-and-drag with a mouse or pen.
+        The mouse wheel, trackpad and scrollbar only scroll and never trigger it. On touch, the first
+        movement decides the gesture: dragging down while the list is at the top becomes a pull (and the
+        browser's own scroll is blocked until the finger lifts), while anything else stays a normal scroll.
       </p>
     </MCard>
 
     <ComponentDemo
       title="Pull to refresh"
-      description="Wraps its own scrollable container — scroll up past the very top (touch drag, trackpad, mouse wheel, or the scrollbar thumb all work, since it rides the container's own native scroll instead of a hand-rolled drag gesture) to fire @refresh. Try it below."
+      description="Wraps its own scrollable container. With the list at the top, drag down past the threshold and release to fire @refresh. Try it below."
       :code="`<template>
   <MPullToRefresh :refreshing=&quot;refreshing&quot; @refresh=&quot;handleRefresh&quot; class=&quot;h-64 w-full max-w-sm rounded-lg border border-outline-variant&quot;>
     <ul class=&quot;divide-y divide-outline-variant&quot;>
@@ -108,6 +158,149 @@ function handleRefresh() {
           <li v-for="item in ptrItems" :key="item" class="px-4 py-3 text-body-medium">{{ item }}</li>
         </ul>
       </MPullToRefresh>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Inbox"
+      description="A typical use: a list of MListItem inside a fixed-height pane. Each refresh prepends two new messages."
+      :code="`<MPullToRefresh :refreshing=&quot;refreshing&quot; @refresh=&quot;refreshInbox&quot; class=&quot;h-80 w-full max-w-md rounded-xl bg-surface-container-low&quot;>
+  <MList>
+    <MListItem
+      v-for=&quot;mail in inbox&quot;
+      :key=&quot;mail.id&quot;
+      leading=&quot;avatar&quot;
+      :avatar-name=&quot;mail.from&quot;
+      :title=&quot;mail.from&quot;
+      :subtitle=&quot;mail.subject&quot;
+    />
+  </MList>
+</MPullToRefresh>`"
+      :script="`import { MPullToRefresh, MList, MListItem } from '@m3ui-vue/m3ui-vue'
+
+const inbox = ref([...])
+const refreshing = ref(false)
+async function refreshInbox() {
+  refreshing.value = true
+  const fresh = await fetchNewMail()
+  inbox.value = [...fresh, ...inbox.value]
+  refreshing.value = false
+}`"
+    >
+      <MPullToRefresh
+        :refreshing="inboxRefreshing"
+        @refresh="refreshInbox"
+        class="h-80 w-full max-w-md rounded-xl bg-surface-container-low"
+      >
+        <MList>
+          <MListItem
+            v-for="mail in inbox"
+            :key="mail.id"
+            leading="avatar"
+            :avatar-name="mail.from"
+            :title="mail.from"
+            :subtitle="mail.subject"
+          />
+        </MList>
+      </MPullToRefresh>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Color, size and threshold"
+      description="color picks the indicator's M3 role, size its diameter, and threshold how far you have to pull. This one needs a longer 120px pull and shows a larger tertiary indicator."
+      :code="`<MPullToRefresh
+  :refreshing=&quot;refreshing&quot;
+  color=&quot;tertiary&quot;
+  :size=&quot;48&quot;
+  :threshold=&quot;120&quot;
+  @refresh=&quot;onRefresh&quot;
+  class=&quot;h-64 w-full max-w-sm rounded-lg border border-outline-variant&quot;
+>
+  ...
+</MPullToRefresh>`"
+    >
+      <div class="flex w-full flex-col gap-2">
+        <MPullToRefresh
+          :refreshing="tunedRefreshing"
+          color="tertiary"
+          :size="48"
+          :threshold="120"
+          @refresh="refreshTuned"
+          class="h-64 w-full max-w-sm rounded-lg border border-outline-variant"
+        >
+          <ul class="divide-y divide-outline-variant">
+            <li v-for="item in tunedItems" :key="item" class="px-4 py-3 text-body-medium">{{ item }}</li>
+          </ul>
+        </MPullToRefresh>
+        <span class="text-label-medium text-on-surface-variant">Refreshed {{ tunedCount }} times</span>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Disabled"
+      description="disabled turns the gesture off and the container keeps scrolling normally. Toggle it and try pulling."
+      :code="`<MSwitch v-model=&quot;enabled&quot; label=&quot;Pull to refresh&quot; />
+<MPullToRefresh :disabled=&quot;!enabled&quot; :refreshing=&quot;refreshing&quot; @refresh=&quot;onRefresh&quot; class=&quot;h-48 ...&quot;>
+  ...
+</MPullToRefresh>`"
+    >
+      <div class="flex w-full flex-col gap-3">
+        <div class="flex flex-wrap items-center gap-4">
+          <MSwitch v-model="ptrEnabled" label="Pull to refresh" />
+          <span class="text-label-medium text-on-surface-variant">
+            {{ toggledLast ? `Last refresh: ${toggledLast}` : 'Not refreshed yet' }}
+          </span>
+        </div>
+        <MPullToRefresh
+          :disabled="!ptrEnabled"
+          :refreshing="toggledRefreshing"
+          @refresh="refreshToggled"
+          class="h-48 w-full max-w-sm rounded-lg border border-outline-variant"
+        >
+          <ul class="divide-y divide-outline-variant">
+            <li v-for="n in 10" :key="n" class="px-4 py-3 text-body-medium">Item {{ n }}</li>
+          </ul>
+        </MPullToRefresh>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Short content"
+      description="The pull still works when the content doesn't fill the container and there's nothing to scroll, such as an empty or nearly empty list. Each refresh adds one item."
+      :code="`<MPullToRefresh :refreshing=&quot;refreshing&quot; @refresh=&quot;onRefresh&quot; class=&quot;h-56 ...&quot;>
+  <ul>...one item...</ul>
+</MPullToRefresh>`"
+    >
+      <MPullToRefresh
+        :refreshing="shortRefreshing"
+        @refresh="refreshShort"
+        class="h-56 w-full max-w-sm rounded-lg border border-outline-variant"
+      >
+        <ul class="divide-y divide-outline-variant">
+          <li v-for="item in shortItems" :key="item" class="px-4 py-3 text-body-medium">{{ item }}</li>
+        </ul>
+      </MPullToRefresh>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Programmatic refresh"
+      description="Setting refreshing to true without a drag also shows the indicator, so a refresh button and the pull gesture can share the same state. Pulling is ignored while a refresh is in progress."
+      :code="`<MButton variant=&quot;tonal&quot; icon=&quot;refresh&quot; :disabled=&quot;refreshing&quot; @click=&quot;onRefresh&quot;>Sync</MButton>
+<MPullToRefresh :refreshing=&quot;refreshing&quot; @refresh=&quot;onRefresh&quot; class=&quot;h-64 ...&quot;>
+  ...
+</MPullToRefresh>`"
+    >
+      <div class="flex w-full flex-col items-start gap-3">
+        <MButton variant="tonal" icon="refresh" :disabled="progRefreshing" @click="refreshProg">Sync</MButton>
+        <MPullToRefresh
+          :refreshing="progRefreshing"
+          @refresh="refreshProg"
+          class="h-64 w-full max-w-sm rounded-lg border border-outline-variant"
+        >
+          <ul class="divide-y divide-outline-variant">
+            <li v-for="item in progItems" :key="item" class="px-4 py-3 text-body-medium">{{ item }}</li>
+          </ul>
+        </MPullToRefresh>
+      </div>
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
