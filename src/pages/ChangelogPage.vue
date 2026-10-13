@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '0.8.6',
     date: 'Unreleased',
     changes: {
+      added: [
+        'More MRelativeTime examples on its docs page: a live feed whose timestamps keep counting up, a countdown that passes "now", every unit from seconds to years, the same values in eight languages, and the accepted input formats',
+      ],
       changed: [
         'MRating was rebuilt with the same props, now designed with Material 3 building blocks. Empty icons now show as outlines, hovering or pressing an icon shows a soft circle in the rating\'s color instead of making it grow, and a disabled rating uses M3\'s disabled colors',
         'MRating can now be rated by dragging, with the mouse or a finger. Dragging past the first icon clears it back to 0',
