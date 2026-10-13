@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { MChatBubble, MChip, MIcon } from '@m3ui-vue/m3ui-vue'
+import { ref } from 'vue'
+import { MChatBubble, MIcon } from '@m3ui-vue/m3ui-vue'
+
+const loved = ref(false)
+const saved = ref(false)
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -138,11 +142,20 @@ const chatBubbleSlots: SlotDef[] = [
   <img src=&quot;...&quot; class=&quot;mt-2 rounded-lg&quot; />
 </MChatBubble>
 
-<MChatBubble side=&quot;right&quot; time=&quot;10:41&quot; status=&quot;read&quot;>
+<MChatBubble side=&quot;right&quot; time=&quot;10:41&quot; status=&quot;read&quot; max-width=&quot;360px&quot;>
   <p class=&quot;text-body-medium&quot;>That looks amazing! 🤩</p>
-  <div class=&quot;mt-2 flex gap-1&quot;>
-    <MChip icon=&quot;favorite&quot;>Love it</MChip>
-    <MChip icon=&quot;bookmark&quot;>Save</MChip>
+  <!-- Tint actions with the bubble's own on-color so they read as part of it -->
+  <div class=&quot;-mx-1 mt-2 flex gap-1.5 border-t border-on-primary/20 pt-2&quot;>
+    <button
+      type=&quot;button&quot;
+      class=&quot;flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-on-primary/12 px-3 py-1.5 text-label-large text-on-primary transition-colors hover:bg-on-primary/20 active:bg-on-primary/24 focus-visible:outline-2 focus-visible:outline-on-primary&quot;
+      :aria-pressed=&quot;loved&quot;
+      @click=&quot;loved = !loved&quot;
+    >
+      <MIcon name=&quot;favorite&quot; :size=&quot;18&quot; :style=&quot;{ fontVariationSettings: \`'FILL' \${loved ? 1 : 0}\` }&quot; />
+      {{ loved ? 'Loved' : 'Love it' }}
+    </button>
+    <!-- Save button: same classes, bookmark icon -->
   </div>
 </MChatBubble>`"
     >
@@ -153,11 +166,27 @@ const chatBubbleSlots: SlotDef[] = [
             <MIcon name="image" :size="32" class="text-on-surface-variant/40" />
           </div>
         </MChatBubble>
-        <MChatBubble side="right" time="10:41" status="read">
+        <MChatBubble side="right" time="10:41" status="read" max-width="360px">
           <p class="text-body-medium">That looks amazing! 🤩</p>
-          <div class="mt-2 flex gap-1">
-            <MChip icon="favorite">Love it</MChip>
-            <MChip icon="bookmark">Save</MChip>
+          <div class="-mx-1 mt-2 flex gap-1.5 border-t border-on-primary/20 pt-2">
+            <button
+              type="button"
+              class="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-on-primary/12 px-3 py-1.5 text-label-large text-on-primary transition-colors hover:bg-on-primary/20 focus-visible:outline-2 focus-visible:outline-on-primary active:bg-on-primary/24"
+              :aria-pressed="loved"
+              @click="loved = !loved"
+            >
+              <MIcon name="favorite" :size="18" :style="{ fontVariationSettings: `'FILL' ${loved ? 1 : 0}` }" />
+              {{ loved ? 'Loved' : 'Love it' }}
+            </button>
+            <button
+              type="button"
+              class="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-on-primary/12 px-3 py-1.5 text-label-large text-on-primary transition-colors hover:bg-on-primary/20 focus-visible:outline-2 focus-visible:outline-on-primary active:bg-on-primary/24"
+              :aria-pressed="saved"
+              @click="saved = !saved"
+            >
+              <MIcon name="bookmark" :size="18" :style="{ fontVariationSettings: `'FILL' ${saved ? 1 : 0}` }" />
+              {{ saved ? 'Saved' : 'Save' }}
+            </button>
           </div>
         </MChatBubble>
         <MChatBubble side="left" sender="Alex" avatar="Alex" time="10:42" :tail="false">

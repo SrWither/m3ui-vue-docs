@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MChatBubble\'s Custom Content example has redesigned in-bubble action buttons, tinted with the bubble\'s own color instead of chips that clashed with it',
         'More MRelativeTime examples on its docs page: a live feed whose timestamps keep counting up, a countdown that passes "now", every unit from seconds to years, the same values in eight languages, and the accepted input formats',
       ],
       changed: [
