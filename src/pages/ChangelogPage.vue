@@ -15,8 +15,23 @@ interface Version {
 
 const versions: Version[] = [
   {
-    version: '0.8.5',
+    version: '0.8.6',
     date: 'Unreleased',
+    changes: {
+      changed: [
+        'MRating was rebuilt with the same props, now designed with Material 3 building blocks. Empty icons now show as outlines, hovering or pressing an icon shows a soft circle in the rating\'s color instead of making it grow, and a disabled rating uses M3\'s disabled colors',
+        'MRating can now be rated by dragging, with the mouse or a finger. Dragging past the first icon clears it back to 0',
+        'MRating works with the keyboard: arrow keys move up or down by one (or by half with halfIncrements), Home and End jump to 0 and the maximum, and a focus ring shows when you tab to it. A readonly rating is no longer a tab stop, and screen readers announce its value',
+      ],
+      fixed: [
+        'MRating with halfIncrements never showed a half icon. Halves, and any fraction (like a 4.3 average), now render exactly, with any icon, not just the star',
+        'Clicking the current MRating value a second time reset it to 0. It now keeps the value',
+      ],
+    },
+  },
+  {
+    version: '0.8.5',
+    date: '2026-10-04',
     changes: {
       changed: [
         'MTable with selectable now works like MDataTable: clicking a row no longer selects it by default. Only its checkbox does. Clicking the row now emits the new row-click event, which MTable didn\'t have before, so a table can let you select rows and also open one by clicking it. The old click-anywhere-to-select behavior is still there with the new selectOnRowClick prop',
