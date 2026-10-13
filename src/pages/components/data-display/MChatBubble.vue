@@ -1,15 +1,36 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MChatBubble, MIcon } from '@m3ui-vue/m3ui-vue'
-
-const loved = ref(false)
-const saved = ref(false)
+import { MChatBubble, MIcon, MButton } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
+
+// Custom content demo
+const loved = ref(false)
+const saved = ref(false)
+
+// Typing indicator demo: Alex types or records, then the message lands
+type LiveMsg = { id: number; side: 'left' | 'right'; text?: string; voice?: string; time: string }
+let liveSeq = 0
+const nowTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+const live = ref<LiveMsg[]>([{ id: liveSeq++, side: 'right', text: 'Are you coming tonight?', time: nowTime() }])
+const alexTyping = ref<'text' | 'audio' | null>(null)
+const replies = ['Yes! On my way 🚗', 'Running 10 min late, sorry', 'Save me a seat 😄']
+function simulate(kind: 'text' | 'audio') {
+  if (alexTyping.value) return
+  alexTyping.value = kind
+  setTimeout(() => {
+    live.value.push(
+      kind === 'text'
+        ? { id: liveSeq++, side: 'left', text: replies[liveSeq % replies.length], time: nowTime() }
+        : { id: liveSeq++, side: 'left', voice: '0:07', time: nowTime() },
+    )
+    alexTyping.value = null
+  }, kind === 'text' ? 2200 : 3200)
+}
 
 const chatBubbleProps: PropDef[] = [
   { name: 'text', type: 'string', description: 'Message text (or use the default slot for custom content)' },
@@ -21,6 +42,7 @@ const chatBubbleProps: PropDef[] = [
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary'", default: "'primary'", description: 'Bubble color for sent (right-side) messages' },
   { name: 'tail', type: 'boolean', default: 'true', description: 'Show the bubble tail (a sharper corner on the side nearest the sender)' },
   { name: 'size', type: "'small' | 'medium' | 'large'", default: "'medium'", description: 'Text size (body-small / body-medium / body-large)' },
+  { name: 'typing', type: "'text' | 'audio'", description: 'Shows a live indicator instead of the content: bouncing dots while the other person types, or a mic with a moving waveform while they record audio. Announced to screen readers with the locale\'s chatTyping / chatRecordingAudio text' },
   { name: 'maxWidth', type: 'string', default: "'320px'", description: 'Max bubble width (px, %, or var()) — supports a CSS variable for responsive control' },
 ]
 
@@ -72,6 +94,58 @@ const chatBubbleSlots: SlotDef[] = [
         <MChatBubble text="Almost done! I've been working on the input components — autocomplete, tag input, and multi-select are all ready. Just polishing some edge cases with the icon alignment." time="10:33" side="right" status="read" />
         <MChatBubble text="Nice! Can you show me a preview? I'd love to see how the chat bubble component turned out, especially with the different color variants." sender="Alex" avatar="Alex" time="10:34" side="left" />
         <MChatBubble text="Sure, give me 5 minutes 👍" time="10:35" side="right" status="delivered" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Typing & recording indicator"
+      description="typing='text' shows bouncing dots and typing='audio' a mic with a moving waveform, in place of the message. Mount it while the other person is typing or recording, and swap it for the real message when it arrives. Try the buttons below."
+      :code="`<MChatBubble v-if=&quot;alexTyping&quot; :typing=&quot;alexTyping&quot; avatar=&quot;Alex&quot; />
+
+<!-- static -->
+<MChatBubble typing=&quot;text&quot; avatar=&quot;Alex&quot; />
+<MChatBubble typing=&quot;audio&quot; avatar=&quot;Alex&quot; />`"
+      :script="`// e.g. from your realtime channel
+socket.on('typing', ({ kind }) => (alexTyping.value = kind)) // 'text' | 'audio'
+socket.on('message', (msg) => {
+  alexTyping.value = null
+  messages.value.push(msg)
+})`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <div class="flex flex-wrap gap-2">
+          <MButton variant="tonal" icon="keyboard" :disabled="!!alexTyping" @click="simulate('text')">Alex types</MButton>
+          <MButton variant="tonal" icon="mic" :disabled="!!alexTyping" @click="simulate('audio')">Alex records audio</MButton>
+        </div>
+        <div class="mx-auto w-full max-w-md space-y-2 rounded-xl bg-surface-container-low p-4">
+          <template v-for="m in live" :key="m.id">
+            <MChatBubble v-if="m.text" :side="m.side" :text="m.text" :time="m.time" :avatar="m.side === 'left' ? 'Alex' : undefined" :status="m.side === 'right' ? 'read' : undefined" />
+            <MChatBubble v-else side="left" avatar="Alex" :time="m.time">
+              <div class="flex items-center gap-2">
+                <MIcon name="play_arrow" :size="22" class="text-primary" style="font-variation-settings: 'FILL' 1" />
+                <span class="flex h-4 items-center gap-[3px]">
+                  <span v-for="(h, i) in [40, 70, 55, 90, 65, 35, 80, 50, 60, 30, 75, 45]" :key="i" class="w-[3px] rounded-full bg-on-surface-variant/60" :style="{ height: `${h}%` }" />
+                </span>
+                <span class="text-label-small text-on-surface-variant">{{ m.voice }}</span>
+              </div>
+            </MChatBubble>
+          </template>
+          <MChatBubble v-if="alexTyping" :typing="alexTyping" avatar="Alex" />
+        </div>
+        <div class="flex flex-wrap items-end gap-6">
+          <div class="flex flex-col gap-1">
+            <span class="text-label-medium text-on-surface-variant">typing="text"</span>
+            <MChatBubble typing="text" avatar="Alex" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-label-medium text-on-surface-variant">typing="audio"</span>
+            <MChatBubble typing="audio" avatar="Alex" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-label-medium text-on-surface-variant">color="tertiary"</span>
+            <MChatBubble typing="audio" avatar="Alex" color="tertiary" />
+          </div>
+        </div>
       </div>
     </ComponentDemo>
 

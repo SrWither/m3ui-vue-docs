@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MChatBubble can show that the other person is typing (bouncing dots) or recording a voice message (a mic with a moving wave), like in messaging apps. Set typing to \'text\' or \'audio\' while it\'s happening and swap it for the real message when it arrives. The docs page has a live demo',
         'MChatBubble\'s Custom Content example has redesigned in-bubble action buttons, tinted with the bubble\'s own color instead of chips that clashed with it',
         'More MRelativeTime examples on its docs page: a live feed whose timestamps keep counting up, a countdown that passes "now", every unit from seconds to years, the same values in eight languages, and the accepted input formats',
       ],
@@ -30,6 +31,7 @@ const versions: Version[] = [
         'MResult\'s default titles and descriptions were always in Spanish. They now follow the language set with createM3UI, in English by default and translated in all the bundled locales. The info status also gets a default description now. Its docs page has new examples, all in English: order confirmed, not found, access denied, server error, empty state and payment failed',
       ],
       fixed: [
+        'In MChatBubble, the read/delivered checkmarks on a secondary or tertiary bubble used the primary bubble\'s color. They now match the bubble',
         'MRating with halfIncrements never showed a half icon. Halves, and any fraction (like a 4.3 average), now render exactly, with any icon, not just the star',
         'Clicking the current MRating value a second time reset it to 0. It now keeps the value',
         'MPullToRefresh couldn\'t be pulled with a finger in a mobile browser: the indicator started to follow, then jumped back up because the browser took the drag as a normal scroll. Pulling down at the top of the list now works, and swiping up still scrolls normally',
