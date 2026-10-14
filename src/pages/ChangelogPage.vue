@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MTransferList gained a select-all checkbox and a counter in each pane, a second line per item (description), an adjustable list height, and double-click to move a single item across. Its docs page has new examples: building a team, role permissions, a searchable country list and custom empty states',
         'MDragDropList can now hold fully custom rows with the new bare prop (cards, pills, any shape), place the drag grip inside your own design, react while a row is being dragged, and be locked with disabled. Its docs page has eight new examples: a task list, a playlist, home screen sections, a ranking that saves on every change, project cards, pills and more',
         'MDragDropList can be reordered with the keyboard (Space to pick up, arrows to move, Space to drop, Esc to cancel), with each step announced to screen readers',
         'MFileUpload can now be cleared and paired with your own Upload button: an optional v-model with the file list, a clear() method, and an actions slot below the list. New docs examples show an upload with live progress per file, and clearing the list from a template ref. The first two examples are now centered',
@@ -27,6 +28,7 @@ const versions: Version[] = [
         'More MRelativeTime examples on its docs page: a live feed whose timestamps keep counting up, a countdown that passes "now", every unit from seconds to years, the same values in eight languages, and the accepted input formats',
       ],
       changed: [
+        'MTransferList was redesigned in Material 3 style with the same props: softer panels, list-item rows that highlight when checked, a pill search field, and animated moves. On narrow screens the two panes now stack with up/down arrows',
         'MDragDropList was rebuilt with the same props: the dragged row now lifts and follows your finger or mouse while the others slide out of its way, then settles into place. Rows now have Material 3 list-item height, padding and hover, so they look taller than before',
         'MRating was rebuilt with the same props, now designed with Material 3 building blocks. Empty icons now show as outlines, hovering or pressing an icon shows a soft circle in the rating\'s color instead of making it grow, and a disabled rating uses M3\'s disabled colors',
         'MRating can now be rated by dragging, with the mouse or a finger. Dragging past the first icon clears it back to 0',
@@ -35,6 +37,7 @@ const versions: Version[] = [
         'MResult\'s default titles and descriptions were always in Spanish. They now follow the language set with createM3UI, in English by default and translated in all the bundled locales. The info status also gets a default description now. Its docs page has new examples, all in English: order confirmed, not found, access denied, server error, empty state and payment failed',
       ],
       fixed: [
+        'In MTransferList, clicking right on a row\'s checkbox showed it checked but didn\'t select the item, so it couldn\'t be moved. It now works',
         'MDragDropList didn\'t work with a finger on phones. Long-press a row to drag it, or drag right away from the grip when using handle. Checkboxes and switches inside a row also no longer start a drag by accident, and the code samples on its docs page used a slot name that didn\'t exist',
         'MFileUpload\'s progress bar, spinner and done/error icons never updated when you changed a file\'s status or progress. They now do. Dropping a rejected file in single-file mode also no longer removes the file already selected',
         'MNavigationRail\'s expanded variant no longer glitches when collapsing: the item labels used to disappear and pop back in. They now shrink away smoothly, and expand just as smoothly',
