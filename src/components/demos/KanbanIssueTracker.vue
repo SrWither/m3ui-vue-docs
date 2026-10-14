@@ -12,16 +12,19 @@ import {
   MCheckbox,
   MDivider,
   MTextField,
+  MMenu,
+  MMenuItem,
 } from '@m3ui-vue/m3ui-vue'
 import type { KanbanColumn, KanbanCard } from '@m3ui-vue/m3ui-vue'
 
-type IssueType = 'story' | 'bug' | 'task'
+type IssueType = 'story' | 'bug' | 'task' | 'improvement'
 type Priority = 'highest' | 'high' | 'medium' | 'low'
 
 const TYPES: Record<IssueType, { icon: string; cls: string; label: string }> = {
-  story: { icon: 'bookmark', cls: 'bg-success text-on-success', label: 'Story' },
+  story: { icon: 'bookmark', cls: 'bg-success text-on-success', label: 'Feature' },
   bug: { icon: 'bug_report', cls: 'bg-error text-on-error', label: 'Bug' },
   task: { icon: 'check', cls: 'bg-primary text-on-primary', label: 'Task' },
+  improvement: { icon: 'arrow_upward', cls: 'bg-tertiary text-on-tertiary', label: 'Improvement' },
 }
 const PRIORITIES: Record<Priority, { icon: string; cls: string; label: string }> = {
   highest: { icon: 'keyboard_double_arrow_up', cls: 'text-error', label: 'Highest' },
@@ -158,6 +161,7 @@ function openIssue({ card }: { card: KanbanCard }) {
 const statusOptions = computed(() => board.value.map((c) => ({ label: c.title, value: c.id })))
 const assigneeOptions = [{ label: 'Unassigned', value: null }, ...PEOPLE.map((p) => ({ label: p, value: p }))]
 const priorityOptions = (Object.keys(PRIORITIES) as Priority[]).map((p) => ({ label: PRIORITIES[p].label, value: p }))
+const typeOptions = (Object.keys(TYPES) as IssueType[]).map((t) => ({ label: TYPES[t].label, value: t }))
 const pointOptions = POINTS.map((p) => ({ label: `${p} point${p === 1 ? '' : 's'}`, value: p }))
 
 const status = computed({
@@ -177,6 +181,18 @@ const subtaskProgress = computed(() => {
   const list = selected.value?.subtasks ?? []
   return list.length ? Math.round((list.filter((s: { done: boolean }) => s.done).length / list.length) * 100) : 0
 })
+
+// Copy the issue key from the card itself (a data-kanban-action area: no side sheet, no drag)
+const copiedId = ref<string | number | null>(null)
+async function copyKey(card: KanbanCard) {
+  try {
+    await navigator.clipboard?.writeText(String(card.id))
+  } catch {
+    /* clipboard may be blocked; the feedback still shows */
+  }
+  copiedId.value = card.id
+  setTimeout(() => copiedId.value === card.id && (copiedId.value = null), 1200)
+}
 
 const newComment = ref('')
 function addComment() {
@@ -244,20 +260,60 @@ function addComment() {
           <div v-if="card.labels.length" class="mt-2 flex flex-wrap gap-1">
             <span v-for="l in card.labels" :key="l" class="rounded-sm bg-surface-container-highest px-1.5 py-0.5 text-label-small text-on-surface-variant">{{ l }}</span>
           </div>
-          <div class="mt-3 flex items-center gap-2">
-            <span class="flex h-4.5 w-4.5 items-center justify-center rounded-xs" :class="TYPES[card.type as IssueType].cls" :title="TYPES[card.type as IssueType].label">
-              <MIcon :name="TYPES[card.type as IssueType].icon" :size="14" />
-            </span>
-            <span class="text-label-medium text-on-surface-variant" :class="column.id === 'done' ? 'line-through' : ''">{{ card.id }}</span>
-            <MIcon
-              :name="PRIORITIES[card.priority as Priority].icon"
-              :size="18"
-              :class="PRIORITIES[card.priority as Priority].cls"
-              :title="`${PRIORITIES[card.priority as Priority].label} priority`"
-            />
-            <span class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-surface-container-highest px-1.5 text-label-small text-on-surface-variant" title="Story points">
-              {{ card.points }}
-            </span>
+          <div class="mt-3 flex items-center gap-1">
+            <!--
+              These open their own menus instead of the side sheet: buttons inside a card never
+              fire cardClick or start a drag.
+            -->
+            <MMenu>
+              <template #trigger>
+                <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-on-surface/8" :title="`Type: ${TYPES[card.type as IssueType].label}`">
+                  <span class="flex h-4.5 w-4.5 items-center justify-center rounded-xs" :class="TYPES[card.type as IssueType].cls">
+                    <MIcon :name="TYPES[card.type as IssueType].icon" :size="14" />
+                  </span>
+                </button>
+              </template>
+              <MMenuItem v-for="t in (Object.keys(TYPES) as IssueType[])" :key="t" :icon="TYPES[t].icon" @click="card.type = t">
+                {{ TYPES[t].label }}
+              </MMenuItem>
+            </MMenu>
+
+            <!-- A plain span marked data-kanban-action: copies the key instead of opening the issue -->
+            <span
+              data-kanban-action
+              class="cursor-copy rounded-xs px-1 text-label-medium text-on-surface-variant hover:bg-on-surface/8"
+              :class="column.id === 'done' ? 'line-through' : ''"
+              title="Copy key"
+              @click="copyKey(card)"
+            >{{ copiedId === card.id ? 'Copied!' : card.id }}</span>
+
+            <MMenu>
+              <template #trigger>
+                <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-on-surface/8" :title="`${PRIORITIES[card.priority as Priority].label} priority`">
+                  <MIcon :name="PRIORITIES[card.priority as Priority].icon" :size="18" :class="PRIORITIES[card.priority as Priority].cls" />
+                </button>
+              </template>
+              <MMenuItem v-for="p in (Object.keys(PRIORITIES) as Priority[])" :key="p" :icon="PRIORITIES[p].icon" @click="card.priority = p">
+                {{ PRIORITIES[p].label }}
+              </MMenuItem>
+            </MMenu>
+
+            <span class="flex-1" />
+
+            <MMenu align="right">
+              <template #trigger>
+                <button
+                  type="button"
+                  class="flex h-6 min-w-6 items-center justify-center rounded-full bg-surface-container-highest px-1.5 text-label-small text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container"
+                  title="Story points (difficulty)"
+                >
+                  {{ card.points }}
+                </button>
+              </template>
+              <MMenuItem v-for="pt in POINTS" :key="pt" :icon="pt === card.points ? 'check' : undefined" @click="card.points = pt">
+                {{ pt }} {{ pt === 1 ? 'point' : 'points' }}
+              </MMenuItem>
+            </MMenu>
             <MAvatar v-if="card.assignee" :name="card.assignee" :size="24" />
             <span v-else class="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-outline text-on-surface-variant" title="Unassigned">
               <MIcon name="person" :size="14" />
@@ -283,9 +339,10 @@ function addComment() {
 
         <div class="grid grid-cols-2 gap-3">
           <MSelect v-model="status" :options="statusOptions" label="Status" variant="outlined" />
+          <MSelect v-model="selected.type" :options="typeOptions" label="Type" variant="outlined" />
           <MSelect v-model="selected.assignee" :options="assigneeOptions" label="Assignee" variant="outlined" />
           <MSelect v-model="selected.priority" :options="priorityOptions" label="Priority" variant="outlined" />
-          <MSelect v-model="selected.points" :options="pointOptions" label="Story points" variant="outlined" />
+          <MSelect v-model="selected.points" :options="pointOptions" label="Story points" variant="outlined" class="col-span-2" />
         </div>
 
         <section>

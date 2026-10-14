@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MKanban cards can have their own clickable parts: buttons and links inside a card no longer open it, and any other element can opt out with a data-kanban-action attribute. The issue tracker example uses it to change a ticket\'s type, priority and story points right on the board, and to copy its key',
         'A Jira-style issue tracker example on the MKanban page: tickets with type, priority, story points and assignee, sprint progress and filters, and a side sheet with the full issue (status, assignee, subtasks, comments) that opens when you click a ticket',
         'MKanban gained WIP limits per column, custom column headers and footers (for example an Add card button), and keyboard support for moving cards within and between columns. Its docs page has new examples: a project board, WIP limits, a sales pipeline with totals, adding cards and saving moves to an API',
         'MTransferList gained a select-all checkbox and a counter in each pane, a second line per item (description), an adjustable list height, and double-click to move a single item across. Its docs page has new examples: building a team, role permissions, a searchable country list and custom empty states',

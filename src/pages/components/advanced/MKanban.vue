@@ -26,7 +26,7 @@ const kanbanEvents: EventDef[] = [
 ]
 
 const kanbanSlots: SlotDef[] = [
-  { name: 'card', scope: '{ card, column, dragging }', description: 'Content of each card. column is the full KanbanColumn; dragging is true while the card is lifted. Buttons, links and inputs inside keep working and never start a drag' },
+  { name: 'card', scope: '{ card, column, dragging }', description: 'Content of each card. column is the full KanbanColumn; dragging is true while the card is lifted. Buttons, links and inputs inside keep working: they never start a drag or fire cardClick. Add data-kanban-action to any other element (a badge, a span) to give it the same treatment, so a click there can do something else instead of opening the card' },
   { name: 'column-header', scope: '{ column, count }', description: 'Replaces the default header (color dot, title and count)' },
   { name: 'column-footer', scope: '{ column }', description: 'Content below each column\'s cards, e.g. an "Add card" button' },
 ]
@@ -209,7 +209,7 @@ function onSyncMove(e: { cardId: string | number; fromColumn: string | number; t
 
     <ComponentDemo
       title="Issue tracker"
-      description="A Jira-style sprint board: issue type, key, priority, story points (difficulty) and assignee on each ticket, with points per column and sprint progress. Clicking a ticket opens an MSideSheet with its details. Changing the status there moves the ticket on the board with the same animation as a drag, and edits to assignee, priority or points show up on the card right away. The filters dim the tickets that don't match instead of hiding them, so dragging keeps working."
+      description="A Jira-style sprint board: issue type, key, priority, story points (difficulty) and assignee on each ticket, with points per column and sprint progress. Clicking a ticket opens an MSideSheet with its details, but its type, priority and story points are small menus that change the value right on the ticket, and clicking the key copies it (a span marked data-kanban-action): none of them open the sheet or start a drag. Changing the status there moves the ticket on the board with the same animation as a drag, and edits to assignee, priority or points show up on the card right away. The filters dim the tickets that don't match instead of hiding them, so dragging keeps working."
       :code="`<MKanban v-model=&quot;board&quot; @card-click=&quot;({ card }) => openIssue(card)&quot;>
   <template #column-header=&quot;{ column, count }&quot;>
     <h4 class=&quot;flex-1 text-label-large uppercase text-on-surface-variant&quot;>{{ column.title }}</h4>
@@ -220,10 +220,25 @@ function onSyncMove(e: { cardId: string | number; fromColumn: string | number; t
   <template #card=&quot;{ card, column }&quot;>
     <p class=&quot;line-clamp-2 text-body-medium&quot;>{{ card.title }}</p>
     <div class=&quot;mt-3 flex items-center gap-2&quot;>
-      <span class=&quot;rounded-xs&quot; :class=&quot;TYPES[card.type].cls&quot;><MIcon :name=&quot;TYPES[card.type].icon&quot; :size=&quot;14&quot; /></span>
-      <span class=&quot;text-label-medium&quot; :class=&quot;column.id === 'done' &amp;&amp; 'line-through'&quot;>{{ card.id }}</span>
-      <MIcon :name=&quot;PRIORITIES[card.priority].icon&quot; :class=&quot;PRIORITIES[card.priority].cls&quot; />
-      <span class=&quot;ml-auto rounded-full bg-surface-container-highest px-1.5 text-label-small&quot;>{{ card.points }}</span>
+      <!-- Buttons inside a card don't open it: this one changes the type in place -->
+      <MMenu>
+        <template #trigger>
+          <button><MIcon :name=&quot;TYPES[card.type].icon&quot; /></button>
+        </template>
+        <MMenuItem v-for=&quot;t in types&quot; :key=&quot;t&quot; @click=&quot;card.type = t&quot;>{{ TYPES[t].label }}</MMenuItem>
+      </MMenu>
+
+      <!-- Any element marked data-kanban-action is ignored by the card too -->
+      <span data-kanban-action @click=&quot;copyKey(card)&quot;>{{ card.id }}</span>
+
+      <!-- Priority: same pattern as the type menu -->
+
+      <MMenu align=&quot;right&quot; class=&quot;ml-auto&quot;>
+        <template #trigger>
+          <button class=&quot;rounded-full bg-surface-container-highest px-1.5&quot;>{{ card.points }}</button>
+        </template>
+        <MMenuItem v-for=&quot;pt in [1, 2, 3, 5, 8, 13]&quot; :key=&quot;pt&quot; @click=&quot;card.points = pt&quot;>{{ pt }} points</MMenuItem>
+      </MMenu>
       <MAvatar :name=&quot;card.assignee&quot; :size=&quot;24&quot; />
     </div>
   </template>
