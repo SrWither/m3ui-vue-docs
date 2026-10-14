@@ -27,7 +27,8 @@ const windowProps: PropDef[] = [
   { name: 'closable', type: 'boolean', default: 'true', description: 'Show close button' },
   { name: 'minimizable', type: 'boolean', default: 'true', description: 'Show minimize button (collapses to title bar)' },
   { name: 'maximizable', type: 'boolean', default: 'true', description: 'Show the maximize button and let a double-click on the title bar fill the container and restore it. Dragging a maximized window by its title bar (about 40px, so it isn\'t accidental) restores it' },
-  { name: 'snap', type: 'boolean', default: 'false', description: 'Edge snapping while dragging: hold the pointer at the container\'s top edge to maximize, or at its left or right edge to fill that half. A preview shows where it will land; dragging it away restores its size' },
+  { name: 'snap', type: 'boolean', default: 'false', description: 'Edge snapping while dragging: hold the pointer at the container\'s top edge to maximize, or at its left or right edge to fill that half. A preview shows where it will land; dragging it away restores its size. Pushed into a top corner, the side wins over maximize' },
+  { name: 'offscreen', type: 'boolean', default: 'false', description: 'Lets the window be dragged partly out of its container, like on a desktop: up to 3/4 of its width past either side, and down until only the title bar shows (never above the top). The container should clip it with overflow: hidden' },
   { name: 'resetPosition', type: 'boolean', default: 'false', description: 'Reset position, size, and state when the window is closed' },
 ]
 
@@ -299,7 +300,7 @@ const playlist = [
 
     <ComponentDemo
       title="Desktop with a taskbar"
-      description="Three apps on a small desktop, with snap on. The window in front has the stronger title bar and shadow; click or drag another one to bring it forward. Drag one to the top or a side to snap it. Close one and reopen it from the taskbar, where a dot marks the open apps."
+      description="Three apps on a small desktop, with snap and offscreen on: windows can be pushed partly off the edges, like on a desktop. The window in front has the stronger title bar and shadow; click or drag another one to bring it forward. Drag one to the top or a side to snap it. Close one and reopen it from the taskbar, where a dot marks the open apps."
       flush
       :code="`<div class=&quot;relative h-[460px]&quot;>
   <MWindow
@@ -307,6 +308,7 @@ const playlist = [
     :key=&quot;app.id&quot;
     v-model=&quot;open[app.id]&quot;
     snap
+    offscreen
     :title=&quot;app.title&quot;
     :icon=&quot;app.icon&quot;
     :x=&quot;app.x&quot;
@@ -341,6 +343,7 @@ const playlist = [
           :y="app.y"
           :reset-position="true"
           snap
+          offscreen
         >
           <div v-if="app.id === 'files'" class="p-2">
             <div v-for="f in files" :key="f.name" class="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-on-surface/5">
@@ -379,10 +382,13 @@ const playlist = [
 
     <ComponentDemo
       title="Snap to edges"
-      description="With snap, dragging a window by its title bar to the top edge of the container previews a maximize, and to the left or right edge previews that half, like GNOME. Let go to snap; drag it away to get its previous size back. Put these two side by side."
+      description="With snap, dragging a window by its title bar to the top edge of the container previews a maximize, and to the left or right edge previews that half, like GNOME; pushed into a top corner, the side wins. Let go to snap; drag it away to get its previous size back. With offscreen, a window can also be parked partly off an edge. Put these two side by side."
       flush
-      :code="`<MWindow v-model=&quot;mail&quot; title=&quot;Mail&quot; icon=&quot;mail&quot; snap />
-<MWindow v-model=&quot;calendar&quot; title=&quot;Calendar&quot; icon=&quot;calendar_month&quot; snap />`"
+      :code="`<!-- The container clips what goes off its edges -->
+<div class=&quot;relative h-[420px] overflow-hidden&quot;>
+  <MWindow v-model=&quot;mail&quot; title=&quot;Mail&quot; icon=&quot;mail&quot; snap offscreen />
+  <MWindow v-model=&quot;calendar&quot; title=&quot;Calendar&quot; icon=&quot;calendar_month&quot; snap offscreen />
+</div>`"
     >
       <div class="relative h-[420px] w-full overflow-hidden rounded-b-md bg-surface-container-low">
         <div class="pointer-events-none absolute inset-x-0 top-2 flex justify-center">
@@ -392,7 +398,7 @@ const playlist = [
           </span>
         </div>
         <MButton v-if="!snapA || !snapB" variant="tonal" class="absolute bottom-4 left-4" @click="snapA = true; snapB = true">Reopen</MButton>
-        <MWindow v-model="snapA" title="Mail" icon="mail" width="300px" height="220px" :x="40" :y="60" snap :reset-position="true">
+        <MWindow v-model="snapA" title="Mail" icon="mail" width="300px" height="220px" :x="40" :y="60" snap offscreen :reset-position="true">
           <div class="p-2">
             <div v-for="m in ['Design review moved', 'Release notes draft', 'Your boarding pass']" :key="m" class="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-on-surface/5">
               <MAvatar :name="m" :size="28" />
@@ -400,7 +406,7 @@ const playlist = [
             </div>
           </div>
         </MWindow>
-        <MWindow v-model="snapB" title="Calendar" icon="calendar_month" width="300px" height="220px" :x="380" :y="120" snap :reset-position="true">
+        <MWindow v-model="snapB" title="Calendar" icon="calendar_month" width="300px" height="220px" :x="380" :y="120" snap offscreen :reset-position="true">
           <div class="grid grid-cols-7 gap-1 p-3 text-center text-label-medium">
             <span v-for="(d, i) in ['M', 'T', 'W', 'T', 'F', 'S', 'S']" :key="'h' + i" class="text-on-surface-variant">{{ d }}</span>
             <span
