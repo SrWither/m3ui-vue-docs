@@ -20,6 +20,7 @@ The link resolves to the library's **built `dist/`, not its `src/`**. After chan
 - **One page per component**: `src/pages/components/<section>/<ComponentName>.vue`. Routes are auto-generated from that path by `import.meta.glob` in `src/router.ts` (`/components/<section>/<lowercased name>`) — no manual route entry. Sections: `advanced`, `buttons`, `data-display`, `editors`, `feedback`, `inputs`, `layout`, `navigation`, `overlays`, `tables`, `utility`.
 - **Adding a new component page** also needs: its name in the section's `ch('/components/<section>', [...])` list and an icon in `iconMap`, both in `src/nav/sections.ts` (that list also drives `ComponentPager` prev/next order via `componentPageOrder`), plus a `{ name, description }` card on the section overview page (`src/pages/<Section>Page.vue`, e.g. `FeedbackPage.vue`).
 - **Changelog page**: `src/pages/ChangelogPage.vue`, a `versions: Version[]` array (`{ version, date, changes: { added?, changed?, fixed? } }`), newest first. The unreleased version uses `date: 'Unreleased'`; set the real date once the lib tag exists (`git -C ../m3ui-vue tag`). Voice is plain-English and user-facing (what changed for someone using the component), shorter and less technical than the library's `CHANGELOG.md` — no token names, no internal mechanics.
+- **Large demos** (e.g. the Jira-style issue tracker, `KanbanIssueTracker.vue`) live in `src/components/demos/` and are imported by the page. They **can't** go in a subfolder of `src/pages/components/<section>/`: the router glob throws on any path deeper than `<section>/<Name>.vue`. The page's `ComponentDemo` then shows a condensed `:code`/`:script` and renders the demo in its slot (use `flush` plus your own padding for full-width boards).
 - Other top-level pages: `SetupPage.vue` (install + font links), `I18nPage.vue`, `PalettesPage.vue`, `TypographyPage.vue`, `PaletteBuilderPage.vue`, `Examples*Page.vue`.
 
 ## Page anatomy (copy an existing page, e.g. `data-display/MResult.vue`)
@@ -63,3 +64,8 @@ These are JS template literals inside an HTML attribute:
 - In a grid of cards with unequal heights, give the inner component `class="h-full"` so its own centering applies (grid stretches the card, not the child).
 - Time-relative demo values that sit on a unit boundary drift as "now" advances (`+24h` soon reads "in 24 hours" instead of "tomorrow") — pad them.
 - Demo state lives in the page's `<script setup>` (refs + small fake async with `setTimeout`).
+- Each demo gets its own data: two demos sharing one ref (as the old MDragDropList page did) means interacting with one changes the other.
+- `MCard` hardcodes `overflow-hidden`, which clips a dragged item's lift shadow; use `overflow-visible!` (Tailwind v4 important suffix) on the card, since class order alone isn't guaranteed to win.
+- Show request/save behavior with a small fake log panel (`PUT /api/... {payload}`) rather than real network calls (see the MDragDropList ranking and MKanban saving demos).
+- Point URLs in examples at real destinations (QR codes encode `https://m3ui.dev`), not `example.com`.
+- Don't describe behavior a demo doesn't have (e.g. claiming new items animate in when only reorders do); check the component first.
