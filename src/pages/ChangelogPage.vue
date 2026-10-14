@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'A new example, Music: a streaming app whose songs really play (they are generated live in your browser), with home shelves, search, albums, artists, your library and playlists, a queue you reorder by dragging, and a full-screen player with a visualizer',
         'A new example, Mail: an email client with folders, labels and search, conversations with attachments, bulk actions you can undo, snooze, swipe to archive and pull to refresh on phones, a rich-text composer with scheduled send, contacts that write back, and Gmail-style keyboard shortcuts',
       ],
       fixed: [
