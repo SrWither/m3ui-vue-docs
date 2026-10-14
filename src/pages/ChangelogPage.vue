@@ -19,12 +19,14 @@ const versions: Version[] = [
     date: '2026-10-14',
     changes: {
       added: [
+        'MWindow can be maximized (button or double-click on the title bar) and dragged back out of it, and with the new snap prop it snaps to the top or a side of its container like on a desktop, with a preview of where it will land. Its page has new examples: a desktop with a taskbar, snapping two windows side by side, an editor that shows more when maximized, and a picture-in-picture video',
         'MTransferList rows can now have your own design: the new item slot replaces the icon and text (keeping the checkbox), or draws the whole row with bare, for example as cards. Buttons inside a row work on their own, so rows can carry controls like a quantity stepper. Its docs page has three new examples: people with avatars, an order with quantities and a home screen widget picker',
         'Adaptive layouts from Material 3, each with its own page in Layout and demos you can switch between phone, tablet and desktop: MNavigationSuite (a bottom bar on phones that becomes a rail on tablets and desktops), MListDetail (list and detail side by side on wide screens, one at a time on phones), MSupportingPane (a supporting pane beside the main content, or below it or in a bottom sheet on phones) and useWindowSizeClass (M3\'s compact to extra-large size classes for the window or any element)',
         'MNavigationRail, MShortNavigationBar and MNavigationSuite items can be links: give them a to and they work with vue-router (or as plain links without it), including middle-click to open in a new tab. The MNavigationSuite page has a demo that navigates between the adaptive layout pages',
         'MShortNavigationBar items can be disabled: dimmed and not selectable, with a new example on its page. MNavigationSuite\'s disabled items now work in its bottom bar too, not only in the rail',
       ],
       changed: [
+        'MWindow looks more like a desktop window: the one in front has a stronger title bar and shadow while the others step back, the title bar buttons are larger with hover and focus feedback and screen reader labels, and windows animate when they open, close, minimize and while dragged',
         'MBottomSheet and MSideSheet now slide in when they open (before, they only faded in) and slide out quickly when closed, with Material 3\'s spring motion. Dragging one and letting go continues smoothly from your finger: it closes if you pulled far or fast enough, otherwise it settles back',
       ],
       fixed: [
