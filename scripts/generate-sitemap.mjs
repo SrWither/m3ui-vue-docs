@@ -1,48 +1,9 @@
-// Generates public/sitemap.xml from the same route sources as src/router.ts:
-// auto-discovered component pages under src/pages/components/**, plus the
-// explicit static routes. Runs before `vite build` so the file lands in dist/
-// via Vite's public/ passthrough. Keep the static route list below in sync
-// with router.ts if routes are added/removed there.
-import { readdirSync, writeFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+// Generates public/sitemap.xml from the route list in routes.mjs. Runs before `vite build` so the
+// file lands in dist/ via Vite's public/ passthrough.
+import { writeFileSync } from 'node:fs'
+import { SITE_URL, getRoutes } from './routes.mjs'
 
-const SITE_URL = 'https://m3ui.dev'
-const componentsDir = fileURLToPath(new URL('../src/pages/components', import.meta.url))
-
-const componentPaths = readdirSync(componentsDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .flatMap((sectionEntry) => {
-    const section = sectionEntry.name
-    return readdirSync(`${componentsDir}/${section}`)
-      .filter((file) => file.endsWith('.vue'))
-      .map((file) => `/components/${section}/${file.replace(/\.vue$/, '').toLowerCase()}`)
-  })
-  .sort()
-
-const staticPaths = [
-  '/',
-  '/getting-started/setup',
-  '/getting-started/i18n',
-  '/components/buttons',
-  '/components/inputs',
-  '/components/feedback',
-  '/components/data-display',
-  '/components/navigation',
-  '/components/layout',
-  '/components/overlays',
-  '/components/tables',
-  '/components/utility',
-  '/components/editors',
-  '/components/advanced',
-  '/examples',
-  '/examples/apps',
-  '/styles/palettes',
-  '/styles/typography',
-  '/styles/palette-builder',
-  '/changelog',
-]
-
-const allPaths = [...staticPaths, ...componentPaths]
+const allPaths = getRoutes().map((r) => r.path)
 const lastmod = new Date().toISOString().slice(0, 10)
 
 const urls = allPaths

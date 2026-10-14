@@ -13,6 +13,7 @@ const componentRoutes: RouteRecordRaw[] = Object.entries(componentPageModules).m
   return {
     path: `/components/${section}/${component.toLowerCase()}`,
     component: loader as RouteRecordRaw['component'],
+    meta: { title: component },
   }
 })
 
@@ -27,80 +28,98 @@ const router = createRouter({
     {
       path: '/getting-started/setup',
       component: () => import('./pages/SetupPage.vue'),
+      meta: { title: 'Setup' },
     },
     {
       path: '/getting-started/i18n',
       component: () => import('./pages/I18nPage.vue'),
+      meta: { title: 'Internationalization (i18n)' },
     },
     {
       path: '/components/buttons',
       component: () => import('./pages/ButtonsPage.vue'),
+      meta: { title: 'Buttons components' },
     },
     {
       path: '/components/inputs',
       component: () => import('./pages/InputsPage.vue'),
+      meta: { title: 'Inputs components' },
     },
     {
       path: '/components/feedback',
       component: () => import('./pages/FeedbackPage.vue'),
+      meta: { title: 'Feedback components' },
     },
     {
       path: '/components/data-display',
       component: () => import('./pages/DataDisplayPage.vue'),
+      meta: { title: 'Data Display components' },
     },
     {
       path: '/components/navigation',
       component: () => import('./pages/NavigationPage.vue'),
+      meta: { title: 'Navigation components' },
     },
     {
       path: '/components/layout',
       component: () => import('./pages/LayoutPage.vue'),
+      meta: { title: 'Layout components' },
     },
     {
       path: '/components/overlays',
       component: () => import('./pages/OverlaysPage.vue'),
+      meta: { title: 'Overlays components' },
     },
     {
       path: '/components/tables',
       component: () => import('./pages/TablesPage.vue'),
+      meta: { title: 'Tables components' },
     },
     {
       path: '/components/utility',
       component: () => import('./pages/UtilityPage.vue'),
+      meta: { title: 'Utility components' },
     },
     {
       path: '/components/editors',
       component: () => import('./pages/EditorsPage.vue'),
+      meta: { title: 'Editors & Viewers components' },
     },
     {
       path: '/components/advanced',
       component: () => import('./pages/AdvancedPage.vue'),
+      meta: { title: 'Advanced components' },
     },
     {
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
+      meta: { title: 'Examples' },
     },
     // Example apps render full screen, outside the docs layout (App.vue checks meta.fullscreen).
     ...examples.map((e): RouteRecordRaw => ({
       path: `/examples/${e.id}`,
       component: e.component,
-      meta: { fullscreen: true },
+      meta: { fullscreen: true, title: `${e.title} example` },
     })),
     {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),
+      meta: { title: 'Color Palettes' },
     },
     {
       path: '/styles/typography',
       component: () => import('./pages/TypographyPage.vue'),
+      meta: { title: 'Typography' },
     },
     {
       path: '/styles/palette-builder',
       component: () => import('./pages/PaletteBuilderPage.vue'),
+      meta: { title: 'Palette Builder' },
     },
     {
       path: '/changelog',
       component: () => import('./pages/ChangelogPage.vue'),
+      meta: { title: 'Changelog' },
     },
   ],
 })
@@ -108,6 +127,11 @@ const router = createRouter({
 // Target pages are lazy-loaded chunks, some with 100+ demo blocks to render —
 // a single fixed-delay check (as this used to be) gives up before the anchor
 // exists on a cold chunk load, so poll for it instead.
+// Same titles as the per-route HTML written by scripts/prerender-meta.mjs (from scripts/routes.mjs).
+router.afterEach((to) => {
+  document.title = to.meta.title ? `${to.meta.title} — M3UI Vue` : 'M3UI Vue — Documentation'
+})
+
 router.afterEach((to) => {
   if (!to.hash) return
   let attempts = 0
