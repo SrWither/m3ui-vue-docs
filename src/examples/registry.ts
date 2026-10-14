@@ -36,6 +36,15 @@ export const examples: ExampleApp[] = [
     uses: ['MListDetail', 'MChatBubble', 'MEmojiSelector', 'MLightbox', 'MMenu', 'MRelativeTime', 'MChip', 'useToast'],
     component: () => import('./chat/ChatExample.vue'),
   },
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    description:
+      'Store analytics: key numbers with trends, revenue over time against the previous period, sales by channel and country, and full order and customer tables with search, sorting, selection and CSV export. Ctrl+K opens a command palette.',
+    icon: 'monitoring',
+    uses: ['MChart', 'MDataTable', 'MStatCard', 'MNavigationSuite', 'MDateRangePicker', 'MCommandPalette', 'MExportButton', 'MSegmentedButton'],
+    component: () => import('./dashboard/DashboardExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`

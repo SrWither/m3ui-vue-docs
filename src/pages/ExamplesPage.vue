@@ -21,8 +21,17 @@ import { examples, exampleSource } from '@/examples/registry'
           :to="`/examples/${e.id}`"
           class="relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br from-primary-container via-secondary-container to-tertiary-container"
         >
+          <!-- A tiny dashboard: stat cards over a bar chart -->
+          <div v-if="e.id === 'dashboard'" class="absolute inset-[12%] flex flex-col gap-[6%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <div class="flex h-[22%] gap-[4%]">
+              <span v-for="n in 3" :key="n" class="flex-1 rounded-lg" :class="['bg-primary-container', 'bg-secondary-container', 'bg-tertiary-container'][n - 1]" />
+            </div>
+            <div class="flex flex-1 items-end gap-[3%] rounded-lg bg-surface-container-low p-[3%]">
+              <span v-for="(h, i) in [40, 65, 50, 80, 60, 95, 75]" :key="i" class="flex-1 rounded-t-sm" :class="i === 5 ? 'bg-primary' : 'bg-primary/40'" :style="{ height: `${h}%` }" />
+            </div>
+          </div>
           <!-- A tiny chat: incoming and outgoing bubbles, one still typing -->
-          <div v-if="e.id === 'chat'" class="absolute inset-y-[12%] left-1/2 flex w-[46%] -translate-x-1/2 flex-col justify-end gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+          <div v-else-if="e.id === 'chat'" class="absolute inset-y-[12%] left-1/2 flex w-[46%] -translate-x-1/2 flex-col justify-end gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span class="h-[12%] w-[60%] rounded-2xl rounded-bl-sm bg-surface-container-high" />
             <span class="h-[12%] w-[45%] self-end rounded-2xl rounded-br-sm bg-primary" />
             <span class="h-[18%] w-[70%] rounded-2xl rounded-bl-sm bg-surface-container-high" />

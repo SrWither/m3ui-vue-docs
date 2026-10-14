@@ -21,6 +21,7 @@ const versions: Version[] = [
       added: [
         'A new Examples section: complete apps that open full screen, outside the docs, each with its source on GitHub. The first one is a Desktop: icons, a taskbar with a start menu and clock, and nine apps in real windows (files, notes, tasks, calendar, music, calculator, a terminal that drives the desktop, and settings for theme, palette and wallpaper). It replaces the old Layouts and Apps example pages',
         'A second example, Chat: a messaging app with search and filters, unread counts, photos you can attach and browse in a lightbox, voice notes, emoji, and contacts that read, type and record audio back. One pane on phones, side by side on wide screens',
+        'A third example, Dashboard: store analytics with key numbers and trends, revenue over time against the previous period, sales by channel and country, and order and customer tables with search, sorting, selection and CSV export. The date range drives everything, and Ctrl+K opens a command palette',
         'MWindow can be maximized (button or double-click on the title bar) and dragged back out of it, and with the new snap prop it snaps to the top or a side of its container like on a desktop, with a preview of where it will land (in a top corner it snaps to that side). With offscreen, windows can be pushed partly off the edges of their container, like on a desktop. Its page has new examples: a desktop with a taskbar, snapping two windows side by side, an editor that shows more when maximized, and a picture-in-picture video',
         'MTransferList rows can now have your own design: the new item slot replaces the icon and text (keeping the checkbox), or draws the whole row with bare, for example as cards. Buttons inside a row work on their own, so rows can carry controls like a quantity stepper. Its docs page has three new examples: people with avatars, an order with quantities and a home screen widget picker',
         'Adaptive layouts from Material 3, each with its own page in Layout and demos you can switch between phone, tablet and desktop: MNavigationSuite (a bottom bar on phones that becomes a rail on tablets and desktops), MListDetail (list and detail side by side on wide screens, one at a time on phones), MSupportingPane (a supporting pane beside the main content, or below it or in a bottom sheet on phones) and useWindowSizeClass (M3\'s compact to extra-large size classes for the window or any element)',
@@ -32,6 +33,7 @@ const versions: Version[] = [
         'MBottomSheet and MSideSheet now slide in when they open (before, they only faded in) and slide out quickly when closed, with Material 3\'s spring motion. Dragging one and letting go continues smoothly from your finger: it closes if you pulled far or fast enough, otherwise it settles back',
       ],
       fixed: [
+        'MChart now recolors its axes, legend and tooltips when you switch palettes, not only when you switch between light and dark',
         'MTransferList: moving all items across no longer makes the rows briefly pile up on top of each other as they fade out of their pane',
       ],
     },
