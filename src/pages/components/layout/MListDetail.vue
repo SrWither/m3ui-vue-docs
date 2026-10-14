@@ -163,18 +163,18 @@ const currentSection = computed(() => sections.find((s) => s.id === section.valu
             </div>
           </template>
           <template #detail="{ twoPane, back }">
-            <div v-if="mail" class="flex flex-col bg-surface-container-lowest" :class="twoPane ? 'my-2 mr-2 min-h-[calc(100%-1rem)] rounded-2xl' : 'min-h-full'">
-              <div class="flex items-center gap-1 px-2 pt-2">
+            <div v-if="mail" class="@container flex flex-col bg-surface-container-lowest" :class="twoPane ? 'my-2 mr-2 min-h-[calc(100%-1rem)] rounded-2xl' : 'min-h-full'">
+              <div class="flex h-16 shrink-0 items-center gap-1 px-1">
                 <MIconButton v-if="!twoPane" icon="arrow_back" label="Back" @click="back" />
                 <span class="flex-1" />
                 <MIconButton icon="archive" label="Archive" />
                 <MIconButton icon="delete" label="Delete" />
                 <MIconButton icon="more_vert" label="More" />
               </div>
-              <div class="px-6 pb-6">
-                <h2 class="mb-3 text-headline-small text-on-surface">{{ mail.subject }}</h2>
-                <MChip class="mb-4">{{ mail.label }}</MChip>
-                <div class="mb-6 flex items-center gap-3">
+              <div class="px-4 pt-2 pb-8 @lg:px-6">
+                <h2 class="mb-4 text-headline-small text-on-surface">{{ mail.subject }}</h2>
+                <MChip class="mb-6">{{ mail.label }}</MChip>
+                <div class="mb-8 flex items-center gap-3">
                   <MAvatar :name="mail.from" :size="40" />
                   <div class="min-w-0 flex-1">
                     <p class="text-title-small text-on-surface">{{ mail.from }}</p>
