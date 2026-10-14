@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.8',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'MPullToRefresh: with a mouse, clicking something at the top of the list (like a row or a link) now works. Before, it did nothing while the list was scrolled all the way up',
+      ],
+    },
+  },
+  {
     version: '0.8.7',
     date: '2026-10-14',
     changes: {
