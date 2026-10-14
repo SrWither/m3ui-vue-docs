@@ -32,6 +32,7 @@ const railTypes: TypeDef[] = [
       { name: 'badge', type: 'number', description: 'Numeric badge count shown on the icon' },
       { name: 'badgeDot', type: 'boolean', description: 'Shows a small dot badge instead of a count' },
       { name: 'disabled', type: 'boolean', description: 'Disables the item' },
+      { name: 'to', type: 'string | RouteLocationRaw', description: 'Makes the item a real link (middle-click, open in a new tab): a RouterLink when vue-router is installed, a plain <a href> otherwise. Clicking still updates v-model' },
     ],
   },
 ]

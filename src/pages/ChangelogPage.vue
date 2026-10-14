@@ -21,6 +21,7 @@ const versions: Version[] = [
       added: [
         'MTransferList rows can now have your own design: the new item slot replaces the icon and text (keeping the checkbox), or draws the whole row with bare, for example as cards. Buttons inside a row work on their own, so rows can carry controls like a quantity stepper. Its docs page has three new examples: people with avatars, an order with quantities and a home screen widget picker',
         'Adaptive layouts from Material 3, each with its own page in Layout and demos you can switch between phone, tablet and desktop: MNavigationSuite (a bottom bar on phones that becomes a rail on tablets and desktops), MListDetail (list and detail side by side on wide screens, one at a time on phones), MSupportingPane (a supporting pane beside the main content, or below it or in a bottom sheet on phones) and useWindowSizeClass (M3\'s compact to extra-large size classes for the window or any element)',
+        'MNavigationRail, MShortNavigationBar and MNavigationSuite items can be links: give them a to and they work with vue-router (or as plain links without it), including middle-click to open in a new tab. The MNavigationSuite page has a demo that navigates between the adaptive layout pages',
       ],
       fixed: [
         'MTransferList: moving all items across no longer makes the rows briefly pile up on top of each other as they fade out of their pane',

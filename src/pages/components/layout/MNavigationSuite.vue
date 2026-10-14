@@ -39,6 +39,7 @@ const suiteTypes: TypeDef[] = [
       { name: 'badge', type: 'number', description: 'Count badge on the icon' },
       { name: 'badgeDot', type: 'boolean', description: 'Small dot badge on the icon' },
       { name: 'disabled', type: 'boolean', description: 'Disables the destination (rail only)' },
+      { name: 'to', type: 'string | RouteLocationRaw', description: 'Makes the item a real link (middle-click, open in a new tab): a RouterLink when vue-router is installed, a plain <a href> otherwise. Clicking still updates v-model' },
     ],
   },
 ]
@@ -71,6 +72,15 @@ const forcedOptions = [
   { value: 'rail-expanded', label: 'rail-expanded' },
 ]
 const current2 = ref<string | number>('explore')
+
+// Links: real docs routes, so clicking one navigates
+const linkItems: NavigationSuiteItem[] = [
+  { value: 'suite', label: 'Suite', icon: 'responsive_layout', to: '/components/layout/mnavigationsuite' },
+  { value: 'list', label: 'List-detail', icon: 'view_list', to: '/components/layout/mlistdetail' },
+  { value: 'pane', label: 'Supporting', icon: 'view_column_2', to: '/components/layout/msupportingpane' },
+  { value: 'sizes', label: 'Sizes', icon: 'devices', to: '/components/layout/usewindowsizeclass' },
+]
+const current3 = ref<string | number>('suite')
 </script>
 
 <template>
@@ -173,6 +183,28 @@ const current = ref('home')`"
             </div>
           </MNavigationSuite>
         </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Links and vue-router"
+      description="Give items a to and they become real links: RouterLink with vue-router (as here: these go to the other adaptive layout pages), a plain <a href> without it. Middle-click opens them in a new tab. Bind :model-value to the current route (with item values matching route names) so the right item stays selected on reloads and back/forward."
+      :code="`<MNavigationSuite :model-value=&quot;route.name&quot; :items=&quot;items&quot; class=&quot;h-dvh&quot;>
+  <RouterView />
+</MNavigationSuite>`"
+      :script="`const route = useRoute()
+const items = [
+  { value: 'home', label: 'Home', icon: 'home', to: { name: 'home' } },
+  { value: 'orders', label: 'Orders', icon: 'receipt_long', to: '/orders' },
+  { value: 'settings', label: 'Settings', icon: 'settings', to: '/settings' },
+]`"
+    >
+      <div class="h-64 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationSuite v-model="current3" :items="linkItems" layout="rail" class="h-full">
+          <div class="flex h-full items-center justify-center p-4 text-center">
+            <p class="text-body-medium text-on-surface-variant">Each destination is a link to another docs page.</p>
+          </div>
+        </MNavigationSuite>
       </div>
     </ComponentDemo>
 
