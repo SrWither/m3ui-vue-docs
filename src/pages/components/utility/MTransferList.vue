@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MTransferList, MIcon, MButton, MChip } from '@m3ui-vue/m3ui-vue'
+import { MTransferList, MIcon, MButton, MChip, MAvatar, MIconButton } from '@m3ui-vue/m3ui-vue'
 import type { TransferItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -22,6 +22,7 @@ const transferProps: PropDef[] = [
   { name: 'searchPlaceholder', type: 'string', description: 'Search field placeholder (defaults to the locale string)' },
   { name: 'emptyText', type: 'string', description: 'Text when a pane is empty (defaults to the locale string)' },
   { name: 'listHeight', type: 'string', default: "'280px'", description: 'Height of each pane\'s scroll area, any CSS length' },
+  { name: 'bare', type: 'boolean', default: 'false', description: 'The #item slot draws the whole row: no checkbox, padding, min height or background. Rows stay clickable, focusable (Space checks, Enter moves) and animated; style the checked state with the slot\'s checked' },
   { name: 'moveAllRightLabel', type: 'string', description: 'Aria label for the move-all-right button (defaults to the locale string)' },
   { name: 'moveRightLabel', type: 'string', description: 'Aria label for the move-selected-right button (defaults to the locale string)' },
   { name: 'moveLeftLabel', type: 'string', description: 'Aria label for the move-selected-left button (defaults to the locale string)' },
@@ -33,6 +34,7 @@ const transferEvents: EventDef[] = [
 ]
 
 const transferSlots: SlotDef[] = [
+  { name: 'item', scope: '{ item, checked, side, toggle, move }', description: 'Custom row content. Without bare it replaces the icon and text and keeps the checkbox, highlight and hover; with bare it draws the whole row. side is \'source\' or \'target\', toggle() checks the row, move() sends it to the other pane. Buttons, links, fields and elements with data-transfer-action keep their own clicks' },
   { name: 'source-empty', description: 'Custom content when the source pane is empty' },
   { name: 'target-empty', description: 'Custom content when the target pane is empty' },
 ]
@@ -104,6 +106,107 @@ const integrations: TransferItem[] = [
   { value: 'drive', label: 'Google Drive', description: 'Attach files from Drive', icon: 'add_to_drive' },
 ]
 const enabledIntegrations = ref<(string | number)[]>([])
+// Custom rows (#item)
+const reviewers: (TransferItem & { email: string; team: string; online: boolean })[] = [
+  { value: 'ana', label: 'Ana Torres', email: 'ana@acme.dev', team: 'Design', online: true },
+  { value: 'luis', label: 'Luis Gómez', email: 'luis@acme.dev', team: 'Frontend', online: true },
+  { value: 'marta', label: 'Marta Ruiz', email: 'marta@acme.dev', team: 'Backend', online: false },
+  { value: 'diego', label: 'Diego Pérez', email: 'diego@acme.dev', team: 'QA', online: true },
+  { value: 'sofia', label: 'Sofía Lima', email: 'sofia@acme.dev', team: 'Product', online: false },
+]
+const chosenReviewers = ref<(string | number)[]>(['luis'])
+
+const customRowsCode = `<MTransferList v-model="reviewers" :items="people" source-title="Team" target-title="Reviewers">
+  <template #item="{ item, checked }">
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <MAvatar :name="item.label" />
+        <span
+          class="absolute right-0 bottom-0 h-3 w-3 rounded-full ring-2 ring-surface-container-low"
+          :class="item.online ? 'bg-success' : 'bg-outline'"
+        />
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-body-large">{{ item.label }}</p>
+        <p class="truncate text-body-small text-on-surface-variant">{{ item.email }}</p>
+      </div>
+      <span class="rounded-full bg-tertiary-container px-2 py-0.5 text-label-small text-on-tertiary-container">
+        {{ item.team }}
+      </span>
+    </div>
+  </template>
+</MTransferList>`
+
+// Controls inside rows: quantities
+const products: (TransferItem & { price: number })[] = [
+  { value: 'espresso', label: 'Espresso', icon: 'coffee', price: 2.5 },
+  { value: 'latte', label: 'Latte', icon: 'local_cafe', price: 3.8 },
+  { value: 'croissant', label: 'Croissant', icon: 'bakery_dining', price: 2.2 },
+  { value: 'bagel', label: 'Bagel', icon: 'breakfast_dining', price: 3 },
+  { value: 'juice', label: 'Orange juice', icon: 'local_bar', price: 4.1 },
+  { value: 'cookie', label: 'Cookie', icon: 'cookie', price: 1.6 },
+]
+const order = ref<(string | number)[]>(['latte', 'croissant'])
+const qty = ref<Record<string, number>>({ latte: 2, croissant: 1 })
+const qtyOf = (item: TransferItem) => qty.value[item.value as string] ?? 1
+function setQty(item: TransferItem, n: number) {
+  qty.value = { ...qty.value, [item.value as string]: Math.max(1, Math.min(9, n)) }
+}
+const orderTotal = computed(() =>
+  products.filter((p) => order.value.includes(p.value)).reduce((sum, p) => sum + p.price * qtyOf(p), 0),
+)
+const money = (n: number) => `$${n.toFixed(2)}`
+
+const controlsCode = `<MTransferList v-model="order" :items="products" source-title="Menu" target-title="Order">
+  <template #item="{ item, side }">
+    <div class="flex items-center gap-3">
+      <MIcon :name="item.icon" class="text-on-surface-variant" />
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-body-large">{{ item.label }}</p>
+        <p class="text-body-small text-on-surface-variant">{{ money(item.price) }}</p>
+      </div>
+      <!-- Buttons keep their own clicks: they don't check or move the row -->
+      <div v-if="side === 'target'" class="flex items-center gap-1">
+        <MIconButton icon="remove" size="xs" variant="tonal" label="Less" @click="setQty(item, qty[item.value] - 1)" />
+        <span class="w-5 text-center text-label-large tabular-nums">{{ qty[item.value] }}</span>
+        <MIconButton icon="add" size="xs" variant="tonal" label="More" @click="setQty(item, qty[item.value] + 1)" />
+      </div>
+    </div>
+  </template>
+</MTransferList>`
+
+// bare: cards
+const widgets: (TransferItem & { color: string })[] = [
+  { value: 'weather', label: 'Weather', description: 'Forecast for your city', icon: 'partly_cloudy_day', color: 'bg-primary-container text-on-primary-container' },
+  { value: 'calendar', label: 'Calendar', description: 'Next three events', icon: 'calendar_month', color: 'bg-secondary-container text-on-secondary-container' },
+  { value: 'steps', label: 'Steps', description: 'Today\'s activity ring', icon: 'directions_walk', color: 'bg-tertiary-container text-on-tertiary-container' },
+  { value: 'music', label: 'Now playing', description: 'Controls for the current song', icon: 'music_note', color: 'bg-error-container text-on-error-container' },
+  { value: 'notes', label: 'Notes', description: 'Pinned notes', icon: 'sticky_note_2', color: 'bg-success-container text-on-success-container' },
+]
+const homeWidgets = ref<(string | number)[]>(['weather', 'calendar'])
+
+const bareCode = `<MTransferList v-model="home" :items="widgets" bare source-title="Widgets" target-title="Home screen">
+  <template #item="{ item, checked, side, move }">
+    <div
+      class="flex items-center gap-3 rounded-md p-3 transition-colors"
+      :class="checked ? 'bg-secondary-container ring-2 ring-secondary' : 'bg-surface-container-high hover:bg-surface-container-highest'"
+    >
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg" :class="item.color">
+        <MIcon :name="item.icon" />
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-title-small">{{ item.label }}</p>
+        <p class="truncate text-body-small text-on-surface-variant">{{ item.description }}</p>
+      </div>
+      <MIconButton
+        :icon="side === 'source' ? 'add' : 'close'"
+        size="xs"
+        :label="side === 'source' ? 'Add to home' : 'Remove'"
+        @click="move"
+      />
+    </div>
+  </template>
+</MTransferList>`
 </script>
 
 <template>
@@ -230,6 +333,93 @@ const team = ref(['ana', 'luis'])`"
         <template #source-empty>
           <MIcon name="celebration" :size="36" class="text-tertiary" />
           <p class="text-title-small text-on-surface">All integrations enabled</p>
+        </template>
+      </MTransferList>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom rows"
+      description="The item slot replaces the icon and text with your own content, here an avatar with a presence dot, an email and a team tag. The checkbox, the checked highlight and the hover stay, and the slot's item is your own object, extra fields (and their types) included."
+      :code="customRowsCode"
+    >
+      <MTransferList v-model="chosenReviewers" :items="reviewers" source-title="Team" target-title="Reviewers" class="w-full">
+        <template #item="{ item }">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <MAvatar :name="item.label" />
+              <span
+                class="absolute right-0 bottom-0 h-3 w-3 rounded-full ring-2 ring-surface-container-low"
+                :class="item.online ? 'bg-success' : 'bg-outline'"
+              />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-body-large text-on-surface">{{ item.label }}</p>
+              <p class="truncate text-body-small text-on-surface-variant">{{ item.email }}</p>
+            </div>
+            <span class="shrink-0 rounded-full bg-tertiary-container px-2 py-0.5 text-label-small text-on-tertiary-container">
+              {{ item.team }}
+            </span>
+          </div>
+        </template>
+      </MTransferList>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Controls inside rows"
+      description="side tells you which pane a row is in, so rows can change once they cross. Ordered items get a quantity stepper: buttons, links and fields inside a row keep their own clicks and don't check or move it (mark anything else with data-transfer-action)."
+      :code="controlsCode"
+    >
+      <div class="flex w-full flex-col gap-3">
+        <MTransferList v-model="order" :items="products" source-title="Menu" target-title="Order">
+          <template #item="{ item, side }">
+            <div class="flex items-center gap-3">
+              <MIcon :name="item.icon!" class="shrink-0 text-on-surface-variant" />
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-body-large text-on-surface">{{ item.label }}</p>
+                <p class="text-body-small text-on-surface-variant">
+                  {{ side === 'target' && qtyOf(item) > 1 ? `${qtyOf(item)} × ${money(item.price)}` : money(item.price) }}
+                </p>
+              </div>
+              <div v-if="side === 'target'" class="flex shrink-0 items-center gap-1">
+                <MIconButton icon="remove" size="xs" variant="tonal" label="Less" :disabled="qtyOf(item) <= 1" @click="setQty(item, qtyOf(item) - 1)" />
+                <span class="w-5 text-center text-label-large tabular-nums text-on-surface">{{ qtyOf(item) }}</span>
+                <MIconButton icon="add" size="xs" variant="tonal" label="More" :disabled="qtyOf(item) >= 9" @click="setQty(item, qtyOf(item) + 1)" />
+              </div>
+            </div>
+          </template>
+        </MTransferList>
+        <div class="flex items-center justify-end gap-3">
+          <span class="text-body-medium text-on-surface-variant">Total</span>
+          <span class="text-title-medium tabular-nums text-on-surface">{{ money(orderTotal) }}</span>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Fully custom rows"
+      description="bare hands the whole row to the item slot: no checkbox, padding or background, so each item can be a card. Click a card to check it, or use its own button to send it across with move(). Rows stay focusable: Space checks and Enter moves."
+      :code="bareCode"
+    >
+      <MTransferList v-model="homeWidgets" :items="widgets" bare source-title="Widgets" target-title="Home screen" list-height="320px" class="w-full">
+        <template #item="{ item, checked, side, move }">
+          <div
+            class="flex items-center gap-3 rounded-md p-3 transition-colors duration-150"
+            :class="checked ? 'bg-secondary-container ring-2 ring-secondary' : 'bg-surface-container-high hover:bg-surface-container-highest'"
+          >
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg" :class="item.color">
+              <MIcon :name="item.icon!" />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-title-small text-on-surface">{{ item.label }}</p>
+              <p class="truncate text-body-small text-on-surface-variant">{{ item.description }}</p>
+            </div>
+            <MIconButton
+              :icon="side === 'source' ? 'add' : 'close'"
+              size="xs"
+              :label="side === 'source' ? 'Add to home' : 'Remove'"
+              @click="move"
+            />
+          </div>
         </template>
       </MTransferList>
     </ComponentDemo>

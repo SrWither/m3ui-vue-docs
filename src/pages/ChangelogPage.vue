@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '0.8.7',
     date: '2026-10-14',
     changes: {
+      added: [
+        'MTransferList rows can now have your own design: the new item slot replaces the icon and text (keeping the checkbox), or draws the whole row with bare, for example as cards. Buttons inside a row work on their own, so rows can carry controls like a quantity stepper. Its docs page has three new examples: people with avatars, an order with quantities and a home screen widget picker',
+      ],
       fixed: [
         'MTransferList: moving all items across no longer makes the rows briefly pile up on top of each other as they fade out of their pane',
       ],
