@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '0.8.6',
-    date: 'Unreleased',
+    date: '2026-10-13',
     changes: {
       added: [
         'MKanban cards can have their own clickable parts: buttons and links inside a card no longer open it, and any other element can opt out with a data-kanban-action attribute. The issue tracker example uses it to change a ticket\'s type, priority and story points right on the board, and to copy its key',
