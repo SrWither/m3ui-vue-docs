@@ -31,6 +31,7 @@ const versions: Version[] = [
         'More MRelativeTime examples on its docs page: a live feed whose timestamps keep counting up, a countdown that passes "now", every unit from seconds to years, the same values in eight languages, and the accepted input formats',
       ],
       changed: [
+        'The MQRCode examples now encode https://m3ui.dev, so scanning them opens this site',
         'MKanban was redesigned with the same props: cards lift and follow your finger or mouse across columns, a dashed slot shows where they\'ll land while the others make room, and the board scrolls on its own near the edges. Columns and cards now follow Material 3 surfaces, corners and elevation',
         'MTransferList was redesigned in Material 3 style with the same props: softer panels, list-item rows that highlight when checked, a pill search field, and animated moves. On narrow screens the two panes now stack with up/down arrows',
         'MDragDropList was rebuilt with the same props: the dragged row now lifts and follows your finger or mouse while the others slide out of its way, then settles into place. Rows now have Material 3 list-item height, padding and hover, so they look taller than before',

@@ -50,29 +50,29 @@ const qrCodeSlots: SlotDef[] = [
     <ComponentDemo
       title="QR code generator"
       description="Basic usage: a value, a size, and either an accessible label or the value itself is used as the fallback aria-label."
-      :code="`<MQRCode value=&quot;https://example.com/table/5&quot; :size=&quot;160&quot; label=&quot;Table 5 menu&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;160&quot; error-correction-level=&quot;H&quot; color=&quot;#6750a4&quot; />`"
+      :code="`<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;160&quot; label=&quot;M3UI Vue documentation&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;160&quot; error-correction-level=&quot;H&quot; color=&quot;#6750a4&quot; />`"
       :script="`import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'`"
     >
       <div class="flex flex-wrap items-center gap-6">
-        <MQRCode value="https://example.com/table/5" :size="160" label="Table 5 menu" />
-        <MQRCode value="https://example.com" :size="160" error-correction-level="H" color="#6750a4" />
+        <MQRCode value="https://m3ui.dev" :size="160" label="M3UI Vue documentation" />
+        <MQRCode value="https://m3ui.dev" :size="160" error-correction-level="H" color="#6750a4" />
       </div>
     </ComponentDemo>
 
     <ComponentDemo
       title="Module style"
       description="moduleStyle controls the modules themselves, independently of rounded (which only affects the container). 'square' (default) is the classic scannable grid; 'dots' rounds each module — corners only round where a module isn't touching a neighbor, so connected blocks like the finder-pattern squares stay solid. Both scan identically."
-      :code="`<MQRCode value=&quot;https://example.com&quot; :size=&quot;160&quot; module-style=&quot;square&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;160&quot; module-style=&quot;dots&quot; />`"
+      :code="`<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;160&quot; module-style=&quot;square&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;160&quot; module-style=&quot;dots&quot; />`"
     >
       <div class="flex flex-wrap items-center gap-6">
         <div class="flex flex-col items-center gap-2">
-          <MQRCode value="https://example.com" :size="160" module-style="square" />
+          <MQRCode value="https://m3ui.dev" :size="160" module-style="square" />
           <span class="text-body-small text-on-surface-variant">square (default)</span>
         </div>
         <div class="flex flex-col items-center gap-2">
-          <MQRCode value="https://example.com" :size="160" module-style="dots" />
+          <MQRCode value="https://m3ui.dev" :size="160" module-style="dots" />
           <span class="text-body-small text-on-surface-variant">dots</span>
         </div>
       </div>
@@ -81,32 +81,32 @@ const qrCodeSlots: SlotDef[] = [
     <ComponentDemo
       title="Sizes"
       description="size sets the width/height in pixels — the code is redrawn from scratch (not scaled), so modules stay crisp at any size, in both module styles."
-      :code="`<MQRCode value=&quot;https://example.com&quot; :size=&quot;64&quot; module-style=&quot;square&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;96&quot; module-style=&quot;square&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;128&quot; module-style=&quot;square&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;200&quot; module-style=&quot;square&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;280&quot; module-style=&quot;square&quot; />
+      :code="`<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;64&quot; module-style=&quot;square&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;96&quot; module-style=&quot;square&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;128&quot; module-style=&quot;square&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;200&quot; module-style=&quot;square&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;280&quot; module-style=&quot;square&quot; />
 
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;64&quot; module-style=&quot;dots&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;96&quot; module-style=&quot;dots&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;128&quot; module-style=&quot;dots&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;200&quot; module-style=&quot;dots&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;280&quot; module-style=&quot;dots&quot; />`"
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;64&quot; module-style=&quot;dots&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;96&quot; module-style=&quot;dots&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;128&quot; module-style=&quot;dots&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;200&quot; module-style=&quot;dots&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;280&quot; module-style=&quot;dots&quot; />`"
     >
       <div class="flex w-full flex-col gap-6">
         <div class="flex flex-wrap items-end gap-6">
-          <MQRCode value="https://example.com" :size="64" module-style="square" />
-          <MQRCode value="https://example.com" :size="96" module-style="square" />
-          <MQRCode value="https://example.com" :size="128" module-style="square" />
-          <MQRCode value="https://example.com" :size="200" module-style="square" />
-          <MQRCode value="https://example.com" :size="280" module-style="square" />
+          <MQRCode value="https://m3ui.dev" :size="64" module-style="square" />
+          <MQRCode value="https://m3ui.dev" :size="96" module-style="square" />
+          <MQRCode value="https://m3ui.dev" :size="128" module-style="square" />
+          <MQRCode value="https://m3ui.dev" :size="200" module-style="square" />
+          <MQRCode value="https://m3ui.dev" :size="280" module-style="square" />
         </div>
         <div class="flex flex-wrap items-end gap-6">
-          <MQRCode value="https://example.com" :size="64" module-style="dots" />
-          <MQRCode value="https://example.com" :size="96" module-style="dots" />
-          <MQRCode value="https://example.com" :size="128" module-style="dots" />
-          <MQRCode value="https://example.com" :size="200" module-style="dots" />
-          <MQRCode value="https://example.com" :size="280" module-style="dots" />
+          <MQRCode value="https://m3ui.dev" :size="64" module-style="dots" />
+          <MQRCode value="https://m3ui.dev" :size="96" module-style="dots" />
+          <MQRCode value="https://m3ui.dev" :size="128" module-style="dots" />
+          <MQRCode value="https://m3ui.dev" :size="200" module-style="dots" />
+          <MQRCode value="https://m3ui.dev" :size="280" module-style="dots" />
         </div>
       </div>
     </ComponentDemo>
@@ -114,12 +114,12 @@ const qrCodeSlots: SlotDef[] = [
     <ComponentDemo
       title="Colors, margin & rounding"
       description="color/background recolor the modules and backdrop, margin controls the quiet zone (in modules), and rounded toggles the container's own corner radius."
-      :code="`<MQRCode value=&quot;https://example.com&quot; :size=&quot;140&quot; color=&quot;#1b6c3b&quot; background=&quot;#e8f5e9&quot; :margin=&quot;2&quot; />
-<MQRCode value=&quot;https://example.com&quot; :size=&quot;140&quot; color=&quot;#ffffff&quot; background=&quot;#1a1a2e&quot; :rounded=&quot;false&quot; />`"
+      :code="`<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;140&quot; color=&quot;#1b6c3b&quot; background=&quot;#e8f5e9&quot; :margin=&quot;2&quot; />
+<MQRCode value=&quot;https://m3ui.dev&quot; :size=&quot;140&quot; color=&quot;#ffffff&quot; background=&quot;#1a1a2e&quot; :rounded=&quot;false&quot; />`"
     >
       <div class="flex flex-wrap items-center gap-6">
-        <MQRCode value="https://example.com" :size="140" color="#1b6c3b" background="#e8f5e9" :margin="2" />
-        <MQRCode value="https://example.com" :size="140" color="#ffffff" background="#1a1a2e" :rounded="false" />
+        <MQRCode value="https://m3ui.dev" :size="140" color="#1b6c3b" background="#e8f5e9" :margin="2" />
+        <MQRCode value="https://m3ui.dev" :size="140" color="#ffffff" background="#1a1a2e" :rounded="false" />
       </div>
     </ComponentDemo>
 
