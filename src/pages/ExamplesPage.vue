@@ -21,8 +21,16 @@ import { examples, exampleSource } from '@/examples/registry'
           :to="`/examples/${e.id}`"
           class="relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br from-primary-container via-secondary-container to-tertiary-container"
         >
+          <!-- A tiny shop: a product grid and a cart badge -->
+          <div v-if="e.id === 'store'" class="absolute inset-[12%] grid grid-cols-3 gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <div v-for="n in 6" :key="n" class="flex flex-col gap-[8%]">
+              <span class="flex-1 rounded-lg" :class="['bg-primary-container', 'bg-tertiary-container', 'bg-secondary-container'][n % 3]" />
+              <span class="h-[10%] w-3/4 rounded-full bg-on-surface/15" />
+            </div>
+            <span class="absolute -top-[6%] -right-[4%] flex h-[16%] w-[11%] items-center justify-center rounded-full bg-primary text-[10px] font-medium text-on-primary shadow-elevation-1">3</span>
+          </div>
           <!-- A tiny dashboard: stat cards over a bar chart -->
-          <div v-if="e.id === 'dashboard'" class="absolute inset-[12%] flex flex-col gap-[6%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+          <div v-else-if="e.id === 'dashboard'" class="absolute inset-[12%] flex flex-col gap-[6%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <div class="flex h-[22%] gap-[4%]">
               <span v-for="n in 3" :key="n" class="flex-1 rounded-lg" :class="['bg-primary-container', 'bg-secondary-container', 'bg-tertiary-container'][n - 1]" />
             </div>

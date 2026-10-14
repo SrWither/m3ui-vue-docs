@@ -74,5 +74,7 @@ These are JS template literals inside an HTML attribute:
 
 Full-screen apps built only with the library, outside the docs chrome. `src/examples/registry.ts` lists them; each entry becomes a `/examples/<id>` route with `meta: { fullscreen: true }` (App.vue then renders the RouterView without `AppShell`), a sidebar item and a card in `ExamplesPage.vue`. Each example is one self-contained folder (`src/examples/<id>/`, with its own `README.md`) because the gallery and the example itself link to it on GitHub (`exampleSource(id)` → `github.com/SrWither/m3ui-vue-docs/tree/main/src/examples/<id>`). Every example needs a subtle way back to the docs (`router.push('/examples')`). The Desktop example's apps keep their state at module level because a hidden `MWindow` unmounts its content.
 
+Gotcha: a component rendered inside a `<Transition>` (e.g. an example's page transition) must keep one fixed root element. If its root switches (`v-if` between an `MResult` and a form), Vue applies the enter-from state to the new root and it can stay stuck there, invisible at `opacity: 0`. Wrap the branches in a single `<div>` (and keep template comments inside it, see the lib's comment-before-root gotcha).
+
 Gotcha: a dev server started before a new folder with Tailwind classes existed may not generate those classes (they only appear in that folder), so layouts silently collapse (e.g. a `bottom-14` box at 0px height). `touch src/assets/main.css` or restart the dev server; production builds are unaffected.
 

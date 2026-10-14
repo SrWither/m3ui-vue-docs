@@ -45,6 +45,15 @@ export const examples: ExampleApp[] = [
     uses: ['MChart', 'MDataTable', 'MStatCard', 'MNavigationSuite', 'MDateRangePicker', 'MCommandPalette', 'MExportButton', 'MSegmentedButton'],
     component: () => import('./dashboard/DashboardExample.vue'),
   },
+  {
+    id: 'store',
+    title: 'Store',
+    description:
+      'A home-goods shop from browsing to checkout: a hero carousel, filters beside the grid (in a sheet on phones), product pages with a gallery and reviews, a cart with coupons, and a four-step checkout with validated forms.',
+    icon: 'storefront',
+    uses: ['MStepper', 'MTextField', 'MMaskField', 'MSelect', 'MRadioGroup', 'MSimpleCarousel', 'MSupportingPane', 'MSideSheet', 'MLightbox', 'MRating', 'MResult'],
+    component: () => import('./store/StoreExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
