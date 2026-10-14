@@ -31,6 +31,7 @@ const versions: Version[] = [
         'MResult\'s default titles and descriptions were always in Spanish. They now follow the language set with createM3UI, in English by default and translated in all the bundled locales. The info status also gets a default description now. Its docs page has new examples, all in English: order confirmed, not found, access denied, server error, empty state and payment failed',
       ],
       fixed: [
+        'MNavigationRail\'s expanded variant no longer glitches when collapsing: the item labels used to disappear and pop back in. They now shrink away smoothly, and expand just as smoothly',
         'In MChatBubble, the read/delivered checkmarks on a secondary or tertiary bubble used the primary bubble\'s color. They now match the bubble',
         'MRating with halfIncrements never showed a half icon. Halves, and any fraction (like a 4.3 average), now render exactly, with any icon, not just the star',
         'Clicking the current MRating value a second time reset it to 0. It now keeps the value',
