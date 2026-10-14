@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { MKanban, MChip, MIcon, MAvatar, MButton, MCard } from '@m3ui-vue/m3ui-vue'
 import type { KanbanColumn, KanbanCard } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
+import KanbanIssueTracker from '@/components/demos/KanbanIssueTracker.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -203,6 +204,55 @@ function onSyncMove(e: { cardId: string | number; fromColumn: string | number; t
           <template v-if="openedCard">Opened: <strong class="text-on-surface">{{ openedCard.title }}</strong> · {{ openedCard.owner }} · due {{ openedCard.due }}</template>
           <template v-else>Click a card (or press Enter on it) to open it.</template>
         </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Issue tracker"
+      description="A Jira-style sprint board: issue type, key, priority, story points (difficulty) and assignee on each ticket, with points per column and sprint progress. Clicking a ticket opens an MSideSheet with its details. Changing the status there moves the ticket on the board with the same animation as a drag, and edits to assignee, priority or points show up on the card right away. The filters dim the tickets that don't match instead of hiding them, so dragging keeps working."
+      :code="`<MKanban v-model=&quot;board&quot; @card-click=&quot;({ card }) => openIssue(card)&quot;>
+  <template #column-header=&quot;{ column, count }&quot;>
+    <h4 class=&quot;flex-1 text-label-large uppercase text-on-surface-variant&quot;>{{ column.title }}</h4>
+    <span class=&quot;text-label-medium&quot;>{{ count }}</span>
+    <span class=&quot;rounded-full bg-surface-container-highest px-2 text-label-small&quot;>{{ points(column) }} pts</span>
+  </template>
+
+  <template #card=&quot;{ card, column }&quot;>
+    <p class=&quot;line-clamp-2 text-body-medium&quot;>{{ card.title }}</p>
+    <div class=&quot;mt-3 flex items-center gap-2&quot;>
+      <span class=&quot;rounded-xs&quot; :class=&quot;TYPES[card.type].cls&quot;><MIcon :name=&quot;TYPES[card.type].icon&quot; :size=&quot;14&quot; /></span>
+      <span class=&quot;text-label-medium&quot; :class=&quot;column.id === 'done' &amp;&amp; 'line-through'&quot;>{{ card.id }}</span>
+      <MIcon :name=&quot;PRIORITIES[card.priority].icon&quot; :class=&quot;PRIORITIES[card.priority].cls&quot; />
+      <span class=&quot;ml-auto rounded-full bg-surface-container-highest px-1.5 text-label-small&quot;>{{ card.points }}</span>
+      <MAvatar :name=&quot;card.assignee&quot; :size=&quot;24&quot; />
+    </div>
+  </template>
+</MKanban>
+
+<MSideSheet v-model=&quot;open&quot; width=&quot;w-[460px]&quot;>
+  <h2 class=&quot;text-headline-small&quot;>{{ selected.title }}</h2>
+  <div class=&quot;grid grid-cols-2 gap-3&quot;>
+    <MSelect v-model=&quot;status&quot; :options=&quot;statusOptions&quot; label=&quot;Status&quot; />
+    <MSelect v-model=&quot;selected.assignee&quot; :options=&quot;people&quot; label=&quot;Assignee&quot; />
+    <MSelect v-model=&quot;selected.priority&quot; :options=&quot;priorities&quot; label=&quot;Priority&quot; />
+    <MSelect v-model=&quot;selected.points&quot; :options=&quot;points&quot; label=&quot;Story points&quot; />
+  </div>
+  <!-- description, subtasks, details, comments... -->
+</MSideSheet>`"
+      :script="`// Status select: move the card between columns; MKanban animates it like a drag.
+const status = computed({
+  get: () => board.value.find((c) => c.cards.includes(selected.value))?.id,
+  set: (to) => {
+    const from = board.value.find((c) => c.cards.includes(selected.value))
+    const target = board.value.find((c) => c.id === to)
+    from.cards.splice(from.cards.indexOf(selected.value), 1)
+    target.cards.push(selected.value)
+  },
+})`"
+      flush
+    >
+      <div class="p-4 sm:p-6">
+        <KanbanIssueTracker />
       </div>
     </ComponentDemo>
 

@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'A Jira-style issue tracker example on the MKanban page: tickets with type, priority, story points and assignee, sprint progress and filters, and a side sheet with the full issue (status, assignee, subtasks, comments) that opens when you click a ticket',
         'MKanban gained WIP limits per column, custom column headers and footers (for example an Add card button), and keyboard support for moving cards within and between columns. Its docs page has new examples: a project board, WIP limits, a sales pipeline with totals, adding cards and saving moves to an API',
         'MTransferList gained a select-all checkbox and a counter in each pane, a second line per item (description), an adjustable list height, and double-click to move a single item across. Its docs page has new examples: building a team, role permissions, a searchable country list and custom empty states',
         'MDragDropList can now hold fully custom rows with the new bare prop (cards, pills, any shape), place the drag grip inside your own design, react while a row is being dragged, and be locked with disabled. Its docs page has eight new examples: a task list, a playlist, home screen sections, a ranking that saves on every change, project cards, pills and more',
