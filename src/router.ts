@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { examples } from './examples/registry'
 
 // Auto-discovers per-component doc pages from src/pages/components/<section>/<Component>.vue
 // so adding a new component page doesn't require a manual route entry here — the file's own
@@ -79,10 +80,12 @@ const router = createRouter({
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
     },
-    {
-      path: '/examples/apps',
-      component: () => import('./pages/ExamplesAppsPage.vue'),
-    },
+    // Example apps render full screen, outside the docs layout (App.vue checks meta.fullscreen).
+    ...examples.map((e): RouteRecordRaw => ({
+      path: `/examples/${e.id}`,
+      component: e.component,
+      meta: { fullscreen: true },
+    })),
     {
       path: '/styles/palettes',
       component: () => import('./pages/PalettesPage.vue'),

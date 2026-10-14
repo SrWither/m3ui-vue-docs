@@ -1,4 +1,5 @@
 import type { DrawerSection, DrawerItem, SpotlightResult } from '@m3ui-vue/m3ui-vue'
+import { examples } from '@/examples/registry'
 
 export const iconMap: Record<string, string> = {
   MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MToggleButton: 'change_circle', MCopyButton: 'content_copy', MExportButton: 'file_download',
@@ -100,8 +101,8 @@ export const sections: DrawerSection[] = [
     icon: 'design_services',
     collapsible: true,
     items: [
-      { value: '/examples', label: 'Layouts', icon: 'view_quilt', to: '/examples' },
-      { value: '/examples/apps', label: 'Apps', icon: 'devices', to: '/examples/apps' },
+      { value: '/examples', label: 'All examples', icon: 'apps', to: '/examples' },
+      ...examples.map((e) => ({ value: `/examples/${e.id}`, label: e.title, icon: e.icon, to: `/examples/${e.id}` })),
     ],
   },
   {

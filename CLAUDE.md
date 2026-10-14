@@ -21,7 +21,7 @@ The link resolves to the library's **built `dist/`, not its `src/`**. After chan
 - **Adding a new component page** also needs: its name in the section's `ch('/components/<section>', [...])` list and an icon in `iconMap`, both in `src/nav/sections.ts` (that list also drives `ComponentPager` prev/next order via `componentPageOrder`), plus a `{ name, description }` card on the section overview page (`src/pages/<Section>Page.vue`, e.g. `FeedbackPage.vue`).
 - **Changelog page**: `src/pages/ChangelogPage.vue`, a `versions: Version[]` array (`{ version, date, changes: { added?, changed?, fixed? } }`), newest first. The unreleased version uses `date: 'Unreleased'`; set the real date once the lib tag exists (`git -C ../m3ui-vue tag`). Voice is plain-English and user-facing (what changed for someone using the component), shorter and less technical than the library's `CHANGELOG.md` — no token names, no internal mechanics.
 - **Large demos** (e.g. the Jira-style issue tracker, `KanbanIssueTracker.vue`) live in `src/components/demos/` and are imported by the page. They **can't** go in a subfolder of `src/pages/components/<section>/`: the router glob throws on any path deeper than `<section>/<Name>.vue`. The page's `ComponentDemo` then shows a condensed `:code`/`:script` and renders the demo in its slot (use `flush` plus your own padding for full-width boards).
-- Other top-level pages: `SetupPage.vue` (install + font links), `I18nPage.vue`, `PalettesPage.vue`, `TypographyPage.vue`, `PaletteBuilderPage.vue`, `Examples*Page.vue`.
+- Other top-level pages: `SetupPage.vue` (install + font links), `I18nPage.vue`, `PalettesPage.vue`, `TypographyPage.vue`, `PaletteBuilderPage.vue`, `ExamplesPage.vue` (the examples gallery, see below).
 
 ## Page anatomy (copy an existing page, e.g. `data-display/MResult.vue`)
 
@@ -69,3 +69,10 @@ These are JS template literals inside an HTML attribute:
 - Show request/save behavior with a small fake log panel (`PUT /api/... {payload}`) rather than real network calls (see the MDragDropList ranking and MKanban saving demos).
 - Point URLs in examples at real destinations (QR codes encode `https://m3ui.dev`), not `example.com`.
 - Don't describe behavior a demo doesn't have (e.g. claiming new items animate in when only reorders do); check the component first.
+
+## Example apps (`src/examples/`)
+
+Full-screen apps built only with the library, outside the docs chrome. `src/examples/registry.ts` lists them; each entry becomes a `/examples/<id>` route with `meta: { fullscreen: true }` (App.vue then renders the RouterView without `AppShell`), a sidebar item and a card in `ExamplesPage.vue`. Each example is one self-contained folder (`src/examples/<id>/`, with its own `README.md`) because the gallery and the example itself link to it on GitHub (`exampleSource(id)` → `github.com/SrWither/m3ui-vue-docs/tree/main/src/examples/<id>`). Every example needs a subtle way back to the docs (`router.push('/examples')`). The Desktop example's apps keep their state at module level because a hidden `MWindow` unmounts its content.
+
+Gotcha: a dev server started before a new folder with Tailwind classes existed may not generate those classes (they only appear in that folder), so layouts silently collapse (e.g. a `bottom-14` box at 0px height). `touch src/assets/main.css` or restart the dev server; production builds are unaffected.
+

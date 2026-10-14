@@ -40,7 +40,9 @@ function onSpotlightSelect(result: SpotlightResult) {
     @search="onSpotlightSearch"
     @select="onSpotlightSelect"
   />
-  <AppShell>
+  <!-- Example apps (src/examples) take the whole screen, without the docs chrome. -->
+  <RouterView v-if="route.meta.fullscreen" />
+  <AppShell v-else>
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
         <component :is="Component" :key="route.path" />
