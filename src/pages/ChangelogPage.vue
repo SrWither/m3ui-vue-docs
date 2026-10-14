@@ -24,6 +24,9 @@ const versions: Version[] = [
         'MNavigationRail, MShortNavigationBar and MNavigationSuite items can be links: give them a to and they work with vue-router (or as plain links without it), including middle-click to open in a new tab. The MNavigationSuite page has a demo that navigates between the adaptive layout pages',
         'MShortNavigationBar items can be disabled: dimmed and not selectable, with a new example on its page. MNavigationSuite\'s disabled items now work in its bottom bar too, not only in the rail',
       ],
+      changed: [
+        'MBottomSheet and MSideSheet now slide in when they open (before, they only faded in) and slide out quickly when closed, with Material 3\'s spring motion. Dragging one and letting go continues smoothly from your finger: it closes if you pulled far or fast enough, otherwise it settles back',
+      ],
       fixed: [
         'MTransferList: moving all items across no longer makes the rows briefly pile up on top of each other as they fade out of their pane',
       ],
