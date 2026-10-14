@@ -38,6 +38,22 @@ import { examples, exampleSource } from '@/examples/registry'
               <span v-for="(h, i) in [40, 65, 50, 80, 60, 95, 75]" :key="i" class="flex-1 rounded-t-sm" :class="i === 5 ? 'bg-primary' : 'bg-primary/40'" :style="{ height: `${h}%` }" />
             </div>
           </div>
+          <!-- A tiny music player: a cover, frequency bars, a seek bar and a play button -->
+          <div v-else-if="e.id === 'music'" class="absolute inset-y-[12%] left-1/2 flex w-[40%] -translate-x-1/2 flex-col gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span class="relative flex-1 overflow-hidden rounded-lg bg-tertiary-container">
+              <span class="absolute -right-[10%] -bottom-[25%] h-[80%] w-[60%] rounded-full bg-primary/50" />
+              <span class="absolute top-[15%] left-[15%] h-[35%] w-[30%] rounded-full bg-on-tertiary-container/30" />
+            </span>
+            <span class="flex h-[12%] items-end gap-[4%]">
+              <span v-for="(h, i) in [50, 90, 70, 100, 60, 80, 40, 65, 30]" :key="i" class="flex-1 rounded-t-sm bg-primary/70" :style="{ height: `${h}%` }" />
+            </span>
+            <span class="relative h-1 rounded-full bg-on-surface/15"><span class="absolute inset-y-0 left-0 w-[40%] rounded-full bg-primary" /></span>
+            <span class="flex items-center justify-center gap-[10%]">
+              <span class="h-2 w-2 rounded-full bg-on-surface/30" />
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary"><MIcon name="play_arrow" :size="18" /></span>
+              <span class="h-2 w-2 rounded-full bg-on-surface/30" />
+            </span>
+          </div>
           <!-- A tiny chat: incoming and outgoing bubbles, one still typing -->
           <div v-else-if="e.id === 'chat'" class="absolute inset-y-[12%] left-1/2 flex w-[46%] -translate-x-1/2 flex-col justify-end gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span class="h-[12%] w-[60%] rounded-2xl rounded-bl-sm bg-surface-container-high" />

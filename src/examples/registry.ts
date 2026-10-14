@@ -46,6 +46,15 @@ export const examples: ExampleApp[] = [
     component: () => import('./dashboard/DashboardExample.vue'),
   },
   {
+    id: 'music',
+    title: 'Music',
+    description:
+      'A music streaming app whose songs really play, generated live with the Web Audio API: home shelves, search, albums, artists, your library and playlists, a queue you reorder by dragging, and a full-screen player with a visualizer.',
+    icon: 'headphones',
+    uses: ['MShortNavigationBar', 'MSlider', 'MDragDropList', 'MBottomSheet', 'MContextMenu', 'MMenu', 'MList', 'MChip', 'MDialog', 'MEmptyState', 'useToast'],
+    component: () => import('./music/MusicExample.vue'),
+  },
+  {
     id: 'store',
     title: 'Store',
     description:
