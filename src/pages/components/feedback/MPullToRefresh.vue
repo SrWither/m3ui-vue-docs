@@ -4,6 +4,8 @@ import { MPullToRefresh, MCard, MIcon, MList, MListItem, MSwitch, MButton } from
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
+import SlotsTable from '@/components/SlotsTable.vue'
+import type { SlotDef } from '@/components/SlotsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { EventDef } from '@/components/EventsTable.vue'
@@ -93,6 +95,10 @@ const pullToRefreshProps: PropDef[] = [
 
 const pullToRefreshEvents: EventDef[] = [
   { name: 'refresh', description: 'Emitted when the user drags past threshold and releases. Set refreshing to true in the handler, then back to false once the fetch resolves.' },
+]
+
+const pullToRefreshSlots: SlotDef[] = [
+  { name: 'default', description: 'The scrollable content. A pull starts only when it\'s scrolled to the top; otherwise touch scrolls it normally' },
 ]
 </script>
 
@@ -308,6 +314,9 @@ async function refreshInbox() {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Events</h3>
     <EventsTable :events="pullToRefreshEvents" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
+    <SlotsTable :slots="pullToRefreshSlots" />
 
     <ComponentPager current="MPullToRefresh" />
   </div>

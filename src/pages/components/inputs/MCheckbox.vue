@@ -17,6 +17,7 @@ const checkboxProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the checkbox' },
   { name: 'label', type: 'string', description: 'Label text — overridden by the default slot when present' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Checked/indeterminate color' },
+  { name: 'ariaLabel', type: 'string', description: 'Accessible name for the input when there\'s no visible label (e.g. a checkbox in a table or list row)' },
 ]
 
 const checkboxSlots: SlotDef[] = [

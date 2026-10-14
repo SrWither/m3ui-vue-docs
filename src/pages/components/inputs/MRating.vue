@@ -3,8 +3,10 @@ import { ref } from 'vue'
 import { MRating } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
+import EventsTable from '@/components/EventsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
+import type { EventDef } from '@/components/EventsTable.vue'
 
 const ratingVal = ref(3.5)
 
@@ -17,6 +19,10 @@ const iconExamples = [
   { icon: 'pets', color: 'secondary', label: 'pets', val: ref(4.5) },
   { icon: 'local_cafe', color: '#92400e', label: 'local_cafe', val: ref(1.5) },
   { icon: 'diamond', color: '#06b6d4', label: 'diamond', val: ref(3) },
+]
+
+const ratingEvents: EventDef[] = [
+  { name: 'update:modelValue', payload: 'number', description: 'Emitted when the user rates by click, drag or keyboard (v-model). Dragging past the first icon emits 0' },
 ]
 
 const ratingProps: PropDef[] = [
@@ -118,6 +124,9 @@ const val = ref(3.5)`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="ratingProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Events</h3>
+    <EventsTable :events="ratingEvents" />
 
     <ComponentPager current="MRating" />
   </div>
