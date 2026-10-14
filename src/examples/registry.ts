@@ -27,6 +27,15 @@ export const examples: ExampleApp[] = [
     uses: ['MWindow', 'MKanban', 'MCalendar', 'MSlider', 'MSegmentedButton', 'MShape', 'useTheme', 'useColorPalette'],
     component: () => import('./desktop/DesktopExample.vue'),
   },
+  {
+    id: 'chat',
+    title: 'Chat',
+    description:
+      'A messaging app: chats with unread counts and search, conversations with photos and voice notes, and contacts that read, type and record audio back. Phone-first, side by side on wide screens.',
+    icon: 'forum',
+    uses: ['MListDetail', 'MChatBubble', 'MEmojiSelector', 'MLightbox', 'MMenu', 'MRelativeTime', 'MChip', 'useToast'],
+    component: () => import('./chat/ChatExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`

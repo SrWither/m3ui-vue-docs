@@ -20,7 +20,9 @@ const tips = [
     <div class="flex items-center gap-4">
       <div class="relative h-16 w-16 shrink-0">
         <MShape shape="Cookie9Sided" class="m3d-welcome-shape h-16 w-16 text-primary" />
-        <MIcon name="waving_hand" :size="28" class="absolute inset-0 m-auto text-on-primary" />
+        <div class="absolute inset-0 flex items-center justify-center">
+          <MIcon name="waving_hand" :size="28" class="text-on-primary" />
+        </div>
       </div>
       <div>
         <h2 class="text-headline-small text-on-surface">Welcome</h2>

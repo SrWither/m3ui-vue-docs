@@ -21,7 +21,17 @@ import { examples, exampleSource } from '@/examples/registry'
           :to="`/examples/${e.id}`"
           class="relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br from-primary-container via-secondary-container to-tertiary-container"
         >
+          <!-- A tiny chat: incoming and outgoing bubbles, one still typing -->
+          <div v-if="e.id === 'chat'" class="absolute inset-y-[12%] left-1/2 flex w-[46%] -translate-x-1/2 flex-col justify-end gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span class="h-[12%] w-[60%] rounded-2xl rounded-bl-sm bg-surface-container-high" />
+            <span class="h-[12%] w-[45%] self-end rounded-2xl rounded-br-sm bg-primary" />
+            <span class="h-[18%] w-[70%] rounded-2xl rounded-bl-sm bg-surface-container-high" />
+            <span class="flex h-[12%] w-[24%] items-center justify-center gap-[12%] rounded-2xl rounded-bl-sm bg-surface-container-high">
+              <span v-for="n in 3" :key="n" class="h-1.5 w-1.5 rounded-full bg-on-surface-variant/60" />
+            </span>
+          </div>
           <!-- A tiny desktop: two windows and a taskbar -->
+          <template v-else>
           <div class="absolute top-[18%] left-[12%] h-[46%] w-[42%] rounded-lg bg-surface shadow-elevation-1 transition-transform duration-300 group-hover:-translate-y-1">
             <div class="h-[14%] rounded-t-lg bg-surface-container" />
           </div>
@@ -31,6 +41,7 @@ import { examples, exampleSource } from '@/examples/registry'
           <div class="absolute bottom-[5%] left-1/2 flex h-[10%] w-[44%] -translate-x-1/2 items-center justify-center gap-[6%] rounded-full bg-surface-container-high/90">
             <span v-for="n in 4" :key="n" class="h-[44%] w-[8%] rounded-md" :class="n === 2 ? 'bg-primary' : 'bg-on-surface/20'" />
           </div>
+          </template>
           <MIcon :name="e.icon" :size="40" class="absolute top-4 left-4 text-on-primary-container/70" />
         </RouterLink>
 
