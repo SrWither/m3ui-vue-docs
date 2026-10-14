@@ -29,6 +29,7 @@ const navBarTypes: TypeDef[] = [
       { name: 'icon', type: 'string', required: true, description: 'Material Symbol icon name' },
       { name: 'badge', type: 'number', description: 'Numeric badge count shown on the icon' },
       { name: 'badgeDot', type: 'boolean', description: 'Shows a small dot badge instead of a count' },
+      { name: 'disabled', type: 'boolean', description: 'Not selectable: icon and label dimmed to 38%, no hover' },
       { name: 'to', type: 'string | RouteLocationRaw', description: 'Makes the item a real link (middle-click, open in a new tab): a RouterLink when vue-router is installed, a plain <a href> otherwise. Clicking still updates v-model' },
     ],
   },
@@ -46,6 +47,14 @@ const mediumVal = ref<string | number>('home')
 const mediumItems = [
   { value: 'home', label: 'Home', icon: 'home' },
   { value: 'search', label: 'Search', icon: 'search' },
+  { value: 'profile', label: 'Profile', icon: 'person' },
+]
+
+const disabledVal = ref<string | number>('home')
+const disabledItems = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'orders', label: 'Orders', icon: 'receipt_long' },
+  { value: 'wallet', label: 'Wallet', icon: 'account_balance_wallet', disabled: true },
   { value: 'profile', label: 'Profile', icon: 'person' },
 ]
 </script>
@@ -93,6 +102,25 @@ const items = [
           {{ mediumVal }} view
         </div>
         <MShortNavigationBar v-model="mediumVal" :items="mediumItems" arrangement="centered" icon-position="start" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Disabled item"
+      description="disabled on an item makes it unselectable: its icon and label are dimmed to 38% and it gets no hover, for example a section not available yet for this account."
+      :code="`<MShortNavigationBar v-model=&quot;active&quot; :items=&quot;items&quot; />`"
+      :script="`const items = [
+  { value: 'home', label: 'Home', icon: 'home' },
+  { value: 'orders', label: 'Orders', icon: 'receipt_long' },
+  { value: 'wallet', label: 'Wallet', icon: 'account_balance_wallet', disabled: true },
+  { value: 'profile', label: 'Profile', icon: 'person' },
+]`"
+    >
+      <div class="w-full max-w-sm overflow-hidden rounded-xl border border-outline-variant">
+        <div class="flex h-28 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ disabledVal }} view
+        </div>
+        <MShortNavigationBar v-model="disabledVal" :items="disabledItems" />
       </div>
     </ComponentDemo>
 

@@ -38,7 +38,7 @@ const suiteTypes: TypeDef[] = [
       { name: 'icon', type: 'string', required: true, description: 'Material Symbol' },
       { name: 'badge', type: 'number', description: 'Count badge on the icon' },
       { name: 'badgeDot', type: 'boolean', description: 'Small dot badge on the icon' },
-      { name: 'disabled', type: 'boolean', description: 'Disables the destination (rail only)' },
+      { name: 'disabled', type: 'boolean', description: 'Disables the destination' },
       { name: 'to', type: 'string | RouteLocationRaw', description: 'Makes the item a real link (middle-click, open in a new tab): a RouterLink when vue-router is installed, a plain <a href> otherwise. Clicking still updates v-model' },
     ],
   },
