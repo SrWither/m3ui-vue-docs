@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.7',
+    date: '2026-10-14',
+    changes: {
+      fixed: [
+        'MTransferList: moving all items across no longer makes the rows briefly pile up on top of each other as they fade out of their pane',
+      ],
+    },
+  },
+  {
     version: '0.8.6',
     date: '2026-10-13',
     changes: {
