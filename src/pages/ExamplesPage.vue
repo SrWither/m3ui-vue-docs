@@ -38,6 +38,24 @@ import { examples, exampleSource } from '@/examples/registry'
               <span v-for="(h, i) in [40, 65, 50, 80, 60, 95, 75]" :key="i" class="flex-1 rounded-t-sm" :class="i === 5 ? 'bg-primary' : 'bg-primary/40'" :style="{ height: `${h}%` }" />
             </div>
           </div>
+          <!-- A tiny mail client: folders, a list with unread rows, an open message -->
+          <div v-else-if="e.id === 'mail'" class="absolute inset-[12%] flex gap-[3%] rounded-2xl bg-surface p-[3%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <div class="flex w-[18%] flex-col gap-[8%]">
+              <span class="h-[14%] rounded-lg bg-primary-container" />
+              <span v-for="n in 4" :key="n" class="h-[6%] rounded-full" :class="n === 1 ? 'bg-secondary-container' : 'bg-on-surface/10'" />
+            </div>
+            <div class="flex w-[34%] flex-col gap-[4%]">
+              <span v-for="n in 5" :key="n" class="flex flex-1 items-center gap-[8%] rounded-md px-[6%]" :class="n === 2 ? 'bg-secondary-container' : 'bg-surface-container-low'">
+                <span class="aspect-square h-[45%] rounded-full" :class="n < 3 ? 'bg-primary' : 'bg-on-surface/20'" />
+                <span class="h-[18%] flex-1 rounded-full" :class="n < 3 ? 'bg-on-surface/40' : 'bg-on-surface/15'" />
+              </span>
+            </div>
+            <div class="flex flex-1 flex-col gap-[5%] rounded-lg bg-surface-container-lowest p-[4%]">
+              <span class="h-[7%] w-3/4 rounded-full bg-on-surface/40" />
+              <span v-for="n in 4" :key="n" class="h-[4%] rounded-full bg-on-surface/15" :class="{ 'w-2/3': n === 4 }" />
+              <span class="mt-auto h-[16%] w-[40%] rounded-md bg-tertiary-container" />
+            </div>
+          </div>
           <!-- A tiny music player: a cover, frequency bars, a seek bar and a play button -->
           <div v-else-if="e.id === 'music'" class="absolute inset-y-[12%] left-1/2 flex w-[40%] -translate-x-1/2 flex-col gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span class="relative flex-1 overflow-hidden rounded-lg bg-tertiary-container">

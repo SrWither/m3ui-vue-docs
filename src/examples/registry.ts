@@ -55,6 +55,15 @@ export const examples: ExampleApp[] = [
     component: () => import('./music/MusicExample.vue'),
   },
   {
+    id: 'mail',
+    title: 'Mail',
+    description:
+      'An email client: folders, labels and search, conversations with attachments, bulk actions with undo, snooze, swipe to archive and pull to refresh on phones, a rich-text composer with scheduled send, contacts that write back, and Gmail-style keyboard shortcuts.',
+    icon: 'mail',
+    uses: ['MRichTextEditor', 'MNavigationDrawer', 'MPullToRefresh', 'MMultiAutocomplete', 'MSplitButton', 'MDatePicker', 'MTimePicker', 'MLightbox', 'MKbd', 'useToast'],
+    component: () => import('./mail/MailExample.vue'),
+  },
+  {
     id: 'store',
     title: 'Store',
     description:
