@@ -42,6 +42,7 @@ const transferSlots: SlotDef[] = [
 const transferTypes: TypeDef[] = [
   {
     name: 'TransferItem',
+    description: 'The minimum each item needs. Items can carry any extra fields: the item slot receives your own type, so TypeScript knows them (e.g. item.price)',
     fields: [
       { name: 'value', type: 'string | number', required: true, description: 'Unique identifier, used in modelValue' },
       { name: 'label', type: 'string', required: true, description: 'Display text' },
