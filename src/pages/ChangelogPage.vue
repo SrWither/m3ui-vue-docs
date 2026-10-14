@@ -19,12 +19,15 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MDragDropList can now hold fully custom rows with the new bare prop (cards, pills, any shape), place the drag grip inside your own design, react while a row is being dragged, and be locked with disabled. Its docs page has eight new examples: a task list, a playlist, home screen sections, a ranking that saves on every change, project cards, pills and more',
+        'MDragDropList can be reordered with the keyboard (Space to pick up, arrows to move, Space to drop, Esc to cancel), with each step announced to screen readers',
         'MFileUpload can now be cleared and paired with your own Upload button: an optional v-model with the file list, a clear() method, and an actions slot below the list. New docs examples show an upload with live progress per file, and clearing the list from a template ref. The first two examples are now centered',
         'MChatBubble can show that the other person is typing (bouncing dots) or recording a voice message (a mic with a moving wave), like in messaging apps. Set typing to \'text\' or \'audio\' while it\'s happening and swap it for the real message when it arrives. The docs page has a live demo',
         'MChatBubble\'s Custom Content example has redesigned in-bubble action buttons, tinted with the bubble\'s own color instead of chips that clashed with it',
         'More MRelativeTime examples on its docs page: a live feed whose timestamps keep counting up, a countdown that passes "now", every unit from seconds to years, the same values in eight languages, and the accepted input formats',
       ],
       changed: [
+        'MDragDropList was rebuilt with the same props: the dragged row now lifts and follows your finger or mouse while the others slide out of its way, then settles into place. Rows now have Material 3 list-item height, padding and hover, so they look taller than before',
         'MRating was rebuilt with the same props, now designed with Material 3 building blocks. Empty icons now show as outlines, hovering or pressing an icon shows a soft circle in the rating\'s color instead of making it grow, and a disabled rating uses M3\'s disabled colors',
         'MRating can now be rated by dragging, with the mouse or a finger. Dragging past the first icon clears it back to 0',
         'MRating works with the keyboard: arrow keys move up or down by one (or by half with halfIncrements), Home and End jump to 0 and the maximum, and a focus ring shows when you tab to it. A readonly rating is no longer a tab stop, and screen readers announce its value',
@@ -32,6 +35,7 @@ const versions: Version[] = [
         'MResult\'s default titles and descriptions were always in Spanish. They now follow the language set with createM3UI, in English by default and translated in all the bundled locales. The info status also gets a default description now. Its docs page has new examples, all in English: order confirmed, not found, access denied, server error, empty state and payment failed',
       ],
       fixed: [
+        'MDragDropList didn\'t work with a finger on phones. Long-press a row to drag it, or drag right away from the grip when using handle. Checkboxes and switches inside a row also no longer start a drag by accident, and the code samples on its docs page used a slot name that didn\'t exist',
         'MFileUpload\'s progress bar, spinner and done/error icons never updated when you changed a file\'s status or progress. They now do. Dropping a rejected file in single-file mode also no longer removes the file already selected',
         'MNavigationRail\'s expanded variant no longer glitches when collapsing: the item labels used to disappear and pop back in. They now shrink away smoothly, and expand just as smoothly',
         'In MChatBubble, the read/delivered checkmarks on a secondary or tertiary bubble used the primary bubble\'s color. They now match the bubble',
