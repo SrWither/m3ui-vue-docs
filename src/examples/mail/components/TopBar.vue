@@ -2,7 +2,7 @@
 /* Wide screens: menu, logo, search across all mail, shortcuts, theme, and the example's links. */
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { MAvatar, MIcon, MIconButton, MMenu, MMenuItem, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MIcon, MIconButton, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
 import { exampleSource } from '@/examples/registry'
 import { me } from '../data'
 import { useMail } from '../useMail'
@@ -47,13 +47,8 @@ const openSource = () => window.open(exampleSource('mail'), '_blank', 'noopener'
     <span class="flex-1" />
     <MTooltip text="Keyboard shortcuts (?)" placement="bottom"><MIconButton icon="keyboard" label="Keyboard shortcuts" @click="$emit('shortcuts')" /></MTooltip>
     <MTooltip :text="`Theme: ${theme}`" placement="bottom"><MIconButton :icon="themeIcon" :label="`Theme: ${theme}`" @click="cycle" /></MTooltip>
-    <MMenu align="right">
-      <template #trigger>
-        <MIconButton icon="more_vert" label="About this example" />
-      </template>
-      <MMenuItem icon="code" @click="openSource">View source on GitHub</MMenuItem>
-      <MMenuItem icon="menu_book" @click="router.push('/examples')">Back to the docs</MMenuItem>
-    </MMenu>
+    <MTooltip text="Back to the docs" placement="bottom"><MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" /></MTooltip>
+    <MTooltip text="View source on GitHub" placement="bottom"><MIconButton icon="code" label="View source on GitHub" @click="openSource" /></MTooltip>
     <MAvatar :name="me.name" :size="36" class="mx-1" />
   </header>
 </template>

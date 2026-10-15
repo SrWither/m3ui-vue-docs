@@ -2,7 +2,7 @@
 /* Logo, where you are (m3ui / repo), file search, theme, and the example's links. */
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { MAvatar, MIcon, MIconButton, MMenu, MMenuItem, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MIcon, MIconButton, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
 import { exampleSource } from '@/examples/registry'
 import { me } from '../data'
 import { useForge } from '../useForge'
@@ -40,13 +40,8 @@ const openSource = () => window.open(exampleSource('forge'), '_blank', 'noopener
     </button>
     <MIconButton v-else icon="search" label="Search files" @click="finderOpen = true" />
     <MTooltip :text="`Theme: ${theme}`" placement="bottom"><MIconButton :icon="themeIcon" :label="`Theme: ${theme}`" @click="cycle" /></MTooltip>
-    <MMenu align="right">
-      <template #trigger>
-        <MIconButton icon="more_vert" label="About this example" />
-      </template>
-      <MMenuItem icon="code" @click="openSource">View source on GitHub</MMenuItem>
-      <MMenuItem icon="menu_book" @click="router.push('/examples')">Back to the docs</MMenuItem>
-    </MMenu>
+    <MTooltip text="Back to the docs" placement="bottom"><MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" /></MTooltip>
+    <MTooltip text="View source on GitHub" placement="bottom"><MIconButton icon="code" label="View source on GitHub" @click="openSource" /></MTooltip>
     <MAvatar :name="me.name" :size="32" class="ml-1 hidden sm:inline-flex" />
   </header>
 </template>

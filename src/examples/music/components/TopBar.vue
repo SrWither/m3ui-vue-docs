@@ -5,7 +5,7 @@
  */
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { MIcon, MIconButton, MMenu, MMenuItem, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
+import { MIcon, MIconButton, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
 import { exampleSource } from '@/examples/registry'
 import { useMusic } from '../useMusic'
 
@@ -42,12 +42,7 @@ const isTab = computed(() => ['home', 'search', 'library'].includes(screen.value
     <MTooltip :text="`Theme: ${theme}`" placement="bottom">
       <MIconButton :icon="themeIcon" :label="`Theme: ${theme}`" @click="cycle" />
     </MTooltip>
-    <MMenu align="right">
-      <template #trigger>
-        <MIconButton icon="more_vert" label="About this example" />
-      </template>
-      <MMenuItem icon="code" @click="openSource">View source on GitHub</MMenuItem>
-      <MMenuItem icon="menu_book" @click="router.push('/examples')">Back to the docs</MMenuItem>
-    </MMenu>
+    <MTooltip text="Back to the docs" placement="bottom"><MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" /></MTooltip>
+    <MTooltip text="View source on GitHub" placement="bottom"><MIconButton icon="code" label="View source on GitHub" @click="openSource" /></MTooltip>
   </header>
 </template>
