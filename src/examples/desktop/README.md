@@ -22,6 +22,7 @@ desktop/
     ├── CalendarApp.vue     MCalendar
     ├── MusicApp.vue        MSlider for position and volume
     ├── CalculatorApp.vue   works with the keyboard too
+    ├── BrowserApp.vue      web browser: tabs (one iframe each), address bar, back/forward, start page
     ├── TerminalApp.vue     commands that drive the desktop: open, close, theme, palette, wallpaper…
     └── SettingsApp.vue     MListDetail inside a window: one pane normally, two when maximized
 ```
@@ -37,5 +38,10 @@ desktop/
 - **App state lives at module level** (a plain `<script>` block next to `<script setup>`), because a
   hidden `MWindow` unmounts its content: notes, the calculator, the terminal session and the playing
   song all survive being minimized.
+- **The browser** shows each tab in its own iframe (background tabs stay loaded) and starts over when
+  it's closed. Sites that forbid being framed (Google, GitHub, YouTube pages…) can't be
+  detected from outside, so known ones show an "Open in new tab" page instead of a blank frame. The
+  address bar follows links clicked inside pages of this same site (readable, same origin) but not
+  inside other sites, and back / forward use the browser's own list rather than the frame's history.
 - **Theme and palette** use the library's `useTheme()` and `useColorPalette()`, so changes in Settings or
   the terminal apply to the whole site.

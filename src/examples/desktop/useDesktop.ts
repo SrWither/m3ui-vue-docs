@@ -31,6 +31,7 @@ export const apps: DesktopApp[] = [
   { id: 'calendar', title: 'Calendar', icon: 'calendar_month', tone: 'primary', width: 460, height: 440, onDesktop: true, component: () => import('./apps/CalendarApp.vue') },
   { id: 'music', title: 'Music', icon: 'headphones', tone: 'error', width: 360, height: 460, onDesktop: true, component: () => import('./apps/MusicApp.vue') },
   { id: 'calculator', title: 'Calculator', icon: 'calculate', tone: 'secondary', width: 300, height: 420, onDesktop: true, component: () => import('./apps/CalculatorApp.vue') },
+  { id: 'browser', title: 'Wander', icon: 'travel_explore', tone: 'secondary', width: 760, height: 520, onDesktop: true, component: () => import('./apps/BrowserApp.vue') },
   { id: 'terminal', title: 'Terminal', icon: 'terminal', tone: 'primary', width: 540, height: 320, onDesktop: true, component: () => import('./apps/TerminalApp.vue') },
   { id: 'settings', title: 'Settings', icon: 'settings', tone: 'tertiary', width: 520, height: 440, onDesktop: true, component: () => import('./apps/SettingsApp.vue') },
 ]
