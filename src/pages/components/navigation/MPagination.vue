@@ -25,7 +25,8 @@ const smallPage = ref(1)
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MPagination</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      Simple previous/next page navigation with an automatically computed page range label.
+      Simple previous/next page navigation with an automatically computed page range label. Its texts
+      (“1–10 of 25”, “Page 1 of 3” and the buttons’ labels) come from the app’s locale.
     </p>
 
     <ComponentDemo

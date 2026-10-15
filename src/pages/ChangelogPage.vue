@@ -23,6 +23,7 @@ const versions: Version[] = [
         'A new example, Mail: an email client with folders, labels and search, conversations with attachments, bulk actions you can undo, snooze, swipe to archive and pull to refresh on phones, a rich-text composer with scheduled send, contacts that write back, and Gmail-style keyboard shortcuts',
       ],
       fixed: [
+        'MPagination showed its texts in Spanish (“1-10 de 25”, “Página 1 de 3”) whatever your language. They now follow the app’s locale, in English by default, with translations for all bundled languages',
         'MPullToRefresh: with a mouse, clicking something at the top of the list (like a row or a link) now works. Before, it did nothing while the list was scrolled all the way up',
       ],
     },

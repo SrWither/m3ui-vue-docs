@@ -325,7 +325,7 @@ const fullSpanishCode = `app.use(createM3UI({
             <td colspan="3" class="px-4 py-2 text-label-large font-medium text-on-surface">Common</td>
           </tr>
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">search</td><td class="px-4 py-2">'Search...'</td><td class="px-4 py-2 text-on-surface-variant">MDataTable, MTable, MMultiSelect, MTransferList, MSpotlightSearch</td></tr>
-          <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">noResults</td><td class="px-4 py-2">'No results'</td><td class="px-4 py-2 text-on-surface-variant">MDataTable, MTable, MMultiSelect, MCommandPalette, MSpotlightSearch</td></tr>
+          <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">noResults</td><td class="px-4 py-2">'No results'</td><td class="px-4 py-2 text-on-surface-variant">MDataTable, MTable, MMultiSelect, MCommandPalette, MSpotlightSearch, MPagination</td></tr>
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">close</td><td class="px-4 py-2">'Close'</td><td class="px-4 py-2 text-on-surface-variant">MDialog, MAlert, MSnackbar</td></tr>
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">cancel</td><td class="px-4 py-2">'Cancel'</td><td class="px-4 py-2 text-on-surface-variant">MConfirmDialog, MRichTextEditor</td></tr>
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">confirm</td><td class="px-4 py-2">'Confirm'</td><td class="px-4 py-2 text-on-surface-variant">MConfirmDialog</td></tr>
@@ -428,6 +428,10 @@ const fullSpanishCode = `app.use(createM3UI({
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">insertImage</td><td class="px-4 py-2">'Insert image'</td><td class="px-4 py-2 text-on-surface-variant">MRichTextEditor</td></tr>
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">imageUrlLabel</td><td class="px-4 py-2">'Image URL'</td><td class="px-4 py-2 text-on-surface-variant">MRichTextEditor</td></tr>
           <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">insert</td><td class="px-4 py-2">'Insert'</td><td class="px-4 py-2 text-on-surface-variant">MRichTextEditor</td></tr>
+          <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">paginationRange</td><td class="px-4 py-2">'{from}–{to} of {total}'</td><td class="px-4 py-2 text-on-surface-variant">MPagination</td></tr>
+          <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">paginationPage</td><td class="px-4 py-2">'Page {page} of {pages}'</td><td class="px-4 py-2 text-on-surface-variant">MPagination</td></tr>
+          <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">previousPage</td><td class="px-4 py-2">'Previous page'</td><td class="px-4 py-2 text-on-surface-variant">MPagination</td></tr>
+          <tr class="border-t border-outline-variant"><td class="px-4 py-2 font-mono text-primary">nextPage</td><td class="px-4 py-2">'Next page'</td><td class="px-4 py-2 text-on-surface-variant">MPagination</td></tr>
         </tbody>
       </table>
     </div>
