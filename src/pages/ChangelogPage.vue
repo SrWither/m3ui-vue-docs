@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '0.8.8',
-    date: 'Unreleased',
+    date: '2026-10-14',
     changes: {
       added: [
         'A new example, Music: a streaming app whose songs really play (they are generated live in your browser), with home shelves, search, albums, artists, your library and playlists, a queue you reorder by dragging, and a full-screen player with a visualizer',
