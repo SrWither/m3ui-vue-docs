@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       added: [
         'A new example, Music: a streaming app whose songs really play (they are generated live in your browser), with home shelves, search, albums, artists, your library and playlists, a queue you reorder by dragging, and a full-screen player with a visualizer',
+        'A new example, Plaza: a social feed that refreshes when you pull and loads more as you scroll, with stories that turn like a cube, posts with photos and polls, double-tap to like, an endless photo wall, profiles, replies, notifications and a composer with a character ring',
         'A new example, Forge: a code hosting site that browses the real source of these examples, with a file tree beside the code, rendered READMEs, edits you commit or propose as pull requests with a diff, issues with labels and comments, a merge box, and CI runs with live logs in a terminal',
         'A new example, Mail: an email client with folders, labels and search, conversations with attachments, bulk actions you can undo, snooze, swipe to archive and pull to refresh on phones, a rich-text composer with scheduled send, contacts that write back, and Gmail-style keyboard shortcuts',
       ],

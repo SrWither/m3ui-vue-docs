@@ -73,6 +73,15 @@ export const examples: ExampleApp[] = [
     component: () => import('./forge/ForgeExample.vue'),
   },
   {
+    id: 'feed',
+    title: 'Plaza',
+    description:
+      'A social feed: a timeline that refreshes when you pull and loads more as you scroll, stories, posts with photos and polls, likes with a double tap, an endless photo wall, profiles, replies, notifications and a composer with a character ring.',
+    icon: 'forum',
+    uses: ['MInfiniteScroll', 'MPullToRefresh', 'MMasonry', 'MNavigationSuite', 'MCircleProgressBar', 'MProgressBar', 'MToggleButton', 'MSkeleton', 'MLightbox', 'MEmojiButton', 'MTabs', 'useToast'],
+    component: () => import('./feed/PlazaExample.vue'),
+  },
+  {
     id: 'store',
     title: 'Store',
     description:

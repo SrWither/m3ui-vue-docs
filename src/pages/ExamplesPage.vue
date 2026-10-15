@@ -38,6 +38,20 @@ import { examples, exampleSource } from '@/examples/registry'
               <span v-for="(h, i) in [40, 65, 50, 80, 60, 95, 75]" :key="i" class="flex-1 rounded-t-sm" :class="i === 5 ? 'bg-primary' : 'bg-primary/40'" :style="{ height: `${h}%` }" />
             </div>
           </div>
+          <!-- A tiny social feed: stories, then a post with a photo -->
+          <div v-else-if="e.id === 'feed'" class="absolute inset-y-[12%] left-1/2 flex w-[42%] -translate-x-1/2 flex-col gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span class="flex gap-[6%]">
+              <span v-for="n in 4" :key="n" class="aspect-square flex-1 rounded-full bg-linear-to-tr from-tertiary to-primary p-[6%]"><span class="block h-full w-full rounded-full border-2 border-surface bg-secondary-container" /></span>
+            </span>
+            <span class="flex items-center gap-[5%]">
+              <span class="aspect-square w-[14%] rounded-full bg-primary-container" />
+              <span class="h-1.5 w-[40%] rounded-full bg-on-surface/30" />
+            </span>
+            <span class="flex-1 rounded-lg bg-linear-to-br from-tertiary-container via-primary-container to-secondary-container" />
+            <span class="flex justify-between px-[4%]">
+              <span v-for="n in 4" :key="n" class="h-2 w-2 rounded-full" :class="n === 3 ? 'bg-error' : 'bg-on-surface/25'" />
+            </span>
+          </div>
           <!-- A tiny code host: a file tree beside code lines -->
           <div v-else-if="e.id === 'forge'" class="absolute inset-[12%] flex flex-col gap-[4%] rounded-2xl bg-surface p-[3%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <div class="flex h-[10%] items-center gap-[3%]">
