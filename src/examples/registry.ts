@@ -64,6 +64,15 @@ export const examples: ExampleApp[] = [
     component: () => import('./mail/MailExample.vue'),
   },
   {
+    id: 'forge',
+    title: 'Forge',
+    description:
+      'A code hosting site that browses the real source of these examples: a file tree beside the code, rendered READMEs, edits you commit or propose as pull requests with a diff, issues with labels and comments, a merge box, and CI runs with live logs in a terminal.',
+    icon: 'deployed_code',
+    uses: ['MTree', 'MCodeEditor', 'MMarkdown', 'MSplitter', 'MTabs', 'MTimeline', 'MTerminal', 'MJsonViewer', 'MSpotlightSearch', 'MMultiSelect', 'MSplitButton', 'MCopyButton'],
+    component: () => import('./forge/ForgeExample.vue'),
+  },
+  {
     id: 'store',
     title: 'Store',
     description:

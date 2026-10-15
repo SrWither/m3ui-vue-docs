@@ -38,6 +38,25 @@ import { examples, exampleSource } from '@/examples/registry'
               <span v-for="(h, i) in [40, 65, 50, 80, 60, 95, 75]" :key="i" class="flex-1 rounded-t-sm" :class="i === 5 ? 'bg-primary' : 'bg-primary/40'" :style="{ height: `${h}%` }" />
             </div>
           </div>
+          <!-- A tiny code host: a file tree beside code lines -->
+          <div v-else-if="e.id === 'forge'" class="absolute inset-[12%] flex flex-col gap-[4%] rounded-2xl bg-surface p-[3%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <div class="flex h-[10%] items-center gap-[3%]">
+              <span class="aspect-square h-full rounded-md bg-primary" />
+              <span class="h-[50%] w-[30%] rounded-full bg-on-surface/30" />
+              <span class="ml-auto h-[60%] w-[14%] rounded-full bg-tertiary-container" />
+            </div>
+            <div class="flex min-h-0 flex-1 gap-[3%]">
+              <div class="flex w-[26%] flex-col gap-[7%] rounded-lg bg-surface-container-low p-[4%]">
+                <span v-for="n in 6" :key="n" class="h-[7%] rounded-full" :class="n === 3 ? 'bg-primary/60' : 'bg-on-surface/15'" :style="{ marginLeft: n > 1 && n < 5 ? '18%' : '0' }" />
+              </div>
+              <div class="flex flex-1 flex-col gap-[5%] rounded-lg bg-surface-container-lowest p-[4%]">
+                <span v-for="(w, n) in [60, 80, 45, 70, 30, 55]" :key="n" class="flex h-[7%] gap-[3%]">
+                  <span class="w-[6%] rounded-full bg-on-surface/10" />
+                  <span class="rounded-full" :class="['bg-primary/50', 'bg-tertiary/50', 'bg-on-surface/25'][n % 3]" :style="{ width: `${w}%`, marginLeft: n % 3 ? '6%' : '0' }" />
+                </span>
+              </div>
+            </div>
+          </div>
           <!-- A tiny mail client: folders, a list with unread rows, an open message -->
           <div v-else-if="e.id === 'mail'" class="absolute inset-[12%] flex gap-[3%] rounded-2xl bg-surface p-[3%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <div class="flex w-[18%] flex-col gap-[8%]">
