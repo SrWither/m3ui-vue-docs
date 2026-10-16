@@ -20,6 +20,7 @@ const compact = computed(() => widthClass.value === 'compact')
 const t = computed(() => findTrip(props.id))
 const d = computed(() => (t.value ? destination(t.value.destinationId) : null))
 const today = isoDate(new Date())
+const pad = (n: number) => String(n).padStart(2, '0')
 const past = computed(() => !!t.value && t.value.end < today)
 
 const fmt = (iso: string) => new Date(`${iso}T00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -34,12 +35,25 @@ const subtitle = computed(() => {
 
 // ── Itinerary ──────────────────────────────────────────────────────────────────────────────────
 const colors = ['primary', 'secondary', 'tertiary', 'success'] as const
-const events = computed<SchedulerEvent[]>(() =>
-  (t.value?.activities ?? []).map((a, i) => ({ id: a.id, title: a.title, start: a.start, end: a.end, color: colors[i % colors.length] })),
-)
+const events = computed<SchedulerEvent[]>(() => {
+  if (!t.value || !d.value) return []
+  const trip = t.value
+  const [h, m] = trip.flight.boards.split(':').map(Number)
+  const landMin = h! * 60 + m! + d.value.flightHours * 60
+  const landDay = new Date(`${trip.start}T00:00`)
+  landDay.setMinutes(landMin)
+  const lands = `${isoDate(landDay)}T${pad(landDay.getHours())}:${pad(landDay.getMinutes())}`
+  return [
+    // The stay spans the whole trip and the flight may land the next day: both go to the all-day row.
+    { id: 'stay', title: `Stay in ${d.value.name}`, start: trip.start, end: trip.end, allDay: true, color: 'secondary' as const },
+    { id: 'flight-out', title: `Flight ${trip.flight.number} to ${d.value.airport}`, start: `${trip.start}T${trip.flight.boards}`, end: lands, color: 'error' as const },
+    { id: 'flight-back', title: `Flight home from ${d.value.airport}`, start: `${trip.end}T18:00`, end: `${trip.end}T21:00`, color: 'error' as const },
+    ...trip.activities.map((a, i) => ({ id: a.id, title: a.title, start: a.start, end: a.end, color: colors[i % colors.length] })),
+  ]
+})
+const isActivity = (e: SchedulerEvent | null) => !!e && !['stay', 'flight-out', 'flight-back'].includes(String(e.id))
 
 const adding = ref<{ open: boolean; date: string; hour: number }>({ open: false, date: '', hour: 9 })
-const pad = (n: number) => String(n).padStart(2, '0')
 function onSlot(slot: { date: string; hour: number }) {
   if (!t.value || past.value) return
   adding.value = { open: true, date: slot.date, hour: slot.hour }
@@ -106,7 +120,7 @@ const confirmDelete = ref(false)
           <div>
             <h2 class="text-title-large text-on-surface">Itinerary</h2>
             <p class="text-body-medium text-on-surface-variant">
-              {{ past ? 'What you did on this trip.' : 'Click an empty hour to add an activity, or an activity to remove it.' }}
+              {{ past ? 'What you did on this trip.' : 'Click an empty hour to add an activity, or an activity to remove it. Your stay and flights are already in.' }}
             </p>
           </div>
           <MButton variant="text" icon="travel_explore" @click="go({ name: 'destination', id: d.id })">About {{ d.name }}</MButton>
@@ -114,6 +128,7 @@ const confirmDelete = ref(false)
         <MScheduler
           :key="compact ? 'day' : 'week'"
           :events="events"
+          :date="t.start"
           :view="compact ? 'day' : 'week'"
           :start-hour="7"
           :end-hour="23"
@@ -149,12 +164,15 @@ const confirmDelete = ref(false)
       <MDialog v-model="selectedOpen" :title="selected?.title" max-width="max-w-[400px]">
         <p v-if="selected" class="flex items-center gap-2 text-body-large text-on-surface-variant">
           <MIcon name="schedule" :size="20" />
-          {{ new Date(selected.start).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) }},
-          {{ time(selected.start) }} – {{ time(selected.end) }}
+          <template v-if="selected.allDay">{{ fmt(selected.start) }} – {{ fmt(selected.end) }}</template>
+          <template v-else>
+            {{ new Date(selected.start).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) }},
+            {{ time(selected.start) }} – {{ time(selected.end) }}
+          </template>
         </p>
         <template #actions>
           <MButton variant="text" @click="selected = null">Close</MButton>
-          <MButton v-if="!past" variant="tonal" icon="event_busy" @click="removeSelected">Remove</MButton>
+          <MButton v-if="!past && isActivity(selected)" variant="tonal" icon="event_busy" @click="removeSelected">Remove</MButton>
         </template>
       </MDialog>
 

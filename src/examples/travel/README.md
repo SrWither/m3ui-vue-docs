@@ -31,9 +31,9 @@ travel/
 - **Carousels**: the featured row is a `hero` carousel, collections are `multi-browse` rows, "Things to do" is an
   `uncontained` row with custom cards, and stories are a `full-screen` vertical carousel. Captions follow the visible part
   of each item through the `--m3-carousel-mask-start` / `--m3-carousel-mask-size` CSS variables.
-- **Trips**: planning one builds an itinerary with two activities a day, picked from the destination. In the itinerary,
-  click an empty hour to add an activity and an activity to remove it (with undo). The sample trip to Lisbon starts
-  tomorrow, so it's in this week's view.
+- **Trips**: planning one builds an itinerary with two activities a day, picked from the destination. The itinerary
+  (`MScheduler`, opened on the trip's first day with `date`) also shows the stay as a bar across the all-day row and
+  the flights there and back. Click an empty hour to add an activity and an activity to remove it (with undo).
 - **Check-in**: type the booking reference printed on the boarding pass into the code field.
 - **The welcome tour** shows once; clear `driftway-tour-seen` from local storage to see it again.
 - **Pictures** are generated SVG scenes (beaches, mountains, cities, deserts, forests, snow, lakes, islands) from a seed
