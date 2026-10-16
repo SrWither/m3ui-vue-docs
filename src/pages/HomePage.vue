@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import {
   MButton, MCard, MIcon, MChip, MFab,
   MIconButton, MAvatar, MProgressBar, MSpinner,
-  MAlert, MTooltip, MRating, MExpansionPanel, useToast,
+  MAlert, MTooltip, MRating, MExpansionPanel, useToast, MColorPickerModal,
   MStack, MFlex, MGrid, MDivider, MTree,
   MEmoji, MEmojiButton, MDialog,
   MDatePicker, MColorPicker, MTagInput,
@@ -67,7 +67,15 @@ onUnmounted(() => cancelAnimationFrame(blobRafId))
 
 const toast = useToast()
 const { theme, cycle } = useTheme()
-const { palette, palettes: paletteList, set: setPalette } = useColorPalette()
+const { palette, palettes: paletteList, set: setPalette, seed, setSeed } = useColorPalette()
+
+// Your own color: the scheme generated from a seed (dynamic color)
+const seedPickerOpen = ref(false)
+const seedDraft = ref('#0b57d0')
+function openSeedPicker() {
+  if (seed.value) seedDraft.value = seed.value.seed
+  seedPickerOpen.value = true
+}
 
 const themeIcon = computed(() =>
   theme.value === 'dark' ? 'dark_mode' : theme.value === 'light' ? 'light_mode' : 'brightness_auto',
@@ -165,7 +173,7 @@ const categories = [
 
         <p class="max-w-2xl text-title-medium text-on-primary-container/80">
           135+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
-          Beautiful, accessible, tree-shakeable. With 40 color palettes, dark mode, i18n, and full TypeScript support.
+          Beautiful, accessible, tree-shakeable. With 40 color palettes or one generated from your own color, dark mode, i18n, and full TypeScript support.
         </p>
 
         <MFlex gap="sm" wrap class="mt-2 justify-center">
@@ -207,7 +215,8 @@ const categories = [
             <h2 class="text-title-large font-medium">Live Theme Switching</h2>
           </MFlex>
           <p class="mb-4 text-body-medium text-on-surface-variant">
-            Pick a color — the entire page updates instantly. Works with dark mode too.
+            Pick a palette, or bring your own color and the whole scheme is generated from it, Material You style.
+            The entire page updates instantly, dark mode included.
           </p>
           <MFlex align="center" justify="between" class="mb-3">
             <span class="text-title-small font-medium">Active palette</span>
@@ -219,14 +228,14 @@ const categories = [
                 type="button"
                 class="flex aspect-square w-full cursor-pointer items-center justify-center rounded-full transition-all duration-150 hover:scale-110"
                 :class="[
-                  palette.value === p.id ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface scale-110' : '',
+                  palette === p.id ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface scale-110' : '',
                   p.id === 'monochrome' ? 'bg-black dark:bg-white' : '',
                 ]"
                 :style="p.id === 'monochrome' ? {} : { backgroundColor: p.seed }"
                 @click="setPalette(p.id)"
               >
                 <MIcon
-                  v-if="palette.value === p.id"
+                  v-if="palette === p.id"
                   name="check"
                   :size="18"
                   :class="p.id === 'monochrome' ? 'text-white dark:text-black' : 'text-white'"
@@ -234,6 +243,28 @@ const categories = [
               </button>
             </MTooltip>
           </div>
+          <div class="mt-4 flex justify-center">
+            <button
+              type="button"
+              class="flex cursor-pointer items-center gap-3 rounded-full py-1 pr-4 pl-1 text-label-large text-on-surface transition-colors hover:bg-on-surface/8"
+              @click="openSeedPicker"
+            >
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-full"
+                :class="palette === 'seed' ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface' : ''"
+                :style="{ background: seed ? seed.seed : 'conic-gradient(#f44336, #ffeb3b, #4caf50, #00bcd4, #3f51b5, #e91e63, #f44336)' }"
+              >
+                <MIcon :name="palette === 'seed' ? 'check' : 'colorize'" :size="16" class="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]" />
+              </span>
+              Your own color
+            </button>
+          </div>
+          <MColorPickerModal
+            v-model="seedDraft"
+            v-model:show="seedPickerOpen"
+            title="Your own color"
+            @update:model-value="setSeed($event)"
+          />
           <MFlex gap="sm" wrap justify="center" class="mt-5">
             <MButton>Primary</MButton>
             <MButton variant="tonal">Tonal</MButton>
