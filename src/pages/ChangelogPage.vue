@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '0.9.2',
-    date: 'Unreleased',
+    date: '2026-10-16',
     changes: {
       added: [
         'On phones the browser bar can follow the palette: createM3UI({ themeColor: \'surface\' }) keeps it in sync, and this site uses it (in light mode; Android browsers keep their own dark bar in dark mode)',
