@@ -145,6 +145,10 @@
     <lastmod>2026-10-16</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/inputs/mscrollfield</loc>
+    <lastmod>2026-10-16</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/inputs/mselect</loc>
     <lastmod>2026-10-16</lastmod>
   </url>
@@ -409,6 +413,10 @@
     <lastmod>2026-10-16</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/layout/mdraghandle</loc>
+    <lastmod>2026-10-16</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/layout/mfixed</loc>
     <lastmod>2026-10-16</lastmod>
   </url>
@@ -569,11 +577,19 @@
     <lastmod>2026-10-16</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/utility/mswipetodismiss</loc>
+    <lastmod>2026-10-16</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/utility/mtour</loc>
     <lastmod>2026-10-16</lastmod>
   </url>
   <url>
     <loc>https://m3ui.dev/components/utility/mtransferlist</loc>
+    <lastmod>2026-10-16</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/utility/mtransition</loc>
     <lastmod>2026-10-16</lastmod>
   </url>
   <url>
