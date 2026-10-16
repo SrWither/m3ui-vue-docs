@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'An emphasized version of every type style (text-title-large-emphasized and so on), heavier for text that should stand out. The typography page shows both',
         'A fifth elevation level (shadow-elevation-5), and MBox takes elevation 4 and 5',
         'Fixed color roles (primary-fixed and the like), colors that stay the same in light and dark, in every palette. The palettes page lists them',
         'MDragHandle, new: the Material 3 handle you drag to resize panes, which grows while you hold it. MSplitter now uses it and can be moved with the keyboard too',

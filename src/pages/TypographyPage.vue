@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { MCard, MButton, MChip, MTextField } from '@m3ui-vue/m3ui-vue'
+import { MCard, MButton, MChip, MTextField, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
+import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import {
   activeFontId, activeMonoFontId, fontOptions, monoFontOptions, fontStack, loadFontPreviews, setSiteFont, setSiteMonoFont,
@@ -17,22 +18,27 @@ const monoSample = `function greet(name: string) {
 
 // ── Type scale ───────────────────────────────────────────────────────────────
 
+const typeStyle = ref<'regular' | 'emphasized'>('regular')
+const typeScaleOptions: SegmentedOption[] = [
+  { value: 'regular', label: 'Regular' },
+  { value: 'emphasized', label: 'Emphasized' },
+]
 const typeScale = [
-  { cls: 'text-display-large', size: '57 / 64' },
-  { cls: 'text-display-medium', size: '45 / 52' },
-  { cls: 'text-display-small', size: '36 / 44' },
-  { cls: 'text-headline-large', size: '32 / 40' },
-  { cls: 'text-headline-medium', size: '28 / 36' },
-  { cls: 'text-headline-small', size: '24 / 32' },
-  { cls: 'text-title-large', size: '22 / 28' },
-  { cls: 'text-title-medium', size: '16 / 24' },
-  { cls: 'text-title-small', size: '14 / 20' },
-  { cls: 'text-body-large', size: '16 / 24' },
-  { cls: 'text-body-medium', size: '14 / 20' },
-  { cls: 'text-body-small', size: '12 / 16' },
-  { cls: 'text-label-large', size: '14 / 20' },
-  { cls: 'text-label-medium', size: '12 / 16' },
-  { cls: 'text-label-small', size: '11 / 16' },
+  { cls: 'text-display-large', emphasized: 'text-display-large-emphasized', weight: 500, size: '57 / 64' },
+  { cls: 'text-display-medium', emphasized: 'text-display-medium-emphasized', weight: 500, size: '45 / 52' },
+  { cls: 'text-display-small', emphasized: 'text-display-small-emphasized', weight: 500, size: '36 / 44' },
+  { cls: 'text-headline-large', emphasized: 'text-headline-large-emphasized', weight: 500, size: '32 / 40' },
+  { cls: 'text-headline-medium', emphasized: 'text-headline-medium-emphasized', weight: 500, size: '28 / 36' },
+  { cls: 'text-headline-small', emphasized: 'text-headline-small-emphasized', weight: 500, size: '24 / 32' },
+  { cls: 'text-title-large', emphasized: 'text-title-large-emphasized', weight: 500, size: '22 / 28' },
+  { cls: 'text-title-medium', emphasized: 'text-title-medium-emphasized', weight: 700, size: '16 / 24' },
+  { cls: 'text-title-small', emphasized: 'text-title-small-emphasized', weight: 700, size: '14 / 20' },
+  { cls: 'text-body-large', emphasized: 'text-body-large-emphasized', weight: 500, size: '16 / 24' },
+  { cls: 'text-body-medium', emphasized: 'text-body-medium-emphasized', weight: 500, size: '14 / 20' },
+  { cls: 'text-body-small', emphasized: 'text-body-small-emphasized', weight: 500, size: '12 / 16' },
+  { cls: 'text-label-large', emphasized: 'text-label-large-emphasized', weight: 700, size: '14 / 20' },
+  { cls: 'text-label-medium', emphasized: 'text-label-medium-emphasized', weight: 700, size: '12 / 16' },
+  { cls: 'text-label-small', emphasized: 'text-label-small-emphasized', weight: 700, size: '11 / 16' },
 ]
 
 // ── Code samples ─────────────────────────────────────────────────────────────
@@ -187,19 +193,22 @@ document.documentElement.style.removeProperty('--font-sans')`
     <!-- Type scale -->
     <h2 class="mb-4 text-headline-small font-medium">Type Scale</h2>
     <p class="mb-4 text-body-medium text-on-surface-variant">
-      The full M3 type scale is available as Tailwind utilities (size / line height in px).
+      The full M3 type scale is available as Tailwind utilities (size / line height in px). Each style also has
+      an emphasized version from Material 3 Expressive (<code>text-title-large-emphasized</code> and so on): the
+      same size, heavier (medium or bold) and with its own letter spacing, for the text that should stand out.
     </p>
+    <MSegmentedButton v-model="typeStyle" :options="typeScaleOptions" density="compact" class="mb-4" />
     <MCard class="overflow-hidden">
       <div
         v-for="t in typeScale"
         :key="t.cls"
         class="flex flex-col gap-1 border-b border-outline-variant px-4 py-3 last:border-b-0 sm:flex-row sm:items-baseline sm:gap-4"
       >
-        <div class="w-48 shrink-0">
-          <code class="text-label-medium text-primary">{{ t.cls }}</code>
-          <span class="ml-2 text-label-small text-on-surface-variant">{{ t.size }}</span>
+        <div class="w-72 shrink-0">
+          <code class="text-label-medium text-primary">{{ typeStyle === 'emphasized' ? t.emphasized : t.cls }}</code>
+          <span class="ml-2 text-label-small text-on-surface-variant">{{ t.size }}{{ typeStyle === 'emphasized' ? ` · weight ${t.weight}` : '' }}</span>
         </div>
-        <span :class="t.cls" class="min-w-0 truncate">Material Design 3</span>
+        <span :class="typeStyle === 'emphasized' ? t.emphasized : t.cls" class="min-w-0 truncate">Material Design 3</span>
       </div>
     </MCard>
   </div>
