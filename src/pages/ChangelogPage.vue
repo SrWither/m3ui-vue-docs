@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '0.9.1',
-    date: 'Unreleased',
+    date: '2026-10-16',
     changes: {
       added: [
         'An API reference for AI coding agents: the package ships dist/API.md with every component\'s props, events, slots and types, and this site publishes llms.txt, llms-full.txt and a Markdown version of every component page (add .md to its address). Editors now show a description for every prop on hover',
