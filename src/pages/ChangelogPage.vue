@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '0.9.1',
     date: 'Unreleased',
     changes: {
+      added: [
+        'A new example, Photo editor: a menu bar, right-click menus and toolbars around a canvas editor, with light and color adjustments, filters, crop and straighten, layers you paint, write and put stickers on, an undo history and export',
+      ],
       fixed: [
         'MHotkeys shortcuts with Ctrl or Cmd now fire; before, only single keys worked. Its page also lists the combos the browser keeps for itself',
       ],
