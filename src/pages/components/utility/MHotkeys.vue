@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MHotkeys } from '@m3ui-vue/m3ui-vue'
+import { MAlert, MHotkeys } from '@m3ui-vue/m3ui-vue'
 import type { HotkeyBinding } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -18,7 +18,7 @@ const hotkeyTypes: TypeDef[] = [
   {
     name: 'HotkeyBinding',
     fields: [
-      { name: 'keys', type: 'string', required: true, description: "Key combo, e.g. 'mod+s', 'mod+shift+p', 'escape' ('mod' is Cmd on Mac, Ctrl elsewhere)" },
+      { name: 'keys', type: 'string', required: true, description: "Key combo, e.g. 'mod+s', 'mod+shift+z', 'shift+n', 'escape' ('mod' is Cmd on Mac, Ctrl elsewhere)" },
       { name: 'label', type: 'string', required: true, description: 'Display name shown in the overlay' },
       { name: 'handler', type: '() => void', required: true, description: 'Callback invoked when the combo is pressed' },
       { name: 'group', type: 'string', description: 'Groups related bindings together in the overlay' },
@@ -30,13 +30,13 @@ const hotkeyTypes: TypeDef[] = [
 const hotkeyLog = ref<string[]>([])
 const hotkeyBindings: HotkeyBinding[] = [
   { keys: 'mod+s', label: 'Save', handler: () => hotkeyLog.value.push('Save'), group: 'File' },
-  { keys: 'mod+shift+p', label: 'Command Palette', handler: () => hotkeyLog.value.push('Palette'), group: 'Navigation' },
+  { keys: 'mod+/', label: 'Command Palette', handler: () => hotkeyLog.value.push('Palette'), group: 'Navigation' },
   { keys: 'mod+k', label: 'Search', handler: () => hotkeyLog.value.push('Search'), group: 'Navigation' },
 ]
 
 const disabledBindings: HotkeyBinding[] = [
   { keys: 'mod+d', label: 'Duplicate', handler: () => hotkeyLog.value.push('Duplicate'), group: 'Edit' },
-  { keys: 'mod+shift+d', label: 'Delete (disabled)', handler: () => hotkeyLog.value.push('Delete'), group: 'Edit', disabled: true },
+  { keys: 'shift+delete', label: 'Delete (disabled)', handler: () => hotkeyLog.value.push('Delete'), group: 'Edit', disabled: true },
 ]
 </script>
 
@@ -48,15 +48,23 @@ const disabledBindings: HotkeyBinding[] = [
       them grouped by category.
     </p>
 
+    <MAlert type="warning" title="Some shortcuts belong to the browser" class="mb-6">
+      The browser handles a few combos itself and never passes them to the page, so a binding on them won't fire.
+      Ctrl/Cmd+N, T, W, Q and Tab, plus Ctrl+Shift+N and Ctrl+Shift+P (new private window in Firefox), can't be
+      taken over at all. Others open browser tools first in at least one browser: Ctrl+Shift+A, C, I, J, K, O, D,
+      Del. Prefer combos the browser leaves alone, such as Ctrl/Cmd+K, Ctrl/Cmd+/, Shift+letter or single keys, and
+      test them in Firefox and Chrome.
+    </MAlert>
+
     <ComponentDemo
       title="Keyboard Shortcuts"
-      description="Register global keyboard shortcuts with an overlay display grouped by the group field. Try Ctrl/Cmd+S, Ctrl/Cmd+Shift+P, or Ctrl/Cmd+K anywhere on this page."
+      description="Register global keyboard shortcuts with an overlay display grouped by the group field. Try Ctrl/Cmd+S, Ctrl/Cmd+/ or Ctrl/Cmd+K anywhere on this page."
       :code="`<template>
   <MHotkeys :bindings=&quot;bindings&quot; :show-overlay=&quot;true&quot; />
 </template>`"
       :script="`const bindings = [
   { keys: 'mod+s', label: 'Save', handler: () => console.log('Save'), group: 'File' },
-  { keys: 'mod+shift+p', label: 'Palette', handler: () => console.log('Palette'), group: 'Navigation' },
+  { keys: 'mod+/', label: 'Palette', handler: () => console.log('Palette'), group: 'Navigation' },
   { keys: 'mod+k', label: 'Search', handler: () => console.log('Search'), group: 'Navigation' },
 ]`"
     >
@@ -76,7 +84,7 @@ const disabledBindings: HotkeyBinding[] = [
 </template>`"
       :script="`const bindings = [
   { keys: 'mod+d', label: 'Duplicate', handler: () => {}, group: 'Edit' },
-  { keys: 'mod+shift+d', label: 'Delete (disabled)', handler: () => {}, group: 'Edit', disabled: true },
+  { keys: 'shift+delete', label: 'Delete (disabled)', handler: () => {}, group: 'Edit', disabled: true },
 ]`"
     >
       <div class="w-full">

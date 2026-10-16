@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.9.1',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'MHotkeys shortcuts with Ctrl or Cmd now fire; before, only single keys worked. Its page also lists the combos the browser keeps for itself',
+      ],
+    },
+  },
+  {
     version: '0.9.0',
     date: '2026-10-16',
     changes: {
