@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '0.9.0',
-    date: 'Unreleased',
+    date: '2026-10-16',
     changes: {
       added: [
         'MScheduler shows events that last all day or several days as bars across an all-day row, places events to the minute, puts overlapping ones side by side, and marks the current time. You can open it on any date, start weeks on Sunday, change the hour height and draw your own event content. Its page has new demos, including adding multi-day events',
