@@ -82,6 +82,15 @@ export const examples: ExampleApp[] = [
     component: () => import('./feed/PlazaExample.vue'),
   },
   {
+    id: 'travel',
+    title: 'Travel',
+    description:
+      'A travel app for finding places and planning trips: full-screen stories, a hero carousel and rows of destinations to swipe through, destination pages, a trip planner with dates and interests, a day-by-day itinerary, and a boarding pass you check in to.',
+    icon: 'travel_explore',
+    uses: ['MCarousel', 'MSearchBar', 'MTopAppBar', 'MNavigationBar', 'MNavigationRail', 'MFabMenu', 'MScheduler', 'MDateRangePickerModal', 'MTagInput', 'MPinInput', 'MTour', 'MConfirmDialog'],
+    component: () => import('./travel/TravelExample.vue'),
+  },
+  {
     id: 'store',
     title: 'Store',
     description:

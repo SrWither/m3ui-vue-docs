@@ -105,6 +105,25 @@ import { examples, exampleSource } from '@/examples/registry'
               <span class="h-2 w-2 rounded-full bg-on-surface/30" />
             </span>
           </div>
+          <!-- A tiny travel app: a hero carousel over a multi-browse row -->
+          <div v-else-if="e.id === 'travel'" class="absolute inset-y-[12%] left-1/2 flex w-[44%] -translate-x-1/2 flex-col gap-[5%] overflow-hidden rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span class="flex h-[9%] gap-[5%]">
+              <span v-for="n in 5" :key="n" class="aspect-square h-full rounded-full bg-gradient-to-tr from-primary to-tertiary" />
+            </span>
+            <span class="flex h-[44%] gap-[3%]">
+              <span class="w-[9%] rounded-lg bg-tertiary/50" />
+              <span class="relative flex-1 overflow-hidden rounded-xl bg-gradient-to-b from-secondary-container to-primary/60">
+                <span class="absolute bottom-0 left-[12%] h-[45%] w-[76%] bg-primary/50 [clip-path:polygon(0_100%,35%_20%,55%_60%,75%_0,100%_100%)]" />
+              </span>
+              <span class="w-[9%] rounded-lg bg-tertiary/50" />
+            </span>
+            <span class="h-[6%] w-[50%] rounded-full bg-on-surface/15" />
+            <span class="flex flex-1 gap-[3%]">
+              <span class="w-[48%] rounded-xl bg-primary/40" />
+              <span class="w-[30%] rounded-xl bg-secondary/40" />
+              <span class="w-[14%] rounded-xl bg-tertiary/40" />
+            </span>
+          </div>
           <!-- A tiny chat: incoming and outgoing bubbles, one still typing -->
           <div v-else-if="e.id === 'chat'" class="absolute inset-y-[12%] left-1/2 flex w-[46%] -translate-x-1/2 flex-col justify-end gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span class="h-[12%] w-[60%] rounded-2xl rounded-bl-sm bg-surface-container-high" />

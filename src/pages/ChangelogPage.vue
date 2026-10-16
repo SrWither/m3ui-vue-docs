@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'A new example, Travel: a trip app to find places and plan getaways, with full-screen stories, a hero carousel and rows of destinations to swipe through, destination pages, a planner with dates and interests, a day-by-day itinerary, and a boarding pass you check in to',
         'MCarousel comes in all four Material 3 layouts: multi-browse, uncontained, hero and full-screen, horizontal or vertical. It follows the current item with v-model, takes your own content per item, and its page has a demo of each',
       ],
       changed: [
