@@ -9,5 +9,5 @@ import './composables/useSiteFont' // applies the saved font before mount
 
 const app = createApp(App)
 app.use(router)
-app.use(createM3UI({ locale: siteLocale }))
+app.use(createM3UI({ locale: siteLocale, themeColor: 'surface' }))
 app.mount('#app')

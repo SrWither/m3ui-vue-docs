@@ -56,6 +56,7 @@ app.use(createM3UI({
   seed: '${seedColor.value}',
   seedOptions: { variant: '${seedVariant.value}', contrast: ${seedContrast.value} },
 }))`)
+const themeColorCode = `app.use(createM3UI({ palette: 'teal', themeColor: 'surface' }))`
 const seedRuntimeCode = `import { useColorPalette } from '@m3ui-vue/m3ui-vue'
 
 const { setSeed, set } = useColorPalette()
@@ -451,6 +452,26 @@ const allTokens = [
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useColorPalette().setPersistPalette(true | false)</code>
       — <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">set()</code> keeps applying the palette live either way, it's only the "remember it for next time" part that gets disabled.
     </p>
+
+    <h3 class="mb-2 text-title-medium font-medium">3. Color the browser bar on phones (optional)</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Phone browsers tint their address bar and the status bar with <code>&lt;meta name="theme-color"&gt;</code>.
+      With <code>themeColor</code>, the library keeps it in sync with a color of the active palette, through palette,
+      seed and dark mode changes. <code>'surface'</code> matches a top app bar, the way Material apps look on
+      Android; any color role works. This site uses it: switch the palette on your phone and watch the bar.
+      In a regular tab, Chrome and Samsung Internet on Android ignore it while the phone is in dark mode (they keep
+      their own dark bar); an installed app (Add to Home screen) still gets it.
+    </p>
+    <div class="mb-10">
+      <MCodeEditor
+        :model-value="themeColorCode"
+        language="typescript"
+        :readonly="true"
+        :line-numbers="false"
+        min-height="40px"
+        max-height="120px"
+      />
+    </div>
 
     <!-- Custom palette -->
     <h2 class="mb-4 text-headline-small font-medium">Custom Palette</h2>
