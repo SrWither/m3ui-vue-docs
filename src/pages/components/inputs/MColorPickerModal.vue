@@ -10,12 +10,18 @@ import type { EventDef } from '@/components/EventsTable.vue'
 
 const showColorPicker = ref(false)
 const colorModalVal = ref('#6750a4')
+const showAlpha = ref(false)
+const alphaModalVal = ref('#00639b80')
 
 const colorPickerModalProps: PropDef[] = [
-  { name: 'modelValue', type: 'string', description: 'Selected color in hex format (v-model)' },
+  { name: 'modelValue', type: 'string', description: 'Selected color in hex format (v-model): #rrggbb, or #rrggbbaa when alpha is on and the color isn\'t opaque' },
   { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
-  { name: 'presets', type: 'string[]', default: '18-color default set', description: 'Preset color swatches shown in the dialog' },
-  { name: 'title', type: 'string', default: "'Select color'", description: 'Dialog title' },
+  { name: 'presets', type: 'string[]', default: '21-color default set', description: 'Preset color swatches shown in the dialog' },
+  { name: 'title', type: 'string', default: "locale's selectColor", description: 'Dialog title' },
+  { name: 'alpha', type: 'boolean', default: 'false', description: 'Adds an opacity slider and an alpha channel to the value' },
+  { name: 'recent', type: 'boolean', default: 'true', description: 'Remember confirmed colors and show them above the presets (localStorage, shared by every picker)' },
+  { name: 'recentLimit', type: 'number', default: '7', description: 'How many recent colors to keep' },
+  { name: 'eyedropper', type: 'boolean', default: 'true', description: 'Show a button to pick a color from the screen, where the browser supports it (Chrome, Edge)' },
 ]
 
 const colorPickerModalEvents: EventDef[] = [
@@ -28,13 +34,14 @@ const colorPickerModalEvents: EventDef[] = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MColorPickerModal</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      A modal, centered color picker with saturation/brightness area, hue slider, hex input, and preset swatches —
-      the sibling of MColorPicker, a fully separate component rather than a shared internal. Only emits on confirm.
+      The same picker as MColorPicker in a dialog (built on MDialog): saturation/brightness area, hue slider,
+      eyedropper, HEX/RGB/HSL fields, recent colors and preset swatches. The color only applies on confirm; the
+      preview shows it next to the original (click the original to go back).
     </p>
 
     <ComponentDemo
       title="Color Picker Modal"
-      description="Modal color picker with saturation/brightness area, hue slider, hex input and preset swatches. Only emits on confirm."
+      description="Opens from any trigger; v-model only changes when the user confirms."
       :code="`<template>
   <MButton @click=&quot;show = true&quot;>Pick color</MButton>
   <MColorPickerModal v-model=&quot;color&quot; v-model:show=&quot;show&quot; />
@@ -49,6 +56,22 @@ const colorPickerModalEvents: EventDef[] = [
         <span class="text-body-medium text-on-surface-variant">{{ colorModalVal }}</span>
       </div>
       <MColorPickerModal v-model="colorModalVal" v-model:show="showColorPicker" />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Opacity"
+      description="alpha adds an opacity slider; the confirmed value is #rrggbbaa when the color isn't fully opaque."
+      :code="`<MColorPickerModal v-model=&quot;color&quot; v-model:show=&quot;show&quot; alpha />`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton variant="tonal" @click="showAlpha = true">Pick overlay</MButton>
+        <span
+          class="h-10 w-10 rounded-full border border-outline-variant"
+          :style="{ background: `linear-gradient(${alphaModalVal}, ${alphaModalVal}), repeating-conic-gradient(#d4d4d4 0 25%, #fff 0 50%) 0 0 / 8px 8px` }"
+        />
+        <span class="text-body-medium text-on-surface-variant">{{ alphaModalVal }}</span>
+      </div>
+      <MColorPickerModal v-model="alphaModalVal" v-model:show="showAlpha" alpha />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>

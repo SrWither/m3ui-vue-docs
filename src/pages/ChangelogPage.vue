@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.9.2',
+    date: 'Unreleased',
+    changes: {
+      changed: [
+        'MColorPicker and MColorPickerModal were redesigned: swatches that turn into a circle when selected, thick hue and opacity sliders, a preview of the original color next to the new one, HEX, RGB and HSL fields, recent colors, an eyedropper where the browser supports it, an optional opacity slider and full keyboard control. The dropdown picker now updates as you drag. Their pages have new opacity demos',
+      ],
+    },
+  },
+  {
     version: '0.9.1',
     date: '2026-10-16',
     changes: {
