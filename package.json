@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "node scripts/generate-sitemap.mjs && vite build && cp dist/index.html dist/404.html && node scripts/prerender-meta.mjs",
+    "dev": "node scripts/generate-llms.mjs && vite",
+    "llms": "node scripts/generate-llms.mjs",
+    "build": "node scripts/generate-sitemap.mjs && node scripts/generate-llms.mjs && vite build && cp dist/index.html dist/404.html && node scripts/prerender-meta.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

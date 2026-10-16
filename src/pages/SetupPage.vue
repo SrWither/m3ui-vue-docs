@@ -61,6 +61,9 @@ const app = createApp(App)
 app.use(createM3UI({ palette: 'teal' })) // optional — sets initial palette
 app.mount('#app')`
 
+const agentsCode = `UI components come from @m3ui-vue/m3ui-vue. Before using one, read its API in
+node_modules/@m3ui-vue/m3ui-vue/dist/API.md (or https://m3ui.dev/llms.txt).`
+
 const optionalCode = `// Only import what you need — these have their own entry points
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import { MChart } from '@m3ui-vue/m3ui-vue/chart'
@@ -232,6 +235,32 @@ const optionalDeps = [
         <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small text-on-surface-variant"><code>{{ dep.install }}</code></pre>
       </MCard>
     </div>
+
+    <!-- AI agents -->
+    <h2 class="mt-10 mb-4 text-headline-small font-medium">Using an AI coding agent</h2>
+    <p class="mb-4 text-body-medium text-on-surface-variant">
+      The whole API (every component's props, events, slots and types, generated from the source) is available in
+      formats made for LLMs, so an agent can look up exactly what it needs instead of guessing:
+    </p>
+    <ul class="mb-4 list-disc space-y-2 pl-6 text-body-medium text-on-surface-variant">
+      <li>
+        <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">node_modules/@m3ui-vue/m3ui-vue/dist/API.md</code>:
+        ships with the package, always matching the version you installed, and works offline.
+      </li>
+      <li>
+        <a href="/llms.txt" class="text-primary underline">m3ui.dev/llms.txt</a>: an index with setup and a link per component.
+        Every component page also exists as Markdown: add <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">.md</code>
+        to its address (e.g. <a href="/components/buttons/mbutton.md" class="text-primary underline">/components/buttons/mbutton.md</a>).
+      </li>
+      <li>
+        <a href="/llms-full.txt" class="text-primary underline">m3ui.dev/llms-full.txt</a>: everything in one file.
+      </li>
+    </ul>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      To point your agent at it, add a line to your project's <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">CLAUDE.md</code>
+      or <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">AGENTS.md</code>:
+    </p>
+    <MCodeEditor :model-value="agentsCode" language="plain" :readonly="true" :line-numbers="false" min-height="50px" max-height="200px" />
 
   </div>
 </template>

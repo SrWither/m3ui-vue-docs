@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'An API reference for AI coding agents: the package ships dist/API.md with every component\'s props, events, slots and types, and this site publishes llms.txt, llms-full.txt and a Markdown version of every component page (add .md to its address). Editors now show a description for every prop on hover',
         'A new example, Photo editor: a menu bar, right-click menus and toolbars around a canvas editor, with light and color adjustments, filters, crop and straighten, layers you paint, write and put stickers on, an undo history and export',
       ],
       fixed: [
