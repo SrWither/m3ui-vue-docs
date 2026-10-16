@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MSwipeToDismiss, new: swipe content left or right to dismiss it, with actions behind it, like archiving or deleting a message',
         'MScrollField, new: a wheel to pick a number or option by scrolling, like the hours and minutes of a time. Its page has time, year and unit demos',
       ],
       changed: [

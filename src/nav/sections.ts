@@ -2,7 +2,7 @@ import type { DrawerSection, DrawerItem, SpotlightResult } from '@m3ui-vue/m3ui-
 import { examples } from '@/examples/registry'
 
 export const iconMap: Record<string, string> = {
-  MScrollField: 'swipe_vertical', MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MToggleButton: 'change_circle', MCopyButton: 'content_copy', MExportButton: 'file_download',
+  MScrollField: 'swipe_vertical', MSwipeToDismiss: 'swipe_left', MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MToggleButton: 'change_circle', MCopyButton: 'content_copy', MExportButton: 'file_download',
   MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box', MSwitch: 'toggle_on',
   MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
   MDatePickerModal: 'event', MDateRangePickerModal: 'date_range',
@@ -89,7 +89,7 @@ export const sections: DrawerSection[] = [
       { value: '/components/tables', label: 'Tables', icon: 'table_chart', to: '/components/tables',
         children: ch('/components/tables', ['MTable', 'MDataTable', 'MTreeTable', 'MVirtualTable']) },
       { value: '/components/utility', label: 'Utility', icon: 'build', to: '/components/utility',
-        children: ch('/components/utility', ['MFileUpload', 'MDragDropList', 'MTransferList', 'MHotkeys', 'MInfiniteScroll', 'MTour', 'useDevice']) },
+        children: ch('/components/utility', ['MFileUpload', 'MDragDropList', 'MSwipeToDismiss', 'MTransferList', 'MHotkeys', 'MInfiniteScroll', 'MTour', 'useDevice']) },
       { value: '/components/editors', label: 'Editors', icon: 'code', to: '/components/editors',
         children: ch('/components/editors', ['MCodeEditor', 'MJsonEditor', 'MJsonViewer', 'MMarkdown', 'MTerminal', 'MRichTextEditor']) },
       { value: '/components/advanced', label: 'Advanced', icon: 'auto_awesome', to: '/components/advanced',

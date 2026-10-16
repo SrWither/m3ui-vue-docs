@@ -5,6 +5,7 @@ import { iconMap } from '@/nav/sections'
 const components = [
   { name: 'MFileUpload', description: 'Drag-and-drop file upload zone with previews and progress tracking.' },
   { name: 'MDragDropList', description: 'Reorder a list of items via native HTML5 drag-and-drop.' },
+  { name: 'MSwipeToDismiss', description: 'Swipe content left or right to dismiss it, uncovering actions behind.' },
   { name: 'MTransferList', description: 'Move items between two panels with optional per-panel search.' },
   { name: 'MHotkeys', description: 'Registers global keyboard shortcuts, with an optional on-screen overlay.' },
   { name: 'MInfiniteScroll', description: 'Emits an event to load more content as the user scrolls near the bottom.' },
