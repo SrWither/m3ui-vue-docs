@@ -14,7 +14,7 @@ const listProps: PropDef[] = [
   { name: 'dense', type: 'boolean', default: 'false', description: 'Compact vertical padding on child items' },
   { name: 'dividers', type: "boolean | 'inset'", default: 'false', description: "Show separators between items — 'inset' aligns the line past a leading icon/avatar" },
   { name: 'nav', type: 'boolean', default: 'false', description: 'Navigation variant with rounded (pill) active items, ideal for drawers' },
-  { name: 'segmented', type: 'boolean', default: 'false', description: 'Segmented style — items each get an individual rounded background instead of a flat list' },
+  { name: 'segmented', type: 'boolean', default: 'false', description: 'Segmented style — each item gets its own background, 2px apart, with rounded outer corners on the first and last item of each run' },
   { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable single-item selection — items compare their value prop against selected' },
   { name: 'selected', type: 'string | number | null', description: 'Currently selected item value (v-model:selected)' },
   { name: 'lines', type: '1 | 2 | 3', description: "Default line count for child items that don't set their own lines prop" },
@@ -79,6 +79,7 @@ const listSelected = ref<string | number | null>('inbox')
 const darkMode = ref(false)
 const notifications = ref(true)
 const autoUpdate = ref(false)
+const segSelected = ref<string | number | null>('display')
 </script>
 
 <template>
@@ -254,6 +255,32 @@ const autoUpdate = ref(false)
             <MListItem title="Auto-update" icon="system_update" trailing="switch" :trailing-value="autoUpdate" @update:trailing-value="autoUpdate = $event" />
           </MList>
         </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Segmented and Expressive Shapes"
+      description="Clickable items change shape as you interact, as in Material 3 Expressive: slightly rounder on hover, and rounder still while pressed, focused or selected. In a segmented list each item has its own background and the first and last of each group get round outer corners."
+      :code="`<template>
+  <MList segmented selectable :selected=&quot;selected&quot; @update:selected=&quot;selected = $event&quot;>
+    <MListItem title=&quot;Display&quot; subtitle=&quot;Brightness, dark theme&quot; icon=&quot;brightness_6&quot; value=&quot;display&quot; />
+    <MListItem title=&quot;Sound&quot; subtitle=&quot;Volume, do not disturb&quot; icon=&quot;volume_up&quot; value=&quot;sound&quot; />
+    <MListItem title=&quot;Storage&quot; subtitle=&quot;38% used&quot; icon=&quot;storage&quot; value=&quot;storage&quot; />
+    <MListSubheader>Privacy</MListSubheader>
+    <MListItem title=&quot;Location&quot; subtitle=&quot;On for 4 apps&quot; icon=&quot;location_on&quot; value=&quot;location&quot; />
+    <MListItem title=&quot;Permissions&quot; subtitle=&quot;Camera, microphone&quot; icon=&quot;shield&quot; value=&quot;permissions&quot; />
+  </MList>
+</template>`"
+    >
+      <div class="w-full max-w-sm rounded-xl bg-surface-container-low">
+        <MList segmented selectable :selected="segSelected" @update:selected="segSelected = $event">
+          <MListItem title="Display" subtitle="Brightness, dark theme" icon="brightness_6" value="display" />
+          <MListItem title="Sound" subtitle="Volume, do not disturb" icon="volume_up" value="sound" />
+          <MListItem title="Storage" subtitle="38% used" icon="storage" value="storage" />
+          <MListSubheader>Privacy</MListSubheader>
+          <MListItem title="Location" subtitle="On for 4 apps" icon="location_on" value="location" />
+          <MListItem title="Permissions" subtitle="Camera, microphone" icon="shield" value="permissions" />
+        </MList>
       </div>
     </ComponentDemo>
 
