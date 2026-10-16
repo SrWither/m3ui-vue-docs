@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MTransition, new: Material 3\'s transitions between views, sliding for back and forward navigation and fading for switching tabs. Its page has demos of both',
         'MScrollable can show Material 3\'s thin scroll indicator instead of the browser\'s scrollbar: it appears while you scroll and fades out after. Its page has a demo',
         'MSwipeToDismiss, new: swipe content left or right to dismiss it, with actions behind it, like archiving or deleting a message',
         'MScrollField, new: a wheel to pick a number or option by scrolling, like the hours and minutes of a time. Its page has time, year and unit demos',
