@@ -9,7 +9,7 @@ const boxProps: PropDef[] = [
   { name: 'surface', type: "'default' | 'container' | 'container-low' | 'container-high' | 'container-highest' | 'primary-container' | 'secondary-container' | 'tertiary-container' | 'inverse'", description: 'Surface color variant' },
   { name: 'padding', type: "'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'none'", description: 'Padding size' },
   { name: 'rounded', type: "'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'", default: "'none'", description: 'Border radius' },
-  { name: 'elevation', type: '0 | 1 | 2 | 3', default: '0', description: 'Shadow elevation level' },
+  { name: 'elevation', type: '0 | 1 | 2 | 3 | 4 | 5', default: '0', description: 'Shadow elevation level (M3 levels 0–5)' },
   { name: 'border', type: 'boolean', default: 'false', description: 'Show border' },
   { name: 'tag', type: 'string', default: "'div'", description: 'HTML tag to render' },
 ]
@@ -53,15 +53,16 @@ const surfaceVariants = [
 
     <ComponentDemo
       title="Elevation & Border"
-      description="Shadow elevation levels and border option."
+      description="M3's elevation levels 0 to 5 (the shadow-elevation-1 … shadow-elevation-5 utilities) and the border option."
       :code="`<template>
   <MBox :elevation=&quot;1&quot; padding=&quot;md&quot; rounded=&quot;lg&quot;>Level 1</MBox>
   <MBox :elevation=&quot;2&quot; padding=&quot;md&quot; rounded=&quot;lg&quot;>Level 2</MBox>
+  <MBox :elevation=&quot;5&quot; padding=&quot;md&quot; rounded=&quot;lg&quot;>Level 5</MBox>
   <MBox :border=&quot;true&quot; padding=&quot;md&quot; rounded=&quot;lg&quot;>Bordered</MBox>
 </template>`"
     >
       <MFlex direction="row" gap="lg" wrap class="w-full">
-        <MBox v-for="e in [0, 1, 2, 3]" :key="e" :elevation="(e as 0 | 1 | 2 | 3)" padding="md" rounded="lg" class="text-body-small">
+        <MBox v-for="e in [0, 1, 2, 3, 4, 5]" :key="e" :elevation="(e as 0 | 1 | 2 | 3 | 4 | 5)" padding="md" rounded="lg" class="text-body-small">
           elevation={{ e }}
         </MBox>
         <MBox :border="true" padding="md" rounded="lg" class="text-body-small">
