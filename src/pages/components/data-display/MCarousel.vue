@@ -78,7 +78,8 @@ const places: Place[] = [
 
 const controlledItems = copy()
 const current = ref(0)
-const controlled = ref<InstanceType<typeof MCarousel> | null>(null)
+// MCarousel is generic, so InstanceType<typeof MCarousel> doesn't work: type what's exposed.
+const controlled = ref<{ next(): void; prev(): void; scrollToItem(index: number, animate?: boolean): void } | null>(null)
 </script>
 
 <template>
