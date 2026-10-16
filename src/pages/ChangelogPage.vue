@@ -18,6 +18,12 @@ const versions: Version[] = [
     version: '0.8.9',
     date: 'Unreleased',
     changes: {
+      added: [
+        'MCarousel comes in all four Material 3 layouts: multi-browse, uncontained, hero and full-screen, horizontal or vertical. It follows the current item with v-model, takes your own content per item, and its page has a demo of each',
+      ],
+      changed: [
+        'MCarousel was rebuilt to work like the real Material 3 carousel: items grow and shrink smoothly as you drag, flick, scroll with a trackpad or use the arrow keys, and it no longer jumps or stutters. It drops its arrows and autoplay, which aren’t part of the Material 3 carousel (MSimpleCarousel still has them), and itemWidth is now itemSize',
+      ],
       fixed: [
         'Palettes you pass in createM3UI({ customPalettes }) now show up in useColorPalette().palettes, so palette pickers built from that list include them. Before, the option did nothing. The Color Palettes page shows how',
         'A class, style, id or other attribute you put on MMenu, MContextMenu, MTooltip, MFab, MSplitButton, MLightbox, MBarcode, a fullscreen MLoadingOverlay, MNavigationDrawer or MNavigationRail was ignored. It now applies, for example to place a FAB with class="fixed bottom-4 right-4"',

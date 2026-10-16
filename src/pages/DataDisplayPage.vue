@@ -19,7 +19,7 @@ const components = [
   { name: 'MEmoji', description: 'Renders a single emoji character at a fixed size.' },
   { name: 'MEmojiButton', description: 'A single emoji button that cycles a random pool on hover.' },
   { name: 'MEmojiSelector', description: 'A full emoji picker panel with categories and search.' },
-  { name: 'MCarousel', description: "M3's real multi-browse carousel — items continuously resize toward a focal item as you scroll." },
+  { name: 'MCarousel', description: 'The M3 carousel: multi-browse, uncontained, hero and full-screen layouts, with items that resize as you scroll.' },
   { name: 'MSimpleCarousel', description: 'A scroll-snap image carousel with fixed-width hero, multi-browse, and uncontained layouts.' },
   { name: 'MLightbox', description: 'Auto-detects images to wire up a full-screen gallery viewer.' },
   { name: 'MChatBubble', description: 'A chat message bubble with sender, avatar, and read status.' },
