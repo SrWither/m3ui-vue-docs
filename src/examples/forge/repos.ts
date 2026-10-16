@@ -32,7 +32,7 @@ export interface Repo {
 }
 
 // Product names the examples use inside themselves, so the repos read like real projects.
-const names: Record<string, string> = { music: 'tempo', mail: 'postbox', store: 'nook', chat: 'chatter', dashboard: 'brew-analytics', desktop: 'webtop', forge: 'forge', feed: 'plaza', travel: 'driftway' }
+const names: Record<string, string> = { music: 'tempo', mail: 'postbox', store: 'nook', chat: 'chatter', dashboard: 'brew-analytics', desktop: 'webtop', forge: 'forge', feed: 'plaza', travel: 'driftway', photo: 'lightbench' }
 
 const langOf = (name: string): Lang => (name.endsWith('.vue') ? 'vue' : name.endsWith('.md') ? 'markdown' : 'typescript')
 

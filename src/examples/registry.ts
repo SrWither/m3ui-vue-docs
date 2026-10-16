@@ -91,6 +91,15 @@ export const examples: ExampleApp[] = [
     component: () => import('./travel/TravelExample.vue'),
   },
   {
+    id: 'photo',
+    title: 'Photo editor',
+    description:
+      'A photo editor with a menu bar, right-click menus and toolbars: light and color adjustments with a histogram, filters, crop and straighten, layers you paint, write and put stickers on, an undo history and export. Phone-first modes on small screens.',
+    icon: 'photo_filter',
+    uses: ['MMenu', 'MContextMenu', 'MToolbar', 'MSlider', 'MTabs', 'MDragDropList', 'MSplitButton', 'MSegmentedButton', 'MColorPickerModal', 'MEmojiSelector', 'MFileUpload', 'MHotkeys', 'MKbd'],
+    component: () => import('./photo/PhotoExample.vue'),
+  },
+  {
     id: 'store',
     title: 'Store',
     description:

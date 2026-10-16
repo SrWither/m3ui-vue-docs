@@ -106,6 +106,27 @@ import { examples, exampleSource } from '@/examples/registry'
             </span>
           </div>
           <!-- A tiny travel app: a hero carousel over a multi-browse row -->
+          <!-- A tiny photo editor: menu bar, tool rail, a picture, a side panel of sliders -->
+          <div v-else-if="e.id === 'photo'" class="absolute inset-[12%] flex flex-col gap-[3%] rounded-2xl bg-surface p-[3%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span class="flex h-[8%] items-center gap-[3%]">
+              <span class="aspect-square h-full rounded-md bg-gradient-to-br from-primary to-tertiary" />
+              <span v-for="n in 4" :key="n" class="h-[45%] w-[9%] rounded-full bg-on-surface/20" />
+            </span>
+            <span class="flex flex-1 gap-[3%]">
+              <span class="flex w-[7%] flex-col items-center gap-[12%] rounded-full bg-surface-container py-[4%]">
+                <span v-for="n in 4" :key="n" class="aspect-square w-[60%] rounded-full" :class="n === 2 ? 'bg-primary' : 'bg-on-surface/20'" />
+              </span>
+              <span class="relative flex-1 overflow-hidden rounded-lg bg-gradient-to-b from-tertiary/60 via-primary/40 to-secondary-container">
+                <span class="absolute top-[22%] right-[24%] aspect-square w-[14%] rounded-full bg-surface/80" />
+                <span class="absolute bottom-0 left-0 h-[48%] w-full bg-primary/50 [clip-path:polygon(0_100%,0_55%,22%_15%,45%_60%,68%_5%,100%_50%,100%_100%)]" />
+                <span class="absolute bottom-[8%] left-1/2 h-[12%] w-[46%] -translate-x-1/2 rounded-full bg-surface-container shadow-elevation-2" />
+              </span>
+              <span class="flex w-[26%] flex-col gap-[7%] rounded-lg bg-surface-container-low p-[4%]">
+                <span class="h-[18%] rounded-md bg-on-surface/80" />
+                <span v-for="n in 5" :key="n" class="relative h-[3%] rounded-full bg-on-surface/15"><span class="absolute inset-y-0 left-0 rounded-full bg-primary" :style="{ width: `${[60, 35, 75, 50, 20][n - 1]}%` }" /></span>
+              </span>
+            </span>
+          </div>
           <div v-else-if="e.id === 'travel'" class="absolute inset-y-[12%] left-1/2 flex w-[44%] -translate-x-1/2 flex-col gap-[5%] overflow-hidden rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span class="flex h-[9%] gap-[5%]">
               <span v-for="n in 5" :key="n" class="aspect-square h-full rounded-full bg-gradient-to-tr from-primary to-tertiary" />
