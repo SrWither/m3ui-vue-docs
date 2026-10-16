@@ -28,6 +28,7 @@ const versions: Version[] = [
         'MCarousel was rebuilt to work like the real Material 3 carousel: items grow and shrink smoothly as you drag, flick, scroll with a trackpad or use the arrow keys, and it no longer jumps or stutters. It drops its arrows and autoplay, which aren’t part of the Material 3 carousel (MSimpleCarousel still has them), and itemWidth is now itemSize',
       ],
       fixed: [
+        'MTerminal now changes colors with the theme and the color palette, instead of keeping the ones it opened with',
         'Dialogs, sheets, date and time pickers, the command palette, spotlight search, tours, the lightbox, the modal navigation drawer and loading overlays now animate in even when they open the moment they appear on the page',
         'MCodeEditor, MJsonEditor and code in MMarkdown: lines now have the more relaxed spacing they were meant to have, instead of a tighter default that slipped through',
         'Palettes you pass in createM3UI({ customPalettes }) now show up in useColorPalette().palettes, so palette pickers built from that list include them. Before, the option did nothing. The Color Palettes page shows how',
