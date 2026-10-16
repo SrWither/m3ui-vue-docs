@@ -15,10 +15,11 @@ interface Version {
 
 const versions: Version[] = [
   {
-    version: '0.8.9',
+    version: '0.9.0',
     date: 'Unreleased',
     changes: {
       added: [
+        'MDialog sizes take any CSS value too, like 420px or min(90vw, 40rem), not only a Tailwind class. Its page has a demo of both',
         'A new example, Travel: a trip app to find places and plan getaways, with full-screen stories, a hero carousel and rows of destinations to swipe through, destination pages, a planner with dates and interests, a day-by-day itinerary, and a boarding pass you check in to',
         'MCarousel comes in all four Material 3 layouts: multi-browse, uncontained, hero and full-screen, horizontal or vertical. It follows the current item with v-model, takes your own content per item, and its page has a demo of each',
       ],
@@ -26,6 +27,7 @@ const versions: Version[] = [
         'MCarousel was rebuilt to work like the real Material 3 carousel: items grow and shrink smoothly as you drag, flick, scroll with a trackpad or use the arrow keys, and it no longer jumps or stutters. It drops its arrows and autoplay, which aren’t part of the Material 3 carousel (MSimpleCarousel still has them), and itemWidth is now itemSize',
       ],
       fixed: [
+        'MDialog and MConfirmDialog now animate in even when they open the moment they appear on the page',
         'MCodeEditor, MJsonEditor and code in MMarkdown: lines now have the more relaxed spacing they were meant to have, instead of a tighter default that slipped through',
         'Palettes you pass in createM3UI({ customPalettes }) now show up in useColorPalette().palettes, so palette pickers built from that list include them. Before, the option did nothing. The Color Palettes page shows how',
         'A class, style, id or other attribute you put on MMenu, MContextMenu, MTooltip, MFab, MSplitButton, MLightbox, MBarcode, a fullscreen MLoadingOverlay, MNavigationDrawer or MNavigationRail was ignored. It now applies, for example to place a FAB with class="fixed bottom-4 right-4"',

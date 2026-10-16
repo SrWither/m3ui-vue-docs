@@ -19,6 +19,20 @@ const fullscreenFormDialog = ref(false)
 const shortDialog = ref(false)
 const tallDialog = ref(false)
 
+// One dialog, opened with different sizes: Tailwind classes or CSS values.
+const sizes = [
+  { label: "max-w-sm", maxWidth: 'max-w-sm', maxHeight: 'max-h-[90vh]' },
+  { label: "'720px'", maxWidth: '720px', maxHeight: 'max-h-[90vh]' },
+  { label: "'min(90vw, 40rem)' + '50vh'", maxWidth: 'min(90vw, 40rem)', maxHeight: '50vh' },
+  { label: "max-w-lg + '300px'", maxWidth: 'max-w-lg', maxHeight: '300px' },
+]
+const sized = ref<(typeof sizes)[number] | null>(null)
+const sizedOpen = ref(false)
+function openSized(s: (typeof sizes)[number]) {
+  sized.value = s
+  sizedOpen.value = true
+}
+
 const formName = ref('')
 const formEmail = ref('')
 const formRole = ref('developer')
@@ -27,8 +41,8 @@ const formNotifications = ref(true)
 const dialogProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model)' },
   { name: 'title', type: 'string', description: 'Dialog title (overridable via the #title slot)' },
-  { name: 'maxWidth', type: 'string', default: "'max-w-[560px]'", description: "Tailwind max-width class (M3 AlertDialogDefaults.DialogMaxWidth = 560dp); min-width is fixed at 280px (DialogMinWidth)" },
-  { name: 'maxHeight', type: 'string', default: "'max-h-[90vh]'", description: "Tailwind max-height class. M3's AlertDialogDefaults has no max-height token at all (only DialogMaxWidth) — this is a library-chosen viewport-relative cap, not a spec value. When content overflows it, the body scrolls and a divider auto-appears above the actions row." },
+  { name: 'maxWidth', type: 'string', default: "'max-w-[560px]'", description: "A Tailwind max-width class (max-w-sm) or a CSS value (420px, min(90vw, 40rem)). Default is M3's AlertDialogDefaults.DialogMaxWidth = 560dp; min-width is fixed at 280px (DialogMinWidth)" },
+  { name: 'maxHeight', type: 'string', default: "'max-h-[90vh]'", description: "A Tailwind max-height class (max-h-[60vh]) or a CSS value (480px, calc(100dvh - 4rem)). M3's AlertDialogDefaults has no max-height token at all (only DialogMaxWidth) — this is a library-chosen viewport-relative cap, not a spec value. When content overflows it, the body scrolls and a divider auto-appears above the actions row." },
   { name: 'persistent', type: 'boolean', default: 'false', description: 'Prevent closing by clicking the scrim, pressing Escape, or the X button' },
   { name: 'fullscreen', type: 'boolean', default: 'false', description: 'Full-screen variant — slides up from the bottom, covers the entire viewport' },
   { name: 'closeLabel', type: 'string', description: 'Aria label for the close (X) button — falls back to the locale string when omitted' },
@@ -113,7 +127,7 @@ const dialogSlots: SlotDef[] = [
 
     <ComponentDemo
       title="maxHeight & the auto scroll divider"
-      description="When body content is taller than maxHeight, the body scrolls and a divider automatically appears above the actions row for as long as there's more to scroll to — try shrinking maxHeight to max-w-[280px] with a lot of content."
+      description="When body content is taller than maxHeight, the body scrolls and a divider automatically appears above the actions row for as long as there's more to scroll to — try shrinking maxHeight to max-h-[280px] with a lot of content."
       :code="`<MDialog
   v-model=&quot;open&quot;
   title=&quot;Terms of Service&quot;
@@ -134,6 +148,30 @@ const dialogSlots: SlotDef[] = [
         <template #actions>
           <MButton variant="text" @click="tallDialog = false">Decline</MButton>
           <MButton @click="tallDialog = false">Accept</MButton>
+        </template>
+      </MDialog>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Sizing: a Tailwind class or a CSS value"
+      description="maxWidth and maxHeight take either a Tailwind class or any CSS value: a length, a percentage or a CSS function. Mix them freely."
+      :code="`<MDialog v-model=&quot;open&quot; title=&quot;Class&quot; max-width=&quot;max-w-sm&quot; />
+<MDialog v-model=&quot;open&quot; title=&quot;Length&quot; max-width=&quot;720px&quot; />
+<MDialog v-model=&quot;open&quot; title=&quot;CSS functions&quot; max-width=&quot;min(90vw, 40rem)&quot; max-height=&quot;50vh&quot; />
+<MDialog v-model=&quot;open&quot; title=&quot;Mixed&quot; max-width=&quot;max-w-lg&quot; max-height=&quot;300px&quot; />`"
+    >
+      <div class="flex flex-wrap gap-2">
+        <MButton v-for="s in sizes" :key="s.label" variant="tonal" @click="openSized(s)">{{ s.label }}</MButton>
+      </div>
+      <MDialog v-if="sized" v-model="sizedOpen" :title="sized.label" :max-width="sized.maxWidth" :max-height="sized.maxHeight">
+        <p class="mb-3 text-body-medium text-on-surface-variant">
+          max-width: <code class="text-primary">{{ sized.maxWidth }}</code> · max-height: <code class="text-primary">{{ sized.maxHeight }}</code>
+        </p>
+        <p v-for="i in 6" :key="i" class="mb-3 text-body-medium text-on-surface-variant">
+          Paragraph {{ i }}: enough text to show how the width wraps it and, with a small max-height, how the body starts scrolling.
+        </p>
+        <template #actions>
+          <MButton @click="sizedOpen = false">Close</MButton>
         </template>
       </MDialog>
     </ComponentDemo>
