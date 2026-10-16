@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '0.9.2',
     date: 'Unreleased',
     changes: {
+      added: [
+        'MScrollField, new: a wheel to pick a number or option by scrolling, like the hours and minutes of a time. Its page has time, year and unit demos',
+      ],
       changed: [
         'MButtonGroup buttons change shape as you use them: in a standard group the selected one squares off and the one you press grows a little, pushing its neighbors aside; in a connected group the inner corners tighten while pressed and the selected button becomes a pill',
         'Lists follow Material 3 Expressive: clickable items round their corners as you hover, press or select them, and segmented lists sit 2px apart with rounded corners only at the ends of each group. The MList page has a demo',
