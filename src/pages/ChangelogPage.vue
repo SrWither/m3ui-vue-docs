@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.8.9',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'A class, style, id or other attribute you put on MMenu, MContextMenu, MTooltip, MFab, MSplitButton, MLightbox, MBarcode, a fullscreen MLoadingOverlay, MNavigationDrawer or MNavigationRail was ignored. It now applies, for example to place a FAB with class="fixed bottom-4 right-4"',
+      ],
+    },
+  },
+  {
     version: '0.8.8',
     date: '2026-10-14',
     changes: {
