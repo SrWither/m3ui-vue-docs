@@ -70,7 +70,9 @@ const priorityOptions = [
     <h1 class="mb-2 text-headline-large font-medium">MButtonGroup</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       A set of buttons that share selection state — standard (separated) or connected (joined into one pill),
-      single or multi select, any value type.
+      single or multi select, any value type. The shapes react as in Material 3 Expressive: in a standard group a
+      selected button squares off and the one you press grows a little, pushing its neighbors aside; in a
+      connected group the inner corners tighten while pressed and a selected button becomes a pill.
     </p>
 
     <ComponentDemo

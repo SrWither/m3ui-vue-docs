@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       changed: [
+        'MButtonGroup buttons change shape as you use them: in a standard group the selected one squares off and the one you press grows a little, pushing its neighbors aside; in a connected group the inner corners tighten while pressed and the selected button becomes a pill',
         'Lists follow Material 3 Expressive: clickable items round their corners as you hover, press or select them, and segmented lists sit 2px apart with rounded corners only at the ends of each group. The MList page has a demo',
         'MColorPicker and MColorPickerModal were redesigned: swatches that turn into a circle when selected, thick hue and opacity sliders, a preview of the original color next to the new one, HEX, RGB and HSL fields, recent colors, an eyedropper where the browser supports it, an optional opacity slider and full keyboard control. The dropdown picker now updates as you drag. Their pages have new opacity demos',
       ],
