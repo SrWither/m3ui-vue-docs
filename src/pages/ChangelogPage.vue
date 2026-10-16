@@ -23,6 +23,7 @@ const versions: Version[] = [
         'A new example, Photo editor: a menu bar, right-click menus and toolbars around a canvas editor, with light and color adjustments, filters, crop and straighten, layers you paint, write and put stickers on, an undo history and export',
       ],
       fixed: [
+        'Toasts and notifications now use the language you give createM3UI, and the notification close button has an accessible name',
         'MHotkeys shortcuts with Ctrl or Cmd now fire; before, only single keys worked. Its page also lists the combos the browser keeps for itself',
       ],
     },
