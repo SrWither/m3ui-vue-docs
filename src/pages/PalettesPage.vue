@@ -167,6 +167,14 @@ const customUsageCode = `import { useColorPalette } from '@m3ui-vue/m3ui-vue'
 const { set } = useColorPalette()
 set('brand') // activates your custom palette`
 
+const customListCode = `import { createM3UI } from '@m3ui-vue/m3ui-vue'
+
+app.use(createM3UI({
+  customPalettes: [{ id: 'brand', label: 'Brand', seed: '#0B6E4F' }],
+}))
+
+// useColorPalette().palettes now ends with { id: 'brand', ... }`
+
 const colorTokens = [
   { name: 'primary', var: '--color-primary', desc: 'Main brand color' },
   { name: 'on-primary', var: '--color-on-primary', desc: 'Text/icons on primary' },
@@ -375,6 +383,26 @@ const allTokens = [
         :line-numbers="false"
         min-height="60px"
         max-height="200px"
+      />
+    </div>
+
+    <h3 class="mb-2 text-title-medium font-medium">3. List it in your palette picker</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      A picker built from <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useColorPalette().palettes</code>
+      only knows the built-in palettes. Register yours with
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">customPalettes</code> and it shows up there too
+      (<code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">seed</code> is the swatch color). An entry with
+      the ID of a built-in palette replaces it. It can also be the starting
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">palette</code>.
+    </p>
+    <div class="mb-6">
+      <MCodeEditor
+        :model-value="customListCode"
+        language="typescript"
+        :readonly="true"
+        :line-numbers="false"
+        min-height="60px"
+        max-height="240px"
       />
     </div>
 

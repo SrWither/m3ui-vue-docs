@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       fixed: [
+        'Palettes you pass in createM3UI({ customPalettes }) now show up in useColorPalette().palettes, so palette pickers built from that list include them. Before, the option did nothing. The Color Palettes page shows how',
         'A class, style, id or other attribute you put on MMenu, MContextMenu, MTooltip, MFab, MSplitButton, MLightbox, MBarcode, a fullscreen MLoadingOverlay, MNavigationDrawer or MNavigationRail was ignored. It now applies, for example to place a FAB with class="fixed bottom-4 right-4"',
       ],
     },
