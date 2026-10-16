@@ -18,7 +18,7 @@ const components = [
   { name: 'MList', description: 'A list container with rich rows and optional section headers.' },
   { name: 'MEmoji', description: 'Renders a single emoji character at a fixed size.' },
   { name: 'MEmojiButton', description: 'A single emoji button that cycles a random pool on hover.' },
-  { name: 'MEmojiSelector', description: 'A full emoji picker panel with categories and search.' },
+  { name: 'MEmojiSelector', description: 'An emoji picker with recent emoji, skin tones and search by name in your language.' },
   { name: 'MCarousel', description: 'The M3 carousel: multi-browse, uncontained, hero and full-screen layouts, with items that resize as you scroll.' },
   { name: 'MSimpleCarousel', description: 'A scroll-snap image carousel with fixed-width hero, multi-browse, and uncontained layouts.' },
   { name: 'MLightbox', description: 'Beta. A full-screen image viewer with swipe, zoom and drag to close, that finds your images by itself.' },

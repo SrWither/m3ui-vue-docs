@@ -25,6 +25,7 @@ const versions: Version[] = [
         'MCarousel comes in all four Material 3 layouts: multi-browse, uncontained, hero and full-screen, horizontal or vertical. It follows the current item with v-model, takes your own content per item, and its page has a demo of each',
       ],
       changed: [
+        'MEmojiSelector was rebuilt: every emoji up to Emoji 15.0, search by name in your language (and English), recently used emoji first, skin tones on a long press or right click, a preview with each emoji\u2019s name, and full keyboard navigation',
         'MLightbox was rebuilt and is in beta: swipe between photos with the next one already in view, zoom with a double tap, a pinch or the wheel, drag a photo down to close, and watch it grow out of the picture you tapped and shrink back into it. Tapping the photo hides the bars, and a slot adds your own buttons to the top bar',
         'MCarousel was rebuilt to work like the real Material 3 carousel: items grow and shrink smoothly as you drag, flick, scroll with a trackpad or use the arrow keys, and it no longer jumps or stutters. It drops its arrows and autoplay, which aren’t part of the Material 3 carousel (MSimpleCarousel still has them), and itemWidth is now itemSize',
       ],
