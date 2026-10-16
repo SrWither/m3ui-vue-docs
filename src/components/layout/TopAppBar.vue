@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import {
   MTopAppBar,
   MIconButton,
@@ -8,6 +8,7 @@ import {
   MIcon,
   useTheme,
   useColorPalette,
+  MColorPickerModal,
 } from "@m3ui-vue/m3ui-vue";
 import { spotlightOpen } from "@/composables/useSpotlightSearch";
 import {
@@ -29,7 +30,15 @@ import {
 defineEmits<{ menuClick: [] }>();
 
 const { theme, cycle } = useTheme();
-const { palette, palettes: paletteList, set: setPalette } = useColorPalette();
+const { palette, palettes: paletteList, set: setPalette, seed, setSeed } = useColorPalette();
+
+// "Your own color": the whole site's scheme generated from a seed (dynamic color)
+const seedPickerOpen = ref(false);
+const seedDraft = ref("#0b57d0");
+function openSeedPicker() {
+  if (seed.value) seedDraft.value = seed.value.seed;
+  seedPickerOpen.value = true;
+}
 
 const themeIcon = computed(() => {
   if (theme.value === "dark") return "dark_mode";
@@ -140,8 +149,28 @@ const themeLabel = computed(() => {
                 </button>
               </MTooltip>
             </div>
+            <button
+              type="button"
+              class="mt-3 flex w-full cursor-pointer items-center gap-3 rounded-lg px-1 py-1.5 text-left text-body-medium text-on-surface transition-colors hover:bg-on-surface/8"
+              @click="openSeedPicker"
+            >
+              <span
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                :class="palette === 'seed' ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface' : ''"
+                :style="{ background: seed ? seed.seed : 'conic-gradient(#f44336, #ffeb3b, #4caf50, #00bcd4, #3f51b5, #e91e63, #f44336)' }"
+              >
+                <MIcon :name="palette === 'seed' ? 'check' : 'colorize'" :size="18" class="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]" />
+              </span>
+              <span class="flex-1">Your own color…</span>
+            </button>
           </div>
         </MMenu>
+        <MColorPickerModal
+          v-model="seedDraft"
+          v-model:show="seedPickerOpen"
+          title="Your own color"
+          @update:model-value="setSeed($event)"
+        />
 
         <!-- Font -->
         <MMenu>
@@ -391,6 +420,20 @@ const themeLabel = computed(() => {
                     </button>
                   </MTooltip>
                 </div>
+                <button
+                  type="button"
+                  class="mt-3 flex w-full cursor-pointer items-center gap-3 rounded-lg px-1 py-1.5 text-left text-body-medium text-on-surface transition-colors hover:bg-on-surface/8"
+                  @click="openSeedPicker"
+                >
+                  <span
+                    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                    :class="palette === 'seed' ? 'ring-2 ring-on-surface ring-offset-2 ring-offset-surface' : ''"
+                    :style="{ background: seed ? seed.seed : 'conic-gradient(#f44336, #ffeb3b, #4caf50, #00bcd4, #3f51b5, #e91e63, #f44336)' }"
+                  >
+                    <MIcon :name="palette === 'seed' ? 'check' : 'colorize'" :size="18" class="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]" />
+                  </span>
+                  <span class="flex-1">Your own color…</span>
+                </button>
               </div>
             </MMenu>
 

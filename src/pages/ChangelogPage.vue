@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'Dynamic color: give the library one color and it builds the whole palette from it, light and dark, the way Android themes apps from your wallpaper. Try it with “Your own color” in this site\'s palette menu or on the palettes page; the palette builder now uses the same algorithm',
         'An emphasized version of every type style (text-title-large-emphasized and so on), heavier for text that should stand out. The typography page shows both',
         'A fifth elevation level (shadow-elevation-5), and MBox takes elevation 4 and 5',
         'Fixed color roles (primary-fixed and the like), colors that stay the same in light and dark, in every palette. The palettes page lists them',

@@ -3,7 +3,9 @@
     <h1 class="mb-2 text-headline-large font-medium">Palette Builder</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       Pick your seed colors, preview every generated token, and apply the palette to this page in real time.
-      Copy the CSS when you're happy and drop it into your project.
+      The scheme comes from Google's dynamic color algorithm, the same one the library uses for
+      <RouterLink to="/palettes#seed" class="text-primary underline">its seed option</RouterLink>. Copy the CSS when
+      you're happy and drop it into your project, or tweak any token by hand first.
     </p>
     <PaletteBuilder />
 

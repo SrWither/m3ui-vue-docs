@@ -59,6 +59,8 @@ import App from './App.vue'
 
 const app = createApp(App)
 app.use(createM3UI({ palette: 'teal' })) // optional — sets initial palette
+// or generate the whole scheme from your brand color:
+// app.use(createM3UI({ seed: '#0b57d0' }))
 app.mount('#app')`
 
 const agentsCode = `UI components come from @m3ui-vue/m3ui-vue. Before using one, read its API in
@@ -185,7 +187,9 @@ const optionalDeps = [
       <div class="flex-1">
         <h2 class="mb-2 text-title-large font-medium">Register the plugin <span class="text-label-large text-on-surface-variant">(optional)</span></h2>
         <p class="mb-3 text-body-medium text-on-surface-variant">
-          The plugin sets an initial color palette. Without it, the default purple palette is used.
+          The plugin sets an initial color palette, either one of the 40 built in or a scheme generated from your
+          own color with <code>seed</code> (<RouterLink to="/palettes#seed" class="text-primary underline">dynamic color</RouterLink>).
+          Without it, the default purple palette is used.
         </p>
         <MCodeEditor :model-value="pluginCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="200px" />
       </div>

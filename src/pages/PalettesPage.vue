@@ -1,18 +1,68 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import {
   MCard,
+  MColorPicker,
+  generateScheme,
+  schemeToCss,
   MButton,
   MIcon,
   MSegmentedButton,
   useColorPalette,
   useTheme,
 } from '@m3ui-vue/m3ui-vue'
-import type { SegmentedOption } from '@m3ui-vue/m3ui-vue'
+import type { SegmentedOption, SchemeVariant } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import palettesCss from '@m3ui-vue/m3ui-vue/palettes?raw'
 
-const { palette, palettes, set } = useColorPalette()
+const { palette, palettes, set, seed, setSeed } = useColorPalette()
+
+// ── Dynamic color: the user's own seed ──────────────────────────────────────
+
+const seedColor = ref(seed.value?.seed ?? '#0b57d0')
+const seedVariant = ref<SchemeVariant>(seed.value?.variant ?? 'tonal-spot')
+const seedContrast = ref<number>(seed.value?.contrast ?? 0)
+const variantOptions: SegmentedOption[] = [
+  { value: 'tonal-spot', label: 'Tonal spot' },
+  { value: 'vibrant', label: 'Vibrant' },
+  { value: 'expressive', label: 'Expressive' },
+  { value: 'fidelity', label: 'Fidelity' },
+  { value: 'neutral', label: 'Neutral' },
+  { value: 'monochrome', label: 'Mono' },
+]
+const contrastOptions: SegmentedOption[] = [
+  { value: 0, label: 'Standard' },
+  { value: 0.5, label: 'Medium' },
+  { value: 1, label: 'High' },
+]
+const seedActive = computed(() => palette.value === 'seed')
+function applySeed() {
+  setSeed(seedColor.value, { variant: seedVariant.value, contrast: seedContrast.value })
+}
+// Live while it's the active palette
+function onSeedChange() {
+  if (seedActive.value) applySeed()
+}
+const copiedSeed = ref(false)
+async function copySeedCss() {
+  const scheme = await generateScheme(seedColor.value, { variant: seedVariant.value, contrast: seedContrast.value })
+  await navigator.clipboard.writeText(schemeToCss(scheme, 'brand'))
+  copiedSeed.value = true
+  setTimeout(() => { copiedSeed.value = false }, 2000)
+}
+const seedPluginCode = computed(() => `import { createM3UI } from '@m3ui-vue/m3ui-vue'
+
+app.use(createM3UI({
+  seed: '${seedColor.value}',
+  seedOptions: { variant: '${seedVariant.value}', contrast: ${seedContrast.value} },
+}))`)
+const seedRuntimeCode = `import { useColorPalette } from '@m3ui-vue/m3ui-vue'
+
+const { setSeed, set } = useColorPalette()
+
+setSeed('#0b57d0')                       // generate and switch to it
+setSeed('#0b57d0', { variant: 'vibrant', contrast: 0.5 })
+set('teal')                              // a named palette again (the last choice wins)`
 const { theme } = useTheme()
 
 // ── Built-in palette CSS copy ────────────────────────────────────────────────
@@ -243,6 +293,55 @@ const allTokens = [
         </button>
       </div>
     </div>
+
+    <!-- Dynamic color -->
+    <h2 id="seed" class="mb-2 text-headline-small font-medium">Your Own Color</h2>
+    <p class="mb-4 text-body-medium text-on-surface-variant">
+      Pick any color and the library generates the whole scheme from it, light and dark, with Google's own dynamic
+      color algorithm (the one Android uses to theme apps from your wallpaper). The variant changes how much the
+      seed spreads into the other colors; contrast raises the contrast between text and surfaces.
+    </p>
+    <MCard variant="outlined" class="mb-6 p-5">
+      <div class="flex flex-col gap-5">
+        <div class="flex flex-wrap items-end gap-4">
+          <div class="w-60">
+            <MColorPicker v-model="seedColor" label="Seed color" :recent="false" @update:model-value="onSeedChange" />
+          </div>
+          <MButton :icon="seedActive ? 'check' : 'palette'" :variant="seedActive ? 'tonal' : 'filled'" @click="applySeed">
+            {{ seedActive ? 'Applied to the site' : 'Apply to the site' }}
+          </MButton>
+          <MButton variant="text" :icon="copiedSeed ? 'check' : 'content_copy'" @click="copySeedCss">
+            {{ copiedSeed ? 'Copied' : 'Copy as CSS' }}
+          </MButton>
+        </div>
+        <div>
+          <p class="mb-2 text-label-large text-on-surface-variant">Variant</p>
+          <div class="overflow-x-auto">
+            <MSegmentedButton v-model="seedVariant" :options="variantOptions" density="compact" @update:model-value="onSeedChange" />
+          </div>
+        </div>
+        <div>
+          <p class="mb-2 text-label-large text-on-surface-variant">Contrast</p>
+          <MSegmentedButton v-model="seedContrast" :options="contrastOptions" density="compact" @update:model-value="onSeedChange" />
+        </div>
+      </div>
+    </MCard>
+    <div class="mb-10 grid gap-4 lg:grid-cols-2">
+      <div>
+        <h3 class="mb-2 text-title-medium font-medium">From the plugin</h3>
+        <MCodeEditor :model-value="seedPluginCode" language="typescript" :readonly="true" :line-numbers="false" min-height="60px" max-height="240px" />
+      </div>
+      <div>
+        <h3 class="mb-2 text-title-medium font-medium">At runtime</h3>
+        <MCodeEditor :model-value="seedRuntimeCode" language="typescript" :readonly="true" :line-numbers="false" min-height="60px" max-height="240px" />
+      </div>
+    </div>
+    <p class="mb-10 text-body-medium text-on-surface-variant">
+      A named <code>palette</code> wins over <code>seed</code> in <code>createM3UI</code>; at runtime the last
+      choice wins. The generated CSS is cached, so a returning visitor sees their colors without a flash, and the
+      generator (about 20 KB gzipped) only downloads for apps that use a seed. A custom palette with a
+      <code>seed</code> and no CSS of its own is generated the same way.
+    </p>
 
     <!-- Color tokens preview -->
     <h2 class="mb-4 text-headline-small font-medium">Color Tokens</h2>
