@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'Fixed color roles (primary-fixed and the like), colors that stay the same in light and dark, in every palette. The palettes page lists them',
         'MDragHandle, new: the Material 3 handle you drag to resize panes, which grows while you hold it. MSplitter now uses it and can be moved with the keyboard too',
         'MTransition, new: Material 3\'s transitions between views, sliding for back and forward navigation and fading for switching tabs. Its page has demos of both',
         'MScrollable can show Material 3\'s thin scroll indicator instead of the browser\'s scrollbar: it appears while you scroll and fades out after. Its page has a demo',

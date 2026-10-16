@@ -191,6 +191,7 @@ const allTokens = [
   { group: 'Primary', tokens: ['primary', 'on-primary', 'primary-container', 'on-primary-container'] },
   { group: 'Secondary', tokens: ['secondary', 'on-secondary', 'secondary-container', 'on-secondary-container'] },
   { group: 'Tertiary', tokens: ['tertiary', 'on-tertiary', 'tertiary-container', 'on-tertiary-container'] },
+  { group: 'Fixed (same in light and dark)', tokens: ['primary-fixed', 'primary-fixed-dim', 'on-primary-fixed', 'on-primary-fixed-variant', 'secondary-fixed', 'secondary-fixed-dim', 'on-secondary-fixed', 'on-secondary-fixed-variant', 'tertiary-fixed', 'tertiary-fixed-dim', 'on-tertiary-fixed', 'on-tertiary-fixed-variant'] },
   { group: 'Surface', tokens: ['surface', 'on-surface', 'surface-variant', 'on-surface-variant', 'surface-dim', 'surface-bright', 'surface-container-lowest', 'surface-container-low', 'surface-container', 'surface-container-high', 'surface-container-highest'] },
   { group: 'Other', tokens: ['background', 'on-background', 'outline', 'outline-variant', 'inverse-surface', 'inverse-on-surface', 'inverse-primary', 'shadow', 'scrim'] },
 ]
