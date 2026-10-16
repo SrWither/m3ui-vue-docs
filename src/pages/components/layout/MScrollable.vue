@@ -9,6 +9,8 @@ const scrollableProps: PropDef[] = [
   { name: 'direction', type: "'vertical' | 'horizontal' | 'both'", default: "'vertical'", description: 'Scroll direction' },
   { name: 'height', type: 'string', description: 'Fixed height (CSS value)' },
   { name: 'maxHeight', type: 'string', description: 'Maximum height (CSS value)' },
+  { name: 'scrollbar', type: "'native' | 'indicator' | 'none'", default: "'native'", description: "The browser's scrollbar, Material 3's thin visual-only indicator, or none" },
+  { name: 'scrollbarFade', type: 'boolean', default: 'true', description: 'With the indicator: show it only while scrolling (false keeps it visible)' },
 ]
 </script>
 
@@ -16,7 +18,9 @@ const scrollableProps: PropDef[] = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MScrollable</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      A constrained scroll area — vertical, horizontal, or both directions.
+      A constrained scroll area — vertical, horizontal, or both directions. It can swap the browser's scrollbar for
+      Material 3's thin scroll indicator, which only shows where you are (it can't be dragged), appears while you
+      scroll and fades out shortly after.
     </p>
 
     <ComponentDemo
@@ -45,6 +49,31 @@ const scrollableProps: PropDef[] = [
                 <MText variant="body-small">Item {{ i }}</MText>
               </MBox>
             </MFlex>
+          </MScrollable>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Scroll Indicator"
+      description="scrollbar=&quot;indicator&quot; draws Material 3's 4px scroll indicator instead of the browser's scrollbar. Scroll to see it; it fades out 400ms after you stop. The second one stays visible."
+      :code="`<template>
+  <MScrollable max-height=&quot;180px&quot; scrollbar=&quot;indicator&quot;>
+    Long content...
+  </MScrollable>
+
+  <MScrollable max-height=&quot;180px&quot; scrollbar=&quot;indicator&quot; :scrollbar-fade=&quot;false&quot;>
+    Long content...
+  </MScrollable>
+</template>`"
+    >
+      <div class="grid w-full gap-4 sm:grid-cols-2">
+        <MCard v-for="fade in [true, false]" :key="String(fade)" variant="outlined" class="overflow-hidden">
+          <MText variant="label-medium" class="border-b border-outline-variant px-3 py-2 text-on-surface-variant">{{ fade ? 'fades out' : 'always visible' }}</MText>
+          <MScrollable max-height="180px" scrollbar="indicator" :scrollbar-fade="fade">
+            <div class="space-y-3 p-3">
+              <MText v-for="i in 14" :key="i" variant="body-small" color="on-surface-variant">Paragraph {{ i }}: the indicator only shows where you are in the content.</MText>
+            </div>
           </MScrollable>
         </MCard>
       </div>
