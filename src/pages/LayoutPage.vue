@@ -7,6 +7,7 @@ const components = [
   { name: 'MGrid', description: 'A responsive CSS grid with per-breakpoint column counts.' },
   { name: 'MStack', description: 'Flex stack with gap, alignment, and optional dividers between items.' },
   { name: 'MSplitter', description: 'Two resizable panels divided by a draggable handle.' },
+  { name: 'MDragHandle', description: 'The Material 3 capsule users drag to resize or move things, like the divider between panes.' },
   { name: 'MMasonry', description: 'Pinterest-style column layout that fills shortest-column-first.' },
   { name: 'MText', description: 'Renders any of the 15 Material 3 typography variants.' },
   { name: 'MTitle', description: 'Semantic heading component in three sizes.' },

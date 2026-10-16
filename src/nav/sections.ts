@@ -2,7 +2,7 @@ import type { DrawerSection, DrawerItem, SpotlightResult } from '@m3ui-vue/m3ui-
 import { examples } from '@/examples/registry'
 
 export const iconMap: Record<string, string> = {
-  MScrollField: 'swipe_vertical', MSwipeToDismiss: 'swipe_left', MTransition: 'animation', MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MToggleButton: 'change_circle', MCopyButton: 'content_copy', MExportButton: 'file_download',
+  MScrollField: 'swipe_vertical', MDragHandle: 'drag_handle', MSwipeToDismiss: 'swipe_left', MTransition: 'animation', MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MToggleButton: 'change_circle', MCopyButton: 'content_copy', MExportButton: 'file_download',
   MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box', MSwitch: 'toggle_on',
   MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
   MDatePickerModal: 'event', MDateRangePickerModal: 'date_range',
@@ -83,7 +83,7 @@ export const sections: DrawerSection[] = [
       { value: '/components/navigation', label: 'Navigation', icon: 'menu_open', to: '/components/navigation',
         children: ch('/components/navigation', ['MTabs', 'MMenu', 'MContextMenu', 'MBreadcrumbs', 'MStepper', 'MPagination', 'MNavigationBar', 'MShortNavigationBar', 'MNavigationDrawer', 'MNavigationRail', 'MToolbar', 'MTopAppBar', 'MSearchBar', 'MAppBar']) },
       { value: '/components/layout', label: 'Layout', icon: 'grid_view', to: '/components/layout',
-        children: ch('/components/layout', ['MContainer', 'MGrid', 'MStack', 'MSplitter', 'MMasonry', 'MText', 'MTitle', 'MSubtitle', 'MKbd', 'MFlex', 'MSpacer', 'MCenter', 'MBox', 'MSection', 'MResponsive', 'MRelative', 'MAbsolute', 'MFixed', 'MSticky', 'MScrollable', 'MAspectRatio', 'MShape', 'MAppLayout', 'useWindowSizeClass', 'MNavigationSuite', 'MListDetail', 'MSupportingPane', 'MFooter', 'MOverlay', 'MFullscreen']) },
+        children: ch('/components/layout', ['MContainer', 'MGrid', 'MStack', 'MSplitter', 'MDragHandle', 'MMasonry', 'MText', 'MTitle', 'MSubtitle', 'MKbd', 'MFlex', 'MSpacer', 'MCenter', 'MBox', 'MSection', 'MResponsive', 'MRelative', 'MAbsolute', 'MFixed', 'MSticky', 'MScrollable', 'MAspectRatio', 'MShape', 'MAppLayout', 'useWindowSizeClass', 'MNavigationSuite', 'MListDetail', 'MSupportingPane', 'MFooter', 'MOverlay', 'MFullscreen']) },
       { value: '/components/overlays', label: 'Overlays', icon: 'layers', to: '/components/overlays',
         children: ch('/components/overlays', ['MBottomSheet', 'MSideSheet', 'MLoadingOverlay', 'MWindow', 'MBar']) },
       { value: '/components/tables', label: 'Tables', icon: 'table_chart', to: '/components/tables',

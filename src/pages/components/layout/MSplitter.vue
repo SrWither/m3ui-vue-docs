@@ -24,7 +24,9 @@ const splitterSlots: SlotDef[] = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MSplitter</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      Two resizable panels divided by a draggable handle.
+      Two resizable panels divided by a draggable bar with Material 3's drag handle (MDragHandle) on it. The
+      handle grows and darkens while you hold it, and it also works from the keyboard: focus it with Tab, then use
+      the arrow keys (Shift for steps of 10%) or Home/End.
     </p>
 
     <ComponentDemo
