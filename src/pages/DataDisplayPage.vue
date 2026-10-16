@@ -21,7 +21,7 @@ const components = [
   { name: 'MEmojiSelector', description: 'A full emoji picker panel with categories and search.' },
   { name: 'MCarousel', description: 'The M3 carousel: multi-browse, uncontained, hero and full-screen layouts, with items that resize as you scroll.' },
   { name: 'MSimpleCarousel', description: 'A scroll-snap image carousel with fixed-width hero, multi-browse, and uncontained layouts.' },
-  { name: 'MLightbox', description: 'Auto-detects images to wire up a full-screen gallery viewer.' },
+  { name: 'MLightbox', description: 'Beta. A full-screen image viewer with swipe, zoom and drag to close, that finds your images by itself.' },
   { name: 'MChatBubble', description: 'A chat message bubble with sender, avatar, and read status.' },
   { name: 'MRelativeTime', description: 'A self-updating "5 minutes ago"-style relative timestamp.' },
 ]
