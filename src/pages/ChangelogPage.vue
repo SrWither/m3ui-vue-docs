@@ -33,6 +33,7 @@ const versions: Version[] = [
         'An MFab inside an MBottomAppBar takes the bar\'s secondary color and lies flat on it',
         'The remove button on a chip is read out in your app\'s language instead of always in Spanish',
         'Switching theme, palette or contrast animates smoothly in Chrome, Edge and Safari too, with every color on the page changing together (the top bar and buttons used to lag behind). Firefox looks the same as before',
+        'llms.txt and llms-full.txt for AI agents now include the Setup, i18n and Styles pages (palettes, colors, typography, shapes, motion), each also as its own Markdown file, plus contrast, seed colors and the motion tokens in the setup and token lists',
         'Scrollbars show again in Chrome, Edge and Safari, thin and in the palette\'s colors, instead of being hidden everywhere. Navigation drawers, rails, tabs and carousels keep theirs hidden, and a new scrollbar-none class hides one in your own markup',
       ],
     },
