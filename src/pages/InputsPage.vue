@@ -26,6 +26,7 @@ const components = [
   { name: 'MDateRangePickerModal', description: 'Modal date range picker with range highlighting.' },
   { name: 'MTimePicker', description: 'Inline hour/minute picker with 12h/24h format support.' },
   { name: 'MTimePickerModal', description: 'Modal clock-dial time picker with AM/PM toggle.' },
+  { name: 'MTimeScroll', description: 'Pick a time on two scrolling wheels, hours and minutes, with an AM/PM toggle.' },
   { name: 'MColorPicker', description: 'Inline hue/saturation color picker with preset swatches.' },
   { name: 'MColorPickerModal', description: 'Modal color picker with hex input and preset swatches.' },
 ]

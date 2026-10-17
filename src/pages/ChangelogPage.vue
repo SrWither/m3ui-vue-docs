@@ -22,10 +22,14 @@ const versions: Version[] = [
         'v-ripple, the first directive: the Material 3 press ripple on any element of your own, like cards, list rows or tiles, in any color. It has its own page in the new Directives section',
         'rippleColor on MButton, MIconButton, MFab, MSplitButton, MToggleButton and MButtonGroup: any color for the press ripple',
         'Icon toggle buttons: give MIconButton v-model:checked and it fills its icon, takes the selected colors and changes shape when checked; checkedIcon swaps the icon (play and pause). MIcon has a filled option too. Both pages have demos',
+        'MTimeScroll, new: Material 3 Expressive\'s scrolling time picker, an hour wheel and a minute wheel with an AM/PM toggle, in 12 or 24 hours',
       ],
       changed: [
         'The docs have Composables and Directives sections next to Components. Every composable has its own page now, with demos: useTheme, useColorPalette, useLocale, usePageProgress, useDebounce and useFieldBg are new, and useToast, useNotification, useWindowSizeClass and useDevice moved there (their old addresses still work)',
         'Palettes is split in two: Palettes keeps choosing, generating and writing palettes, and the new Colors page lists every color role with its CSS variable and Tailwind classes, and how to use them in your own markup',
+      ],
+      fixed: [
+        'MScrollField kept scrolling back and forth after a flick on a wheel with few items, and stopped flicks short on the others',
       ],
     },
   },
