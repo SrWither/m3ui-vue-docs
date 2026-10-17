@@ -145,6 +145,11 @@ const router = createRouter({
       meta: { title: 'Typography' },
     },
     {
+      path: '/styles/shapes',
+      component: () => import('./pages/ShapesPage.vue'),
+      meta: { title: 'Shapes' },
+    },
+    {
       path: '/styles/palette-builder',
       component: () => import('./pages/PaletteBuilderPage.vue'),
       meta: { title: 'Palette Builder' },

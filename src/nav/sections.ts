@@ -133,6 +133,7 @@ export const sections: DrawerSection[] = [
       { value: '/styles/palettes', label: 'Palettes', icon: 'color_lens', to: '/styles/palettes' },
       { value: '/styles/colors', label: 'Colors', icon: 'format_color_fill', to: '/styles/colors' },
       { value: '/styles/typography', label: 'Typography', icon: 'text_fields', to: '/styles/typography' },
+      { value: '/styles/shapes', label: 'Shapes', icon: 'rounded_corner', to: '/styles/shapes' },
       { value: '/styles/palette-builder', label: 'Palette Builder', icon: 'auto_fix_high', to: '/styles/palette-builder' },
     ],
   },
