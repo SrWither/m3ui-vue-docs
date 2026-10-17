@@ -12,6 +12,8 @@ const showTimePicker = ref(false)
 const timeModalVal = ref<string | null>(null)
 const showTimePicker24h = ref(false)
 const timeModalVal24h = ref<string | null>(null)
+const showTimeScroll = ref(false)
+const timeScrollVal = ref<string | null>('07:30')
 
 const timePickerModalProps: PropDef[] = [
   { name: 'modelValue', type: 'string | null', description: 'Selected time in HH:MM format (v-model)' },
@@ -19,6 +21,7 @@ const timePickerModalProps: PropDef[] = [
   { name: 'use24h', type: 'boolean', default: 'false', description: 'Use 24-hour format (shows inner ring 13-23)' },
   { name: 'minuteStep', type: 'number', default: '5', description: 'Minute increment step' },
   { name: 'title', type: 'string', default: "'Select time'", description: 'Dialog title' },
+  { name: 'mode', type: "'dial' | 'scroll'", default: "'dial'", description: 'How the time is picked before switching to keyboard input: a clock dial, or scroll wheels (MTimeScroll)' },
 ]
 
 const timePickerModalEvents: EventDef[] = [
@@ -31,7 +34,8 @@ const timePickerModalEvents: EventDef[] = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MTimePickerModal</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      A modal, centered time picker with a clock dial and a keyboard input mode. Supports AM/PM toggle and 24h
+      A modal, centered time picker with a clock dial (or, with <code>mode="scroll"</code>, M3 Expressive's scroll
+      wheels from MTimeScroll) and a keyboard input mode. Supports AM/PM toggle and 24h
       format — the sibling of MTimePicker, a fully separate component rather than a shared internal.
     </p>
 
@@ -58,6 +62,21 @@ const timePickerModalEvents: EventDef[] = [
       </div>
       <MTimePickerModal v-model="timeModalVal" v-model:show="showTimePicker" />
       <MTimePickerModal v-model="timeModalVal24h" v-model:show="showTimePicker24h" use24h />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Scroll mode"
+      description="M3 Expressive's scroll wheels (MTimeScroll) instead of the dial, as Compose's TimePickerDisplayMode.Scroll. The toggle switches between the wheels and keyboard input."
+      :code="`<template>
+  <MButton @click=&quot;show = true&quot;>Pick time</MButton>
+  <MTimePickerModal v-model=&quot;time&quot; v-model:show=&quot;show&quot; mode=&quot;scroll&quot; />
+</template>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton @click="showTimeScroll = true">Pick time (scroll)</MButton>
+        <span v-if="timeScrollVal" class="text-body-medium text-on-surface-variant">{{ timeScrollVal }}</span>
+      </div>
+      <MTimePickerModal v-model="timeScrollVal" v-model:show="showTimeScroll" mode="scroll" />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>

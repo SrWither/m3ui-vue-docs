@@ -29,7 +29,8 @@ const events: EventDef[] = [
     <p class="mb-8 text-body-large text-on-surface-variant">
       Material 3 Expressive's scrolling time picker: an hour wheel and a minute wheel side by side, plus an AM/PM
       toggle in 12-hour mode. Drag, flick, use the mouse wheel or the arrow keys. It updates as the wheels turn,
-      so put it in a dialog or a form for the confirm step.
+      so put it in a dialog or a form for the confirm step. For a ready-made dialog with OK/Cancel and keyboard
+      input, use <code>MTimePickerModal</code> with <code>mode="scroll"</code>.
     </p>
 
     <ComponentDemo

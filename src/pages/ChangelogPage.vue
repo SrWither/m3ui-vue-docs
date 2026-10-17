@@ -23,6 +23,7 @@ const versions: Version[] = [
         'rippleColor on MButton, MIconButton, MFab, MSplitButton, MToggleButton and MButtonGroup: any color for the press ripple',
         'Icon toggle buttons: give MIconButton v-model:checked and it fills its icon, takes the selected colors and changes shape when checked; checkedIcon swaps the icon (play and pause). MIcon has a filled option too. Both pages have demos',
         'MTimeScroll, new: Material 3 Expressive\'s scrolling time picker, an hour wheel and a minute wheel with an AM/PM toggle, in 12 or 24 hours',
+        'MTimePickerModal can use those scroll wheels instead of the clock: mode="scroll", with the button at the bottom switching to typing the time. Its page has a demo',
       ],
       changed: [
         'The docs have Composables and Directives sections next to Components. Every composable has its own page now, with demos: useTheme, useColorPalette, useLocale, usePageProgress, useDebounce and useFieldBg are new, and useToast, useNotification, useWindowSizeClass and useDevice moved there (their old addresses still work)',
