@@ -18,6 +18,7 @@ const splitButtonProps: PropDef[] = [
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: 'Button size' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables both parts' },
   { name: 'items', type: 'SplitButtonItem[]', description: 'Dropdown menu items — see the type below' },
+  { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
 ]
 
 const splitButtonSlots: SlotDef[] = [

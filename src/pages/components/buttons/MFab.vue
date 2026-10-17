@@ -19,6 +19,7 @@ const fabProps: PropDef[] = [
   { name: 'direction', type: "'up' | 'down' | 'left' | 'right' | 'radial'", default: "'up'", description: 'Speed-dial expand direction' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
   { name: 'persistent', type: 'boolean', default: 'false', description: 'Keep speed-dial open after clicking an item or clicking outside' },
+  { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the FAB's content color. Same ripple as the v-ripple directive" },
 ]
 
 const fabEvents = [

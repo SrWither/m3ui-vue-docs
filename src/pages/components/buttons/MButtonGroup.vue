@@ -17,6 +17,7 @@ const buttonGroupProps: PropDef[] = [
   { name: 'multiSelect', type: 'boolean', default: 'false', description: 'Allow multiple selections' },
   { name: 'selectionRequired', type: 'boolean', default: 'false', description: 'At least one must be selected' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary'", default: "'primary'", description: 'Selected button color' },
+  { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
 ]
 
 const buttonGroupEvents = [

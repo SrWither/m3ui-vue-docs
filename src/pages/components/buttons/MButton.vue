@@ -16,6 +16,7 @@ const buttonProps: PropDef[] = [
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: "M3's 5-tier expressive button sizing (xs: 32px, sm: 40px, md: 56px, lg: 96px, xl: 136px) — lg/xl are meant for hero-style prominent buttons, not everyday UI" },
   { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
+  { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
 ]
 </script>
 

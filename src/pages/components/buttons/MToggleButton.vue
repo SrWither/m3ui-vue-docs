@@ -13,6 +13,7 @@ const toggleProps: PropDef[] = [
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: "Same 5-tier expressive sizing as MButton" },
   { name: 'icon', type: 'string', description: 'Material Symbol icon name shown before the label' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
+  { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
 ]
 
 const toggleEvents = [
