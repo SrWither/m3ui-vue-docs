@@ -4,6 +4,7 @@ import { iconMap } from '@/nav/sections'
 
 const components = [
   { name: 'MBottomSheet', description: 'A sheet that slides up from the bottom, with drag-to-dismiss.' },
+  { name: 'MBottomSheetScaffold', description: 'A standard bottom sheet that stays over the screen, peeking until dragged up.' },
   { name: 'MSideSheet', description: 'A panel that slides in from the right edge of the screen.' },
   { name: 'MLoadingOverlay', description: 'A spinner overlay layered on content, or covering the whole viewport.' },
   { name: 'MWindow', description: 'A floating, draggable, resizable window for desktop-style multi-window UIs.' },

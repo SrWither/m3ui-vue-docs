@@ -15,7 +15,9 @@ const components = [
   { name: 'MNavigationRail', description: 'Compact vertical navigation with expanded and modal flyout variants.' },
   { name: 'MToolbar', description: 'Docked or floating container for grouping icon buttons, with an optional FAB.' },
   { name: 'MTopAppBar', description: 'A top app bar in center, small, medium, and large M3 layouts.' },
+  { name: 'MBottomAppBar', description: 'A bottom bar with actions and a FAB, standard or flexible, that can hide while scrolling.' },
   { name: 'MSearchBar', description: 'A search field that expands into a docked panel or fullscreen overlay.' },
+  { name: 'MAppBarWithSearch', description: 'A top app bar with a search bar in place of the title, or the search floating on its own.' },
   { name: 'MAppBar', description: 'A simple, generic slot-based app bar.' },
 ]
 </script>
