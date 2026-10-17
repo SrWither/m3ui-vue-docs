@@ -24,6 +24,7 @@ const versions: Version[] = [
         'Icon toggle buttons: give MIconButton v-model:checked and it fills its icon, takes the selected colors and changes shape when checked; checkedIcon swaps the icon (play and pause). MIcon has a filled option too. Both pages have demos',
         'MTimeScroll, new: Material 3 Expressive\'s scrolling time picker, an hour wheel and a minute wheel with an AM/PM toggle, in 12 or 24 hours',
         'MTimePickerModal can use those scroll wheels instead of the clock: mode="scroll", with the button at the bottom switching to typing the time. Its page has a demo',
+        'Menu items can be choices: selected for one option of several (it closes the menu) and v-model:checked for on/off settings (the menu stays open). They take a tinted, rounder look and a check slides in. The MMenu page has a demo',
         'MTabs can put the icon beside the label in a shorter tab (iconPosition="leading"), or above it on secondary tabs (iconPosition="top"). The Tabs page has demos of both',
       ],
       changed: [

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { MMenu, MMenuItem, MMenuDivider, MButton, MIconButton, useToast } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -22,6 +22,16 @@ const filters = reactive({
   mid: true,
   over100: false,
 })
+const sortBy = ref('date')
+const sortOptions = [
+  { value: 'name', label: 'Name' },
+  { value: 'date', label: 'Date modified' },
+  { value: 'size', label: 'Size' },
+]
+const showHidden = ref(false)
+const showExtensions = ref(true)
+const showPreview = ref(true)
+
 function toggleFilter(key: keyof typeof filters) {
   filters[key] = !filters[key]
 }
@@ -42,10 +52,14 @@ const menuItemProps: PropDef[] = [
   { name: 'to', type: 'string | Record<string, any>', description: 'Vue Router destination — renders as RouterLink instead of button' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the item' },
   { name: 'danger', type: 'boolean', default: 'false', description: 'Danger/destructive styling (error color)' },
-  { name: 'keepOpen', type: 'boolean', default: 'false', description: 'Keep the menu open after this item is clicked, instead of the default close-on-click. Useful for checkable/toggle items (e.g. "Show columns", "Sort by") where the user picks several without the menu closing on every tap.' },
+  { name: 'keepOpen', type: 'boolean', default: 'true with checked, false otherwise', description: 'Keep the menu open after this item is clicked, instead of the default close-on-click. Useful for toggle items where the user picks several without the menu closing on every tap.' },
+  { name: 'selected', type: 'boolean', description: "Makes it one choice of several (M3's SelectableDropdownMenuItem, radio-like): tertiary container, rounder corners and a check while true. Leave unset for a plain item." },
+  { name: 'checked', type: 'boolean', description: "Makes it an on/off setting (v-model:checked, M3's CheckableDropdownMenuItem, checkbox-like): same look as selected while true. Leave unset for a plain item." },
+  { name: 'selectedIcon', type: 'string', default: "'check'", description: 'Icon shown while selected or checked. Without an icon, a check slides in beside the label; with an icon, that icon stays and turns filled unless you set this.' },
 ]
 
 const menuItemEvents = [
+  { name: 'update:checked', description: 'Emitted on click when checked is set, with the new value — powers v-model:checked.' },
   { name: 'click', description: 'Emitted when a leaf item (no #children) is clicked. Not emitted for disabled items or for items with #children, since clicking those just opens/toggles the submenu instead.' },
 ]
 
@@ -294,6 +308,62 @@ const menuItemSlots: SlotDef[] = [
         </MMenuItem>
         <MMenuItem icon="delete" danger @click="notifyClick('Delete')">Delete</MMenuItem>
       </MMenu>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Selectable and Checkable Items"
+      description="selected makes an item one choice of several, checked (v-model:checked) an on/off setting, as M3 Expressive's SelectableDropdownMenuItem and CheckableDropdownMenuItem: the item takes the tertiary container, rounds its corners and slides a check in. Checked items keep the menu open; selected ones close it."
+      :code="`<MMenu variant=&quot;expressive&quot;>
+  <template #trigger>
+    <MButton icon=&quot;tune&quot;>View</MButton>
+  </template>
+  <MMenuItem
+    v-for=&quot;o in sortOptions&quot;
+    :key=&quot;o.value&quot;
+    :selected=&quot;sortBy === o.value&quot;
+    @click=&quot;sortBy = o.value&quot;
+  >
+    {{ o.label }}
+  </MMenuItem>
+  <MMenuDivider gap />
+  <MMenuItem v-model:checked=&quot;showHidden&quot;>Hidden files</MMenuItem>
+  <MMenuItem v-model:checked=&quot;showExtensions&quot;>File extensions</MMenuItem>
+  <MMenuItem v-model:checked=&quot;showPreview&quot; icon=&quot;view_sidebar&quot;>
+    Preview pane
+  </MMenuItem>
+</MMenu>`"
+      :script="`const sortBy = ref('date')
+const sortOptions = [
+  { value: 'name', label: 'Name' },
+  { value: 'date', label: 'Date modified' },
+  { value: 'size', label: 'Size' },
+]
+const showHidden = ref(false)
+const showExtensions = ref(true)
+const showPreview = ref(true)`"
+    >
+      <div class="flex items-center gap-4">
+        <MMenu align="left" variant="expressive">
+          <template #trigger>
+            <MButton variant="outlined" icon="tune">View</MButton>
+          </template>
+          <MMenuItem
+            v-for="o in sortOptions"
+            :key="o.value"
+            :selected="sortBy === o.value"
+            @click="sortBy = o.value"
+          >
+            {{ o.label }}
+          </MMenuItem>
+          <MMenuDivider gap />
+          <MMenuItem v-model:checked="showHidden">Hidden files</MMenuItem>
+          <MMenuItem v-model:checked="showExtensions">File extensions</MMenuItem>
+          <MMenuItem v-model:checked="showPreview" icon="view_sidebar">Preview pane</MMenuItem>
+        </MMenu>
+        <span class="text-body-medium text-on-surface-variant">
+          Sort: {{ sortBy }} · hidden {{ showHidden ? 'on' : 'off' }} · extensions {{ showExtensions ? 'on' : 'off' }} · preview {{ showPreview ? 'on' : 'off' }}
+        </span>
+      </div>
     </ComponentDemo>
 
     <ComponentDemo
