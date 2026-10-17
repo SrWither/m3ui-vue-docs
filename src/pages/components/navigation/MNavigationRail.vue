@@ -15,6 +15,7 @@ const railProps: PropDef[] = [
   { name: 'alignment', type: "'top' | 'center' | 'bottom'", default: "'top'", description: 'Vertical alignment of items within the rail' },
   { name: 'expanded', type: 'boolean', default: 'false', description: "M3 WideNavigationRail's expanded state — items switch from icon-over-label in a narrow centered pill to icon-beside-label in a full-width pill (220px rail)" },
   { name: 'modal', type: 'boolean', default: 'false', description: "M3 ModalWideNavigationRail: the inline rail stays collapsed at all times and expanded instead opens a Teleported, scrim-backed panel flush against the screen edge above the app, closable via scrim click, Escape, or selecting an item. Emits update:expanded on close." },
+  { name: 'hideOnCollapse', type: 'boolean', default: 'false', description: "With modal: no collapsed rail on screen. The expanded rail slides in from off-screen and can be swiped away (past half its width, or with a quick flick). Open it from your own menu button." },
 ]
 
 const railEvents = [
@@ -43,6 +44,8 @@ const railExpandedVal = ref<string | number>('home')
 const railExpanded = ref(false)
 const railModalVal = ref<string | number>('home')
 const railModalExpanded = ref(false)
+const railHiddenVal = ref<string | number>('home')
+const railHiddenExpanded = ref(false)
 const railItems = [
   { value: 'home', label: 'Home', icon: 'home' },
   { value: 'search', label: 'Search', icon: 'search' },
@@ -147,6 +150,37 @@ const items = [
         </MNavigationRail>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
           {{ railModalVal }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Dismissible Modal (hideOnCollapse)"
+      description="No rail on screen until you open it: the expanded rail slides in from the edge over a scrim, and you can swipe it away (past half its width, or with a quick flick) as well as tap the scrim, press Escape or pick an item."
+      :code="`<MIconButton icon=&quot;menu&quot; label=&quot;Menu&quot; @click=&quot;expanded = true&quot; />
+<MNavigationRail
+  v-model=&quot;active&quot;
+  v-model:expanded=&quot;expanded&quot;
+  :items=&quot;items&quot;
+  modal
+  hide-on-collapse
+/>`"
+      :script="`const expanded = ref(false)`"
+    >
+      <div class="relative flex h-72 w-full max-w-md flex-col overflow-hidden rounded-xl border border-outline-variant">
+        <div class="flex h-16 shrink-0 items-center gap-2 bg-surface-container px-2">
+          <MIconButton icon="menu" label="Menu" @click="railHiddenExpanded = true" />
+          <span class="text-title-large">{{ railHiddenVal }}</span>
+        </div>
+        <MNavigationRail
+          v-model="railHiddenVal"
+          v-model:expanded="railHiddenExpanded"
+          :items="railItems"
+          modal
+          hide-on-collapse
+        />
+        <div class="flex flex-1 items-center justify-center bg-surface text-body-medium text-on-surface-variant">
+          {{ railHiddenVal }} view
         </div>
       </div>
     </ComponentDemo>
