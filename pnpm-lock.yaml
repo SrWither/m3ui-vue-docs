@@ -51,8 +51,8 @@ importers:
         specifier: ^6.43.11
         version: 6.43.14
       '@m3ui-vue/m3ui-vue':
-        specifier: ^0.9.2
-        version: 0.9.2(722038e16c5173eb2ff5e51a09a490cb)
+        specifier: ^0.9.3
+        version: 0.9.3(7b0f7f7e317b5bf589755f75423acfd7)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.4(jiti@2.7.0))
@@ -106,7 +106,7 @@ importers:
         version: 3.12.3
       markdown-it:
         specifier: ^15.0.2
-        version: 15.0.2
+        version: 15.0.3
       material-symbols:
         specifier: ^0.47.3
         version: 0.47.6
@@ -290,8 +290,8 @@ packages:
   '@lezer/rust@1.0.3':
     resolution: {integrity: sha512-XxErOjZzQ7yJt1agUT4fu9qQvESZ3acgoxpPaPTPOiUx+duCjaVAtZGFIgphkHxlN05djdVAIOy/wItShMEjqQ==}
 
-  '@m3ui-vue/m3ui-vue@0.9.2':
-    resolution: {integrity: sha512-fkFADUQbEprAS98HyIztK1JxehBzZnQ0DZCAcdcxEHqJ/2U4/NiklrW8CdhY8O9eJWfkejifDVdRtbmBs3RVFw==}
+  '@m3ui-vue/m3ui-vue@0.9.3':
+    resolution: {integrity: sha512-5ICq5hGgFN4oEPWvV06a9CKoUl7dV/U9ZXCmN2MCsEpfFhPBu9i3rXXAf+i0xX0bq44bAv1l0l/EQfDn85lPSA==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-cpp': '*'
@@ -1263,8 +1263,8 @@ packages:
   magic-string@1.4.3:
     resolution: {integrity: sha512-z12OxmaPGE0F4xlpGdjuAUckipLpQlTAuAmyGhNoD7ODpYUzvDfvtxUbjM/jwznyP178oju/KDdyi220wNJ0RQ==}
 
-  markdown-it@15.0.2:
-    resolution: {integrity: sha512-q4IGxMv56jCqT4OCRCADBoDP3LO4MhmTXjFbphHPXs4g3j9Xg5RDnxqN8IF/3vIWEU+VCnUq+7JUg/cfy2E6Qw==}
+  markdown-it@15.0.3:
+    resolution: {integrity: sha512-+Az7Ojz3iRGu8KYMvJ6xVhvrxP3eE+vEtJX75Ow88XBpcQNV/0lGX5ZynIIBftREo4DC2jsveAMDaeltmm8QvQ==}
     hasBin: true
 
   material-symbols@0.47.6:
@@ -1781,7 +1781,7 @@ snapshots:
       '@lezer/highlight': 1.2.5
       '@lezer/lr': 1.4.11
 
-  '@m3ui-vue/m3ui-vue@0.9.2(722038e16c5173eb2ff5e51a09a490cb)':
+  '@m3ui-vue/m3ui-vue@0.9.3(7b0f7f7e317b5bf589755f75423acfd7)':
     dependencies:
       shape-morph: 0.4.0
       tailwindcss: 4.3.3
@@ -1816,7 +1816,7 @@ snapshots:
       chart.js: 4.5.1
       codemirror: 6.0.2
       jsbarcode: 3.12.3
-      markdown-it: 15.0.2
+      markdown-it: 15.0.3
       material-symbols: 0.47.6
       qrcode-generator: 2.0.4
       vue-chartjs: 5.3.4(chart.js@4.5.1)(vue@3.5.44(typescript@7.0.2))
@@ -2526,7 +2526,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  markdown-it@15.0.2:
+  markdown-it@15.0.3:
     dependencies:
       argparse: 3.0.3
       entities: 8.1.0
