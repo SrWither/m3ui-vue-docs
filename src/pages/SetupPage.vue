@@ -107,12 +107,11 @@ const optionalDeps = [
       <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <div>
         <p class="text-body-medium font-medium text-on-surface">
-          Scrollbars are hidden by default on Chromium-based browsers (Chrome, Edge, Arc, etc.)
-          because their space-consuming behavior breaks some layout styles. Firefox is unaffected —
-          it uses overlay scrollbars natively. If you need visible scrollbars, apply
-          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollbar-width: thin</code> or
-          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollbar-width: auto</code>
-          on the specific elements where you want them.
+          Scrollbars are thin and take the theme's colors wherever something scrolls; phones keep their own
+          overlay scrollbars. Components that scroll as part of their design (tabs, thumbnail strips, carousels)
+          hide theirs. To hide one in your own markup, for a row of chips that scrolls sideways for example, add
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollbar-none</code>; it
+          keeps scrolling with the wheel, touch and keys.
         </p>
       </div>
     </MCard>
