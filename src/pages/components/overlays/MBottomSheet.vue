@@ -35,7 +35,8 @@ const sheetActions = ref(false)
     <h1 class="mb-2 text-headline-large font-medium">MBottomSheet</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       A sheet that slides up from the bottom of the screen, capped at a 640px max width and rounded top
-      corners. Supports drag-to-dismiss via the handle bar, or tapping the scrim.
+      corners. Supports drag-to-dismiss via the handle bar, or tapping the scrim. For a standard sheet that stays
+      on screen without a scrim, use <RouterLink to="/components/overlays/mbottomsheetscaffold" class="text-primary underline">MBottomSheetScaffold</RouterLink>.
     </p>
 
     <ComponentDemo
