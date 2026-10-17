@@ -24,13 +24,16 @@ export function useThemeColors() {
   const colors = ref(read())
   let observer: MutationObserver | undefined
   onMounted(() => {
-    // The palette switch animates (theme-transitioning); read after it settles too.
+    // The switch animates for 250ms; read after it settles too.
     const refresh = () => {
       colors.value = read()
       setTimeout(() => (colors.value = read()), 350)
     }
     observer = new MutationObserver(refresh)
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-palette', 'style'] })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-palette', 'data-contrast', 'style'] })
+    // A seed palette changes by rewriting its generated <style> only
+    const generated = document.getElementById('m3-dynamic-palette')
+    if (generated) observer.observe(generated, { childList: true, characterData: true, subtree: true })
   })
   onBeforeUnmount(() => observer?.disconnect())
   return colors

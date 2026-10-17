@@ -22,7 +22,7 @@ const types: TypeDef[] = [
     fields: [
       { name: 'palette', type: 'Ref<string>', description: "The active palette id ('purple' by default, 'seed' while a seed color is active)" },
       { name: 'palettes', type: 'Palette[]', description: 'Every available palette: the 40 built-in ones plus createM3UI({ customPalettes })' },
-      { name: 'set', type: '(id: string) => void', description: 'Switches to a palette by id, with a 300ms color transition' },
+      { name: 'set', type: '(id: string) => void', description: 'Switches to a palette by id, with a 250ms color transition' },
       { name: 'seed', type: 'Readonly<Ref<ActiveSeed | null>>', description: 'The last seed passed to setSeed(), so a picker can show it again' },
       { name: 'setSeed', type: '(seed: string, options?: SeedOptions) => Promise<void>', description: "Generates a full scheme (light and dark) from one #rrggbb color and switches to it; palette becomes 'seed'" },
       { name: 'persistPalette', type: 'Ref<boolean>', description: 'Whether changes are saved to localStorage (true by default)' },
