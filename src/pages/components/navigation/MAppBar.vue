@@ -26,7 +26,8 @@ const appBarSlots: SlotDef[] = [
     <h1 class="mb-2 text-headline-large font-medium">MAppBar</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       A simple, generic slot-based app bar with leading, default, and trailing areas — a lighter-weight
-      alternative to MTopAppBar for when you don't need its variant/title-row layouts.
+      alternative to MTopAppBar for when you don't need its variant/title-row layouts. For Material 3's bottom
+      app bar, use <RouterLink to="/components/navigation/mbottomappbar" class="text-primary underline">MBottomAppBar</RouterLink>.
     </p>
 
     <ComponentDemo
