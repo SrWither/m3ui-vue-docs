@@ -36,6 +36,17 @@ export const iconMap: Record<string, string> = {
   MMarkdown: 'article', MTerminal: 'terminal', MRichTextEditor: 'format_bold',
   MCalendar: 'calendar_month', MScheduler: 'event_note', MKanban: 'view_kanban',
   MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MShader: 'gradient',
+  useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useFieldBg: 'format_color_fill',
+  'v-ripple': 'touch_app',
+}
+
+// Top-level groups outside Components (Composables, Directives): one page per entry under
+// src/pages/<group>/<name>.vue, routed at /<group>/<lowercased name>.
+export const composableNames = ['useTheme', 'useColorPalette', 'useLocale', 'useToast', 'useNotification', 'usePageProgress', 'useWindowSizeClass', 'useDevice', 'useDebounce', 'useFieldBg']
+export const directiveNames = ['v-ripple']
+
+function pages(base: string, names: string[]): DrawerItem[] {
+  return names.map(n => ({ value: `${base}/${n.toLowerCase()}`, label: n, icon: iconMap[n] ?? 'code', to: `${base}/${n.toLowerCase()}` }))
 }
 
 // Sections migrated to the new one-page-per-component structure (real routes,
@@ -77,19 +88,19 @@ export const sections: DrawerSection[] = [
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
         children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSignaturePad', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MSwitch', 'MRadioGroup', 'MSlider', 'MScrollField', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MColorPicker', 'MColorPickerModal']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
-        children: ch('/components/feedback', ['MAlert', 'useToast', 'useNotification', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MPageProgress', 'MCircleProgressBar', 'MSpinner', 'MLoadingIndicator', 'MPullToRefresh', 'MExpansionPanel']) },
+        children: ch('/components/feedback', ['MAlert', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MPageProgress', 'MCircleProgressBar', 'MSpinner', 'MLoadingIndicator', 'MPullToRefresh', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',
         children: ch('/components/data-display', ['MCard', 'MChip', 'MBadge', 'MAvatar', 'MIcon', 'MDivider', 'MStatCard', 'MTimeline', 'MSkeleton', 'MEmptyState', 'MResult', 'MTree', 'MList', 'MEmoji', 'MEmojiButton', 'MEmojiSelector', 'MCarousel', 'MSimpleCarousel', 'MLightbox', 'MChatBubble', 'MRelativeTime']) },
       { value: '/components/navigation', label: 'Navigation', icon: 'menu_open', to: '/components/navigation',
         children: ch('/components/navigation', ['MTabs', 'MMenu', 'MContextMenu', 'MBreadcrumbs', 'MStepper', 'MPagination', 'MNavigationBar', 'MShortNavigationBar', 'MNavigationDrawer', 'MNavigationRail', 'MToolbar', 'MTopAppBar', 'MSearchBar', 'MAppBar']) },
       { value: '/components/layout', label: 'Layout', icon: 'grid_view', to: '/components/layout',
-        children: ch('/components/layout', ['MContainer', 'MGrid', 'MStack', 'MSplitter', 'MDragHandle', 'MMasonry', 'MText', 'MTitle', 'MSubtitle', 'MKbd', 'MFlex', 'MSpacer', 'MCenter', 'MBox', 'MSection', 'MResponsive', 'MRelative', 'MAbsolute', 'MFixed', 'MSticky', 'MScrollable', 'MAspectRatio', 'MShape', 'MAppLayout', 'useWindowSizeClass', 'MNavigationSuite', 'MListDetail', 'MSupportingPane', 'MFooter', 'MOverlay', 'MFullscreen']) },
+        children: ch('/components/layout', ['MContainer', 'MGrid', 'MStack', 'MSplitter', 'MDragHandle', 'MMasonry', 'MText', 'MTitle', 'MSubtitle', 'MKbd', 'MFlex', 'MSpacer', 'MCenter', 'MBox', 'MSection', 'MResponsive', 'MRelative', 'MAbsolute', 'MFixed', 'MSticky', 'MScrollable', 'MAspectRatio', 'MShape', 'MAppLayout', 'MNavigationSuite', 'MListDetail', 'MSupportingPane', 'MFooter', 'MOverlay', 'MFullscreen']) },
       { value: '/components/overlays', label: 'Overlays', icon: 'layers', to: '/components/overlays',
         children: ch('/components/overlays', ['MBottomSheet', 'MSideSheet', 'MLoadingOverlay', 'MWindow', 'MBar']) },
       { value: '/components/tables', label: 'Tables', icon: 'table_chart', to: '/components/tables',
         children: ch('/components/tables', ['MTable', 'MDataTable', 'MTreeTable', 'MVirtualTable']) },
       { value: '/components/utility', label: 'Utility', icon: 'build', to: '/components/utility',
-        children: ch('/components/utility', ['MFileUpload', 'MDragDropList', 'MSwipeToDismiss', 'MTransferList', 'MTransition', 'MHotkeys', 'MInfiniteScroll', 'MTour', 'useDevice']) },
+        children: ch('/components/utility', ['MFileUpload', 'MDragDropList', 'MSwipeToDismiss', 'MTransferList', 'MTransition', 'MHotkeys', 'MInfiniteScroll', 'MTour']) },
       { value: '/components/editors', label: 'Editors', icon: 'code', to: '/components/editors',
         children: ch('/components/editors', ['MCodeEditor', 'MJsonEditor', 'MJsonViewer', 'MMarkdown', 'MTerminal', 'MRichTextEditor']) },
       { value: '/components/advanced', label: 'Advanced', icon: 'auto_awesome', to: '/components/advanced',
@@ -97,12 +108,21 @@ export const sections: DrawerSection[] = [
     ],
   },
   {
-    title: 'Examples',
-    icon: 'design_services',
+    title: 'Composables',
+    icon: 'function',
     collapsible: true,
     items: [
-      { value: '/examples', label: 'All examples', icon: 'apps', to: '/examples' },
-      ...examples.map((e) => ({ value: `/examples/${e.id}`, label: e.title, icon: e.icon, to: `/examples/${e.id}` })),
+      { value: '/composables', label: 'All composables', icon: 'apps', to: '/composables' },
+      ...pages('/composables', composableNames),
+    ],
+  },
+  {
+    title: 'Directives',
+    icon: 'bolt',
+    collapsible: true,
+    items: [
+      { value: '/directives', label: 'All directives', icon: 'apps', to: '/directives' },
+      ...pages('/directives', directiveNames),
     ],
   },
   {
@@ -113,6 +133,15 @@ export const sections: DrawerSection[] = [
       { value: '/styles/palettes', label: 'Palettes', icon: 'color_lens', to: '/styles/palettes' },
       { value: '/styles/typography', label: 'Typography', icon: 'text_fields', to: '/styles/typography' },
       { value: '/styles/palette-builder', label: 'Palette Builder', icon: 'auto_fix_high', to: '/styles/palette-builder' },
+    ],
+  },
+  {
+    title: 'Examples',
+    icon: 'design_services',
+    collapsible: true,
+    items: [
+      { value: '/examples', label: 'All examples', icon: 'apps', to: '/examples' },
+      ...examples.map((e) => ({ value: `/examples/${e.id}`, label: e.title, icon: e.icon, to: `/examples/${e.id}` })),
     ],
   },
   {
@@ -138,6 +167,15 @@ export const componentPageOrder: { name: string; to: string; section: string }[]
         section: item.label,
       })),
     )
+
+// Prev/Next order inside each top-level group (overview item excluded), same shape as componentPageOrder.
+export const groupPageOrders: { name: string; to: string; section: string }[][] =
+  (['Composables', 'Directives'] as const).map((title) =>
+    sections
+      .find((s) => s.title === title)!
+      .items.slice(1)
+      .map((item) => ({ name: item.label, to: String(item.to), section: title })),
+  )
 
 // Flattened once from the same `sections` the sidebar renders, so search
 // results and the nav tree can never drift out of sync with each other.

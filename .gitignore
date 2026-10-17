@@ -8,3 +8,5 @@ pnpm-workspace.yaml
 public/llms.txt
 public/llms-full.txt
 public/components/
+public/composables/
+public/directives/

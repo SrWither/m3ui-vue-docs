@@ -4,8 +4,6 @@ import { iconMap } from '@/nav/sections'
 
 const components = [
   { name: 'MAlert', description: 'An inline banner for contextual status messages — info, success, warning, or error.' },
-  { name: 'useToast', description: 'Programmatic, imperative toast messages — no component to mount.' },
-  { name: 'useNotification', description: 'Programmatic notifications with squared corners, actions, and positioning.' },
   { name: 'MDialog', description: 'The generic M3 modal shell — centered card or full-screen, icon slot, scroll divider.' },
   { name: 'MConfirmDialog', description: 'A pre-built confirmation dialog with loading state and danger mode.' },
   { name: 'MTooltip', description: 'A hover/focus-triggered label — plain text, or a rich variant with actions.' },

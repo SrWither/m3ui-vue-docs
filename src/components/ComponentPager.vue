@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { MIcon } from '@m3ui-vue/m3ui-vue'
-import { componentPageOrder } from '@/nav/sections'
+import { componentPageOrder, groupPageOrders } from '@/nav/sections'
 
 const props = defineProps<{ current: string }>()
 
-const index = computed(() => componentPageOrder.findIndex((c) => c.name === props.current))
-const prev = computed(() => (index.value > 0 ? componentPageOrder[index.value - 1] : null))
+// Components page through each other; a composable or directive pages within its own group.
+const order = computed(() =>
+  [componentPageOrder, ...groupPageOrders].find((o) => o.some((c) => c.name === props.current)) ?? componentPageOrder,
+)
+const index = computed(() => order.value.findIndex((c) => c.name === props.current))
+const prev = computed(() => (index.value > 0 ? order.value[index.value - 1] : null))
 const next = computed(() =>
-  index.value >= 0 && index.value < componentPageOrder.length - 1
-    ? componentPageOrder[index.value + 1]
+  index.value >= 0 && index.value < order.value.length - 1
+    ? order.value[index.value + 1]
     : null,
 )
 </script>

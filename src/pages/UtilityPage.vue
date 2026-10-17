@@ -11,7 +11,6 @@ const components = [
   { name: 'MHotkeys', description: 'Registers global keyboard shortcuts, with an optional on-screen overlay.' },
   { name: 'MInfiniteScroll', description: 'Emits an event to load more content as the user scrolls near the bottom.' },
   { name: 'MTour', description: 'A guided, step-by-step walkthrough that highlights elements on the page.' },
-  { name: 'useDevice', description: 'Reactive composable for detecting a mobile-sized viewport.' },
 ]
 </script>
 

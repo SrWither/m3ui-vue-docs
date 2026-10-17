@@ -1,6 +1,6 @@
 // Generates the files AI agents and LLM tools read (https://llmstxt.org):
 //   public/llms.txt                         index: what the library is, setup, one line + link per page
-//   public/components/<section>/<name>.md   one per component/composable: intro, import, an example, the API
+//   public/<section>/<name>.md              one per component, composable or directive (components/<section>/, composables/, directives/): intro, import, an example, the API
 //   public/llms-full.txt                    all of the above in one file
 // The API (props, events, slots, types, descriptions) comes from the installed library's dist/api.json,
 // generated from its source; intros and examples come from these docs pages. The outputs are build
@@ -25,12 +25,23 @@ const read = (p) => readFileSync(path.join(root, p), 'utf8')
 const sectionLabels = {
   buttons: 'Buttons', inputs: 'Inputs', feedback: 'Feedback', 'data-display': 'Data display', navigation: 'Navigation',
   layout: 'Layout', overlays: 'Overlays', tables: 'Tables', utility: 'Utility', editors: 'Editors', advanced: 'Advanced',
+  composables: 'Composables', directives: 'Directives',
 }
 const nav = read('src/nav/sections.ts')
-const order = [...nav.matchAll(/ch\('\/components\/([\w-]+)',\s*\[([^\]]+)\]\)/g)].map((m) => ({
-  section: m[1],
-  names: [...m[2].matchAll(/'(\w+)'/g)].map((x) => x[1]),
-}))
+// `section` is the page's folder under src/pages/ and its URL path: 'components/buttons', 'composables', 'directives'.
+const order = [
+  ...[...nav.matchAll(/ch\('\/components\/([\w-]+)',\s*\[([^\]]+)\]\)/g)].map((m) => ({
+    section: `components/${m[1]}`,
+    names: [...m[2].matchAll(/'(\w+)'/g)].map((x) => x[1]),
+  })),
+  ...[...nav.matchAll(/export const (composable|directive)Names = \[([^\]]+)\]/g)].map((m) => ({
+    section: `${m[1]}s`,
+    names: [...m[2].matchAll(/'([\w-]+)'/g)].map((x) => x[1]),
+  })),
+]
+const label = (section) => sectionLabels[section.replace(/^components\//, '')]
+// A directive page is named as it's written in templates ('v-ripple'); its export is 'vRipple'.
+const apiName = (name) => name.replace(/^v-(\w)/, (_, c) => `v${c.toUpperCase()}`)
 
 const decode = (s) => s
   .replace(/<code[^>]*>([\s\S]*?)<\/code>/g, '`$1`')
@@ -65,7 +76,7 @@ function openingTag(text, tag) {
 }
 
 function pageInfo(section, name) {
-  const text = read(`src/pages/components/${section}/${name}.vue`)
+  const text = read(`src/pages/${section}/${name}.vue`)
   const template = text.slice(text.indexOf('<template>'))
   const intro = template.match(/<\/h1>\s*<p[^>]*>([\s\S]*?)<\/p>/)
   // The first demo is the page's basic usage.
@@ -101,7 +112,7 @@ const pages = [] // { name, section, url, md, docs, summary }
 for (const { section, names } of order) {
   for (const name of names) {
     const info = pageInfo(section, name)
-    const docs = `${SITE_URL}/components/${section}/${name.toLowerCase()}`
+    const docs = `${SITE_URL}/${section}/${name.toLowerCase()}`
     pages.push({ name, section, docs, info })
     const guest = { intro: '', example: '', hosted: [] }
     for (const hosted of info.hosted) pages.push({ name: hosted, section, docs, host: name, info: guest })
@@ -148,14 +159,14 @@ function typesFor(text) {
 
 function pageMd(p) {
   const c = components.get(p.name)
-  const v = values.get(p.name)
+  const v = values.get(apiName(p.name))
   const description = p.info.intro || c?.description || v?.description || ''
   const out = [`# ${p.name}`, '']
   if (description) out.push(`> ${description}`, '')
   const from = c?.import ?? v?.import ?? PKG
-  out.push(`Import: ${code(`import { ${p.name} } from '${from}'`)}`, `Docs with live demos: ${p.docs}`, '')
+  out.push(`Import: ${code(`import { ${apiName(p.name)} } from '${from}'`)}`, `Docs with live demos: ${p.docs}`, '')
   if (!p.info.example && p.host) {
-    out.push(`Documented on the ${p.host} page; see its example: ${SITE_URL}/components/${p.section}/${p.host.toLowerCase()}.md`, '')
+    out.push(`Documented on the ${p.host} page; see its example: ${SITE_URL}/${p.section}/${p.host.toLowerCase()}.md`, '')
   }
   if (p.info.example) {
     out.push(`## Example${p.info.example.title ? `: ${p.info.example.title}` : ''}`, '', '```vue', p.info.example.code, '```', '')
@@ -205,27 +216,27 @@ const intro = `# M3UI Vue (${PKG})
 // ─── Write ───────────────────────────────────────────────────────────────────
 
 const out = path.join(root, 'public')
-rmSync(path.join(out, 'components'), { recursive: true, force: true })
+for (const dir of ['components', 'composables', 'directives']) rmSync(path.join(out, dir), { recursive: true, force: true })
 const index = [intro, '', setup, '']
 const full = [intro, '', setup, '']
 let current = ''
 let written = 0
 for (const p of pages) {
-  if (!components.has(p.name) && !values.has(p.name)) continue
+  if (!components.has(p.name) && !values.has(apiName(p.name))) continue
   const { description, md } = pageMd(p)
-  const file = path.join(out, 'components', p.section, `${p.name.toLowerCase()}.md`)
+  const file = path.join(out, p.section, `${p.name.toLowerCase()}.md`)
   mkdirSync(path.dirname(file), { recursive: true })
   writeFileSync(file, md)
   written++
   if (p.section !== current) {
     current = p.section
     if (index.at(-1) !== '') index.push('')
-    index.push(`## ${sectionLabels[p.section]}`, '')
+    index.push(`## ${label(p.section)}`, '')
   }
-  index.push(`- [${p.name}](${SITE_URL}/components/${p.section}/${p.name.toLowerCase()}.md): ${firstSentence(description)}`)
+  index.push(`- [${p.name}](${SITE_URL}/${p.section}/${p.name.toLowerCase()}.md): ${firstSentence(description)}`)
   full.push(md.replace(/^# /, '## ').replace(/^(#{2,}) /gm, (m, h) => (h.length >= 2 ? `#${h} ` : m)).replace(/^### (\w+)\n/, '## $1\n'), '')
 }
-const otherFns = api.values.filter((v) => !pages.some((p) => p.name === v.name))
+const otherFns = api.values.filter((v) => !pages.some((p) => apiName(p.name) === v.name))
 index.push('', '## Optional', '',
   `- [Full reference](${SITE_URL}/llms-full.txt): every page above in one file, plus the remaining functions (${otherFns.map((v) => v.name).join(', ')}), locale keys and theme tokens`,
   `- [Example apps](${SITE_URL}/examples): full apps built with the library; source at https://github.com/SrWither/m3ui-vue-docs/tree/main/src/examples`)

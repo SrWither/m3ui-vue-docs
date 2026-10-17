@@ -15,6 +15,18 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '0.9.3',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'v-ripple, the first directive: the Material 3 press ripple on any element of your own, like cards, list rows or tiles, in any color. It has its own page in the new Directives section',
+      ],
+      changed: [
+        'The docs have Composables and Directives sections next to Components. Every composable has its own page now, with demos: useTheme, useColorPalette, useLocale, usePageProgress, useDebounce and useFieldBg are new, and useToast, useNotification, useWindowSizeClass and useDevice moved there (their old addresses still work)',
+      ],
+    },
+  },
+  {
     version: '0.9.2',
     date: '2026-10-16',
     changes: {

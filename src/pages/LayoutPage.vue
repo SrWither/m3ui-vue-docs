@@ -27,7 +27,6 @@ const components = [
   { name: 'MAspectRatio', description: 'Maintains a consistent aspect ratio for media or containers.' },
   { name: 'MShape', description: "Clips content into one of M3's 35 expressive shapes, with spring-animated morphing." },
   { name: 'MAppLayout', description: 'Full app shell — drawer, header, content, footer, and fab slots.' },
-  { name: 'useWindowSizeClass', description: 'M3 window size classes (compact to extra-large) for the window or any element.' },
   { name: 'MNavigationSuite', description: 'Navigation that adapts: a bottom bar on phones, a rail from tablets up.' },
   { name: 'MListDetail', description: 'List and detail side by side on wide screens, one at a time on small ones.' },
   { name: 'MSupportingPane', description: 'Main content with a supporting pane beside it, below it or in a sheet.' },

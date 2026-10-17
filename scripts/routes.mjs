@@ -94,6 +94,34 @@ function sectionRoutes() {
   })
 }
 
+// Top-level groups outside Components: overview page + one page per src/pages/<group>/<name>.vue,
+// described by the { name, description } cards on the overview.
+const GROUPS = {
+  composables: 'ComposablesPage.vue',
+  directives: 'DirectivesPage.vue',
+}
+
+function groupRoutes() {
+  return Object.entries(GROUPS).flatMap(([group, file]) => {
+    const { heading, description } = pageIntro(file)
+    const overview = { path: `/${group}`, title: `${heading} — ${SITE_NAME}`, description }
+    const cards = new Map()
+    for (const m of read(`pages/${file}`).matchAll(/\{\s*name:\s*'([^']+)',\s*description:\s*('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")/g)) {
+      cards.set(m[1], unquote(m[2]))
+    }
+    const pages = readdirSync(src(`pages/${group}`))
+      .filter((f) => f.endsWith('.vue'))
+      .map((f) => {
+        const name = f.replace(/\.vue$/, '')
+        const card = cards.get(name)
+        if (!card) throw new Error(`No description card for ${name} in ${file}`)
+        return { path: `/${group}/${name.toLowerCase()}`, title: `${name} — ${SITE_NAME}`, description: card }
+      })
+      .sort((a, b) => a.path.localeCompare(b.path))
+    return [overview, ...pages]
+  })
+}
+
 function exampleRoutes() {
   const re = /id:\s*'([^']+)',\s*title:\s*'([^']+)',\s*description:\s*('(?:[^'\\]|\\.)*')/g
   const found = [...read('examples/registry.ts').matchAll(re)]
@@ -106,5 +134,5 @@ function exampleRoutes() {
 }
 
 export function getRoutes() {
-  return [...STATIC, ...sectionRoutes(), ...exampleRoutes()]
+  return [...STATIC, ...sectionRoutes(), ...groupRoutes(), ...exampleRoutes()]
 }

@@ -17,10 +17,38 @@ const componentRoutes: RouteRecordRaw[] = Object.entries(componentPageModules).m
   }
 })
 
+// Same for the top-level Composables and Directives groups: src/pages/<group>/<name>.vue → /<group>/<name>.
+const groupPageModules = import.meta.glob('./pages/{composables,directives}/*.vue')
+const groupRoutes: RouteRecordRaw[] = Object.entries(groupPageModules).map(([path, loader]) => {
+  const [, group, name] = path.match(/\.\/pages\/(composables|directives)\/([^/]+)\.vue$/)!
+  return {
+    path: `/${group}/${name.toLowerCase()}`,
+    component: loader as RouteRecordRaw['component'],
+    meta: { title: name },
+  }
+})
+
+// Composable pages used to live under Components (until 0.9.3).
+const movedPages: RouteRecordRaw[] = [
+  ['feedback', 'usetoast'], ['feedback', 'usenotification'], ['layout', 'usewindowsizeclass'], ['utility', 'usedevice'],
+].map(([section, name]) => ({ path: `/components/${section}/${name}`, redirect: `/composables/${name}` }))
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     ...componentRoutes,
+    ...groupRoutes,
+    ...movedPages,
+    {
+      path: '/composables',
+      component: () => import('./pages/ComposablesPage.vue'),
+      meta: { title: 'Composables' },
+    },
+    {
+      path: '/directives',
+      component: () => import('./pages/DirectivesPage.vue'),
+      meta: { title: 'Directives' },
+    },
     {
       path: '/',
       component: () => import('./pages/HomePage.vue'),
