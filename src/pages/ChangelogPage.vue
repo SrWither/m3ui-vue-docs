@@ -23,6 +23,7 @@ const versions: Version[] = [
         'Extended FABs come in Material 3 Expressive\'s small, medium and large sizes, with bigger labels, and can collapse to a plain FAB (expanded=false), for example while the page scrolls. The MFab page has a demo',
         'MNavigationRail has a dismissible modal (modal hide-on-collapse): no rail on screen until you open it, then it slides in from the edge and you can swipe it away. Its page has a demo',
         'MBottomSheetScaffold, new: Material 3\'s standard bottom sheet, which stays on screen over the bottom of your content, peeking out until you drag it up, like the list of places over a map. Its page has two demos',
+        'MTopAppBar can react to scrolling: change color, hide while you scroll down and come back when you scroll up, or collapse from medium/large to the small bar. It also has Material 3 Expressive\'s flexible medium and large bars, with bigger titles, and a subtitle. Its page has demos',
       ],
       changed: [
         'An MFab inside an MBottomAppBar takes the bar\'s secondary color and lies flat on it',
