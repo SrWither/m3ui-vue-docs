@@ -13,7 +13,7 @@ const searchBarProps: PropDef[] = [
   { name: 'modelValue', type: 'string', default: "''", description: 'Search query (v-model)' },
   { name: 'expanded', type: 'boolean', description: 'Controls the expanded/collapsed state (v-model:expanded) — also works uncontrolled if omitted' },
   { name: 'placeholder', type: 'string', description: "Defaults to the locale's \"Search...\"" },
-  { name: 'variant', type: "'docked' | 'fullscreen'", default: "'docked'", description: "'docked' grows into a rounded panel anchored below the bar; 'fullscreen' takes over the viewport (the mobile M3 pattern). The leading icon becomes a back button either way once expanded." },
+  { name: 'variant', type: "'docked' | 'fullscreen' | 'fullscreen-contained'", default: "'docked'", description: "'docked' grows into a rounded panel anchored below the bar; 'fullscreen' takes over the viewport (the mobile M3 pattern); 'fullscreen-contained' (Material 3 Expressive) also takes the viewport but keeps the input in its pill shape, with no divider. The leading icon becomes a back button either way once expanded." },
   { name: 'leadingIcon', type: 'string', default: "'search'", description: 'Icon shown in the collapsed bar' },
   { name: 'iconPosition', type: "'start' | 'end'", default: "'start'", description: "Which side of the collapsed bar the leading icon sits on. The expanded panel's back button always stays at the start" },
   { name: 'textAlign', type: "'start' | 'center'", default: "'start'", description: 'Centers the input/placeholder text (an iOS-style look) instead of the M3-standard start alignment' },
@@ -117,8 +117,28 @@ const results = ['Apple pie', 'Apple juice', 'Apple watch', 'Applesauce']`"
     </ComponentDemo>
 
     <ComponentDemo
+      title="Fullscreen, contained"
+      description="variant=&quot;fullscreen-contained&quot; is Material 3 Expressive's contained full-screen search: the screen turns surface-container-low and the input keeps its pill shape at the top, with no divider above the results."
+      :code="`<template>
+  <MSearchBar v-model=&quot;query&quot; variant=&quot;fullscreen-contained&quot; />
+</template>`"
+    >
+      <div class="w-full max-w-md">
+        <MSearchBar v-model="searchBarQuery" variant="fullscreen-contained">
+          <div
+            v-for="result in searchBarResults.filter(r => r.toLowerCase().includes(searchBarQuery.toLowerCase()))"
+            :key="result"
+            class="cursor-pointer px-4 py-3 text-body-large text-on-surface hover:bg-on-surface/8"
+          >
+            {{ result }}
+          </div>
+        </MSearchBar>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
       title="Inside a top app bar"
-      description="MSearchBar is a plain standalone component — drop it in MTopAppBar's #title slot to get the common 'search bar embedded in the app bar' layout, no special integration needed."
+      description="MSearchBar is a plain standalone component — drop it in MTopAppBar's #title slot for a quick 'search bar embedded in the app bar' layout. For Material 3's own app bar with search (flat search bar, scroll colors, hide on scroll), use MAppBarWithSearch."
       :code="`<template>
   <MTopAppBar navigation-icon=&quot;menu&quot;>
     <template #title>
