@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { MIconButton } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
+import EventsTable from '@/components/EventsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
+import type { EventDef } from '@/components/EventsTable.vue'
+
+const toggles = ref({ standard: true, filled: true, tonal: false, outlined: true })
+const playing = ref(false)
+const bookmarked = ref(false)
+const squared = ref({ filled: false, tonal: true })
 
 const iconButtonProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
@@ -14,6 +22,12 @@ const iconButtonProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
   { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
+  { name: 'checked', type: 'boolean', description: 'Makes it a toggle button (v-model:checked): selected colors, a filled icon, and a shape that changes when pressed and when checked. Leave it unset for a plain icon button' },
+  { name: 'checkedIcon', type: 'string', description: "Icon shown while checked, when it differs from icon (e.g. 'pause' for 'play_arrow')" },
+]
+
+const iconButtonEvents: EventDef[] = [
+  { name: 'update:checked', payload: 'boolean', description: 'Emitted on click when checked is set — powers v-model:checked' },
 ]
 </script>
 
@@ -74,8 +88,58 @@ const iconButtonProps: PropDef[] = [
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Toggle"
+      description="Give it checked (v-model:checked) and it becomes an icon toggle button: it fills its icon and takes the selected colors when checked. A round button squares off while checked and a squared one turns round; both squeeze a little while pressed."
+      :code="`<MIconButton v-model:checked=&quot;favorite&quot; icon=&quot;favorite&quot; label=&quot;Favorite&quot; />
+<MIconButton v-model:checked=&quot;favorite&quot; icon=&quot;favorite&quot; label=&quot;Favorite&quot; variant=&quot;filled&quot; />
+<MIconButton v-model:checked=&quot;favorite&quot; icon=&quot;favorite&quot; label=&quot;Favorite&quot; variant=&quot;tonal&quot; />
+<MIconButton v-model:checked=&quot;favorite&quot; icon=&quot;favorite&quot; label=&quot;Favorite&quot; variant=&quot;outlined&quot; />
+
+<!-- squared: round while checked -->
+<MIconButton v-model:checked=&quot;pinned&quot; icon=&quot;push_pin&quot; label=&quot;Pin&quot; variant=&quot;filled&quot; shape=&quot;squared&quot; />`"
+      :script="`import { ref } from 'vue'
+
+const favorite = ref(true)
+const pinned = ref(false)`"
+    >
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <MIconButton v-model:checked="toggles.standard" icon="favorite" label="Favorite" />
+          <MIconButton v-model:checked="toggles.filled" icon="favorite" label="Favorite" variant="filled" />
+          <MIconButton v-model:checked="toggles.tonal" icon="favorite" label="Favorite" variant="tonal" />
+          <MIconButton v-model:checked="toggles.outlined" icon="favorite" label="Favorite" variant="outlined" />
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <MIconButton v-model:checked="squared.filled" icon="push_pin" label="Pin" variant="filled" shape="squared" />
+          <MIconButton v-model:checked="squared.tonal" icon="push_pin" label="Pin" variant="tonal" shape="squared" />
+          <MIconButton v-model:checked="squared.filled" icon="push_pin" label="Pin" variant="filled" shape="squared" size="md" />
+          <MIconButton v-model:checked="squared.tonal" icon="push_pin" label="Pin" variant="tonal" size="md" />
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Different icon when checked"
+      description="checkedIcon swaps the glyph while checked, for pairs like play and pause."
+      :code="`<MIconButton v-model:checked=&quot;playing&quot; icon=&quot;play_arrow&quot; checked-icon=&quot;pause&quot; label=&quot;Play&quot; variant=&quot;filled&quot; size=&quot;md&quot; />
+<MIconButton v-model:checked=&quot;bookmarked&quot; icon=&quot;bookmark&quot; checked-icon=&quot;bookmark_added&quot; label=&quot;Bookmark&quot; />`"
+      :script="`import { ref } from 'vue'
+
+const playing = ref(false)
+const bookmarked = ref(false)`"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <MIconButton v-model:checked="playing" icon="play_arrow" checked-icon="pause" label="Play" variant="filled" size="md" />
+        <MIconButton v-model:checked="bookmarked" icon="bookmark" checked-icon="bookmark_added" label="Bookmark" />
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="iconButtonProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Events</h3>
+    <EventsTable :events="iconButtonEvents" />
 
     <ComponentPager current="MIconButton" />
   </div>

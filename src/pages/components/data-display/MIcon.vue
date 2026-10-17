@@ -8,6 +8,7 @@ import type { PropDef } from '@/components/PropsTable.vue'
 const iconProps: PropDef[] = [
   { name: 'name', type: 'string', description: 'Material Symbol name (e.g. "settings", "favorite") — required' },
   { name: 'size', type: 'number', default: '24', description: 'Icon size in px' },
+  { name: 'filled', type: 'boolean', default: 'false', description: "Filled glyph (the font's FILL axis), as M3 draws a selected icon. Needs the font loaded with FILL, as in Setup" },
 ]
 </script>
 
@@ -65,6 +66,20 @@ const iconProps: PropDef[] = [
         <div class="flex items-center gap-2">
           <MIcon name="star" :size="48" class="text-primary" />
           <span class="text-label-small text-on-surface-variant">48</span>
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Filled"
+      description="filled switches the glyph to its filled version. Material 3 uses it for selected icons, e.g. the active tab of a navigation bar."
+      :code="`<MIcon name=&quot;favorite&quot; />
+<MIcon name=&quot;favorite&quot; filled />`"
+    >
+      <div class="flex flex-wrap items-center gap-6">
+        <div v-for="n in ['favorite', 'home', 'star', 'bookmark', 'notifications']" :key="n" class="flex items-center gap-2">
+          <MIcon :name="n" :size="32" class="text-primary" />
+          <MIcon :name="n" :size="32" filled class="text-primary" />
         </div>
       </div>
     </ComponentDemo>
