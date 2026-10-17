@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '0.9.3',
-    date: 'Unreleased',
+    date: '2026-10-17',
     changes: {
       added: [
         'v-ripple, the first directive: the Material 3 press ripple on any element of your own, like cards, list rows or tiles, in any color. It has its own page in the new Directives section',
