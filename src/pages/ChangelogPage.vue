@@ -24,9 +24,11 @@ const versions: Version[] = [
         'Icon toggle buttons: give MIconButton v-model:checked and it fills its icon, takes the selected colors and changes shape when checked; checkedIcon swaps the icon (play and pause). MIcon has a filled option too. Both pages have demos',
         'MTimeScroll, new: Material 3 Expressive\'s scrolling time picker, an hour wheel and a minute wheel with an AM/PM toggle, in 12 or 24 hours',
         'MTimePickerModal can use those scroll wheels instead of the clock: mode="scroll", with the button at the bottom switching to typing the time. Its page has a demo',
+        'MTabs can put the icon beside the label in a shorter tab (iconPosition="leading"), or above it on secondary tabs (iconPosition="top"). The Tabs page has demos of both',
       ],
       changed: [
         'The docs have Composables and Directives sections next to Components. Every composable has its own page now, with demos: useTheme, useColorPalette, useLocale, usePageProgress, useDebounce and useFieldBg are new, and useToast, useNotification, useWindowSizeClass and useDevice moved there (their old addresses still work)',
+        'Secondary tabs with icons are a little narrower (16px of padding on each side instead of 24px), as in Material 3',
         'Palettes is split in two: Palettes keeps choosing, generating and writing palettes, and the new Colors page lists every color role with its CSS variable and Tailwind classes, and how to use them in your own markup',
       ],
       fixed: [
