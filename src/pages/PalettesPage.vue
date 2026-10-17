@@ -348,6 +348,8 @@ const allTokens = [
     <h2 class="mb-4 text-headline-small font-medium">Color Tokens</h2>
     <p class="mb-4 text-body-medium text-on-surface-variant">
       Each palette defines a full set of M3 design tokens. They update automatically when you switch palettes.
+      Their CSS variables and Tailwind classes, and what each role is for, are on the
+      <RouterLink to="/styles/colors" class="text-primary underline">Colors</RouterLink> page.
     </p>
 
     <MCard class="mb-10 overflow-hidden">

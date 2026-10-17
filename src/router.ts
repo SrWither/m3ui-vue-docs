@@ -135,6 +135,11 @@ const router = createRouter({
       meta: { title: 'Color Palettes' },
     },
     {
+      path: '/styles/colors',
+      component: () => import('./pages/ColorsPage.vue'),
+      meta: { title: 'Colors' },
+    },
+    {
       path: '/styles/typography',
       component: () => import('./pages/TypographyPage.vue'),
       meta: { title: 'Typography' },

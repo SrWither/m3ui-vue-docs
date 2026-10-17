@@ -24,6 +24,7 @@ const versions: Version[] = [
       ],
       changed: [
         'The docs have Composables and Directives sections next to Components. Every composable has its own page now, with demos: useTheme, useColorPalette, useLocale, usePageProgress, useDebounce and useFieldBg are new, and useToast, useNotification, useWindowSizeClass and useDevice moved there (their old addresses still work)',
+        'Palettes is split in two: Palettes keeps choosing, generating and writing palettes, and the new Colors page lists every color role with its CSS variable and Tailwind classes, and how to use them in your own markup',
       ],
     },
   },

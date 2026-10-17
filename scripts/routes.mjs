@@ -56,6 +56,7 @@ const STATIC = [
   },
   { path: '/examples', title: `Examples — ${SITE_NAME}`, description: pageIntro('ExamplesPage.vue').description },
   { path: '/styles/palettes', title: `Color Palettes — ${SITE_NAME}`, description: pageIntro('PalettesPage.vue').description },
+  { path: '/styles/colors', title: `Colors — ${SITE_NAME}`, description: pageIntro('ColorsPage.vue').description },
   { path: '/styles/typography', title: `Typography — ${SITE_NAME}`, description: pageIntro('TypographyPage.vue').description },
   {
     path: '/styles/palette-builder',
