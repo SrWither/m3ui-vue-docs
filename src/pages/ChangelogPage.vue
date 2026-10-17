@@ -25,9 +25,11 @@ const versions: Version[] = [
         'MBottomSheetScaffold, new: Material 3\'s standard bottom sheet, which stays on screen over the bottom of your content, peeking out until you drag it up, like the list of places over a map. Its page has two demos',
         'MTopAppBar can react to scrolling: change color, hide while you scroll down and come back when you scroll up, or collapse from medium/large to the small bar. It also has Material 3 Expressive\'s flexible medium and large bars, with bigger titles, and a subtitle. Its page has demos',
         'MAppBarWithSearch, new: Material 3\'s app bar with a search bar in place of the title, or just the search field floating over the content. It changes color and can hide as you scroll. MSearchBar also has a contained full-screen search, where the field keeps its pill shape. Both pages have demos',
+        'MChip has Material 3\'s four chips: assist chips for actions, filter chips that toggle with a check (and can open a menu), input chips with an avatar and a remove button, and suggestion chips, most of them also elevated. Chips you already use don\'t change. Its page has a demo of all four',
       ],
       changed: [
         'An MFab inside an MBottomAppBar takes the bar\'s secondary color and lies flat on it',
+        'The remove button on a chip is read out in your app\'s language instead of always in Spanish',
       ],
     },
   },
