@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.0.1',
-    date: 'Unreleased',
+    date: '2026-10-17',
     changes: {
       added: [
         'The modal MNavigationDrawer can be swiped closed toward its edge, from any side; on top and bottom the list scrolls first and the drawer follows once it reaches the end. Turn it off with swipe-enabled=false. Its page has a demo of both',
