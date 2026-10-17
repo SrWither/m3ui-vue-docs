@@ -15,7 +15,30 @@ import type { SegmentedOption, SchemeVariant } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import palettesCss from '@m3ui-vue/m3ui-vue/palettes?raw'
 
-const { palette, palettes, set, seed, setSeed } = useColorPalette()
+const { palette, palettes, set, seed, setSeed, contrast, activeContrast, setContrast } = useColorPalette()
+
+// ── Contrast levels ──────────────────────────────────────────────────────────
+const contrastLevelOptions: SegmentedOption[] = [
+  { value: 'standard', label: 'Standard' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'system', label: 'System' },
+]
+const contrastModel = computed({
+  get: () => contrast.value,
+  set: (v: string) => setContrast(v as 'standard' | 'medium' | 'high' | 'system'),
+})
+const contrastImportCode = `@import 'tailwindcss';
+@import '@m3ui-vue/m3ui-vue/theme';
+@import '@m3ui-vue/m3ui-vue/palettes';
+@import '@m3ui-vue/m3ui-vue/palettes-contrast'; /* medium and high, ~27 KB gzipped */
+@import '@m3ui-vue/m3ui-vue/styles';`
+const contrastApiCode = `// First-visit default ('system' follows the OS accessibility setting)
+app.use(createM3UI({ palette: 'teal', contrast: 'system' }))
+
+// At runtime, remembered like the palette
+const { contrast, activeContrast, setContrast } = useColorPalette()
+setContrast('high')`
 
 // ── Dynamic color: the user's own seed ──────────────────────────────────────
 
@@ -294,6 +317,38 @@ const allTokens = [
         </button>
       </div>
     </div>
+
+    <!-- Contrast -->
+    <h2 id="contrast" class="mb-2 text-headline-small font-medium">Contrast</h2>
+    <p class="mb-4 text-body-medium text-on-surface-variant">
+      Material 3's contrast levels, as on Android's accessibility settings: medium and high push text, icons and
+      outlines further from their backgrounds, and turn containers into stronger mid-tone fills. Every palette has
+      them in light and dark, generated from the palette's own colors with Google's algorithm, so the hues stay the
+      same. <code>system</code> follows the device's "increase contrast" setting. A seed palette is regenerated at
+      the chosen level.
+    </p>
+    <MSegmentedButton v-model="contrastModel" :options="contrastLevelOptions" class="mb-4" />
+    <MCard variant="outlined" class="mb-4 p-5">
+      <p class="mb-1 text-title-medium text-on-surface">Weekend in Lisbon</p>
+      <p class="mb-4 text-body-medium text-on-surface-variant">Contrast in use: {{ activeContrast }}. Notice the secondary text, the outline and the containers.</p>
+      <div class="mb-4 flex flex-wrap gap-2">
+        <span class="rounded-md bg-primary-container px-3 py-1.5 text-label-large text-on-primary-container">Primary container</span>
+        <span class="rounded-md bg-secondary-container px-3 py-1.5 text-label-large text-on-secondary-container">Secondary container</span>
+        <span class="rounded-md bg-tertiary-container px-3 py-1.5 text-label-large text-on-tertiary-container">Tertiary container</span>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <MButton>Book</MButton>
+        <MButton variant="tonal">Save</MButton>
+        <MButton variant="outlined">Share</MButton>
+        <MButton variant="text">Details</MButton>
+      </div>
+    </MCard>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      The built-in palettes' medium and high levels are a separate stylesheet, so apps that don't use them don't
+      load them:
+    </p>
+    <MCodeEditor :model-value="contrastImportCode" language="css" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" class="mb-3" />
+    <MCodeEditor :model-value="contrastApiCode" language="javascript" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" class="mb-10" />
 
     <!-- Dynamic color -->
     <h2 id="seed" class="mb-2 text-headline-small font-medium">Your Own Color</h2>

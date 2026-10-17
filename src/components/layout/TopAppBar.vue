@@ -9,6 +9,7 @@ import {
   useTheme,
   useColorPalette,
   MColorPickerModal,
+  MSegmentedButton,
 } from "@m3ui-vue/m3ui-vue";
 import { spotlightOpen } from "@/composables/useSpotlightSearch";
 import {
@@ -30,7 +31,16 @@ import {
 defineEmits<{ menuClick: [] }>();
 
 const { theme, cycle } = useTheme();
-const { palette, palettes: paletteList, set: setPalette, seed, setSeed } = useColorPalette();
+const { palette, palettes: paletteList, set: setPalette, seed, setSeed, contrast, setContrast } = useColorPalette();
+const contrastOptions = [
+  { value: 'standard', label: 'Default' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+];
+const contrastModel = computed({
+  get: () => (contrast.value === 'system' ? 'standard' : contrast.value),
+  set: (v: string) => setContrast(v as 'standard' | 'medium' | 'high'),
+});
 
 // "Your own color": the whole site's scheme generated from a seed (dynamic color)
 const seedPickerOpen = ref(false);
@@ -163,6 +173,8 @@ const themeLabel = computed(() => {
               </span>
               <span class="flex-1">Your own color…</span>
             </button>
+            <p class="mb-2 mt-3 text-label-large font-medium text-on-surface">Contrast</p>
+            <MSegmentedButton v-model="contrastModel" :options="contrastOptions" density="compact" />
           </div>
         </MMenu>
         <MColorPickerModal
@@ -434,6 +446,8 @@ const themeLabel = computed(() => {
                   </span>
                   <span class="flex-1">Your own color…</span>
                 </button>
+                <p class="mb-2 mt-3 text-label-large font-medium text-on-surface">Contrast</p>
+                <MSegmentedButton v-model="contrastModel" :options="contrastOptions" density="compact" />
               </div>
             </MMenu>
 

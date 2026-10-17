@@ -27,6 +27,7 @@ const versions: Version[] = [
         'MAppBarWithSearch, new: Material 3\'s app bar with a search bar in place of the title, or just the search field floating over the content. It changes color and can hide as you scroll. MSearchBar also has a contained full-screen search, where the field keeps its pill shape. Both pages have demos',
         'MChip has Material 3\'s four chips: assist chips for actions, filter chips that toggle with a check (and can open a menu), input chips with an avatar and a remove button, and suggestion chips, most of them also elevated. Chips you already use don\'t change. Its page has a demo of all four',
         'Material 3\'s motion tokens for your own animations: easing curves as Tailwind classes (ease-emphasized and friends), durations as CSS variables, and the Standard and Expressive springs with useSpring, the same spring the components use. See the new Styles → Motion page and the useSpring page, both with examples',
+        'Contrast levels: every palette now comes in medium and high contrast too, light and dark, like Android\'s accessibility setting, or following the device\'s own "increase contrast". Try it in the palette menu at the top of this site; the Palettes page shows how to turn it on',
       ],
       changed: [
         'An MFab inside an MBottomAppBar takes the bar\'s secondary color and lies flat on it',
