@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.0.0',
-    date: 'Unreleased',
+    date: '2026-10-17',
     changes: {
       added: [
         'MBottomAppBar, new: Material 3\'s bottom app bar, with actions and a FAB at the bottom of the screen, and the shorter flexible bar of Material 3 Expressive with its actions spread out. It can hide while you scroll down and come back when you scroll up. Its page has demos of all three',
