@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       added: [
         'MBottomAppBar, new: Material 3\'s bottom app bar, with actions and a FAB at the bottom of the screen, and the shorter flexible bar of Material 3 Expressive with its actions spread out. It can hide while you scroll down and come back when you scroll up. Its page has demos of all three',
+        'Extended FABs come in Material 3 Expressive\'s small, medium and large sizes, with bigger labels, and can collapse to a plain FAB (expanded=false), for example while the page scrolls. The MFab page has a demo',
       ],
       changed: [
         'An MFab inside an MBottomAppBar takes the bar\'s secondary color and lies flat on it',

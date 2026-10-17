@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MFab, MCard } from '@m3ui-vue/m3ui-vue'
+import { MFab, MCard, MSwitch } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import TypesTable from '@/components/TypesTable.vue'
@@ -9,11 +9,14 @@ import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
 
+const fabExpanded = ref(true)
+
 const fabProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'label', type: 'string', description: 'Extended FAB label text' },
-  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'surface'", default: "'primary'", description: 'Color scheme' },
-  { name: 'size', type: "'small' | 'regular' | 'medium' | 'large'", default: "'regular'", description: 'FAB size' },
+  { name: 'expanded', type: 'boolean', default: 'true', description: 'Extended FAB only: false collapses it to a plain FAB (the label fades out and the width shrinks to a square), e.g. while the content scrolls' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'surface'", default: "'primary' ('secondary' in MBottomAppBar)", description: 'Color scheme' },
+  { name: 'size', type: "'small' | 'regular' | 'medium' | 'large'", default: "'regular'", description: "FAB size. With a label, small/medium/large are M3 Expressive's extended FABs (56/80/96px with bigger labels); regular is the baseline extended FAB" },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
   { name: 'items', type: 'SpeedDialItem[]', description: 'Speed-dial child items (see the type below)' },
   { name: 'direction', type: "'up' | 'down' | 'left' | 'right' | 'radial'", default: "'up'", description: 'Speed-dial expand direction' },
@@ -110,6 +113,28 @@ function toggleLayer(id: string) {
     >
       <MFab icon="add" label="New item" />
       <MFab icon="edit" label="Compose" color="tertiary" />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Extended FAB Sizes"
+      description="M3 Expressive's small, medium and large extended FABs: 56, 80 and 96px tall, with title-medium, title-large and headline-small labels. Toggle the switch to collapse them to plain FABs, as you would while the content scrolls."
+      :code="`<MFab icon=&quot;edit&quot; label=&quot;Compose&quot; size=&quot;small&quot; :expanded=&quot;expanded&quot; />
+<MFab icon=&quot;edit&quot; label=&quot;Compose&quot; size=&quot;medium&quot; :expanded=&quot;expanded&quot; />
+<MFab icon=&quot;edit&quot; label=&quot;Compose&quot; size=&quot;large&quot; :expanded=&quot;expanded&quot; />`"
+      :script="`const expanded = ref(true)`"
+    >
+      <div class="flex flex-col gap-4">
+        <label class="flex items-center gap-3 text-body-medium">
+          <MSwitch v-model="fabExpanded" />
+          Expanded
+        </label>
+        <div class="flex flex-wrap items-end gap-4">
+          <MFab icon="edit" label="Compose" :expanded="fabExpanded" />
+          <MFab icon="edit" label="Compose" size="small" :expanded="fabExpanded" />
+          <MFab icon="edit" label="Compose" size="medium" :expanded="fabExpanded" />
+          <MFab icon="edit" label="Compose" size="large" :expanded="fabExpanded" />
+        </div>
+      </div>
     </ComponentDemo>
 
     <ComponentDemo
