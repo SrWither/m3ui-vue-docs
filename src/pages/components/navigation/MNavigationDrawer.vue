@@ -21,6 +21,7 @@ const drawerProps: PropDef[] = [
   { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons — inline variant only' },
   { name: 'width', type: 'string', description: 'Custom drawer width (e.g. "320px", "25rem"). Defaults to 22.5rem (360px)' },
   { name: 'side', type: "'left' | 'right' | 'top' | 'bottom'", default: "'left'", description: 'Which side the drawer opens from. Top/bottom are only available for the modal variant — the inline variant always renders on left or right.' },
+  { name: 'swipeEnabled', type: 'boolean', default: 'true', description: 'Lets the modal drawer be swiped closed toward its edge; with false it only closes through v-model or the scrim' },
 ]
 
 const drawerSlots: SlotDef[] = [
@@ -66,6 +67,7 @@ const S = { iconSize: 24, labelClass: 'text-label-large', py: 'py-2.5' } as cons
 
 const drawerOpen = ref(false)
 const drawerSelected = ref<string | number>('inbox')
+const noSwipeOpen = ref(false)
 const drawerSections: DrawerSection[] = [
   {
     title: 'Mail',
@@ -208,12 +210,12 @@ const customWidthSelected = ref<string | number>('w-home')
     <h1 class="mb-2 text-headline-large font-medium">MNavigationDrawer</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       A slide-out or inline drawer of grouped, badge-able, optionally-nested navigation items — modal
-      (Teleported, scrim-backed) or inline (participates in layout, supports a collapsed icon-only mode).
+      (Teleported, scrim-backed, swiped closed toward its edge) or inline (participates in layout, supports a collapsed icon-only mode).
     </p>
 
     <ComponentDemo
       title="Modal Drawer"
-      description="Slide-out drawer with grouped items and badges."
+      description="Slide-out drawer with grouped items and badges. Swipe it toward its edge to close it (past half its width, or with a quick flick), as in Compose's ModalNavigationDrawer."
       :code="`<MButton @click=&quot;open = true&quot;>Open Drawer</MButton>
 <MNavigationDrawer
   v-model=&quot;open&quot;
@@ -251,6 +253,32 @@ const sections = [
         :sections="drawerSections"
         :selected="drawerSelected"
         title="My App"
+        @select="drawerSelected = $event"
+      />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Swipe Disabled"
+      description="With :swipe-enabled=&quot;false&quot; the drawer ignores drags and only closes through v-model, the scrim, or selecting an item. Useful when its content has horizontal gestures of its own (sliders, carousels)."
+      :code="`<MNavigationDrawer
+  v-model=&quot;open&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  :swipe-enabled=&quot;false&quot;
+  title=&quot;No swipe&quot;
+  @select=&quot;selected = $event&quot;
+/>`"
+    >
+      <div class="flex items-center gap-4">
+        <MButton icon="menu" @click="noSwipeOpen = true">Open Drawer</MButton>
+        <span class="text-body-medium text-on-surface-variant">Selected: {{ drawerSelected }}</span>
+      </div>
+      <MNavigationDrawer
+        v-model="noSwipeOpen"
+        :sections="drawerSections"
+        :selected="drawerSelected"
+        :swipe-enabled="false"
+        title="No swipe"
         @select="drawerSelected = $event"
       />
     </ComponentDemo>
@@ -508,7 +536,7 @@ const sections = [
 
     <ComponentDemo
       title="Side"
-      description="Use the side prop to open the modal drawer from any direction. The inline variant only supports left/right."
+      description="Use the side prop to open the modal drawer from any direction. The inline variant only supports left/right. Every side can be swiped toward its edge to close; on top and bottom the list scrolls first, and the drawer follows once the list reaches its end."
       :code="`<MNavigationDrawer v-model=&quot;open&quot; side=&quot;right&quot; :sections=&quot;sections&quot; ... />
 <MNavigationDrawer v-model=&quot;open&quot; side=&quot;top&quot; :sections=&quot;sections&quot; ... />
 <MNavigationDrawer v-model=&quot;open&quot; side=&quot;bottom&quot; :sections=&quot;sections&quot; ... />`"
