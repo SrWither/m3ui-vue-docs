@@ -25,6 +25,9 @@ const versions: Version[] = [
         'The modal MNavigationDrawer opens and closes with Material 3\'s springs, with a slight bounce, and stays smooth on phones',
         'Bottom and side sheets, the dismissible navigation rail, menus, context menus and MTransition open and close more smoothly on phones',
       ],
+      fixed: [
+        'Dragging MBottomSheetScaffold and pulling MPullToRefresh no longer stutter on 120Hz phones',
+      ],
     },
   },
   {
