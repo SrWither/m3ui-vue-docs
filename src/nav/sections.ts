@@ -36,13 +36,13 @@ export const iconMap: Record<string, string> = {
   MMarkdown: 'article', MTerminal: 'terminal', MRichTextEditor: 'format_bold',
   MCalendar: 'calendar_month', MScheduler: 'event_note', MKanban: 'view_kanban',
   MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MShader: 'gradient',
-  useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useFieldBg: 'format_color_fill',
+  useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useSpring: 'animation', useFieldBg: 'format_color_fill',
   'v-ripple': 'touch_app',
 }
 
 // Top-level groups outside Components (Composables, Directives): one page per entry under
 // src/pages/<group>/<name>.vue, routed at /<group>/<lowercased name>.
-export const composableNames = ['useTheme', 'useColorPalette', 'useLocale', 'useToast', 'useNotification', 'usePageProgress', 'useWindowSizeClass', 'useDevice', 'useDebounce', 'useFieldBg']
+export const composableNames = ['useTheme', 'useColorPalette', 'useLocale', 'useToast', 'useNotification', 'usePageProgress', 'useWindowSizeClass', 'useDevice', 'useDebounce', 'useSpring', 'useFieldBg']
 export const directiveNames = ['v-ripple']
 
 function pages(base: string, names: string[]): DrawerItem[] {
@@ -134,6 +134,7 @@ export const sections: DrawerSection[] = [
       { value: '/styles/colors', label: 'Colors', icon: 'format_color_fill', to: '/styles/colors' },
       { value: '/styles/typography', label: 'Typography', icon: 'text_fields', to: '/styles/typography' },
       { value: '/styles/shapes', label: 'Shapes', icon: 'rounded_corner', to: '/styles/shapes' },
+      { value: '/styles/motion', label: 'Motion', icon: 'motion_mode', to: '/styles/motion' },
       { value: '/styles/palette-builder', label: 'Palette Builder', icon: 'auto_fix_high', to: '/styles/palette-builder' },
     ],
   },

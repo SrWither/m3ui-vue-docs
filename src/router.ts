@@ -150,6 +150,11 @@ const router = createRouter({
       meta: { title: 'Shapes' },
     },
     {
+      path: '/styles/motion',
+      component: () => import('./pages/MotionPage.vue'),
+      meta: { title: 'Motion' },
+    },
+    {
       path: '/styles/palette-builder',
       component: () => import('./pages/PaletteBuilderPage.vue'),
       meta: { title: 'Palette Builder' },
