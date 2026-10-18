@@ -8,6 +8,7 @@ import {
   MIcon,
   useTheme,
   useColorPalette,
+  useDevice,
   MColorPickerModal,
   MSegmentedButton,
 } from "@m3ui-vue/m3ui-vue";
@@ -31,6 +32,8 @@ import {
 defineEmits<{ menuClick: [] }>();
 
 const { theme, cycle } = useTheme();
+// The drawer is permanent from md (768px) up, so the menu button only shows below it
+const { isMobile } = useDevice();
 const { palette, palettes: paletteList, set: setPalette, seed, setSeed, contrast, setContrast } = useColorPalette();
 const contrastOptions = [
   { value: 'standard', label: 'Default' },
@@ -65,9 +68,8 @@ const themeLabel = computed(() => {
 
 <template>
   <MTopAppBar
-    navigation-icon="menu"
+    :navigation-icon="isMobile ? 'menu' : undefined"
     :bordered="true"
-    class="md:[&>div>button:first-child]:hidden"
     @navigation="$emit('menuClick')"
   >
     <template #title>
