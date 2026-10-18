@@ -208,9 +208,10 @@ const white = 'text-white! [&_.material-symbols-outlined]:drop-shadow-[0_1px_2px
 
 <template>
   <div
-    class="flk-player group/player relative overflow-hidden bg-black text-white select-none"
+    class="flk-player group/player overflow-hidden bg-black text-white select-none"
     :class="{
       'fixed inset-0 z-40': mode === 'full',
+      relative: mode !== 'full',
       'h-[min(56.25vw,calc(100dvh-170px))]': mode === 'theater',
       'cursor-none': !shown && playing,
     }"
