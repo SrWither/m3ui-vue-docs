@@ -154,6 +154,16 @@ import { examples, exampleSource } from '@/examples/registry'
               <span v-for="n in 3" :key="n" class="h-1.5 w-1.5 rounded-full bg-on-surface-variant/60" />
             </span>
           </div>
+          <!-- A tiny video site: a player with its timeline over a row of thumbnails -->
+          <div v-else-if="e.id === 'flick'" class="absolute inset-[12%] flex flex-col gap-[5%] rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span class="relative flex flex-[3] items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-primary/80 via-tertiary/60 to-secondary-container">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white"><MIcon name="play_arrow" :size="20" /></span>
+              <span class="absolute inset-x-[4%] bottom-[8%] h-1 rounded-full bg-white/40"><span class="absolute inset-y-0 left-0 w-[35%] rounded-full bg-primary" /></span>
+            </span>
+            <span class="flex flex-1 gap-[4%]">
+              <span v-for="n in 3" :key="n" class="flex-1 rounded-md" :class="['bg-primary-container', 'bg-tertiary-container', 'bg-secondary-container'][n - 1]" />
+            </span>
+          </div>
           <!-- A tiny desktop: two windows and a taskbar -->
           <template v-else>
           <div class="absolute top-[18%] left-[12%] h-[46%] w-[42%] rounded-lg bg-surface shadow-elevation-1 transition-transform duration-300 group-hover:-translate-y-1">

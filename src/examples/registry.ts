@@ -108,6 +108,15 @@ export const examples: ExampleApp[] = [
     uses: ['MStepper', 'MTextField', 'MMaskField', 'MSelect', 'MRadioGroup', 'MSimpleCarousel', 'MSupportingPane', 'MSideSheet', 'MLightbox', 'MRating', 'MResult'],
     component: () => import('./store/StoreExample.vue'),
   },
+  {
+    id: 'flick',
+    title: 'Flick',
+    description:
+      'A video site whose videos really play, each one a live shader: a home grid with topics and Shorts, a player with seek previews, speed, quality, theater and full screen, comments, a mini player you swipe away, vertical Shorts, channels, search and your playlists.',
+    icon: 'smart_display',
+    uses: ['MShader', 'MNavigationDrawer', 'MShortNavigationBar', 'MSearchBar', 'MSlider', 'MMenu', 'MButtonGroup', 'MCarousel', 'MSwipeToDismiss', 'MAspectRatio', 'MBottomSheet', 'MQRCode', 'usePageProgress'],
+    component: () => import('./flick/FlickExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
