@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '1.0.2',
     date: 'Unreleased',
     changes: {
+      added: [
+        'A new example, Flick: a video site whose videos really play, each one a live shader, with a player that seeks with previews, changes speed and quality and goes theater or full screen, comments, a mini player you swipe away, vertical Shorts, channels, search and your playlists',
+      ],
       fixed: [
         'MShader applies a new pixel-ratio right away instead of on the next resize, so it works as a quality setting. Its page lists the uniforms it declares for you',
         'The API reference for AI agents (dist/API.md, llms.txt) no longer cuts descriptions short where they mention an event like @debounced or @click',
