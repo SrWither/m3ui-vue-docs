@@ -70,6 +70,7 @@ const STATIC = [
     title: `Changelog — ${SITE_NAME}`,
     description: 'All notable changes to @m3ui-vue/m3ui-vue, version by version.',
   },
+  { path: '/about', title: `About — ${SITE_NAME}`, description: pageIntro('AboutPage.vue').description },
 ]
 
 function sectionRoutes() {

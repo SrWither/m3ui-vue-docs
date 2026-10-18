@@ -164,6 +164,11 @@ const router = createRouter({
       component: () => import('./pages/ChangelogPage.vue'),
       meta: { title: 'Changelog' },
     },
+    {
+      path: '/about',
+      component: () => import('./pages/AboutPage.vue'),
+      meta: { title: 'About' },
+    },
   ],
 })
 
