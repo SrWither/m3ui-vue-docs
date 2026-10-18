@@ -186,6 +186,8 @@ function applyPreview() {
 }
 
 function clearPreview() {
+  // Unmounting without an active preview must leave the user's palette alone
+  if (!isPreviewing.value) return
   styleEl?.remove()
   styleEl = null
   if (prevPalette !== null) document.documentElement.setAttribute('data-palette', prevPalette)
