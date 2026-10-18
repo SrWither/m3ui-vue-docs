@@ -15,6 +15,16 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.0.2',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'MShader applies a new pixel-ratio right away instead of on the next resize, so it works as a quality setting. Its page lists the uniforms it declares for you',
+        'The API reference for AI agents (dist/API.md, llms.txt) no longer cuts descriptions short where they mention an event like @debounced or @click',
+      ],
+    },
+  },
+  {
     version: '1.0.1',
     date: '2026-10-17',
     changes: {

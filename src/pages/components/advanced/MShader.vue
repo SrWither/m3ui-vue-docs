@@ -272,12 +272,12 @@ function shuffleHeroHue() {
 const isPaused = ref(false)
 
 const shaderProps: PropDef[] = [
-  { name: 'code', type: 'string', description: 'GLSL fragment shader (Shadertoy-style: define `mainImage(out vec4 fragColor, in vec2 fragCoord)`). Runs on WebGL2, the always-available baseline. Required — there is no default.' },
+  { name: 'code', type: 'string', description: 'GLSL fragment shader (Shadertoy-style: define `mainImage(out vec4 fragColor, in vec2 fragCoord)`). Runs on WebGL2, the always-available baseline. Required — there is no default. Don\'t write `#version`, the precision or uniforms: MShader adds them, with `iTime`, `iResolution`, `iMouse`, `iFrame` and one per `uniforms` key.' },
   { name: 'wgsl', type: 'string', description: 'Optional WGSL fragment shader (define `fs_main`). Runs on WebGPU when available and selected.' },
   { name: 'renderer', type: "'auto' | 'webgpu' | 'webgl'", default: "'auto'", description: "'auto' uses WebGPU when `wgsl` is set and supported, else WebGL2" },
-  { name: 'uniforms', type: 'Record<string, number | number[]>', description: 'Custom uniforms. Keys are locked in at mount; values update every frame.' },
+  { name: 'uniforms', type: 'Record<string, number | number[]>', description: 'Custom uniforms, declared for you in GLSL (`float` for a number, `vec2`–`vec4` for an array). Keys are locked in when the shader compiles; values update every frame, so they can drive the shader from your own clock instead of `iTime`.' },
   { name: 'paused', type: 'boolean', default: 'false', description: 'Freezes the render loop and the shader clock' },
-  { name: 'pixelRatio', type: 'number', default: 'devicePixelRatio (capped at 2)', description: 'Backing store resolution multiplier' },
+  { name: 'pixelRatio', type: 'number', default: 'devicePixelRatio (capped at 2)', description: 'Device pixels per CSS pixel to render at. Lower it to render fewer pixels (a quality setting); the canvas resizes as soon as it changes.' },
 ]
 
 const shaderEvents: EventDef[] = [
