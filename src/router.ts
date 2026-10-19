@@ -59,6 +59,11 @@ const router = createRouter({
       meta: { title: 'Setup' },
     },
     {
+      path: '/getting-started/nuxt',
+      component: () => import('./pages/NuxtPage.vue'),
+      meta: { title: 'Nuxt & SSR' },
+    },
+    {
       path: '/getting-started/i18n',
       component: () => import('./pages/I18nPage.vue'),
       meta: { title: 'Internationalization (i18n)' },

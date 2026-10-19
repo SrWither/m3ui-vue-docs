@@ -1,0 +1,231 @@
+<script setup lang="ts">
+import { MCard, MIcon } from '@m3ui-vue/m3ui-vue'
+import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
+import PropsTable from '@/components/PropsTable.vue'
+import type { PropDef } from '@/components/PropsTable.vue'
+
+const installCode = `pnpm add @m3ui-vue/nuxt @m3ui-vue/m3ui-vue
+pnpm add -D tailwindcss @tailwindcss/vite`
+
+const configCode = `// nuxt.config.ts
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineNuxtConfig({
+  modules: ['@m3ui-vue/nuxt'],
+  css: ['~/assets/main.css'],
+  vite: { plugins: [tailwindcss()] },
+  app: {
+    head: {
+      link: [
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400&display=swap' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block' },
+      ],
+    },
+  },
+  m3ui: {
+    palette: 'teal',
+    locale: 'es',
+  },
+})`
+
+const cssCode = `/* assets/main.css */
+@import 'tailwindcss';
+@import '@m3ui-vue/m3ui-vue/theme';
+@import '@m3ui-vue/m3ui-vue/palettes';`
+
+const usageCode = `<template>
+  <MButton icon="save" @click="toast.success('Saved')">Save</MButton>
+</template>
+
+<script setup lang="ts">
+// No imports: components and composables are auto-imported
+const toast = useM3Toast()
+<\/script>`
+
+const clientOnlyCode = `<template>
+  <ClientOnly>
+    <MIconButton :icon="theme === 'dark' ? 'dark_mode' : 'light_mode'" label="Switch theme" @click="cycle" />
+  </ClientOnly>
+</template>
+
+<script setup lang="ts">
+const { theme, cycle } = useM3Theme()
+<\/script>`
+
+const viteSsrCode = `// entry-client.ts
+import { createSSRApp } from 'vue'
+import { createM3UI } from '@m3ui-vue/m3ui-vue'
+import App from './App.vue'
+
+const app = createSSRApp(App)
+let hydrating = true
+app.use(createM3UI({ palette: 'teal', isHydrating: () => hydrating }))
+app.mount('#app')
+hydrating = false`
+
+const headScriptCode = `// entry-server.ts: inline it in <head>, before your stylesheets
+import { themeInitScript } from '@m3ui-vue/m3ui-vue'
+
+const head = \`<script>\${themeInitScript({ palette: 'teal' })}<\/script>\``
+
+const options: PropDef[] = [
+  { name: 'palette', type: 'string', description: 'The first-visit palette, as in createM3UI(). A palette the user picked later wins.' },
+  { name: 'seed / seedOptions', type: 'string / SeedOptions', description: 'Generate the scheme from one color instead of a named palette, as in createM3UI().' },
+  { name: 'contrast', type: "'standard' | 'medium' | 'high' | 'system'", description: 'The first-visit contrast level, as in createM3UI().' },
+  { name: 'persistPalette', type: 'boolean', default: 'true', description: 'false makes palette and contrast a hard default that always wins, as in createM3UI().' },
+  { name: 'customPalettes', type: 'Palette[]', description: 'Your own palettes, added to useM3ColorPalette().palettes.' },
+  { name: 'themeColor', type: 'string', description: 'Keep <meta name="theme-color"> in sync with a color role, as in createM3UI().' },
+  { name: 'locale', type: "'es' | 'fr' | 'pt' | 'de' | 'ja' | 'zh' | 'ko' | Partial<M3Locale>", default: 'English', description: "A preset's language code (only that preset is bundled), or your own strings." },
+  { name: 'components', type: 'boolean', default: 'true', description: 'Auto-import the components. Each one is bundled only where it is used.' },
+  { name: 'composables', type: 'boolean | { prefix: string }', default: "{ prefix: 'M3' }", description: 'Auto-import the composables with this prefix (useTheme becomes useM3Theme). false to import them yourself.' },
+  { name: 'css', type: 'boolean', default: 'true', description: "Add the components' own stylesheet (@m3ui-vue/m3ui-vue/styles)." },
+  { name: 'themeScript', type: 'boolean', default: 'true', description: 'Inline themeInitScript() in <head>, so the saved theme is on the page before it paints.' },
+]
+</script>
+
+<template>
+  <div>
+    <h1 class="mb-2 text-headline-large font-medium">Nuxt & SSR</h1>
+    <p class="mb-6 text-body-large text-on-surface-variant">
+      Use M3UI Vue in Nuxt with the official module, or in any server-rendered Vue app. Pages render on the server
+      with the user's dark mode and palette already applied, without a flash of the default theme.
+    </p>
+
+    <MCard class="mb-8 flex items-start gap-3 p-4">
+      <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <p class="text-body-medium text-on-surface">
+        Server-side rendering needs <strong>@m3ui-vue/m3ui-vue 1.0.2</strong> or later. The module's source and
+        a playground app live in
+        <a href="https://github.com/SrWither/m3ui-vue-nuxt" class="text-primary underline">SrWither/m3ui-vue-nuxt</a>.
+      </p>
+    </MCard>
+
+    <!-- Install -->
+    <h2 class="mb-4 text-headline-small font-medium">Install</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Add the module and the library, plus Tailwind CSS v4 and its Vite plugin if your project doesn't use them yet.
+    </p>
+    <MCodeEditor :model-value="installCode" language="javascript" :readonly="true" :line-numbers="false" min-height="50px" max-height="100px" class="mb-6" />
+
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Register the module and set its options under <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">m3ui</code>.
+      The fonts load the same way as in the <RouterLink to="/getting-started/setup" class="text-primary underline">Setup</RouterLink> guide,
+      here through <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">app.head</code>.
+    </p>
+    <MCodeEditor :model-value="configCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="500px" class="mb-6" />
+
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      The theme and the palettes are Tailwind CSS, so they go in your own stylesheet, after Tailwind. The module adds
+      the components' stylesheet by itself.
+    </p>
+    <MCodeEditor :model-value="cssCode" language="css" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" class="mb-10" />
+
+    <!-- Usage -->
+    <h2 class="mb-4 text-headline-small font-medium">Components and composables</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Every component works in any page or component without importing it. The ones with an optional dependency
+      (<code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MChart</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MCodeEditor</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MRichTextEditor</code>…) are
+      registered once that dependency is installed.
+    </p>
+    <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-6" />
+
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Composables are auto-imported with an <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">M3</code>
+      prefix, since names like <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useTheme</code> and
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useDevice</code> are common in other
+      modules. Importing them from <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@m3ui-vue/m3ui-vue</code>
+      under their own names still works.
+    </p>
+    <ul class="mb-10 grid gap-px overflow-hidden rounded-xl border border-outline-variant bg-outline-variant text-body-medium sm:grid-cols-2">
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useTheme</code> &rarr; <code class="font-mono text-primary">useM3Theme</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useColorPalette</code> &rarr; <code class="font-mono text-primary">useM3ColorPalette</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useToast</code> &rarr; <code class="font-mono text-primary">useM3Toast</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useNotification</code> &rarr; <code class="font-mono text-primary">useM3Notification</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useLocale</code> &rarr; <code class="font-mono text-primary">useM3Locale</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useDevice</code> &rarr; <code class="font-mono text-primary">useM3Device</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useWindowSizeClass</code> &rarr; <code class="font-mono text-primary">useM3WindowSizeClass</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFieldBg</code> &rarr; <code class="font-mono text-primary">useM3FieldBg</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useDebounce</code> &rarr; <code class="font-mono text-primary">useM3Debounce</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">usePageProgress</code> &rarr; <code class="font-mono text-primary">useM3PageProgress</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5 sm:col-span-2"><code class="font-mono text-on-surface-variant">useSpring</code> &rarr; <code class="font-mono text-primary">useM3Spring</code></li>
+    </ul>
+
+    <!-- Options -->
+    <h2 class="mb-4 text-headline-small font-medium">Module options</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Everything <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">createM3UI()</code> takes,
+      plus what the module itself does.
+    </p>
+    <PropsTable :props="options" class="mb-10" />
+
+    <!-- SSR -->
+    <h2 class="mb-4 text-headline-small font-medium">What the server knows</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      The user's theme lives in their browser's storage and their screen size in their browser, so the server
+      renders the page without either. Three things follow from that.
+    </p>
+
+    <MCard class="mb-4 flex items-start gap-3 p-4">
+      <MIcon name="dark_mode" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <div>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">Theme-dependent UI goes in ClientOnly</p>
+        <p class="text-body-medium text-on-surface-variant">
+          A small script in <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;head&gt;</code>
+          applies the saved dark mode, palette and contrast before the page paints, so it looks right from the start.
+          But <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3Theme()</code> and
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3ColorPalette()</code> report
+          the defaults on the server and switch to the user's choice on the client. Anything rendered from them, like
+          a theme toggle's icon or a selected palette swatch, belongs in
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;ClientOnly&gt;</code>, or
+          Vue reports a hydration mismatch.
+        </p>
+      </div>
+    </MCard>
+    <MCodeEditor :model-value="clientOnlyCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-4" />
+
+    <MCard class="mb-4 flex items-start gap-3 p-4">
+      <MIcon name="devices" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <div>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">Adaptive layouts start compact</p>
+        <p class="text-body-medium text-on-surface-variant">
+          <RouterLink to="/components/layout/mnavigationsuite" class="text-primary underline">MNavigationSuite</RouterLink>,
+          <RouterLink to="/components/layout/mlistdetail" class="text-primary underline">MListDetail</RouterLink> and
+          <RouterLink to="/components/layout/msupportingpane" class="text-primary underline">MSupportingPane</RouterLink>
+          adapt to their own size, which the server can't measure. They render their compact layout there and
+          switch to the one that fits as soon as the page is interactive.
+        </p>
+      </div>
+    </MCard>
+
+    <MCard class="mb-10 flex items-start gap-3 p-4">
+      <MIcon name="palette" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <div>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">A seed color shows up on load</p>
+        <p class="text-body-medium text-on-surface-variant">
+          A scheme generated from a <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">seed</code>
+          is computed by the app, so on a first visit the page shows the default palette until it loads. Later
+          visits reuse the saved scheme and paint with it right away.
+        </p>
+      </div>
+    </MCard>
+
+    <!-- Without Nuxt -->
+    <h2 class="mb-4 text-headline-small font-medium">Without Nuxt</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      For your own server rendering (Vite SSR or similar), do what the module does. On the client, tell the plugin
+      when hydration ends with <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">isHydrating</code>,
+      so the adaptive layouts match the server's HTML:
+    </p>
+    <MCodeEditor :model-value="viteSsrCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-6" />
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      On the server, inline <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">themeInitScript()</code>
+      in the page's <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;head&gt;</code>, with the
+      same <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">palette</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">contrast</code> and
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">persistPalette</code> you give the plugin:
+    </p>
+    <MCodeEditor :model-value="headScriptCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" class="mb-10" />
+  </div>
+</template>

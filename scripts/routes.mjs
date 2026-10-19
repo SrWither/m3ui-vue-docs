@@ -50,6 +50,11 @@ const STATIC = [
     description: 'Install M3UI Vue, add the Tailwind CSS v4 theme and fonts, and start using Material Design 3 components in your Vue 3 app.',
   },
   {
+    path: '/getting-started/nuxt',
+    title: `Nuxt & SSR — ${SITE_NAME}`,
+    description: pageIntro('NuxtPage.vue').description,
+  },
+  {
     path: '/getting-started/i18n',
     title: `Internationalization (i18n) — ${SITE_NAME}`,
     description: pageIntro('I18nPage.vue').description,

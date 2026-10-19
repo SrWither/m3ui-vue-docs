@@ -104,6 +104,16 @@ const optionalDeps = [
     </MCard>
 
     <MCard class="mb-8 flex items-start gap-3 p-4">
+      <MIcon name="dns" :size="22" class="mt-0.5 shrink-0 text-primary" />
+      <div>
+        <p class="text-body-medium font-medium text-on-surface">
+          Using Nuxt? The <RouterLink to="/getting-started/nuxt" class="text-primary underline">Nuxt &amp; SSR</RouterLink>
+          guide sets everything up with one module, server rendering included.
+        </p>
+      </div>
+    </MCard>
+
+    <MCard class="mb-8 flex items-start gap-3 p-4">
       <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <div>
         <p class="text-body-medium font-medium text-on-surface">

@@ -76,9 +76,16 @@ function openingTag(text, tag) {
   return null
 }
 
+/** A page's script and template. Split at the script's real end: code samples in the script can contain
+ * `<template>`, but always write a closing script tag as `<\/script>`. */
+function splitPage(text) {
+  const end = text.indexOf('</script>')
+  return { script: text.slice(0, Math.max(end, 0)), template: text.slice(text.indexOf('<template>', Math.max(end, 0))) }
+}
+
 function pageInfo(section, name) {
   const text = read(`src/pages/${section}/${name}.vue`)
-  const template = text.slice(text.indexOf('<template>'))
+  const { template } = splitPage(text)
   const intro = template.match(/<\/h1>\s*<p[^>]*>([\s\S]*?)<\/p>/)
   // The first demo is the page's basic usage.
   const demo = openingTag(template, '<ComponentDemo')
@@ -107,11 +114,12 @@ function pageInfo(section, name) {
 
 // ─── Guide pages (Getting started, Styles) ──────────────────────────────────
 // Prose pages without an API of their own: headings, paragraphs, lists, code blocks (MCodeEditor bound to a
-// template literal in the page's script) and ComponentDemo examples, in page order. Interactive demos and
-// anything rendered from data ({{ … }}, v-for) are left out; the token lists are in llms-full.txt's Theme tokens.
+// template literal in the page's script), PropsTable tables (an array literal in the page's script) and ComponentDemo
+// examples, in page order. Interactive demos and anything rendered from data ({{ … }}, v-for) are left out; the token
+// lists are in llms-full.txt's Theme tokens.
 
 const guides = [
-  { section: 'getting-started', label: 'Getting started', pages: [['setup', 'SetupPage'], ['i18n', 'I18nPage']] },
+  { section: 'getting-started', label: 'Getting started', pages: [['setup', 'SetupPage'], ['nuxt', 'NuxtPage'], ['i18n', 'I18nPage']] },
   { section: 'styles', label: 'Styles', pages: [['palettes', 'PalettesPage'], ['colors', 'ColorsPage'], ['typography', 'TypographyPage'], ['shapes', 'ShapesPage'], ['motion', 'MotionPage']] },
 ]
 
@@ -160,12 +168,18 @@ function scriptCode(script, name) {
     .trim()
 }
 
+/** An array of plain object literals the page's script defines (`const options: PropDef[] = [...]`). */
+function scriptArray(script, name) {
+  const m = name && script.match(new RegExp(`const ${name}(?::[^=]+)?\\s*=\\s*(\\[[\\s\\S]*?\\n\\])`))
+  return m ? new Function(`return ${m[1]}`)() : null
+}
+
 const TAG_ATTRS = `((?:[^>"']|"[^"]*"|'[^']*')*)`
 
 function guideMd(file, url) {
   const text = read(`src/pages/${file}.vue`)
-  const script = text.slice(0, text.indexOf('<template>'))
-  let template = text.slice(text.indexOf('<template>'))
+  const { script, template: page } = splitPage(text)
+  let template = page
   // Comments, and the slot content of demos (the live preview, not the documented code)
   template = template.replace(/<!--[\s\S]*?-->/g, '')
   const out = []
@@ -175,6 +189,7 @@ function guideMd(file, url) {
     `<li\\b[^>]*>([\\s\\S]*?)<\\/li>`,
     `<MCodeEditor\\b${TAG_ATTRS}>`,
     `<ComponentDemo\\b${TAG_ATTRS}>([\\s\\S]*?)<\\/ComponentDemo>`,
+    `<PropsTable\\b${TAG_ATTRS}>`,
   ].join('|'), 'g')
   let title = ''
   // Sections that are only an interactive preview of this site ("Live Preview", "Try it") are skipped whole
@@ -209,6 +224,13 @@ function guideMd(file, url) {
       if (attr('title')) out.push(`### Example: ${inline(attr('title'))}`, '')
       if (attr('description')) out.push(inline(attr('description')), '')
       if (code) out.push('```vue', literal(code), '```', '')
+    } else if (m[8] != null) {
+      const rows = scriptArray(script, m[8].match(/:props="(\w+)"/)?.[1])
+      if (rows?.length) {
+        const cell = (v) => (v ?? '').replace(/\|/g, '\\|')
+        out.push('| Name | Type | Default | Description |', '|---|---|---|---|',
+          ...rows.map((r) => `| \`${cell(r.name)}\` | \`${cell(r.type)}\` | ${r.default ? `\`${cell(r.default)}\`` : ''} | ${cell(r.description)} |`), '')
+      }
     }
   }
   // List items render as one list
