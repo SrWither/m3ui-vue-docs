@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.0.2',
-    date: 'Unreleased',
+    date: '2026-10-19',
     changes: {
       added: [
         'A new example, Flick: a video site whose videos really play, each one a live shader, with a player that seeks with previews, changes speed and quality and goes theater or full screen, comments, a mini player you swipe away, vertical Shorts, channels, search and your playlists',
