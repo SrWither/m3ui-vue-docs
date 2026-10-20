@@ -4,8 +4,8 @@
  * the recipe's scheme). The dish morphs into another shape when tapped, the facts sit in shapes
  * too, ingredients scale with the servings and tick off, and steps with a wait offer a timer.
  */
-import { computed, reactive, ref } from 'vue'
-import { MButton, MChip, MCheckbox, MIcon, MIconButton, MList, MListItem, MShape, type ShapeName } from '@m3ui-vue/m3ui-vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { MButton, MChip, MCheckbox, MFab, MIconButton, MList, MListItem, MShape, type ShapeName } from '@m3ui-vue/m3ui-vue'
 import { byId, formatQty, recipes } from '../data'
 import { dishArt } from '../art'
 import { useRecipes } from '../useRecipes'
@@ -37,6 +37,24 @@ function cookFrom(step: number) {
   cookStep.value = step
 }
 
+// Phones: the extended FAB folds to its icon while you scroll down the page and unfolds on the
+// way back up, as M3 extended FABs do.
+const root = ref<HTMLElement>()
+const fabExpanded = ref(true)
+let scroller: HTMLElement | null = null
+let lastTop = 0
+function onScroll() {
+  const top = scroller!.scrollTop
+  if (Math.abs(top - lastTop) < 8) return
+  fabExpanded.value = top < lastTop || top < 80
+  lastTop = top
+}
+onMounted(() => {
+  scroller = root.value?.closest<HTMLElement>('.overflow-y-auto') ?? null
+  scroller?.addEventListener('scroll', onScroll, { passive: true })
+})
+onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
+
 const related = computed(() =>
   recipes.filter((r) => r.id !== recipe.value.id && r.moods.some((m) => recipe.value.moods.includes(m))).slice(0, 8),
 )
@@ -44,7 +62,7 @@ const relatedShapes: ShapeName[] = ['Arch', 'Clover4Leaf', 'Cookie9Sided', 'Sunn
 </script>
 
 <template>
-  <div class="mx-auto flex max-w-6xl flex-col gap-10 px-4 pt-2 pb-28 sm:px-6">
+  <div ref="root" class="mx-auto flex max-w-6xl flex-col gap-10 px-4 pt-2 pb-28 sm:px-6">
     <section class="grid items-center gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-10">
       <div class="relative mx-auto aspect-square w-full max-w-[26rem]">
         <MShape shape="SoftBoom" class="sim-spin absolute -inset-[6%] text-tertiary-container" />
@@ -147,8 +165,8 @@ const relatedShapes: ShapeName[] = ['Arch', 'Clover4Leaf', 'Cookie9Sided', 'Sunn
       </div>
     </section>
 
-    <div class="pointer-events-none fixed right-4 bottom-24 z-10 sm:right-8 sm:bottom-8 md:hidden">
-      <MButton class="pointer-events-auto shadow-elevation-3" size="lg" icon="skillet" @click="startCooking(recipe.id)">Cook</MButton>
+    <div class="fixed right-4 bottom-24 z-10 md:hidden">
+      <MFab icon="skillet" label="Start cooking" :expanded="fabExpanded" @click="startCooking(recipe.id)" />
     </div>
   </div>
 </template>
