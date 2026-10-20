@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.0.3',
-    date: 'Unreleased',
+    date: '2026-10-19',
     changes: {
       added: [
         'A new example, Orvian: a public map viewer rebuilt on MMap over a made-up town, with its layers in groups with legends, base maps, click and hover info, place search and measuring',
