@@ -8,6 +8,7 @@ import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
+import MapLayersDemo from '@/components/demos/MapLayersDemo.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { EventDef } from '@/components/EventsTable.vue'
@@ -120,6 +121,59 @@ onReady((map) => map.setMaxZoom(18))
 onLayer('click', 'parcels-fill', (e) => console.log(e.features?.[0]?.properties))
 <\/script>`
 
+const adapterCode = `import { MMap, MMapLayers, orvianAdapter, genericAdapter } from '@m3ui-vue/m3ui-vue/map'
+
+// The Orvian conventions (alias, group, identify, hover, isbaselayer…), with legends from mvt-rs
+<MMap :map-style=&quot;'https://tiles.example/services/styles/public:city'&quot; :adapter=&quot;orvianAdapter()&quot;>
+
+// Or your own: the style in, a model of its layers out
+const myAdapter = (style) => ({
+  title: style.name,
+  groups: [{ name: 'base', title: 'Base' }],
+  layers: style.layers.map((l) => ({
+    id: l.id,
+    title: l.metadata?.label ?? l.id,
+    group: l.metadata?.section,
+    listed: !l.id.startsWith('_'),
+    children: [],
+    identify: l.type === 'fill' ? { format: {}, exclude: [] } : false,
+    hover: false,
+  })),
+})`
+
+const conventions = [
+  ['alias', 'The layer\'s name in the list, the identify cards and the hover popup'],
+  ['description', 'Shown under its name'],
+  ['group', 'The name of one of the style\'s metadata.groups ({ name, alias })'],
+  ['show_in_layerlist', 'false leaves it out of the list (e.g. an outline that follows its fill)'],
+  ['childs', 'Layer ids shown, hidden and faded along with it'],
+  ['isbaselayer + image', 'A raster base layer for MMapBaseLayers, with its thumbnail'],
+  ['identify', 'true: MMapIdentify lists its properties on click'],
+  ['fields', 'Per property: alias, prefix, suffix, mask (#,###.00), show: false; plus exclude: [keys]'],
+  ['hover', '{ enable, fields: [{ key: { alias, prefix, suffix, mask } }] }: what MMapHover shows'],
+  ['legend', '{ show: false } for none, or { wmslegend: url }; by default mvt-rs\'s /services/legends'],
+  ['download', 'A link to its data in the list'],
+]
+
+const layersProps: PropDef[] = [
+  { name: 'search', type: 'boolean', default: 'true', description: 'Show the search field.' },
+  { name: 'collapsed', type: 'boolean', default: 'false', description: 'Groups start collapsed.' },
+]
+const baseLayersProps: PropDef[] = [
+  { name: 'imageBase', type: 'string', default: "''", description: 'Prefix for the thumbnails\' paths (e.g. /images/); full URLs stay as they are.' },
+  { name: 'none', type: 'boolean', default: 'true', description: 'Offer "no base layer".' },
+  { name: 'vertical', type: 'boolean', default: 'false', description: 'Lay them out in a column.' },
+]
+const identifyProps: PropDef[] = [
+  { name: 'enabled', type: 'boolean', default: 'true', description: 'Listen to clicks (pause it while another tool uses them).' },
+  { name: 'popup', type: 'boolean', default: 'true', description: 'Show the results in a popup at the click. false to show them yourself from the identify event (with MMapFeatureInfo).' },
+  { name: 'marker', type: 'boolean', default: 'true', description: 'Mark where the user clicked while there are results.' },
+]
+const hoverProps: PropDef[] = [
+  { name: 'modelValue', type: 'boolean', default: 'false', description: 'On (v-model).' },
+  { name: 'control', type: 'boolean | MapControlPosition', default: 'true', description: 'Its on/off button among the map\'s controls, or false.' },
+]
+
 const mapProps: PropDef[] = [
   { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (an MVT server like mvt-rs, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style. Required.' },
   { name: 'center', type: '[number, number]', description: '[lng, lat] (v-model). When left out, the style\'s, or the remembered view\'s.' },
@@ -133,6 +187,7 @@ const mapProps: PropDef[] = [
   { name: 'scale', type: 'boolean | MapControlPosition', default: 'true', description: 'A metric scale bar (true is bottom-left).' },
   { name: 'attribution', type: 'boolean | MapControlPosition', default: 'true', description: 'The style\'s attribution, compact (true is bottom-right). Most tile providers require it.' },
   { name: 'options', type: 'Partial<MapOptions>', description: 'Anything else for MapLibre\'s Map: maxZoom, maxBounds, cooperativeGestures…' },
+  { name: 'adapter', type: 'MapAdapter', description: 'Reads the style\'s conventions for MMapLayers, MMapBaseLayers, MMapIdentify and MMapHover: genericAdapter, orvianAdapter() or your own.' },
 ]
 const mapEvents: EventDef[] = [
   { name: 'ready', payload: 'Map', description: 'The map and its style loaded: MapLibre\'s Map, for anything the components don\'t cover.' },
@@ -354,6 +409,76 @@ const fitZones = () => zoneMap.value.map.fitBounds(bounds, { padding: 32 })`"
       </MMap>
     </ComponentDemo>
 
+    <h2 class="mb-2 mt-10 text-headline-small font-medium">Layers from the style</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      A map server's styles carry more than drawing rules: names for the layers, groups, which ones are base maps,
+      which properties to show on click or on hover. An <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">adapter</code>
+      reads those conventions, and four components build the UI from them:
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMapLayers</code> (the layer list),
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMapBaseLayers</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMapIdentify</code> and
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMapHover</code>.
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">genericAdapter</code> works with any
+      style; <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">orvianAdapter()</code> reads the
+      conventions of the Orvian map viewers (built on <a href="https://github.com/mvt-proj/mvt-rs" class="text-primary underline">mvt-rs</a>),
+      and writing your own is a function.
+    </p>
+
+    <ComponentDemo
+      title="Layer list, base maps, identify and hover"
+      description="A sample style using the Orvian conventions: switch base maps with the thumbnails, show, hide and fade layers and groups in the list, click a district, a bike lane or a place for its data, and hover them for a summary (its button turns it off)."
+      :code="`<MMap :map-style=&quot;style&quot; :adapter=&quot;orvianAdapter()&quot; class=&quot;h-[32rem] rounded-xl&quot;>
+  <MMapIdentify />
+  <MMapHover v-model=&quot;hover&quot; />
+  <MMapControl position=&quot;bottom-left&quot; :group=&quot;false&quot;>
+    <MCard variant=&quot;elevated&quot; class=&quot;p-2&quot;>
+      <MMapBaseLayers />
+    </MCard>
+  </MMapControl>
+  <!-- Inside the map (it uses its layers), drawn wherever you like -->
+  <Teleport to=&quot;#layers-panel&quot; defer>
+    <MMapLayers />
+  </Teleport>
+</MMap>
+<div id=&quot;layers-panel&quot; />`"
+      :script="`// In the style's metadata: alias, group, identify, fields, hover, isbaselayer…
+const style = {
+  version: 8,
+  metadata: { groups: [{ name: 'urban', alias: 'Urban' }, { name: 'mobility', alias: 'Mobility' }] },
+  sources: { /* … */ },
+  layers: [
+    { id: 'osm', type: 'raster', source: 'osm', metadata: { isbaselayer: true, alias: 'OpenStreetMap', image: '…' } },
+    {
+      id: 'districts', type: 'fill', source: 'districts',
+      metadata: {
+        alias: 'Districts', group: 'urban', identify: true,
+        fields: { population: { alias: 'Population', mask: '#,###' } },
+        hover: { enable: true, fields: [{ name: { alias: 'District' } }] },
+      },
+    },
+    // …
+  ],
+}`"
+    >
+      <MapLayersDemo />
+    </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Adapters</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      The Orvian conventions <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">orvianAdapter()</code> reads from each layer's metadata:
+    </p>
+    <div class="mb-4 overflow-x-auto rounded-xl border border-outline-variant">
+      <table class="w-full text-left text-body-medium">
+        <tbody>
+          <tr v-for="[key, what] in conventions" :key="key" class="border-b border-outline-variant last:border-b-0">
+            <td class="whitespace-nowrap px-4 py-2 font-mono text-primary">{{ key }}</td>
+            <td class="px-4 py-2 text-on-surface-variant">{{ what }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <MCodeEditor :model-value="adapterCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="420px" class="mb-10" />
+
     <h2 class="mb-2 mt-10 text-headline-small font-medium">Your own controls and layers</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
       In a component inside <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMap</code>,
@@ -386,6 +511,21 @@ const fitZones = () => zoneMap.value.map.fitBounds(bounds, { padding: 32 })`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">MMapControl Props</h3>
     <PropsTable :props="controlProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapLayers Props</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">Its #actions slot adds buttons to an expanded layer (scope: layer, visible). useMapLayers() gives the same state for a list of your own.</p>
+    <PropsTable :props="layersProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapBaseLayers Props</h3>
+    <PropsTable :props="baseLayersProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapIdentify Props</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">Emits identify (results, [lng, lat]) on every click; its default slot replaces the popup's content (scope: results, lngLat, close). MMapFeatureInfo draws results anywhere, with a #value slot per property.</p>
+    <PropsTable :props="identifyProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapHover Props</h3>
+    <PropsTable :props="hoverProps" />
+
 
     <ComponentPager current="MMap" />
   </div>
