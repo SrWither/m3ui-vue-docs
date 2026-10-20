@@ -35,7 +35,7 @@ export const iconMap: Record<string, string> = {
   MCodeEditor: 'code', MJsonEditor: 'data_object', MJsonViewer: 'data_array',
   MMarkdown: 'article', MTerminal: 'terminal', MRichTextEditor: 'format_bold',
   MCalendar: 'calendar_month', MScheduler: 'event_note', MKanban: 'view_kanban',
-  MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MShader: 'gradient',
+  MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MMap: 'map', MShader: 'gradient',
   useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useSpring: 'animation', useFieldBg: 'format_color_fill',
   'v-ripple': 'touch_app',
 }
@@ -106,7 +106,7 @@ export const sections: DrawerSection[] = [
       { value: '/components/editors', label: 'Editors', icon: 'code', to: '/components/editors',
         children: ch('/components/editors', ['MCodeEditor', 'MJsonEditor', 'MJsonViewer', 'MMarkdown', 'MTerminal', 'MRichTextEditor']) },
       { value: '/components/advanced', label: 'Advanced', icon: 'auto_awesome', to: '/components/advanced',
-        children: ch('/components/advanced', ['MCalendar', 'MScheduler', 'MKanban', 'MCommandPalette', 'MSpotlightSearch', 'MChart', 'MShader', 'MQRCode', 'MBarcode']) },
+        children: ch('/components/advanced', ['MCalendar', 'MScheduler', 'MKanban', 'MCommandPalette', 'MSpotlightSearch', 'MChart', 'MMap', 'MShader', 'MQRCode', 'MBarcode']) },
     ],
   },
   {
