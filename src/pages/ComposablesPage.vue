@@ -29,6 +29,14 @@ const groups = [
       { name: 'useFieldBg', description: 'Detect the background behind a field so an outlined label can cut through its border.' },
     ],
   },
+  {
+    title: 'Maps (from /map)',
+    items: [
+      { name: 'useMap', description: 'The MMap\'s MapLibre map, listeners that clean up, and the click owner, for controls and tools of your own.' },
+      { name: 'useMapLayers', description: 'The style\'s layers with visibility, opacity, groups and base maps, for a layer panel of your own.' },
+      { name: 'useMapFilter', description: 'Filter a map layer on top of the filter its style already has: ranges, dates, searches.' },
+    ],
+  },
 ]
 </script>
 

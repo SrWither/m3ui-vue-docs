@@ -9,6 +9,7 @@ import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
 import MapLayersDemo from '@/components/demos/MapLayersDemo.vue'
+import MapViewControl from '@/components/demos/MapViewControl.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { EventDef } from '@/components/EventsTable.vue'
@@ -184,6 +185,9 @@ const identifyProps: PropDef[] = [
   { name: 'popup', type: 'boolean', default: 'true', description: 'Show the results in a popup at the click. false to show them yourself from the identify event (with MMapFeatureInfo).' },
   { name: 'marker', type: 'boolean', default: 'true', description: 'Mark where the user clicked while there are results.' },
 ]
+const featureInfoProps: PropDef[] = [
+  { name: 'results', type: 'MapIdentifyResult[]', description: 'What MMapIdentify\'s identify event (or identifyFeatures()) found. Required.' },
+]
 const hoverProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', default: 'false', description: 'On (v-model).' },
   { name: 'control', type: 'boolean | MapControlPosition', default: 'true', description: 'Its on/off button among the map\'s controls, or false.' },
@@ -234,7 +238,7 @@ const mapSlots: SlotDef[] = [
 ]
 const markerProps: PropDef[] = [
   { name: 'lngLat', type: '[number, number]', description: 'Position (v-model with draggable). Required.' },
-  { name: 'color', type: 'string', description: 'The pin\'s color. Defaults to the theme\'s primary; ignored with custom content.' },
+  { name: 'color', type: 'string', description: 'The pin\'s color, a plain color value (MapLibre writes it as an SVG attribute, where var() doesn\'t work). Defaults to the theme\'s primary; ignored with custom content.' },
   { name: 'draggable', type: 'boolean', default: 'false', description: 'Let the user drag it.' },
   { name: 'anchor', type: 'PositionAnchor', description: 'Which part sits on lngLat: bottom for the pin, center for custom content by default.' },
   { name: 'offset', type: '[number, number]', description: 'Offset in pixels.' },
@@ -259,7 +263,7 @@ const geoJsonProps: PropDef[] = [
 ]
 const controlProps: PropDef[] = [
   { name: 'position', type: 'MapControlPosition', default: '\'top-right\'', description: 'The corner, stacked with MapLibre\'s controls.' },
-  { name: 'group', type: 'boolean', default: 'true', description: 'A control group like the zoom buttons: buttons inside get the same M3 look. false for anything else (an MFab, a search bar).' },
+  { name: 'group', type: 'boolean', default: 'true', description: 'A control group like the zoom buttons: buttons inside get the same M3 look (aria-pressed for the active one, title for the tooltip). false for anything else, bare: a card with sliders (see "A control of your own"), a search bar, a layer panel, a legend, a chart, an MFab…' },
 ]
 </script>
 
@@ -555,15 +559,57 @@ const style = {
     </div>
     <MCodeEditor :model-value="adapterCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="420px" class="mb-10" />
 
-    <h2 class="mb-2 mt-10 text-headline-small font-medium">Your own controls and layers</h2>
+    <h2 class="mb-2 mt-10 text-headline-small font-medium">Build your own</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
-      In a component inside <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMap</code>,
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useMap()</code> gives you the map:
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">onReady</code> runs once it exists,
-      and <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">on</code> /
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">onLayer</code> add listeners that are
-      removed when the component unmounts. That's how the map components are built, and how you add what they don't
-      cover: a layer of the style that reacts to clicks, a drawing tool, a control with its own logic.
+      The map components are built on public pieces, so controls, panels, filters and tools of your own work the same
+      way, with library components inside:
+    </p>
+    <ul class="mb-4 flex list-disc flex-col gap-1.5 pl-6 text-body-medium text-on-surface-variant">
+      <li><RouterLink to="/composables/usemap" class="text-primary underline">useMap()</RouterLink>: MapLibre's map, listeners that clean up after themselves (on, onLayer), styleVersion to re-add your layers after a style change, and activeTool to own the map's clicks while your tool works.</li>
+      <li><RouterLink to="/composables/usemaplayers" class="text-primary underline">useMapLayers()</RouterLink>: the adapter's layers with their visibility, opacity, groups and base maps, shared with MMapLayers and MMapBaseLayers; plus identifyFeatures() and formatFieldValue() for an identify of your own.</li>
+      <li><RouterLink to="/composables/usemapfilter" class="text-primary underline">useMapFilter()</RouterLink>: filters on top of the style's own (a range, a date, a search).</li>
+      <li>MMapControl: anything in a corner of the map, as an M3 control group (buttons with aria-pressed get the active look, titles become the library's tooltips) or bare.</li>
+      <li>nominatimProvider() or a function of yours as MMapSearch's provider; your own adapter for another server's conventions.</li>
+    </ul>
+    <ComponentDemo
+      title="A control of your own"
+      description="An M3 card with sliders for the map's rotation and tilt, made of library components inside MMapControl and wired with useMap(). It follows the map both ways: rotate or tilt it with the right mouse button, Ctrl + drag or two fingers, and the sliders move too. Tilt it to see the buildings in 3D."
+      :code="`<MMap map-style=&quot;https://tiles.openfreemap.org/styles/liberty&quot; :center=&quot;[-64.1888, -31.4201]&quot; :zoom=&quot;16&quot; fullscreen class=&quot;h-96 rounded-xl&quot;>
+  <ViewControl />
+</MMap>`"
+      :script="`// ViewControl.vue
+import { ref } from 'vue'
+import { MCard, MIconButton, MSlider } from '@m3ui-vue/m3ui-vue'
+import { MMapControl, useMap } from '@m3ui-vue/m3ui-vue/map'
+
+const { map, on, onReady } = useMap()
+const bearing = ref(0)
+const pitch = ref(0)
+
+// From the map to the sliders: on load, and on every move (mouse, touch, keys)
+const read = () => {
+  bearing.value = Math.round(map.value.getBearing())
+  pitch.value = Math.round(map.value.getPitch())
+}
+onReady(read)
+on('move', read)
+
+// <MMapControl position=&quot;top-left&quot; :group=&quot;false&quot;>
+//   <MCard variant=&quot;elevated&quot; class=&quot;w-64 p-3&quot;>
+//     <MIconButton icon=&quot;explore&quot; label=&quot;Back to north&quot; @click=&quot;map.easeTo({ bearing: 0, pitch: 0 })&quot; />
+//     <MSlider :model-value=&quot;bearing&quot; :min=&quot;-180&quot; :max=&quot;180&quot; @update:model-value=&quot;map.setBearing($event)&quot; />
+//     <MSlider :model-value=&quot;pitch&quot; :min=&quot;0&quot; :max=&quot;60&quot; @update:model-value=&quot;map.setPitch($event)&quot; />
+//   </MCard>
+// </MMapControl>`"
+    >
+      <MMap :map-style="STYLE" :center="CORDOBA" :zoom="16" fullscreen class="h-96 w-full rounded-xl">
+        <MapViewControl />
+      </MMap>
+    </ComponentDemo>
+
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      What MapLibre paints needs plain colors rather than CSS variables (a marker's color too): read the theme's tokens
+      as <RouterLink to="/composables/usemap" class="text-primary underline">useMap's page</RouterLink> shows. The smallest custom piece looks like this:
     </p>
     <MCodeEditor :model-value="useMapCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="320px" class="mb-10" />
 
@@ -598,6 +644,10 @@ const style = {
     <h3 class="mb-3 mt-6 text-title-large font-medium">MMapIdentify Props</h3>
     <p class="mb-3 text-body-medium text-on-surface-variant">Emits identify (results, [lng, lat]) on every click; its default slot replaces the popup's content (scope: results, lngLat, close). MMapFeatureInfo draws results anywhere, with a #value slot per property.</p>
     <PropsTable :props="identifyProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapFeatureInfo Props</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">Identify results as cards (a header with the layer's name, its formatted fields), anywhere: inside MMapIdentify's popup by default, or in a window of your own. Its #value slot (scope: field, result) draws a value your way, e.g. a URL as a link.</p>
+    <PropsTable :props="featureInfoProps" />
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">MMapHover Props</h3>
     <PropsTable :props="hoverProps" />

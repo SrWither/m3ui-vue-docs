@@ -36,13 +36,13 @@ export const iconMap: Record<string, string> = {
   MMarkdown: 'article', MTerminal: 'terminal', MRichTextEditor: 'format_bold',
   MCalendar: 'calendar_month', MScheduler: 'event_note', MKanban: 'view_kanban',
   MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MMap: 'map', MShader: 'gradient',
-  useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useSpring: 'animation', useFieldBg: 'format_color_fill',
+  useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useSpring: 'animation', useFieldBg: 'format_color_fill', useMap: 'map', useMapLayers: 'layers', useMapFilter: 'filter_alt',
   'v-ripple': 'touch_app',
 }
 
 // Top-level groups outside Components (Composables, Directives): one page per entry under
 // src/pages/<group>/<name>.vue, routed at /<group>/<lowercased name>.
-export const composableNames = ['useTheme', 'useColorPalette', 'useLocale', 'useToast', 'useNotification', 'usePageProgress', 'useWindowSizeClass', 'useDevice', 'useDebounce', 'useSpring', 'useFieldBg']
+export const composableNames = ['useTheme', 'useColorPalette', 'useLocale', 'useToast', 'useNotification', 'usePageProgress', 'useWindowSizeClass', 'useDevice', 'useDebounce', 'useSpring', 'useFieldBg', 'useMap', 'useMapLayers', 'useMapFilter']
 export const directiveNames = ['v-ripple']
 
 function pages(base: string, names: string[]): DrawerItem[] {
