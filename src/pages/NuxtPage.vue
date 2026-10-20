@@ -82,6 +82,19 @@ app.use(createM3UI({
 // inline it in <head>, before your stylesheets
 const head = \`<script>\${themeInitScript({ palette: 'teal' })}<\/script>\``
 
+const i18nCode = `// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@m3ui-vue/nuxt', '@nuxtjs/i18n'],
+  i18n: {
+    locales: [
+      { code: 'en', language: 'en-US' },
+      { code: 'es', language: 'es-AR' },
+    ],
+    defaultLocale: 'en',
+  },
+  m3ui: { locale: 'auto' },
+})`
+
 const options: PropDef[] = [
   { name: 'palette', type: 'string', description: 'The first-visit palette, as in createM3UI(). A palette the user picked later wins.' },
   { name: 'seed / seedOptions', type: 'string / SeedOptions', description: 'Generate the scheme from one color instead of a named palette, as in createM3UI().' },
@@ -89,7 +102,7 @@ const options: PropDef[] = [
   { name: 'persistPalette', type: 'boolean', default: 'true', description: 'false makes palette and contrast a hard default that always wins, as in createM3UI().' },
   { name: 'customPalettes', type: 'Palette[]', description: 'Your own palettes, added to useM3ColorPalette().palettes.' },
   { name: 'themeColor', type: 'string', description: 'Keep <meta name="theme-color"> in sync with a color role, as in createM3UI().' },
-  { name: 'locale', type: "'es' | 'fr' | 'pt' | 'de' | 'ja' | 'zh' | 'ko' | Partial<M3Locale>", default: 'English', description: "A preset's language code (only that preset is bundled), or your own strings." },
+  { name: 'locale', type: "'es' | 'fr' | 'pt' | 'de' | 'ja' | 'zh' | 'ko' | 'auto' | Partial<M3Locale>", default: 'English', description: "A preset's language code (only that preset is bundled), your own strings, or 'auto' to follow @nuxtjs/i18n." },
   { name: 'components', type: 'boolean', default: 'true', description: 'Auto-import the components. Each one is bundled only where it is used.' },
   { name: 'composables', type: 'boolean | { prefix: string }', default: "{ prefix: 'M3' }", description: 'Auto-import the composables with this prefix (useTheme becomes useM3Theme). false to import them yourself.' },
   { name: 'css', type: 'boolean', default: 'true', description: "Add the components' own stylesheet (@m3ui-vue/m3ui-vue/styles)." },
@@ -174,6 +187,19 @@ const options: PropDef[] = [
       plus what the module itself does.
     </p>
     <PropsTable :props="options" class="mb-10" />
+
+    <!-- i18n -->
+    <h2 class="mb-4 text-headline-small font-medium">With @nuxtjs/i18n</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      With <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">locale: 'auto'</code>, the
+      components' built-in text (pagination, pickers, dialogs…) follows the language
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@nuxtjs/i18n</code> has active, on
+      the server and whenever the user switches it. A language tag picks its language's preset (es-AR is Spanish), and
+      a language without one falls back to English. All seven presets are bundled then (about 11 kB gzipped), since
+      the language can change at any time. See <RouterLink to="/getting-started/i18n" class="text-primary underline">i18n</RouterLink>
+      for the presets and your own strings.
+    </p>
+    <MCodeEditor :model-value="i18nCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" class="mb-10" />
 
     <!-- SSR -->
     <h2 class="mb-4 text-headline-small font-medium">What the server knows</h2>
