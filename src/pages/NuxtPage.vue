@@ -231,7 +231,11 @@ const options: PropDef[] = [
           <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3ColorPalette()</code> report
           the user's choice already on the server, so a theme toggle's icon or a selected palette swatch hydrate as they
           are. What stays in the browser is the system: with the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">system</code>
-          theme, whether the page ends up dark is decided there.
+          theme, whether the page ends up dark is decided there. The choice lives in the
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">m3-theme</code>,
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">m3-palette</code> and
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">m3-contrast</code> cookies, so your
+          server can also set them, to apply a theme saved in the user's account for instance.
         </p>
       </div>
     </MCard>

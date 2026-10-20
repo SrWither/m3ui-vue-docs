@@ -26,6 +26,8 @@ const versions: Version[] = [
       fixed: [
         'A collapsed extended MFab no longer shows its label for a moment on server-rendered pages',
         'The large extended MFab centers its icon when collapsed',
+        'An MLightbox open when a server-rendered page loads no longer breaks hydration',
+        'A theme kept only in a cookie (or set by your server) is applied instead of being reset',
       ],
     },
   },
