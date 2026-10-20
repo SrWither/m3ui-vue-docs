@@ -23,6 +23,10 @@ const versions: Version[] = [
         'Editors autocomplete the palette names wherever you set one (createM3UI, useColorPalette().set(), the Nuxt module\'s options), through a new PaletteId type',
         'Server-rendered pages remember the user\'s window size too, so adaptive layouts like MNavigationSuite show the right navigation (a rail on a desktop) from the first paint on their next visit',
       ],
+      fixed: [
+        'A collapsed extended MFab no longer shows its label for a moment on server-rendered pages',
+        'The large extended MFab centers its icon when collapsed',
+      ],
     },
   },
   {
