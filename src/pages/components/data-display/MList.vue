@@ -80,6 +80,7 @@ const darkMode = ref(false)
 const notifications = ref(true)
 const autoUpdate = ref(false)
 const segSelected = ref<string | number | null>('display')
+const cutout = ref(true)
 </script>
 
 <template>
@@ -280,6 +281,38 @@ const segSelected = ref<string | number | null>('display')
           <MListSubheader>Privacy</MListSubheader>
           <MListItem title="Location" subtitle="On for 4 apps" icon="location_on" value="location" />
           <MListItem title="Permissions" subtitle="Camera, microphone" icon="shield" value="permissions" />
+        </MList>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Settings Screen"
+      description="A segmented list styled as a settings page. Any child that isn't an item ends a group, so an empty presentational li between items splits the list into separate rounded groups with no subheader."
+      :code="`<template>
+  <MList segmented>
+    <MListItem title=&quot;Dynamic cutout&quot; subtitle=&quot;Show the island for notifications and system events&quot; trailing=&quot;switch&quot; :trailing-value=&quot;cutout&quot; @update:trailing-value=&quot;cutout = $event&quot; />
+    <li role=&quot;presentation&quot; class=&quot;h-2&quot; />
+    <MListItem title=&quot;Size &amp;amp; position&quot; subtitle=&quot;Island dimensions, position and live preview&quot; icon=&quot;tune&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    <MListItem title=&quot;Appearance&quot; subtitle=&quot;Shadow, outline stroke and background colour&quot; icon=&quot;palette&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    <MListItem title=&quot;Behaviour&quot; subtitle=&quot;How the expanded island collapses and dismisses&quot; icon=&quot;timer&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    <MListItem title=&quot;Animations&quot; subtitle=&quot;Tune how fast the cutout animates&quot; icon=&quot;animation&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    <li role=&quot;presentation&quot; class=&quot;h-2&quot; />
+    <MListItem title=&quot;Events&quot; subtitle=&quot;Pick an icon for each notification and system event&quot; icon=&quot;notifications&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    <MListItem title=&quot;Dynamic tiles&quot; subtitle=&quot;Live tiles the cutout can show, like now-playing music&quot; icon=&quot;grid_view&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+  </MList>
+</template>`"
+    >
+      <div class="w-full max-w-sm rounded-xl bg-surface-container-low">
+        <MList segmented>
+          <MListItem title="Dynamic cutout" subtitle="Show the island for notifications and system events" trailing="switch" :trailing-value="cutout" @update:trailing-value="cutout = $event" />
+          <li role="presentation" class="h-2" />
+          <MListItem title="Size &amp; position" subtitle="Island dimensions, position and live preview" icon="tune" trailing-icon="chevron_right" clickable />
+          <MListItem title="Appearance" subtitle="Shadow, outline stroke and background colour" icon="palette" trailing-icon="chevron_right" clickable />
+          <MListItem title="Behaviour" subtitle="How the expanded island collapses and dismisses" icon="timer" trailing-icon="chevron_right" clickable />
+          <MListItem title="Animations" subtitle="Tune how fast the cutout animates" icon="animation" trailing-icon="chevron_right" clickable />
+          <li role="presentation" class="h-2" />
+          <MListItem title="Events" subtitle="Pick an icon for each notification and system event" icon="notifications" trailing-icon="chevron_right" clickable />
+          <MListItem title="Dynamic tiles" subtitle="Live tiles the cutout can show, like now-playing music" icon="grid_view" trailing-icon="chevron_right" clickable />
         </MList>
       </div>
     </ComponentDemo>
