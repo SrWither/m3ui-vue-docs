@@ -4,7 +4,7 @@ import { examples } from '@/examples/registry'
 export const iconMap: Record<string, string> = {
   MScrollField: 'swipe_vertical', MDragHandle: 'drag_handle', MSwipeToDismiss: 'swipe_left', MTransition: 'animation', MButton: 'smart_button', MIconButton: 'touch_app', MFab: 'add_circle', MFabMenu: 'apps',MSplitButton: 'call_split', MButtonGroup: 'view_week', MSegmentedButton: 'toggle_on', MToggleButton: 'change_circle', MCopyButton: 'content_copy', MExportButton: 'file_download',
   MTextField: 'edit', MSelect: 'arrow_drop_down_circle', MMultiSelect: 'checklist', MAutocomplete: 'search', MMultiAutocomplete: 'filter_list', MTagInput: 'sell', MCheckbox: 'check_box', MSwitch: 'toggle_on',
-  MRadioGroup: 'radio_button_checked', MSlider: 'tune', MRating: 'star_half', MDatePicker: 'calendar_today',
+  MRadioGroup: 'radio_button_checked', MSlider: 'tune', MSeekBar: 'line_start_circle', MRating: 'star_half', MDatePicker: 'calendar_today',
   MDatePickerModal: 'event', MDateRangePickerModal: 'date_range',
   MTimePicker: 'schedule', MTimePickerModal: 'schedule', MTimeScroll: 'more_time',
   MColorPicker: 'palette', MColorPickerModal: 'palette',
@@ -88,7 +88,7 @@ export const sections: DrawerSection[] = [
       { value: '/components/buttons', label: 'Buttons', icon: 'smart_button', to: '/components/buttons',
         children: ch('/components/buttons', ['MButton', 'MIconButton', 'MFab', 'MFabMenu', 'MSplitButton', 'MButtonGroup', 'MSegmentedButton', 'MToggleButton', 'MCopyButton', 'MExportButton']) },
       { value: '/components/inputs', label: 'Inputs', icon: 'input', to: '/components/inputs',
-        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSignaturePad', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MSwitch', 'MRadioGroup', 'MSlider', 'MScrollField', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MTimeScroll', 'MColorPicker', 'MColorPickerModal']) },
+        children: ch('/components/inputs', ['MTextField', 'MNumberField', 'MMaskField', 'MPinInput', 'MPasswordMeter', 'MSignaturePad', 'MSelect', 'MMultiSelect', 'MAutocomplete', 'MMultiAutocomplete', 'MTagInput', 'MCheckbox', 'MSwitch', 'MRadioGroup', 'MSlider', 'MSeekBar', 'MScrollField', 'MRating', 'MDatePicker', 'MDatePickerModal', 'MDateRangePicker', 'MDateRangePickerModal', 'MTimePicker', 'MTimePickerModal', 'MTimeScroll', 'MColorPicker', 'MColorPickerModal']) },
       { value: '/components/feedback', label: 'Feedback', icon: 'feedback', to: '/components/feedback',
         children: ch('/components/feedback', ['MAlert', 'MDialog', 'MConfirmDialog', 'MTooltip', 'MProgressBar', 'MPageProgress', 'MCircleProgressBar', 'MSpinner', 'MLoadingIndicator', 'MPullToRefresh', 'MExpansionPanel']) },
       { value: '/components/data-display', label: 'Data Display', icon: 'dashboard', to: '/components/data-display',

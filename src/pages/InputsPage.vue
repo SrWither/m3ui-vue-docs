@@ -18,6 +18,7 @@ const components = [
   { name: 'MSwitch', description: 'A toggle switch with both M3 icon variants.' },
   { name: 'MRadioGroup', description: 'A group of radio buttons sharing a single selection.' },
   { name: 'MSlider', description: 'Standard, centered, or range slider — horizontal or vertical.' },
+  { name: 'MSeekBar', description: 'Media seek bar with buffered part, chapters, time labels and a scrub preview.' },
   { name: 'MScrollField', description: 'An endless wheel to pick a number or option by scrolling, like a time.' },
   { name: 'MRating', description: 'Star rating input with half-increment support.' },
   { name: 'MDatePicker', description: 'Inline calendar date picker with locale support.' },

@@ -21,6 +21,7 @@ const versions: Version[] = [
       added: [
         'MBottomSheet can open partially expanded (partial) and be dragged up to the full screen, by its handle or its content, which scrolls once it\'s expanded; v-model:expanded follows the state, and squareCornersWhenFull squares its corners when it fills the screen',
         'MBottomSheet takes a maxHeight: past it the content scrolls inside the sheet',
+        'MSeekBar, a seek bar for audio and video players: what\'s buffered, chapters, elapsed and total or remaining time, and a preview of the time (or a frame of your own) above the pointer. Scrub and seek on release or live, in the M3 slider look, a thin video line or Android\'s wavy style',
       ],
       changed: [
         'MBottomSheet\'s fullHeight is deprecated in favor of max-height="92vh"',
