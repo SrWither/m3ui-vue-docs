@@ -3,6 +3,7 @@ import { MCard, MIcon } from '@m3ui-vue/m3ui-vue'
 import { iconMap } from '@/nav/sections'
 
 const components = [
+  { name: 'MScheme', description: 'Paints its content with its own color scheme, from a seed color or an image\'s dominant color.' },
   { name: 'MFileUpload', description: 'Drag-and-drop file upload zone with previews and progress tracking.' },
   { name: 'MDragDropList', description: 'Reorder a list of items via native HTML5 drag-and-drop.' },
   { name: 'MSwipeToDismiss', description: 'Swipe content left or right to dismiss it, uncovering actions behind.' },
