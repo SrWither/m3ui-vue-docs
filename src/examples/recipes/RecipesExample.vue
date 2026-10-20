@@ -144,10 +144,6 @@ const toTop = () => scroller.value?.scrollTo({ top: 0 })
   font-optical-sizing: auto;
   font-variation-settings: 'SOFT' 100, 'WONK' 1;
 }
-.sim-fill.material-symbols-outlined,
-.sim-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
 .sim-root,
 .sim-cook {
   /* The recipe's colors arrive through variables; let the big surfaces ease into them. */

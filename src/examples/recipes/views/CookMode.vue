@@ -143,7 +143,7 @@ const clock = (s: number) => `${Math.floor(Math.ceil(s) / 60)}:${String(Math.cei
           <div v-else key="done" class="mx-auto flex min-h-full max-w-xl flex-col items-center justify-center gap-6 px-6 py-8 text-center">
             <span class="relative grid h-40 w-40 place-items-center text-primary">
               <MShape shape="SoftBurst" class="sim-spin absolute inset-0" />
-              <MIcon name="restaurant" :size="64" class="sim-fill relative text-on-primary" />
+              <MIcon name="restaurant" :size="64" filled class="relative text-on-primary" />
             </span>
             <h2 class="sim-display text-display-small font-semibold">Bon appétit!</h2>
             <p class="text-body-large opacity-80">{{ recipe.title }} is ready. Enjoy it while it's hot.</p>

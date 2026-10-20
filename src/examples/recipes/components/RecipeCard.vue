@@ -26,7 +26,7 @@ const { go, isSaved } = useRecipes()
         <img :src="dishArt(recipe)" alt="" class="h-full w-full object-cover" />
       </MShape>
       <span v-if="isSaved(recipe.id)" class="absolute top-1 right-1 grid h-9 w-9 place-items-center rounded-full bg-primary text-on-primary">
-        <MIcon name="favorite" :size="18" class="sim-fill" />
+        <MIcon name="favorite" :size="18" filled />
       </span>
     </div>
     <div class="px-2">

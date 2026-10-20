@@ -21,7 +21,7 @@ const openSource = () => window.open(exampleSource('recipes'), '_blank', 'noopen
       <div class="flex items-center gap-2">
         <span class="relative grid h-10 w-10 place-items-center text-on-tertiary-container">
           <MShape shape="Cookie9Sided" class="absolute inset-0 text-tertiary-container" />
-          <MIcon name="skillet" :size="22" class="sim-fill relative" />
+          <MIcon name="skillet" :size="22" filled class="relative" />
         </span>
         <span class="sim-display text-title-large font-semibold tracking-tight text-on-surface">Simmer</span>
       </div>
