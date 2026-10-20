@@ -82,7 +82,7 @@ const conventions = [
 ]
 
 const mapProps: PropDef[] = [
-  { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (an MVT Server like MVT Server, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style. Required.' },
+  { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (MVT Server, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style. Required.' },
   { name: 'center', type: '[number, number]', description: '[lng, lat] (v-model). When left out, the style\'s, or the remembered view\'s.' },
   { name: 'zoom', type: 'number', description: 'Zoom level (v-model).' },
   { name: 'bearing', type: 'number', description: 'Rotation in degrees (v-model).' },
