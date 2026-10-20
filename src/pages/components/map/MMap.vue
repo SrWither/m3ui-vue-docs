@@ -189,7 +189,7 @@ const pitch = ref(0)`"
     <p class="mb-3 text-body-medium text-on-surface-variant">The map's slot takes these, each with its own page:</p>
     <ul class="mb-8 flex list-disc flex-col gap-1.5 pl-6 text-body-medium text-on-surface-variant">
       <li v-for="[name, what] in insideMap" :key="name">
-        <RouterLink :to="`/components/map/${name.toLowerCase()}`" class="text-primary underline">{{ name }}</RouterLink>: {{ what }}
+        <RouterLink :to="`/components/map/${name!.toLowerCase()}`" class="text-primary underline">{{ name }}</RouterLink>: {{ what }}
       </li>
     </ul>
 
@@ -204,7 +204,7 @@ const pitch = ref(0)`"
       <RouterLink to="/components/map/mmaphover" class="text-primary underline">MMapHover</RouterLink>.
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">genericAdapter</code> works with any
       style; <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">orvianAdapter()</code> reads the
-      conventions of the Orvian map viewers (built on <a href="https://github.com/mvt-proj/MVT Server" class="text-primary underline">MVT Server</a>),
+      conventions of the Orvian map viewers (built on <a href="https://github.com/mvt-proj/mvt-rs" class="text-primary underline">MVT Server</a>),
       and writing your own is a function.
     </p>
     <p class="mb-3 text-body-medium text-on-surface-variant">
