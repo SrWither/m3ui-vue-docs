@@ -127,6 +127,19 @@ import { examples, exampleSource } from '@/examples/registry'
               </span>
             </span>
           </div>
+          <div v-else-if="e.id === 'orvian'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A town's blocks with a few lots in color, a layer card and the FABs -->
+            <span class="absolute inset-0 grid grid-cols-6 gap-[3%] bg-surface-container p-[6%]">
+              <span v-for="n in 24" :key="n" class="rounded-[2px]" :class="[3, 8, 9, 15].includes(n) ? 'bg-primary/45' : n === 14 ? 'bg-tertiary/50' : 'bg-on-surface/10'" />
+            </span>
+            <span class="absolute top-[8%] left-[6%] flex w-[38%] flex-col gap-[6%] rounded-lg bg-surface p-[3%] shadow-elevation-2">
+              <span v-for="n in 4" :key="n" class="flex items-center gap-[8%]"><span class="aspect-square w-[14%] rounded-full" :class="n < 3 ? 'bg-primary' : 'bg-on-surface/20'" /><span class="h-[3px] flex-1 rounded-full bg-on-surface/20" /></span>
+            </span>
+            <span class="absolute bottom-[8%] left-[6%] flex gap-[4%]">
+              <span class="aspect-square w-6 rounded-lg bg-primary-container shadow-elevation-2" />
+              <span class="aspect-square w-6 rounded-lg bg-surface-container-high shadow-elevation-2" />
+            </span>
+          </div>
           <div v-else-if="e.id === 'travel'" class="absolute inset-y-[12%] left-1/2 flex w-[44%] -translate-x-1/2 flex-col gap-[5%] overflow-hidden rounded-2xl bg-surface p-[4%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span class="flex h-[9%] gap-[5%]">
               <span v-for="n in 5" :key="n" class="aspect-square h-full rounded-full bg-gradient-to-tr from-primary to-tertiary" />

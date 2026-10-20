@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'A new example, Orvian: a public map viewer rebuilt on MMap over a made-up town, with its layers in groups with legends, base maps, click and hover info, place search and measuring',
         'MMap, a MapLibre map with M3 controls that follow your theme, markers and popups with your own content, GeoJSON drawn in the theme\'s colors and your own controls (install maplibre-gl, import from /map)',
         'MMap reads your map server\'s style conventions and builds the UI for them: a layer list with groups, opacity and legends, a base map switcher, click-to-identify with formatted data and info on hover. Ready for the Orvian viewers\' conventions (mvt-rs), or any style through your own adapter',
         'The map\'s controls show the library\'s tooltips instead of the browser\'s',
