@@ -29,6 +29,7 @@ const versions: Version[] = [
       ],
       fixed: [
         'MMenu no longer opens off screen on a phone: when it doesn\'t fit on the side its align asks for, it opens on the other side or against the screen edge, and its submenus do the same',
+        'MContextMenu opens on the other side of your finger or pointer when it doesn\'t fit, instead of sliding under it, and a long one scrolls instead of running off the screen',
         'MSplitButton\'s menu and the date, date range and time pickers no longer run off the edge of a phone screen either, and open above their field only when they really don\'t fit below',
         'On a phone, MTooltip now shows on a long press instead of on every tap (where it used to get stuck on screen), and a long press doesn\'t also tap the button',
       ],
