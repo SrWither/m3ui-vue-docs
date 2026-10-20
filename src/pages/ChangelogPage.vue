@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.1.2',
-    date: 'Unreleased',
+    date: '2026-10-20',
     changes: {
       fixed: [
         'Server-rendered pages (Nuxt) with a dialog open on load work again: since 1.1.0 they failed with a server error',
