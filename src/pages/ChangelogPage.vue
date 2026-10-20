@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       fixed: [
         'MShape takes the position you give it: a shape set to absolute (behind an icon, say) could sit in the flow instead and push its neighbors down',
+        'Large MShape shapes have smooth outlines again instead of slightly wobbly ones',
       ],
     },
   },
