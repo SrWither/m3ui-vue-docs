@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.1.1',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'MShape takes the position you give it: a shape set to absolute (behind an icon, say) could sit in the flow instead and push its neighbors down',
+      ],
+    },
+  },
+  {
     version: '1.1.0',
     date: '2026-10-20',
     changes: {
