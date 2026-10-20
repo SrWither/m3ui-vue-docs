@@ -25,7 +25,7 @@ const open = () => video.value && go({ name: 'watch', id: video.value.id })
   <div v-if="video && channel" :class="wide ? 'fixed right-4 bottom-4 z-30 w-[360px]' : 'px-2 pb-1'">
     <MSwipeToDismiss :class="wide ? 'rounded-2xl shadow-elevation-3' : 'rounded-xl shadow-elevation-2'" @dismiss="stop">
       <template #background="{ progress: p }">
-        <div class="flex h-full items-center justify-center bg-surface-container text-on-surface-variant" :style="{ opacity: p }">
+        <div class="flex h-full flex-1 items-center justify-center bg-surface-container text-on-surface-variant" :style="{ opacity: p }">
           <MIcon name="close" />
         </div>
       </template>
