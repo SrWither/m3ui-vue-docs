@@ -1,11 +1,126 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import { MCard, MButton, MIcon, MSegmentedButton, MTooltip, MCheckbox, MTextField, useDevice, generateScheme } from '@m3ui-vue/m3ui-vue'
+import { MCard, MButton, MIcon, MSegmentedButton, MSwitch, MTooltip, MCheckbox, MTextField, useDevice, generateScheme } from '@m3ui-vue/m3ui-vue'
 import type { SegmentedOption, GeneratedScheme } from '@m3ui-vue/m3ui-vue'
 import { MColorPicker, MColorPickerModal } from '@m3ui-vue/m3ui-vue'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 
 const { isMobile } = useDevice()
+
+// ── Classic color math ────────────────────────────────────────────────────────
+// The builder's own HSL algorithm from before Google's (kept as an option): it keeps the colors closer to the ones
+// picked, where Google's tonal spot evens out their chroma.
+
+function hexToHsl(hex: string): { h: number; s: number; l: number } {
+  const h = hex.replace('#', '')
+  const r = parseInt(h.slice(0, 2), 16) / 255
+  const g = parseInt(h.slice(2, 4), 16) / 255
+  const b = parseInt(h.slice(4, 6), 16) / 255
+  const max = Math.max(r, g, b), min = Math.min(r, g, b)
+  const l = (max + min) / 2
+  if (max === min) return { h: 0, s: 0, l: Math.round(l * 100) }
+  const d = max - min
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+  let hue: number
+  switch (max) {
+    case r: hue = ((g - b) / d + (g < b ? 6 : 0)) / 6; break
+    case g: hue = ((b - r) / d + 2) / 6; break
+    default: hue = ((r - g) / d + 4) / 6
+  }
+  return { h: Math.round(hue * 360), s: Math.round(s * 100), l: Math.round(l * 100) }
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  const sl = Math.max(0, Math.min(100, s)) / 100
+  const ll = Math.max(0, Math.min(100, l)) / 100
+  const a = sl * Math.min(ll, 1 - ll)
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12
+    const c = ll - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * c).toString(16).padStart(2, '0')
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
+}
+
+function keyTokens(h: number, s: number, dark: boolean) {
+  const sat = Math.min(s, 85)
+  if (!dark) return {
+    color:       hslToHex(h, sat,        35),
+    onColor:     hslToHex(h, 5,          99),
+    container:   hslToHex(h, sat * 0.45, 90),
+    onContainer: hslToHex(h, sat * 0.8,  12),
+  }
+  return {
+    color:       hslToHex(h, sat * 0.72, 78),
+    onColor:     hslToHex(h, sat * 0.8,  18),
+    container:   hslToHex(h, sat * 0.6,  28),
+    onContainer: hslToHex(h, sat * 0.45, 88),
+  }
+}
+
+// The fixed roles (the same in light and dark) at M3's tones (90, 80, 10, 30), from the classic values at those
+// lightnesses: the light container, the dark color, the light on-container, the dark container
+function fixedTokens(h: number, s: number) {
+  const light = keyTokens(h, s, false)
+  const dark = keyTokens(h, s, true)
+  return { fixed: light.container, fixedDim: dark.color, onFixed: light.onContainer, onFixedVariant: dark.container }
+}
+
+function surfaceTokens(h: number, dark: boolean): Record<string, string> {
+  if (!dark) return {
+    'surface':                   hslToHex(h, 4,  98),
+    'on-surface':                hslToHex(h, 5,  10),
+    'surface-variant':           hslToHex(h, 14, 90),
+    'on-surface-variant':        hslToHex(h, 8,  27),
+    'surface-dim':               hslToHex(h, 7,  86),
+    'surface-bright':            hslToHex(h, 4,  98),
+    'surface-container-lowest':  '#ffffff',
+    'surface-container-low':     hslToHex(h, 4,  96),
+    'surface-container':         hslToHex(h, 6,  93),
+    'surface-container-high':    hslToHex(h, 6,  90),
+    'surface-container-highest': hslToHex(h, 6,  87),
+    'background':                hslToHex(h, 4,  98),
+    'on-background':             hslToHex(h, 5,  10),
+    'outline':                   hslToHex(h, 7,  45),
+    'outline-variant':           hslToHex(h, 10, 78),
+    'inverse-surface':           hslToHex(h, 5,  19),
+    'inverse-on-surface':        hslToHex(h, 4,  95),
+    'inverse-primary':           hslToHex(h, Math.min(85, 70), 78),
+  }
+  return {
+    'surface':                   hslToHex(h, 5,  7),
+    'on-surface':                hslToHex(h, 8,  89),
+    'surface-variant':           hslToHex(h, 8,  27),
+    'on-surface-variant':        hslToHex(h, 6,  77),
+    'surface-dim':               hslToHex(h, 5,  7),
+    'surface-bright':            hslToHex(h, 5,  22),
+    'surface-container-lowest':  hslToHex(h, 5,  4),
+    'surface-container-low':     hslToHex(h, 5,  10),
+    'surface-container':         hslToHex(h, 5,  13),
+    'surface-container-high':    hslToHex(h, 5,  17),
+    'surface-container-highest': hslToHex(h, 5,  21),
+    'background':                hslToHex(h, 5,  7),
+    'on-background':             hslToHex(h, 8,  89),
+    'outline':                   hslToHex(h, 6,  55),
+    'outline-variant':           hslToHex(h, 8,  27),
+    'inverse-surface':           hslToHex(h, 8,  89),
+    'inverse-on-surface':        hslToHex(h, 5,  19),
+    'inverse-primary':           hslToHex(h, Math.min(85, 70), 35),
+  }
+}
+
+const ERROR_LIGHT: Record<string, string> = {
+  'error':              '#B3261E',
+  'on-error':           '#ffffff',
+  'error-container':    '#F9DEDC',
+  'on-error-container': '#410E0B',
+}
+const ERROR_DARK: Record<string, string> = {
+  'error':              '#F2B8B5',
+  'on-error':           '#601410',
+  'error-container':    '#8C1D18',
+  'on-error-container': '#F9DEDC',
+}
 
 // ── Token groups definition ───────────────────────────────────────────────────
 
@@ -67,6 +182,42 @@ const secondaryHex  = ref('#4355B9')
 const autoTertiary  = ref(true)
 const tertiaryHex   = ref('#6E5676')
 
+// Google's algorithm (on by default) or the classic one
+const useGoogle = ref(true)
+
+// ── Classic scheme ──
+const primaryHsl = computed(() => hexToHsl(primaryHex.value))
+
+const classicSecondaryHex = computed(() => {
+  if (!autoSecondary.value) return secondaryHex.value
+  const { h, s } = primaryHsl.value
+  return hslToHex((h + 35) % 360, Math.max(s - 15, 20), 38)
+})
+
+const classicTertiaryHex = computed(() => {
+  if (!autoTertiary.value) return tertiaryHex.value
+  const { h, s } = primaryHsl.value
+  return hslToHex((h - 55 + 360) % 360, Math.max(s - 10, 25), 42)
+})
+
+function buildClassic(dark: boolean): Record<string, string> {
+  const keys = { primary: primaryHsl.value, secondary: hexToHsl(classicSecondaryHex.value), tertiary: hexToHsl(classicTertiaryHex.value) }
+  const tokens: Record<string, string> = {}
+  for (const [key, { h, s }] of Object.entries(keys)) {
+    const k = keyTokens(h, s, dark)
+    const f = fixedTokens(h, s)
+    Object.assign(tokens, {
+      [key]: k.color, [`on-${key}`]: k.onColor, [`${key}-container`]: k.container, [`on-${key}-container`]: k.onContainer,
+      [`${key}-fixed`]: f.fixed, [`${key}-fixed-dim`]: f.fixedDim, [`on-${key}-fixed`]: f.onFixed, [`on-${key}-fixed-variant`]: f.onFixedVariant,
+    })
+  }
+  return { ...tokens, ...(dark ? ERROR_DARK : ERROR_LIGHT), ...surfaceTokens(primaryHsl.value.h, dark) }
+}
+
+const classicLight = computed(() => buildClassic(false))
+const classicDark  = computed(() => buildClassic(true))
+
+// ── Google scheme ──
 // The scheme comes from the library's dynamic color (Google's material-color-utilities, tonal spot). A custom
 // secondary or tertiary color takes the key-color roles of a scheme seeded with it, the way Material Theme
 // Builder treats extra key colors.
@@ -93,11 +244,13 @@ watch([primaryHex, autoSecondary, secondaryHex, autoTertiary, tertiaryHex], asyn
   if (mine === generation) generated.value = scheme
 }, { immediate: true })
 
-const effectiveSecondaryHex = computed(() => (autoSecondary.value ? generated.value.light.secondary ?? '' : secondaryHex.value))
-const effectiveTertiaryHex = computed(() => (autoTertiary.value ? generated.value.light.tertiary ?? '' : tertiaryHex.value))
+const effectiveSecondaryHex = computed(() => !useGoogle.value ? classicSecondaryHex.value
+  : (autoSecondary.value ? generated.value.light.secondary ?? '' : secondaryHex.value))
+const effectiveTertiaryHex = computed(() => !useGoogle.value ? classicTertiaryHex.value
+  : (autoTertiary.value ? generated.value.light.tertiary ?? '' : tertiaryHex.value))
 
-const generatedLight = computed(() => generated.value.light)
-const generatedDark  = computed(() => generated.value.dark)
+const generatedLight = computed(() => (useGoogle.value ? generated.value.light : classicLight.value))
+const generatedDark  = computed(() => (useGoogle.value ? generated.value.dark : classicDark.value))
 
 // ── Manual mode ───────────────────────────────────────────────────────────────
 
@@ -298,6 +451,15 @@ function tokenColor(key: string, dark: boolean): string {
 
       <!-- ── GENERATED MODE ─────────────────────────────────────────────── -->
       <template v-if="builderMode === 'generated'">
+        <div class="mb-5">
+          <MSwitch v-model="useGoogle" label="Use Google's color algorithm" />
+          <p class="mt-1 text-body-small text-on-surface-variant">
+            {{ useGoogle
+              ? 'Material dynamic color (tonal spot): balanced, accessible tones, though it evens out very saturated colors.'
+              : 'Classic: keeps the colors closer to the ones you pick, with fixed lightness steps for each role.' }}
+          </p>
+        </div>
+
         <div class="mb-6 grid gap-4 sm:grid-cols-3">
           <!-- Primary -->
           <div>
