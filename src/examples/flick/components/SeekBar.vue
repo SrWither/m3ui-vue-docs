@@ -1,58 +1,59 @@
 <script setup lang="ts">
 /*
- * The player's timeline: an MSlider you scrub (the video follows the thumb live, and buffers
- * once you let go), with a preview frame and its time above the pointer while you hover it.
+ * The player's timeline: a thin MSeekBar line in the video's red. Scrubbing is live (the frame
+ * follows the thumb) and buffers once you let go; hovering or dragging previews that frame and
+ * its chapter above the pointer.
  */
-import { computed, ref } from 'vue'
-import { MSlider } from '@m3ui-vue/m3ui-vue'
-import { fmt, thumbOf } from '../data'
+import { computed } from 'vue'
+import { MSeekBar } from '@m3ui-vue/m3ui-vue'
+import { chaptersOf, thumbOf } from '../data'
 import { useFlick } from '../useFlick'
 
-const { video, position, seek } = useFlick()
-const duration = computed(() => video.value?.duration ?? 1)
+const { video, position, playing, buffering, speed, seek } = useFlick()
+const duration = computed(() => video.value?.duration ?? 0)
+const chapters = computed(() => chaptersOf(duration.value))
+// Made up: half a minute loaded ahead of the playhead, once it's done buffering
+const buffered = computed(() => (buffering.value ? position.value : Math.min(duration.value, position.value + 30)))
 
-const scrubbing = ref(false)
+// While scrubbing the v-model moves the frame quietly; the seek on release (or a tap) buffers
+let scrubbing = false
 const value = computed({
   get: () => position.value,
-  set: (t: number) => seek(t, scrubbing.value),
+  set: (t: number) => { if (scrubbing) seek(t, true) },
 })
-function release() {
-  if (!scrubbing.value) return
-  scrubbing.value = false
-  seek(position.value)
+function onSeek(t: number) {
+  scrubbing = false
+  seek(t)
 }
 
-// Hover (or drag) preview: the frame at that point, rounded to 2s so frames get reused.
-const root = ref<HTMLElement>()
-const hover = ref<{ x: number; t: number } | null>(null)
-function onMove(e: PointerEvent) {
-  if (e.pointerType === 'touch' && !scrubbing.value) return
-  const r = root.value!.getBoundingClientRect()
-  const f = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width))
-  hover.value = { x: Math.min(r.width - 80, Math.max(80, f * r.width)), t: f * duration.value }
-}
-const preview = computed(() => (hover.value && video.value ? thumbOf(video.value, Math.round(hover.value.t / 2) * 2) : ''))
+// Rounded to 2s so frames get reused
+const frame = (t: number) => (video.value ? thumbOf(video.value, Math.round(t / 2) * 2) : '')
 </script>
 
 <template>
-  <div
-    ref="root"
-    class="relative"
-    @pointerdown="scrubbing = true"
-    @pointerup="release"
-    @pointercancel="release"
-    @lostpointercapture="release"
-    @pointermove="onMove"
-    @pointerleave="!scrubbing && (hover = null)"
+  <MSeekBar
+    v-model="value"
+    :duration="duration"
+    :buffered="buffered"
+    :chapters="chapters"
+    :playing="playing && !buffering"
+    :playback-rate="speed"
+    variant="line"
+    size="xs"
+    time="none"
+    color="#ff0033"
+    track-color="rgb(255 255 255 / 0.3)"
+    live
+    @scrub-start="scrubbing = true"
+    @seek="onSeek"
   >
-    <div
-      v-if="hover && preview"
-      class="pointer-events-none absolute bottom-full mb-3 w-40 -translate-x-1/2 overflow-hidden rounded-lg border-2 border-white/90 bg-black shadow-elevation-3"
-      :style="{ left: `${hover.x}px` }"
-    >
-      <img :src="preview" alt="" class="aspect-video w-full object-cover" />
-      <span class="absolute inset-x-0 bottom-1 text-center text-label-large text-white [text-shadow:0_1px_3px_#000]">{{ fmt(hover.t) }}</span>
-    </div>
-    <MSlider v-model="value" :min="0" :max="duration" :step="0.1" size="xs" class="w-full" />
-  </div>
+    <template #preview="{ time, formatted, chapter }">
+      <div class="mb-2 w-40 overflow-hidden rounded-lg border-2 border-white/90 bg-black shadow-elevation-3">
+        <img :src="frame(time)" alt="" class="aspect-video w-full object-cover" />
+        <p class="truncate px-2 py-0.5 text-center text-label-large text-white">
+          <template v-if="chapter">{{ chapter.title }} · </template>{{ formatted }}
+        </p>
+      </div>
+    </template>
+  </MSeekBar>
 </template>

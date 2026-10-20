@@ -17,7 +17,7 @@ flick/
 │   ├── TopBar.vue           logo, MSearchBar (docked on wide screens, full screen on phones), theme, docs and source
 │   ├── Player.vue           the player: MShader picture, controls (a slimmer layout on phones), end screen, shortcuts
 │   ├── PlayerSettings.vue   the gear menu: autoplay, speed and quality submenus
-│   ├── SeekBar.vue          MSlider timeline with a preview frame above the pointer
+│   ├── SeekBar.vue          MSeekBar line with chapters and a preview frame above the pointer
 │   ├── MiniPlayer.vue       keeps the video playing while you browse; MSwipeToDismiss to close it
 │   ├── Thumb.vue            thumbnail with length and watched progress; a live preview on mouse hover
 │   ├── VideoCard.vue        grid, row and compact layouts, with a ⋮ menu (Watch later, playlist, share)

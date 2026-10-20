@@ -129,13 +129,24 @@ const lines = [
   'If you enjoyed this, the next part goes much deeper.',
 ]
 
+/** A long video's chapters (listed in its description, and gaps in the player's seek bar). */
+export function chaptersOf(duration: number): { start: number; title: string }[] {
+  if (duration <= 300) return []
+  return [
+    { start: 0, title: 'Intro' },
+    { start: Math.floor(duration * 0.2), title: 'The setup' },
+    { start: Math.floor(duration * 0.55), title: 'Where it gets interesting' },
+    { start: Math.floor(duration * 0.85), title: 'Wrapping up' },
+  ]
+}
+
 function makeVideo(n: number, channel: Channel, short: boolean): Video {
   const r = rng(1000 + n * 31 + (short ? 7 : 0))
   const category = channel.category
   const duration = short ? 15 + Math.floor(r() * 46) : pick(r, [95, 240, 420, 612, 754, 980, 1320, 2710])
   const views = Math.round(10 ** (2.6 + r() * 4.2))
   const title = short ? pick(r, ['Wait for it…', 'This loop is too satisfying', 'POV: 3 AM', 'One take, no edits', 'Can you spot it?', 'Turn the sound up', 'Day 47 of this', 'Tiny thing, huge effect']) : titles[category][((n % 10) + Math.floor(n / 10) * 3) % titles[category].length]!
-  const chapters = duration > 300 ? `\n\n0:00 Intro\n${fmt(Math.floor(duration * 0.2))} The setup\n${fmt(Math.floor(duration * 0.55))} Where it gets interesting\n${fmt(Math.floor(duration * 0.85))} Wrapping up` : ''
+  const chapters = chaptersOf(duration).map((c) => `\n${fmt(c.start)} ${c.title}`).join('')
   return {
     id: `${short ? 's' : 'v'}${n}`,
     title,
@@ -145,7 +156,7 @@ function makeVideo(n: number, channel: Channel, short: boolean): Video {
     likes: Math.round(views * (0.02 + r() * 0.05)),
     date: Date.now() - Math.floor(r() * r() * 400 * DAY) - 3600_000,
     category,
-    description: `${pick(r, lines)} ${pick(r, lines)}${chapters}\n\n#${category.toLowerCase()} #${channel.handle.slice(1)}`,
+    description: `${pick(r, lines)} ${pick(r, lines)}${chapters ? `\n${chapters}` : ''}\n\n#${category.toLowerCase()} #${channel.handle.slice(1)}`,
     scene: r() < 0.7 ? pick(r, sceneFor[category]) : pick(r, scenes),
     colors: pick(r, palettes),
     seed: Math.round(r() * 100) / 10,

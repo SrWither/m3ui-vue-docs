@@ -51,7 +51,7 @@ export const examples: ExampleApp[] = [
     description:
       'A music streaming app whose songs really play, generated live with the Web Audio API: home shelves, search, albums, artists, your library and playlists, a queue you reorder by dragging, and a full-screen player with a visualizer.',
     icon: 'headphones',
-    uses: ['MShortNavigationBar', 'MSlider', 'MDragDropList', 'MBottomSheet', 'MContextMenu', 'MMenu', 'MList', 'MChip', 'MDialog', 'MEmptyState', 'useToast'],
+    uses: ['MShortNavigationBar', 'MSeekBar', 'MSlider', 'MDragDropList', 'MBottomSheet', 'MContextMenu', 'MMenu', 'MList', 'MChip', 'MDialog', 'MEmptyState', 'useToast'],
     component: () => import('./music/MusicExample.vue'),
   },
   {
@@ -114,7 +114,7 @@ export const examples: ExampleApp[] = [
     description:
       'A video site whose videos really play, each one a live shader: a home grid with topics and Shorts, a player with seek previews, speed, quality, theater and full screen, comments, a mini player you swipe away, vertical Shorts, channels, search and your playlists.',
     icon: 'smart_display',
-    uses: ['MShader', 'MNavigationDrawer', 'MShortNavigationBar', 'MSearchBar', 'MSlider', 'MMenu', 'MButtonGroup', 'MCarousel', 'MSwipeToDismiss', 'MAspectRatio', 'MBottomSheet', 'MQRCode', 'usePageProgress'],
+    uses: ['MShader', 'MNavigationDrawer', 'MShortNavigationBar', 'MSearchBar', 'MSeekBar', 'MSlider', 'MMenu', 'MButtonGroup', 'MCarousel', 'MSwipeToDismiss', 'MAspectRatio', 'MBottomSheet', 'MQRCode', 'usePageProgress'],
     component: () => import('./flick/FlickExample.vue'),
   },
   {

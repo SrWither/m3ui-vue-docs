@@ -23,7 +23,7 @@ music/
 │   ├── CollectionHeader.vue the cover over its own blurred colors
 │   ├── PlayerBar.vue        wide-screen player; MiniPlayer.vue on phones
 │   ├── PlayerControls.vue   shuffle, previous, play, next, repeat
-│   ├── SeekBar.vue          MSlider that seeks once you stop dragging; VolumeControl.vue
+│   ├── SeekBar.vue          MSeekBar that seeks once you let go; VolumeControl.vue
 │   ├── NowPlaying.vue       full-screen player; Visualizer.vue draws the analyser's bars on a canvas
 │   ├── QueuePanel.vue       now playing, "Next in queue" and "Next from …", reordered with MDragDropList
 │   └── NewPlaylistDialog.vue

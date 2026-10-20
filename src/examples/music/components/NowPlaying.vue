@@ -78,7 +78,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
             <MIconButton icon="favorite" :label="isLiked(track.id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'" size="md" :class="{ 'm3m-fill text-primary!': isLiked(track.id) }" @click="toggleLike(track.id)" />
           </div>
           <Visualizer class="mb-2" />
-          <SeekBar size="sm" />
+          <SeekBar />
           <PlayerControls large class="mt-3" />
           <div class="mt-6 flex items-center justify-between">
             <MTooltip text="Copy link">
