@@ -119,6 +119,18 @@ const options: PropDef[] = [
       with the user's dark mode and palette already applied, without a flash of the default theme.
     </p>
 
+    <MCard class="mb-4 flex items-start gap-3 p-4">
+      <MIcon name="science" :size="22" class="mt-0.5 shrink-0 text-error" />
+      <p class="text-body-medium text-on-surface">
+        <strong>Server-side rendering and the Nuxt module are in beta.</strong> Every component renders on the server
+        and is tested there, but real apps will find cases we haven't. If something breaks, renders differently on the
+        server, or Vue warns about a hydration mismatch, please open an issue: on
+        <a href="https://github.com/SrWither/m3ui-vue-nuxt/issues" class="text-primary underline">m3ui-vue-nuxt</a> for
+        the module, or on <a href="https://github.com/SrWither/m3ui-vue/issues" class="text-primary underline">m3ui-vue</a>
+        for a component.
+      </p>
+    </MCard>
+
     <MCard class="mb-8 flex items-start gap-3 p-4">
       <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <p class="text-body-medium text-on-surface">
@@ -204,8 +216,8 @@ const options: PropDef[] = [
     <!-- SSR -->
     <h2 class="mb-4 text-headline-small font-medium">What the server knows</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
-      The user's theme, palette and contrast reach the server through cookies. Their screen size and their system's
-      preferences don't, and three things follow from that.
+      The user's theme, palette, contrast and window size reach the server through cookies, from their second visit
+      on. Their system's preferences don't, and three things follow from that.
     </p>
 
     <MCard class="mb-4 flex items-start gap-3 p-4">
@@ -228,13 +240,15 @@ const options: PropDef[] = [
     <MCard class="mb-4 flex items-start gap-3 p-4">
       <MIcon name="devices" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <div>
-        <p class="mb-2 text-body-medium font-medium text-on-surface">Adaptive layouts start compact</p>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">Adaptive layouts need one visit</p>
         <p class="text-body-medium text-on-surface-variant">
           <RouterLink to="/components/layout/mnavigationsuite" class="text-primary underline">MNavigationSuite</RouterLink>,
           <RouterLink to="/components/layout/mlistdetail" class="text-primary underline">MListDetail</RouterLink> and
           <RouterLink to="/components/layout/msupportingpane" class="text-primary underline">MSupportingPane</RouterLink>
-          adapt to their own size, which the server can't measure. They render their compact layout there and
-          switch to the one that fits as soon as the page is interactive.
+          adapt to their own size, which the server can't measure. The module keeps the window's size in a cookie
+          too, so from the second visit on the server renders the layout that fits that screen (a layout in a narrower
+          column corrects itself once the page is interactive). On a first visit there's no size yet: they render
+          their compact layout and switch to the one that fits as soon as the page is interactive.
         </p>
       </div>
     </MCard>

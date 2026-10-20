@@ -108,7 +108,7 @@ const optionalDeps = [
       <div>
         <p class="text-body-medium font-medium text-on-surface">
           Using Nuxt? The <RouterLink to="/getting-started/nuxt" class="text-primary underline">Nuxt &amp; SSR</RouterLink>
-          guide sets everything up with one module, server rendering included.
+          guide (beta) sets everything up with one module, server rendering included.
         </p>
       </div>
     </MCard>
