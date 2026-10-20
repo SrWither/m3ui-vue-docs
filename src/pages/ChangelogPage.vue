@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       added: [
         'Server-rendered apps can render with the user\'s theme, palette and contrast: createM3UI keeps them in cookies with cookies: true and takes what the server read as initialState, so a theme toggle or a palette picker shows the right choice from the first paint, without ClientOnly. The Nuxt module does it for you',
+        'Editors autocomplete the palette names wherever you set one (createM3UI, useColorPalette().set(), the Nuxt module\'s options), through a new PaletteId type',
       ],
     },
   },
