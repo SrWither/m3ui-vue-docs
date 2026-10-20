@@ -14,6 +14,7 @@ import {
   MTextField,
   MMenu,
   MMenuItem,
+  MTooltip,
 } from '@m3ui-vue/m3ui-vue'
 import type { KanbanColumn, KanbanCard } from '@m3ui-vue/m3ui-vue'
 
@@ -228,17 +229,17 @@ function addComment() {
         <input v-model="query" placeholder="Search issues" class="min-w-0 flex-1 bg-transparent text-body-medium text-on-surface outline-none placeholder:text-on-surface-variant" />
       </div>
       <div class="flex -space-x-1.5">
-        <button
-          v-for="p in PEOPLE"
-          :key="p"
-          type="button"
-          class="rounded-full ring-2 transition-transform hover:z-10 hover:-translate-y-0.5"
-          :class="people.includes(p) ? 'z-10 ring-primary' : 'ring-surface'"
-          :title="p"
-          @click="togglePerson(p)"
-        >
-          <MAvatar :name="p" :size="32" />
-        </button>
+        <MTooltip v-for="p in PEOPLE" :key="p" :text="p" placement="bottom">
+          <button
+            type="button"
+            class="rounded-full ring-2 transition-transform hover:z-10 hover:-translate-y-0.5"
+            :class="people.includes(p) ? 'z-10 ring-primary' : 'ring-surface'"
+            :aria-label="p"
+            @click="togglePerson(p)"
+          >
+            <MAvatar :name="p" :size="32" />
+          </button>
+        </MTooltip>
       </div>
       <MChip :selected="onlyMine" clickable icon="person" @click="onlyMine = !onlyMine">Only my issues</MChip>
       <MButton v-if="filtering" variant="text" @click="clearFilters">Clear filters</MButton>
@@ -249,9 +250,11 @@ function addComment() {
       <template #column-header="{ column, count }">
         <h4 class="min-w-0 flex-1 truncate text-label-large tracking-wide text-on-surface-variant uppercase">{{ column.title }}</h4>
         <span class="text-label-medium text-on-surface-variant">{{ count }}</span>
-        <span class="rounded-full bg-surface-container-highest px-2 py-0.5 text-label-small text-on-surface-variant" title="Story points">
-          {{ columnPoints(column) }} pts
-        </span>
+        <MTooltip text="Story points">
+          <span class="rounded-full bg-surface-container-highest px-2 py-0.5 text-label-small text-on-surface-variant">
+            {{ columnPoints(column) }} pts
+          </span>
+        </MTooltip>
       </template>
 
       <template #card="{ card, column }">
@@ -267,11 +270,13 @@ function addComment() {
             -->
             <MMenu>
               <template #trigger>
-                <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-on-surface/8" :title="`Type: ${TYPES[card.type as IssueType].label}`">
-                  <span class="flex h-4.5 w-4.5 items-center justify-center rounded-xs" :class="TYPES[card.type as IssueType].cls">
-                    <MIcon :name="TYPES[card.type as IssueType].icon" :size="14" />
-                  </span>
-                </button>
+                <MTooltip :text="`Type: ${TYPES[card.type as IssueType].label}`">
+                  <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-on-surface/8" :aria-label="`Type: ${TYPES[card.type as IssueType].label}`">
+                    <span class="flex h-4.5 w-4.5 items-center justify-center rounded-xs" :class="TYPES[card.type as IssueType].cls">
+                      <MIcon :name="TYPES[card.type as IssueType].icon" :size="14" />
+                    </span>
+                  </button>
+                </MTooltip>
               </template>
               <MMenuItem v-for="t in (Object.keys(TYPES) as IssueType[])" :key="t" :icon="TYPES[t].icon" @click="card.type = t">
                 {{ TYPES[t].label }}
@@ -279,19 +284,22 @@ function addComment() {
             </MMenu>
 
             <!-- A plain span marked data-kanban-action: copies the key instead of opening the issue -->
-            <span
-              data-kanban-action
-              class="cursor-copy rounded-xs px-1 text-label-medium text-on-surface-variant hover:bg-on-surface/8"
-              :class="column.id === 'done' ? 'line-through' : ''"
-              title="Copy key"
-              @click="copyKey(card)"
-            >{{ copiedId === card.id ? 'Copied!' : card.id }}</span>
+            <MTooltip text="Copy key">
+              <span
+                data-kanban-action
+                class="cursor-copy rounded-xs px-1 text-label-medium text-on-surface-variant hover:bg-on-surface/8"
+                :class="column.id === 'done' ? 'line-through' : ''"
+                @click="copyKey(card)"
+              >{{ copiedId === card.id ? 'Copied!' : card.id }}</span>
+            </MTooltip>
 
             <MMenu>
               <template #trigger>
-                <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-on-surface/8" :title="`${PRIORITIES[card.priority as Priority].label} priority`">
-                  <MIcon :name="PRIORITIES[card.priority as Priority].icon" :size="18" :class="PRIORITIES[card.priority as Priority].cls" />
-                </button>
+                <MTooltip :text="`${PRIORITIES[card.priority as Priority].label} priority`">
+                  <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full hover:bg-on-surface/8" :aria-label="`${PRIORITIES[card.priority as Priority].label} priority`">
+                    <MIcon :name="PRIORITIES[card.priority as Priority].icon" :size="18" :class="PRIORITIES[card.priority as Priority].cls" />
+                  </button>
+                </MTooltip>
               </template>
               <MMenuItem v-for="p in (Object.keys(PRIORITIES) as Priority[])" :key="p" :icon="PRIORITIES[p].icon" @click="card.priority = p">
                 {{ PRIORITIES[p].label }}
@@ -302,22 +310,26 @@ function addComment() {
 
             <MMenu align="right">
               <template #trigger>
-                <button
-                  type="button"
-                  class="flex h-6 min-w-6 items-center justify-center rounded-full bg-surface-container-highest px-1.5 text-label-small text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container"
-                  title="Story points (difficulty)"
-                >
-                  {{ card.points }}
-                </button>
+                <MTooltip text="Story points (difficulty)">
+                  <button
+                    type="button"
+                    class="flex h-6 min-w-6 items-center justify-center rounded-full bg-surface-container-highest px-1.5 text-label-small text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container"
+                    aria-label="Story points (difficulty)"
+                  >
+                    {{ card.points }}
+                  </button>
+                </MTooltip>
               </template>
               <MMenuItem v-for="pt in POINTS" :key="pt" :icon="pt === card.points ? 'check' : undefined" @click="card.points = pt">
                 {{ pt }} {{ pt === 1 ? 'point' : 'points' }}
               </MMenuItem>
             </MMenu>
             <MAvatar v-if="card.assignee" :name="card.assignee" :size="24" />
-            <span v-else class="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-outline text-on-surface-variant" title="Unassigned">
-              <MIcon name="person" :size="14" />
-            </span>
+            <MTooltip v-else text="Unassigned">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-outline text-on-surface-variant">
+                <MIcon name="person" :size="14" />
+              </span>
+            </MTooltip>
           </div>
         </div>
       </template>
