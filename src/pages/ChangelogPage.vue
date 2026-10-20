@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.1.1',
-    date: 'Unreleased',
+    date: '2026-10-20',
     changes: {
       added: [
         'A new example, Recipes: a cooking app that shows off Material You\'s content color, where every dish paints its card and its page in its own colors. Dishes cut into expressive shapes, recipes that scale with servings, a full-screen cook mode with timers, saved dishes and a merged grocery list',
