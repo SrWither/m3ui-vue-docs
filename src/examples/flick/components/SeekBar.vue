@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /*
- * The player's timeline: a thin MSeekBar line in the video's red. Scrubbing is live (the frame
+ * The player's timeline: a thin MSeekBar line in the theme's primary. Scrubbing is live (the frame
  * follows the thumb) and buffers once you let go; hovering or dragging previews that frame and
  * its chapter above the pointer.
  */
@@ -41,7 +41,6 @@ const frame = (t: number) => (video.value ? thumbOf(video.value, Math.round(t / 
     variant="line"
     size="xs"
     time="none"
-    color="#ff0033"
     track-color="rgb(255 255 255 / 0.3)"
     live
     @scrub-start="scrubbing = true"
