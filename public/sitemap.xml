@@ -169,6 +169,10 @@
     <lastmod>2026-10-20</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/inputs/mseekbar</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/inputs/mselect</loc>
     <lastmod>2026-10-20</lastmod>
   </url>
@@ -669,10 +673,6 @@
     <lastmod>2026-10-20</lastmod>
   </url>
   <url>
-    <loc>https://m3ui.dev/components/advanced/mmap</loc>
-    <lastmod>2026-10-20</lastmod>
-  </url>
-  <url>
     <loc>https://m3ui.dev/components/advanced/mqrcode</loc>
     <lastmod>2026-10-20</lastmod>
   </url>
@@ -686,6 +686,62 @@
   </url>
   <url>
     <loc>https://m3ui.dev/components/advanced/mspotlightsearch</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmap</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapbaselayers</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapcontrol</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapfeatureinfo</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapfilter</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapgeojson</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmaphover</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapidentify</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmaplayers</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapmarker</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapmeasure</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmappopup</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/map/mmapsearch</loc>
     <lastmod>2026-10-20</lastmod>
   </url>
   <url>
@@ -710,6 +766,18 @@
   </url>
   <url>
     <loc>https://m3ui.dev/composables/uselocale</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usemap</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usemapfilter</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usemaplayers</loc>
     <lastmod>2026-10-20</lastmod>
   </url>
   <url>

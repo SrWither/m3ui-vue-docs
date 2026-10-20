@@ -9,7 +9,6 @@ const components = [
   { name: 'MCommandPalette', description: 'A searchable, keyboard-driven command palette with a global hotkey.' },
   { name: 'MSpotlightSearch', description: 'A spotlight-style search overlay for consumer-driven async results.' },
   { name: 'MChart', description: 'A theme-aware Chart.js wrapper — line, bar, pie, doughnut, and radar.' },
-  { name: 'MMap', description: 'A MapLibre map with M3 controls, markers, popups, GeoJSON and your own controls.' },
   { name: 'MShader', description: 'A canvas container for hand-written GLSL/WGSL shaders.' },
   { name: 'MQRCode', description: 'Generates a scannable QR code as inline SVG.' },
   { name: 'MBarcode', description: 'Generates a barcode as inline SVG in several symbologies.' },

@@ -36,6 +36,7 @@ export const iconMap: Record<string, string> = {
   MMarkdown: 'article', MTerminal: 'terminal', MRichTextEditor: 'format_bold',
   MCalendar: 'calendar_month', MScheduler: 'event_note', MKanban: 'view_kanban',
   MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MMap: 'map', MShader: 'gradient',
+  MMapMarker: 'location_on', MMapPopup: 'chat_bubble', MMapGeoJson: 'polyline', MMapControl: 'tune', MMapLayers: 'layers', MMapBaseLayers: 'satellite_alt', MMapIdentify: 'info', MMapFeatureInfo: 'list_alt', MMapHover: 'arrow_selector_tool', MMapMeasure: 'straighten', MMapFilter: 'filter_alt', MMapSearch: 'travel_explore',
   useTheme: 'dark_mode', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useSpring: 'animation', useFieldBg: 'format_color_fill', useMap: 'map', useMapLayers: 'layers', useMapFilter: 'filter_alt',
   'v-ripple': 'touch_app',
 }
@@ -49,22 +50,10 @@ function pages(base: string, names: string[]): DrawerItem[] {
   return names.map(n => ({ value: `${base}/${n.toLowerCase()}`, label: n, icon: iconMap[n] ?? 'code', to: `${base}/${n.toLowerCase()}` }))
 }
 
-// Sections migrated to the new one-page-per-component structure (real routes,
-// e.g. /components/buttons/mbutton). Everything else still lives as anchored
-// sections on one big page per category (#mbutton) until it gets migrated —
-// add a section's base path here once its components/<section>/*.vue pages
-// exist, so its sidebar children stop pointing at hash anchors that no
-// longer have a matching heading.
-const migratedSections = new Set(['/components/buttons', '/components/tables', '/components/feedback', '/components/editors', '/components/overlays', '/components/utility', '/components/advanced', '/components/navigation', '/components/inputs', '/components/layout', '/components/data-display'])
-
+// One page per component: src/pages/components/<section>/<Component>.vue, routed at
+// /components/<section>/<lowercased name> (see router.ts).
 function ch(base: string, names: string[]): DrawerItem[] {
-  const separator = migratedSections.has(base) ? '/' : '#'
-  return names.map(n => ({
-    value: `${base}${separator}${n.toLowerCase().replace(/[&\s]+/g, '-')}`,
-    label: n,
-    icon: iconMap[n] ?? 'code',
-    to: `${base}${separator}${n.toLowerCase().replace(/[&\s]+/g, '-')}`,
-  }))
+  return pages(base, names)
 }
 
 export const sections: DrawerSection[] = [
@@ -106,7 +95,9 @@ export const sections: DrawerSection[] = [
       { value: '/components/editors', label: 'Editors', icon: 'code', to: '/components/editors',
         children: ch('/components/editors', ['MCodeEditor', 'MJsonEditor', 'MJsonViewer', 'MMarkdown', 'MTerminal', 'MRichTextEditor']) },
       { value: '/components/advanced', label: 'Advanced', icon: 'auto_awesome', to: '/components/advanced',
-        children: ch('/components/advanced', ['MCalendar', 'MScheduler', 'MKanban', 'MCommandPalette', 'MSpotlightSearch', 'MChart', 'MMap', 'MShader', 'MQRCode', 'MBarcode']) },
+        children: ch('/components/advanced', ['MCalendar', 'MScheduler', 'MKanban', 'MCommandPalette', 'MSpotlightSearch', 'MChart', 'MShader', 'MQRCode', 'MBarcode']) },
+      { value: '/components/map', label: 'Map', icon: 'map', to: '/components/map',
+        children: ch('/components/map', ['MMap', 'MMapMarker', 'MMapPopup', 'MMapGeoJson', 'MMapControl', 'MMapLayers', 'MMapBaseLayers', 'MMapIdentify', 'MMapFeatureInfo', 'MMapHover', 'MMapMeasure', 'MMapFilter', 'MMapSearch']) },
     ],
   },
   {

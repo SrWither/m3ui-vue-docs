@@ -37,6 +37,7 @@ const SECTIONS = {
   utility: 'UtilityPage.vue',
   editors: 'EditorsPage.vue',
   advanced: 'AdvancedPage.vue',
+  map: 'MapPage.vue',
 }
 
 const DEFAULT_DESCRIPTION =

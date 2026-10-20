@@ -33,6 +33,9 @@ const movedPages: RouteRecordRaw[] = [
   ['feedback', 'usetoast'], ['feedback', 'usenotification'], ['layout', 'usewindowsizeclass'], ['utility', 'usedevice'],
 ].map(([section, name]) => ({ path: `/components/${section}/${name}`, redirect: `/composables/${name}` }))
 
+// MMap's page lived in Advanced, with all the map components on it (until 1.1.0)
+movedPages.push({ path: '/components/advanced/mmap', redirect: '/components/map/mmap' })
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -122,6 +125,11 @@ const router = createRouter({
       path: '/components/advanced',
       component: () => import('./pages/AdvancedPage.vue'),
       meta: { title: 'Advanced components' },
+    },
+    {
+      path: '/components/map',
+      component: () => import('./pages/MapPage.vue'),
+      meta: { title: 'Map components' },
     },
     {
       path: '/examples',
