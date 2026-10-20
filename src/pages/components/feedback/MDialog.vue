@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MDialog, MButton, MIcon, MTextField, MSelect, MSwitch, useToast } from '@m3ui-vue/m3ui-vue'
+import { MDialog, MButton, MDatePickerModal, MIcon, MTextField, MSelect, MSwitch, useToast } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -17,6 +17,15 @@ const iconDialogOpen = ref(false)
 const fullscreenDialog = ref(false)
 const fullscreenFormDialog = ref(false)
 const shortDialog = ref(false)
+const bareDialog = ref(false)
+const bookingOpen = ref(false)
+const bookingDate = ref<string | null>(null)
+const bookingPicker = ref(false)
+const bookingConfirm = ref(false)
+const bookingDateLabel = () =>
+  bookingDate.value
+    ? new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'long' }).format(new Date(bookingDate.value + 'T00:00:00'))
+    : 'Pick a date'
 const tallDialog = ref(false)
 
 // One dialog, opened with different sizes: Tailwind classes or CSS values.
@@ -47,6 +56,7 @@ const dialogProps: PropDef[] = [
   { name: 'fullscreen', type: 'boolean', default: 'false', description: 'Full-screen variant — slides up from the bottom, covers the entire viewport' },
   { name: 'closeLabel', type: 'string', description: 'Aria label for the close (X) button — falls back to the locale string when omitted' },
   { name: 'closable', type: 'boolean', default: 'true', description: 'Show the header close (X) button — a library addition, not part of the M3 AlertDialog spec, so it can be turned off' },
+  { name: 'bare', type: 'boolean', default: 'false', description: 'Just the box (surface, shape, elevation), scrim, Escape, scroll lock and animation, with the default slot filling it: no title row, padding, close button or actions. title then only names it for assistive technology. The date and time picker dialogs are built on it' },
 ]
 
 const dialogEvents: EventDef[] = [
@@ -54,7 +64,7 @@ const dialogEvents: EventDef[] = [
 ]
 
 const dialogSlots: SlotDef[] = [
-  { name: '#default', description: 'Dialog body content — scrolls independently when taller than maxHeight' },
+  { name: '#default', description: 'Dialog body content — scrolls independently when taller than maxHeight. With bare, the whole dialog' },
   { name: '#icon', description: "M3 AlertDialog's optional icon (Secondary color, 24dp expected). Its presence also centers the title, per spec." },
   { name: '#title', description: 'Overrides the title prop with custom markup' },
   { name: '#actions', description: 'Row of action buttons — wraps to a new line instead of overflowing when labels are long' },
@@ -273,6 +283,82 @@ const dialogSlots: SlotDef[] = [
         </div>
         <template #actions>
           <MButton variant="text" @click="fullscreenFormDialog = false; toast.success('Member created!')">Save</MButton>
+        </template>
+      </MDialog>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Bare: draw the whole dialog"
+      description="With bare, MDialog keeps the dialog's box, scrim, Escape, scroll lock and animation, and your content fills it edge to edge: here a full-bleed header. The title prop still names the dialog for screen readers. Stacked dialogs share one scroll lock, so closing an inner one never lets the page scroll under an outer one."
+      :code="`<MDialog v-model=&quot;open&quot; bare max-width=&quot;360px&quot; title=&quot;New album&quot;>
+  <div class=&quot;h-36 bg-linear-to-br from-primary to-tertiary&quot; />
+  <div class=&quot;p-6&quot;>
+    <h2 class=&quot;text-headline-small&quot;>New album</h2>
+    <p class=&quot;mt-2 text-on-surface-variant&quot;>12 photos from your trip are ready to share.</p>
+    <div class=&quot;mt-6 flex justify-end gap-2&quot;>
+      <MButton variant=&quot;text&quot; @click=&quot;open = false&quot;>Later</MButton>
+      <MButton @click=&quot;open = false&quot;>View album</MButton>
+    </div>
+  </div>
+</MDialog>`"
+      :script="`const open = ref(false)`"
+    >
+      <MButton variant="tonal" @click="bareDialog = true">Open Bare Dialog</MButton>
+      <MDialog v-model="bareDialog" bare max-width="360px" title="New album">
+        <div class="flex h-36 items-end bg-linear-to-br from-primary to-tertiary p-4">
+          <MIcon name="photo_library" :size="40" class="text-on-primary" />
+        </div>
+        <div class="p-6">
+          <h2 class="text-headline-small text-on-surface">New album</h2>
+          <p class="mt-2 text-body-medium text-on-surface-variant">12 photos from your trip are ready to share.</p>
+          <div class="mt-6 flex justify-end gap-2">
+            <MButton variant="text" @click="bareDialog = false">Later</MButton>
+            <MButton @click="bareDialog = false">View album</MButton>
+          </div>
+        </div>
+      </MDialog>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Stacked dialogs"
+      description="A dialog that opens others on top of it: a date picker (MDatePickerModal, itself an MDialog) and a confirmation. Each stacks over the last with its own scrim and Escape closes the top one. They share one scroll lock: closing the ones on top keeps the page locked until the last dialog closes."
+      :code="`<MDialog v-model=&quot;open&quot; title=&quot;Book a table&quot;>
+  <MButton variant=&quot;outlined&quot; icon=&quot;event&quot; @click=&quot;picking = true&quot;>{{ dateLabel }}</MButton>
+  <template #actions>
+    <MButton variant=&quot;text&quot; @click=&quot;confirming = true&quot;>Discard</MButton>
+    <MButton :disabled=&quot;!date&quot; @click=&quot;open = false&quot;>Book</MButton>
+  </template>
+</MDialog>
+
+<!-- On top of it -->
+<MDatePickerModal v-model=&quot;date&quot; v-model:show=&quot;picking&quot; />
+<MDialog v-model=&quot;confirming&quot; title=&quot;Discard this booking?&quot; max-width=&quot;320px&quot; :closable=&quot;false&quot;>
+  Your date won't be saved.
+  <template #actions>
+    <MButton variant=&quot;text&quot; @click=&quot;confirming = false&quot;>Keep editing</MButton>
+    <MButton variant=&quot;text&quot; @click=&quot;confirming = false; open = false; date = null&quot;>Discard</MButton>
+  </template>
+</MDialog>`"
+      :script="`const open = ref(false)
+const date = ref(null)
+const picking = ref(false)
+const confirming = ref(false)`"
+    >
+      <MButton variant="tonal" @click="bookingOpen = true">Book a Table</MButton>
+      <MDialog v-model="bookingOpen" title="Book a table" max-width="400px">
+        <p class="mb-4">Choose a day for your reservation.</p>
+        <MButton variant="outlined" icon="event" @click="bookingPicker = true">{{ bookingDateLabel() }}</MButton>
+        <template #actions>
+          <MButton variant="text" @click="bookingConfirm = true">Discard</MButton>
+          <MButton :disabled="!bookingDate" @click="bookingOpen = false; toast.success('Table booked!')">Book</MButton>
+        </template>
+      </MDialog>
+      <MDatePickerModal v-model="bookingDate" v-model:show="bookingPicker" />
+      <MDialog v-model="bookingConfirm" title="Discard this booking?" max-width="320px" :closable="false">
+        Your date won't be saved.
+        <template #actions>
+          <MButton variant="text" @click="bookingConfirm = false">Keep editing</MButton>
+          <MButton variant="text" @click="bookingConfirm = false; bookingOpen = false; bookingDate = null">Discard</MButton>
         </template>
       </MDialog>
     </ComponentDemo>
