@@ -15,6 +15,7 @@ import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { MQRCode } from '@m3ui-vue/m3ui-vue/qrcode'
 import { MBarcode } from '@m3ui-vue/m3ui-vue/barcode'
 import { activeLocaleId, localeOptions, setSiteLocale } from '@/composables/useSiteLocale'
+import { sections } from '@/nav/sections'
 import { onMounted, onUnmounted } from 'vue'
 
 const version = ref('')
@@ -138,19 +139,14 @@ const projectTree: TreeNode[] = [
   { id: 'packagejson', label: 'package.json', icon: 'description' },
 ]
 
-const categories = [
-  { label: 'Buttons & Actions', icon: 'smart_button', count: 9, to: '/components/buttons' },
-  { label: 'Inputs & Forms', icon: 'input', count: 23, to: '/components/inputs' },
-  { label: 'Data Display', icon: 'dashboard', count: 21, to: '/components/data-display' },
-  { label: 'Feedback', icon: 'feedback', count: 11, to: '/components/feedback' },
-  { label: 'Navigation', icon: 'menu_open', count: 13, to: '/components/navigation' },
-  { label: 'Layout', icon: 'grid_view', count: 26, to: '/components/layout' },
-  { label: 'Overlays', icon: 'layers', count: 5, to: '/components/overlays' },
-  { label: 'Tables', icon: 'table_chart', count: 4, to: '/components/tables' },
-  { label: 'Utility', icon: 'build', count: 7, to: '/components/utility' },
-  { label: 'Editors', icon: 'code', count: 6, to: '/components/editors' },
-  { label: 'Advanced', icon: 'auto_awesome', count: 9, to: '/components/advanced' },
-]
+// Built from the drawer's Components section so the counts can't drift from the actual pages.
+const categoryLabels: Record<string, string> = { Buttons: 'Buttons & Actions', Inputs: 'Inputs & Forms' }
+const categories = sections.find((s) => s.title === 'Components')!.items.map((item) => ({
+  label: categoryLabels[item.label] ?? item.label,
+  icon: item.icon!,
+  count: item.children?.length ?? 0,
+  to: item.to as string,
+}))
 </script>
 
 <template>
