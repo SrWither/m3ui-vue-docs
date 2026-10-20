@@ -70,18 +70,18 @@ function clearDone() {
         <li v-for="g in group.items" :key="g.key" class="sim-row overflow-hidden">
           <MSwipeToDismiss @dismiss="remove(g)">
             <template #background="{ direction }">
-              <div class="flex h-full items-center bg-error-container px-6 text-on-error-container" :class="direction === 'end-to-start' ? 'justify-end' : 'justify-start'">
+              <!-- Only while swiping: at rest the row covers it, and nothing should show through -->
+              <div v-if="direction !== 'settled'" class="flex h-full flex-1 items-center bg-error-container px-6 text-on-error-container" :class="direction === 'end-to-start' ? 'justify-end' : 'justify-start'">
                 <MIcon name="delete" />
               </div>
             </template>
             <button
               class="flex min-h-14 w-full items-center gap-3 bg-surface-container px-3 py-2 text-left transition-colors hover:bg-surface-container-high"
-              :class="{ 'opacity-60': g.done }"
               @click="g.done = !g.done"
             >
               <MCheckbox :model-value="g.done" class="pointer-events-none shrink-0" />
               <span class="min-w-0 flex-1">
-                <span class="block truncate text-body-large text-on-surface" :class="{ 'line-through': g.done }">{{ g.name }}</span>
+                <span class="block truncate text-body-large transition-colors" :class="g.done ? 'text-on-surface-variant line-through' : 'text-on-surface'">{{ g.name }}</span>
                 <span class="flex items-center gap-1 pt-0.5">
                   <span
                     v-for="id in g.from"
