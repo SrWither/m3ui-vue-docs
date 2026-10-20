@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MButton, MIcon, MChip } from '@m3ui-vue/m3ui-vue'
+import { MButton, MIcon, MChip, MShape } from '@m3ui-vue/m3ui-vue'
 import { examples, exampleSource } from '@/examples/registry'
 </script>
 
@@ -125,6 +125,14 @@ import { examples, exampleSource } from '@/examples/registry'
                 <span class="h-[18%] rounded-md bg-on-surface/80" />
                 <span v-for="n in 5" :key="n" class="relative h-[3%] rounded-full bg-on-surface/15"><span class="absolute inset-y-0 left-0 rounded-full bg-primary" :style="{ width: `${[60, 35, 75, 50, 20][n - 1]}%` }" /></span>
               </span>
+            </span>
+          </div>
+          <!-- Three dishes, each cut into a shape and wearing its own color -->
+          <div v-else-if="e.id === 'recipes'" class="absolute inset-[12%] flex items-center justify-center gap-[4%] rounded-2xl bg-surface p-[5%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <span v-for="(d, i) in [{ s: 'Cookie9Sided', c: '#c8432b', b: '#ffdad3' }, { s: 'Clover4Leaf', c: '#e5b92c', b: '#ffefc2' }, { s: 'Sunny', c: '#3b4ca0', b: '#dee0ff' }] as const" :key="i" class="relative flex aspect-[3/4] flex-1 flex-col items-center gap-[8%] rounded-xl p-[6%]" :style="{ background: d.b }">
+              <MShape :shape="d.s" class="aspect-square w-full transition-transform duration-500 group-hover:rotate-12" :fill="d.c" />
+              <span class="h-[6%] w-3/4 rounded-full" :style="{ background: d.c, opacity: 0.6 }" />
+              <span class="h-[5%] w-1/2 rounded-full" :style="{ background: d.c, opacity: 0.3 }" />
             </span>
           </div>
           <div v-else-if="e.id === 'orvian'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">

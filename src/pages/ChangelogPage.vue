@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '1.1.1',
     date: 'Unreleased',
     changes: {
+      added: [
+        'A new example, Recipes: a cooking app that shows off Material You\'s content color, where every dish paints its card and its page in its own colors. Dishes cut into expressive shapes, recipes that scale with servings, a full-screen cook mode with timers, saved dishes and a merged grocery list',
+      ],
       fixed: [
         'MShape takes the position you give it: a shape set to absolute (behind an icon, say) could sit in the flow instead and push its neighbors down',
         'Large MShape shapes have smooth outlines again instead of slightly wobbly ones',

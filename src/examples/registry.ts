@@ -126,6 +126,15 @@ export const examples: ExampleApp[] = [
     uses: ['MMap', 'MMapLayers', 'MMapBaseLayers', 'MMapIdentify', 'MMapHover', 'MMapMeasure', 'MMapSearch', 'MWindow', 'MFab'],
     component: () => import('./orvian/OrvianExample.vue'),
   },
+  {
+    id: 'recipes',
+    title: 'Recipes',
+    description:
+      'A cooking app that shows off Material You\'s content color: every dish builds its own color scheme, so cards and pages wear the food\'s colors. Shelves of dishes cut into expressive shapes, recipes that scale with servings, a full-screen cook mode with timers, saved dishes and a merged grocery list.',
+    icon: 'skillet',
+    uses: ['generateScheme', 'MShape', 'MCarousel', 'MList', 'MCircleProgressBar', 'MLoadingIndicator', 'MSwipeToDismiss', 'MBottomSheet', 'MNavigationRail', 'MShortNavigationBar', 'MProgressBar', 'useToast'],
+    component: () => import('./recipes/RecipesExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
