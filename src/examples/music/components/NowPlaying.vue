@@ -63,7 +63,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
       </header>
 
       <main class="relative mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col justify-center gap-6 px-6 pb-6 lg:flex-row lg:items-center lg:gap-16">
-        <img :src="album.cover" alt="" class="mx-auto aspect-square max-h-[42vh] w-full max-w-sm min-w-0 rounded-2xl object-cover shadow-elevation-4 lg:mx-0 lg:max-h-[60vh] lg:max-w-md" />
+        <!-- The cover takes what the info and controls leave (a size container), so a short phone shrinks it
+             instead of pushing it over the header -->
+        <div class="m3m-cover flex min-h-0 flex-1 items-center justify-center lg:size-[min(60vh,28rem)] lg:flex-none">
+          <img :src="album.cover" alt="" class="aspect-square w-[min(100cqw,100cqh,24rem)] rounded-2xl object-cover shadow-elevation-4 lg:w-full" />
+        </div>
 
         <div class="mx-auto w-full max-w-sm shrink-0 lg:mx-0 lg:max-w-md lg:flex-1">
           <div class="mb-3 flex items-center gap-2">
@@ -92,6 +96,9 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
 </template>
 
 <style scoped>
+.m3m-cover {
+  container-type: size;
+}
 .m3m-sheet-enter-active {
   transition: transform 400ms cubic-bezier(0.05, 0.7, 0.1, 1), opacity 200ms;
 }
