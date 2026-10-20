@@ -49,7 +49,7 @@ onLayer('click', 'parcels-fill', (e) => console.log(e.features?.[0]?.properties)
 
 const adapterCode = `import { MMap, MMapLayers, orvianAdapter, genericAdapter } from '@m3ui-vue/m3ui-vue/map'
 
-// The Orvian conventions (alias, group, identify, hover, isbaselayer…), with legends from mvt-rs
+// The Orvian conventions (alias, group, identify, hover, isbaselayer…), with legends from MVT Server
 <MMap :map-style=&quot;'https://tiles.example/services/styles/public:city'&quot; :adapter=&quot;orvianAdapter()&quot;>
 
 // Or your own: the style in, a model of its layers out
@@ -77,12 +77,12 @@ const conventions = [
   ['identify', 'true: MMapIdentify lists its properties on click'],
   ['fields', 'Per property: alias, prefix, suffix, mask (#,###.00), show: false; plus exclude: [keys]'],
   ['hover', '{ enable, fields: [{ key: { alias, prefix, suffix, mask } }] }: what MMapHover shows'],
-  ['legend', '{ show: false } for none, or { wmslegend: url }; by default mvt-rs\'s /services/legends'],
+  ['legend', '{ show: false } for none, or { wmslegend: url }; by default MVT Server\'s /services/legends'],
   ['download', 'A link to its data in the list'],
 ]
 
 const mapProps: PropDef[] = [
-  { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (an MVT server like mvt-rs, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style. Required.' },
+  { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (an MVT Server like MVT Server, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style. Required.' },
   { name: 'center', type: '[number, number]', description: '[lng, lat] (v-model). When left out, the style\'s, or the remembered view\'s.' },
   { name: 'zoom', type: 'number', description: 'Zoom level (v-model).' },
   { name: 'bearing', type: 'number', description: 'Rotation in degrees (v-model).' },
@@ -110,7 +110,7 @@ const mapSlots: SlotDef[] = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MMap</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      A MapLibre GL map for any style (an MVT server, OpenFreeMap, MapTiler…). Its controls and popups take the M3
+      A MapLibre GL map for any style (an MVT Server, OpenFreeMap, MapTiler…). Its controls and popups take the M3
       look and follow the theme, its view can be a v-model and be remembered, and markers, popups, GeoJSON and your
       own controls go inside it as components. MapLibre's own map is always one step away. Available from the
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">/map</code> entry point.
@@ -204,7 +204,7 @@ const pitch = ref(0)`"
       <RouterLink to="/components/map/mmaphover" class="text-primary underline">MMapHover</RouterLink>.
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">genericAdapter</code> works with any
       style; <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">orvianAdapter()</code> reads the
-      conventions of the Orvian map viewers (built on <a href="https://github.com/mvt-proj/mvt-rs" class="text-primary underline">mvt-rs</a>),
+      conventions of the Orvian map viewers (built on <a href="https://github.com/mvt-proj/MVT Server" class="text-primary underline">MVT Server</a>),
       and writing your own is a function.
     </p>
     <p class="mb-3 text-body-medium text-on-surface-variant">

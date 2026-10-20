@@ -121,7 +121,7 @@ export const examples: ExampleApp[] = [
     id: 'orvian',
     title: 'Orvian',
     description:
-      'A public map viewer for an MVT server, rebuilt on MMap: the style\'s layers in groups with legends and opacity, base maps, click for a lot\'s data, hover summaries, place search, measuring and a remembered view, over a made-up town.',
+      'A public map viewer for an MVT Server, rebuilt on MMap: the style\'s layers in groups with legends and opacity, base maps, click for a lot\'s data, hover summaries, place search, measuring and a remembered view, over a made-up town.',
     icon: 'public',
     uses: ['MMap', 'MMapLayers', 'MMapBaseLayers', 'MMapIdentify', 'MMapHover', 'MMapMeasure', 'MMapSearch', 'MWindow', 'MFab'],
     component: () => import('./orvian/OrvianExample.vue'),

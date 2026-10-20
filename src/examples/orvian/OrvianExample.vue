@@ -19,9 +19,9 @@ import type { Map as MaplibreMap } from 'maplibre-gl'
 import { exampleSource } from '@/examples/registry'
 import { BOUNDS, CENTER, style } from './town'
 
-// Orvian Lite, a public map viewer for an MVT server's styles, rebuilt on MMap. The original wires MapLibre by hand
+// Orvian Lite, a public map viewer for an MVT Server's styles, rebuilt on MMap. The original wires MapLibre by hand
 // (a layer manager, identify, hover and measuring controls); here each one is a component. The style is made up
-// (./town.ts): a real deployment loads it from mvt-rs, e.g. :map-style="'https://…/services/styles/public:city'".
+// (./town.ts): a real deployment loads it from MVT Server, e.g. :map-style="'https://…/services/styles/public:city'".
 
 const router = useRouter()
 const { theme, cycle } = useTheme()

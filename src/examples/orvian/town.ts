@@ -1,6 +1,6 @@
 // Monteluz, a made-up town in the farmland of the pampas, and a MapLibre style for it that follows the Orvian
 // viewers' metadata conventions (alias, group, identify, fields, hover, isbaselayer, childs, legend…), the way a style
-// served by mvt-rs carries them. Everything here is invented: no data comes from a real server.
+// served by MVT Server carries them. Everything here is invented: no data comes from a real server.
 import type { StyleSpecification } from 'maplibre-gl'
 
 export const CENTER: [number, number] = [-62.4, -33.1]
@@ -111,7 +111,7 @@ const health: Feature[] = [
 /** The town's extent, to frame it. */
 export const BOUNDS: [[number, number], [number, number]] = [at(west - 60, south - 60), at(east + 60, north + 60)]
 
-// Legends as SVG data URIs (an mvt-rs server would render them from the style)
+// Legends as SVG data URIs (an MVT Server server would render them from the style)
 const svg = (body: string, h: number) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="220" height="${h}" font-family="Roboto, sans-serif" font-size="12">${body}</svg>`)}`
 const swatch = (rows: [string, string, string?][]) => svg(rows.map(([color, label, kind], k) => {
   const y = 6 + k * 22
