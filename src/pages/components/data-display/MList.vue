@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MList, MListItem, MListSubheader, MCard } from '@m3ui-vue/m3ui-vue'
+import { MList, MListItem, MListSubheader, MListGroup, MCard } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -25,7 +25,7 @@ const listEvents: EventDef[] = [
 ]
 
 const listSlots: SlotDef[] = [
-  { name: '#default', description: 'MListItem / MListSubheader children' },
+  { name: '#default', description: 'MListItem / MListSubheader / MListGroup children' },
 ]
 
 const listItemProps: PropDef[] = [
@@ -71,6 +71,16 @@ const listSubheaderProps: PropDef[] = [
   { name: 'inset', type: 'boolean', default: 'false', description: 'Align with items that have a leading icon (adds left padding)' },
 ]
 
+const listGroupProps: PropDef[] = [
+  { name: 'title', type: 'string', description: 'Heading above the group, styled like MListSubheader; also names the group for assistive technology' },
+  { name: 'inset', type: 'boolean', default: 'false', description: 'Align the title with items that have a leading icon' },
+]
+
+const listGroupSlots: SlotDef[] = [
+  { name: '#default', description: 'MListItem children. In a segmented list they form a rounded run of their own' },
+  { name: '#title', description: 'Custom title content, replacing the title prop' },
+]
+
 const listSubheaderSlots: SlotDef[] = [
   { name: '#default', description: 'Subheader text/content' },
 ]
@@ -88,7 +98,7 @@ const cutout = ref(true)
     <h1 class="mb-2 text-headline-large font-medium">MList</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       A vertical list container (MList) with rich, flexible rows (MListItem) and optional section
-      headers (MListSubheader) — one-line to three-line items, leading/trailing elements, selection,
+      headers (MListSubheader) or groups (MListGroup) — one-line to three-line items, leading/trailing elements, selection,
       navigation, segmented, and expandable variants.
     </p>
 
@@ -287,32 +297,36 @@ const cutout = ref(true)
 
     <ComponentDemo
       title="Settings Screen"
-      description="A segmented list styled as a settings page. Any child that isn't an item ends a group, so an empty presentational li between items splits the list into separate rounded groups with no subheader."
+      description="A segmented list styled as a settings page. MListGroup splits it into separate rounded groups, set apart from each other, with an optional title."
       :code="`<template>
   <MList segmented>
     <MListItem title=&quot;Dynamic cutout&quot; subtitle=&quot;Show the island for notifications and system events&quot; trailing=&quot;switch&quot; :trailing-value=&quot;cutout&quot; @update:trailing-value=&quot;cutout = $event&quot; />
-    <li role=&quot;presentation&quot; class=&quot;h-2&quot; />
-    <MListItem title=&quot;Size &amp;amp; position&quot; subtitle=&quot;Island dimensions, position and live preview&quot; icon=&quot;tune&quot; trailing-icon=&quot;chevron_right&quot; clickable />
-    <MListItem title=&quot;Appearance&quot; subtitle=&quot;Shadow, outline stroke and background colour&quot; icon=&quot;palette&quot; trailing-icon=&quot;chevron_right&quot; clickable />
-    <MListItem title=&quot;Behaviour&quot; subtitle=&quot;How the expanded island collapses and dismisses&quot; icon=&quot;timer&quot; trailing-icon=&quot;chevron_right&quot; clickable />
-    <MListItem title=&quot;Animations&quot; subtitle=&quot;Tune how fast the cutout animates&quot; icon=&quot;animation&quot; trailing-icon=&quot;chevron_right&quot; clickable />
-    <li role=&quot;presentation&quot; class=&quot;h-2&quot; />
-    <MListItem title=&quot;Events&quot; subtitle=&quot;Pick an icon for each notification and system event&quot; icon=&quot;notifications&quot; trailing-icon=&quot;chevron_right&quot; clickable />
-    <MListItem title=&quot;Dynamic tiles&quot; subtitle=&quot;Live tiles the cutout can show, like now-playing music&quot; icon=&quot;grid_view&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    <MListGroup>
+      <MListItem title=&quot;Size &amp;amp; position&quot; subtitle=&quot;Island dimensions, position and live preview&quot; icon=&quot;tune&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+      <MListItem title=&quot;Appearance&quot; subtitle=&quot;Shadow, outline stroke and background colour&quot; icon=&quot;palette&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+      <MListItem title=&quot;Behaviour&quot; subtitle=&quot;How the expanded island collapses and dismisses&quot; icon=&quot;timer&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+      <MListItem title=&quot;Animations&quot; subtitle=&quot;Tune how fast the cutout animates&quot; icon=&quot;animation&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    </MListGroup>
+    <MListGroup title=&quot;Content&quot;>
+      <MListItem title=&quot;Events&quot; subtitle=&quot;Pick an icon for each notification and system event&quot; icon=&quot;notifications&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+      <MListItem title=&quot;Dynamic tiles&quot; subtitle=&quot;Live tiles the cutout can show, like now-playing music&quot; icon=&quot;grid_view&quot; trailing-icon=&quot;chevron_right&quot; clickable />
+    </MListGroup>
   </MList>
 </template>`"
     >
       <div class="w-full max-w-sm rounded-xl bg-surface-container-low">
         <MList segmented>
           <MListItem title="Dynamic cutout" subtitle="Show the island for notifications and system events" trailing="switch" :trailing-value="cutout" @update:trailing-value="cutout = $event" />
-          <li role="presentation" class="h-2" />
-          <MListItem title="Size &amp; position" subtitle="Island dimensions, position and live preview" icon="tune" trailing-icon="chevron_right" clickable />
-          <MListItem title="Appearance" subtitle="Shadow, outline stroke and background colour" icon="palette" trailing-icon="chevron_right" clickable />
-          <MListItem title="Behaviour" subtitle="How the expanded island collapses and dismisses" icon="timer" trailing-icon="chevron_right" clickable />
-          <MListItem title="Animations" subtitle="Tune how fast the cutout animates" icon="animation" trailing-icon="chevron_right" clickable />
-          <li role="presentation" class="h-2" />
-          <MListItem title="Events" subtitle="Pick an icon for each notification and system event" icon="notifications" trailing-icon="chevron_right" clickable />
-          <MListItem title="Dynamic tiles" subtitle="Live tiles the cutout can show, like now-playing music" icon="grid_view" trailing-icon="chevron_right" clickable />
+          <MListGroup>
+            <MListItem title="Size &amp; position" subtitle="Island dimensions, position and live preview" icon="tune" trailing-icon="chevron_right" clickable />
+            <MListItem title="Appearance" subtitle="Shadow, outline stroke and background colour" icon="palette" trailing-icon="chevron_right" clickable />
+            <MListItem title="Behaviour" subtitle="How the expanded island collapses and dismisses" icon="timer" trailing-icon="chevron_right" clickable />
+            <MListItem title="Animations" subtitle="Tune how fast the cutout animates" icon="animation" trailing-icon="chevron_right" clickable />
+          </MListGroup>
+          <MListGroup title="Content">
+            <MListItem title="Events" subtitle="Pick an icon for each notification and system event" icon="notifications" trailing-icon="chevron_right" clickable />
+            <MListItem title="Dynamic tiles" subtitle="Live tiles the cutout can show, like now-playing music" icon="grid_view" trailing-icon="chevron_right" clickable />
+          </MListGroup>
         </MList>
       </div>
     </ComponentDemo>
@@ -490,6 +504,12 @@ const cutout = ref(true)
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">MListSubheader Slots</h3>
     <SlotsTable :slots="listSubheaderSlots" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MListGroup Props</h3>
+    <PropsTable :props="listGroupProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MListGroup Slots</h3>
+    <SlotsTable :slots="listGroupSlots" />
 
     <ComponentPager current="MList" />
   </div>
