@@ -15,6 +15,20 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.1.0',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'MBottomSheet can open partially expanded (partial) and be dragged up to the full screen, by its handle or its content, which scrolls once it\'s expanded; v-model:expanded follows the state, and squareCornersWhenFull squares its corners when it fills the screen',
+        'MBottomSheet takes a maxHeight: past it the content scrolls inside the sheet',
+      ],
+      changed: [
+        'MBottomSheet\'s fullHeight is deprecated in favor of max-height="92vh"',
+        'A sheet flicked back after a long drag stays open instead of closing',
+      ],
+    },
+  },
+  {
     version: '1.0.3',
     date: '2026-10-19',
     changes: {

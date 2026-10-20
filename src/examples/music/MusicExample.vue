@@ -119,7 +119,7 @@ onBeforeUnmount(() => {
     </div>
 
     <NowPlaying />
-    <MBottomSheet v-if="!wide" v-model="queueOpen" title="Queue" full-height>
+    <MBottomSheet v-if="!wide" v-model="queueOpen" title="Queue" partial>
       <QueuePanel />
     </MBottomSheet>
     <NewPlaylistDialog />

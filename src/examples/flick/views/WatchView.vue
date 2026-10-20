@@ -143,7 +143,7 @@ function minimize() {
       </aside>
     </div>
 
-    <MBottomSheet v-if="!wide" v-model="commentsOpen" :title="`Comments · ${compact(f.commentCount(id))}`" full-height>
+    <MBottomSheet v-if="!wide" v-model="commentsOpen" :title="`Comments · ${compact(f.commentCount(id))}`" partial>
       <Comments :video-id="id" :header="false" />
     </MBottomSheet>
   </div>

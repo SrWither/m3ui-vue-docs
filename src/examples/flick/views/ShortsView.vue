@@ -122,7 +122,7 @@ const actions = computed(() => {
       </MCarousel>
     </div>
 
-    <MBottomSheet v-model="commentsOpen" :title="`Comments · ${compact(f.commentCount(short.id))}`" full-height>
+    <MBottomSheet v-model="commentsOpen" :title="`Comments · ${compact(f.commentCount(short.id))}`" partial>
       <Comments :video-id="short.id" :header="false" />
     </MBottomSheet>
   </div>
