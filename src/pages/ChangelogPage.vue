@@ -27,6 +27,9 @@ const versions: Version[] = [
         'MBottomSheet\'s fullHeight is deprecated in favor of max-height="92vh"',
         'A sheet flicked back after a long drag stays open instead of closing',
       ],
+      fixed: [
+        'MMenu no longer opens off screen on a phone: when it doesn\'t fit on the side its align asks for, it opens on the other side or against the screen edge, and its submenus do the same',
+      ],
     },
   },
   {
