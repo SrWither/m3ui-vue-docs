@@ -22,12 +22,15 @@ const versions: Version[] = [
         'MBottomSheet can open partially expanded (partial) and be dragged up to the full screen, by its handle or its content, which scrolls once it\'s expanded; v-model:expanded follows the state, and squareCornersWhenFull squares its corners when it fills the screen',
         'MBottomSheet takes a maxHeight: past it the content scrolls inside the sheet',
         'MSeekBar, a seek bar for audio and video players: what\'s buffered, chapters, elapsed and total or remaining time, and a preview of the time (or a frame of your own) above the pointer. Scrub and seek on release or live, in the M3 slider look, a thin video line or Android\'s wavy style',
+        'MMapControl can expand in place: a button that grows into a panel of your own (a layer list, a style picker, filters), with its size springing open and closed and the controls around it moving along',
       ],
       changed: [
+        'The map\'s attribution is now an M3 info button that opens into a pill with a spring, instead of MapLibre\'s',
         'MBottomSheet\'s fullHeight is deprecated in favor of max-height="92vh"',
         'A sheet flicked back after a long drag stays open instead of closing',
       ],
       fixed: [
+        'A map pin now lands exactly where you click (it sat about 20px above), and popups point right at their spot',
         'MMenu no longer opens off screen on a phone: when it doesn\'t fit on the side its align asks for, it opens on the other side or against the screen edge, and its submenus do the same',
         'MContextMenu opens on the other side of your finger or pointer when it doesn\'t fit, instead of sliding under it, and a long one scrolls instead of running off the screen',
         'MSplitButton\'s menu and the date, date range and time pickers no longer run off the edge of a phone screen either, and open above their field only when they really don\'t fit below',
