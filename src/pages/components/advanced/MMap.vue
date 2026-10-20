@@ -2,7 +2,7 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { MButton, MCard, MIcon } from '@m3ui-vue/m3ui-vue'
-import { MMap, MMapControl, MMapGeoJson, MMapMarker, MMapPopup } from '@m3ui-vue/m3ui-vue/map'
+import { MMap, MMapControl, MMapFilter, MMapGeoJson, MMapMarker, MMapMeasure, MMapPopup, MMapSearch, nominatimProvider } from '@m3ui-vue/m3ui-vue/map'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -108,6 +108,21 @@ function pickZone(e: { lngLat: { lng: number; lat: number }; features?: { proper
   pickedOpen.value = true
 }
 
+// ── Tools ──
+const spots = {
+  type: 'FeatureCollection' as const,
+  features: [
+    { name: 'Cathedral', kind: 'Church', at: [-64.1843, -31.4163] },
+    { name: 'Compañía de Jesús', kind: 'Church', at: [-64.1874, -31.4198] },
+    { name: 'Caraffa Museum', kind: 'Museum', at: [-64.1735, -31.4268] },
+    { name: 'Evita Museum', kind: 'Museum', at: [-64.1795, -31.4281] },
+    { name: 'Parque Sarmiento', kind: 'Park', at: [-64.1736, -31.4296] },
+    { name: 'Mercado Norte', kind: 'Market', at: [-64.1856, -31.4093] },
+  ].map(({ at, ...properties }) => ({ type: 'Feature' as const, properties, geometry: { type: 'Point' as const, coordinates: at } })),
+}
+const search = nominatimProvider({ countryCodes: ['ar'] })
+const kinds = ref<string[]>([])
+
 const useMapCode = `<script setup>
 // A control of your own, in a component placed inside <MMap>
 import { useMap } from '@m3ui-vue/m3ui-vue/map'
@@ -172,6 +187,26 @@ const identifyProps: PropDef[] = [
 const hoverProps: PropDef[] = [
   { name: 'modelValue', type: 'boolean', default: 'false', description: 'On (v-model).' },
   { name: 'control', type: 'boolean | MapControlPosition', default: 'true', description: 'Its on/off button among the map\'s controls, or false.' },
+]
+
+const measureProps: PropDef[] = [
+  { name: 'modelValue', type: "'distance' | 'area' | null", default: 'null', description: 'The measuring mode (v-model): set it to start measuring from your own UI.' },
+  { name: 'control', type: 'boolean | MapControlPosition', default: 'true', description: 'Its buttons (distance, area, clear), or false.' },
+]
+const filterProps: PropDef[] = [
+  { name: 'layer', type: 'string', description: 'The layer\'s id. Required.' },
+  { name: 'property', type: 'string', description: 'The property to filter by. Required.' },
+  { name: 'values', type: '(string | number)[]', description: 'The values to offer; by default the ones in the layer\'s loaded features.' },
+  { name: 'labels', type: 'Record<string, string>', description: 'Labels for the values.' },
+  { name: 'modelValue', type: '(string | number)[]', description: 'The selected values (v-model). None selected: no filter.' },
+]
+const searchProps: PropDef[] = [
+  { name: 'provider', type: 'MapSearchProvider', default: 'nominatimProvider()', description: 'Where to search.' },
+  { name: 'position', type: 'MapControlPosition', default: "'top-left'", description: 'The corner.' },
+  { name: 'placeholder', type: 'string', description: 'The field\'s placeholder ("Search places" by default).' },
+  { name: 'zoom', type: 'number', default: '17', description: 'The zoom for a result without an extent.' },
+  { name: 'marker', type: 'boolean', default: 'true', description: 'Mark the picked place.' },
+  { name: 'instant', type: 'boolean', default: 'false', description: 'Search while typing (debounced), for providers that allow it.' },
 ]
 
 const mapProps: PropDef[] = [
@@ -412,6 +447,36 @@ const fitZones = () => zoneMap.value.map.fitBounds(bounds, { padding: 32 })`"
       </MMap>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Search, measure and filter"
+      description="Search a place in Argentina (Enter searches; Nominatim allows no search-as-you-type), measure distances and areas (click to add points, double-click or the button again to finish, drag the points of a finished one, ✕ deletes one), and filter the sample places by kind."
+      :code="`<MMap map-style=&quot;https://tiles.openfreemap.org/styles/liberty&quot; :center=&quot;[-64.1888, -31.4201]&quot; :zoom=&quot;13&quot; fullscreen class=&quot;h-[28rem] rounded-xl&quot;>
+  <MMapSearch :provider=&quot;nominatimProvider({ countryCodes: ['ar'] })&quot; />
+  <MMapMeasure />
+  <MMapGeoJson id=&quot;spots&quot; :data=&quot;spots&quot; />
+  <MMapControl position=&quot;bottom-left&quot; :group=&quot;false&quot;>
+    <MCard variant=&quot;elevated&quot; class=&quot;p-3&quot;>
+      <MMapFilter v-model=&quot;kinds&quot; layer=&quot;spots-circle&quot; property=&quot;kind&quot; :values=&quot;['Church', 'Museum', 'Park', 'Market']&quot; />
+    </MCard>
+  </MMapControl>
+</MMap>`"
+      :script="`import { MMap, MMapSearch, MMapMeasure, MMapGeoJson, MMapControl, MMapFilter, nominatimProvider } from '@m3ui-vue/m3ui-vue/map'
+
+const kinds = ref([])
+const spots = { type: 'FeatureCollection', features: [/* points with a kind */] }`"
+    >
+      <MMap :map-style="STYLE" :center="CORDOBA" :zoom="13" fullscreen class="h-[28rem] w-full rounded-xl">
+        <MMapSearch :provider="search" />
+        <MMapMeasure />
+        <MMapGeoJson id="spots" :data="spots" />
+        <MMapControl position="bottom-left" :group="false">
+          <MCard variant="elevated" class="max-w-[calc(100vw-5rem)] p-3">
+            <MMapFilter v-model="kinds" layer="spots-circle" property="kind" :values="['Church', 'Museum', 'Park', 'Market']" />
+          </MCard>
+        </MMapControl>
+      </MMap>
+    </ComponentDemo>
+
     <h2 class="mb-2 mt-10 text-headline-small font-medium">Layers from the style</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
       A map server's styles carry more than drawing rules: names for the layers, groups, which ones are base maps,
@@ -536,6 +601,18 @@ const style = {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">MMapHover Props</h3>
     <PropsTable :props="hoverProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapMeasure Props</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">Emits change with every measurement (points, closed, length in meters, area in m²); the ✕ on a total or area label deletes that one; exposes start(mode), finish(), clear() and remove(index). In fullscreen, Escape finishes a measurement where the browser allows it (Chromium; holding Escape leaves fullscreen). While measuring it owns the map's clicks: MMapIdentify waits (useMap().activeTool, for tools of your own).</p>
+    <PropsTable :props="measureProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapFilter Props</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">The style's own filter on the layer stays. useMapFilter() (setFilter, valuesOf) is what it's built on, for filters of your own.</p>
+    <PropsTable :props="filterProps" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">MMapSearch Props</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">A provider is a function (query, signal) returning places ({ label, lngLat, bbox?, type? }): nominatimProvider({ url, limit, language, countryCodes, viewbox, bounded }) or your own (your server, the style's search services). Emits select with the picked place.</p>
+    <PropsTable :props="searchProps" />
 
 
     <ComponentPager current="MMap" />

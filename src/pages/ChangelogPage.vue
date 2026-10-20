@@ -21,6 +21,8 @@ const versions: Version[] = [
       added: [
         'MMap, a MapLibre map with M3 controls that follow your theme, markers and popups with your own content, GeoJSON drawn in the theme\'s colors and your own controls (install maplibre-gl, import from /map)',
         'MMap reads your map server\'s style conventions and builds the UI for them: a layer list with groups, opacity and legends, a base map switcher, click-to-identify with formatted data and info on hover. Ready for the Orvian viewers\' conventions (mvt-rs), or any style through your own adapter',
+        'The map\'s controls show the library\'s tooltips instead of the browser\'s',
+        'MMap tools: measure distances and areas (editable, deletable one by one, theme-colored labels), filter a layer by a property\'s values, and search places with Nominatim or your own geocoder',
         'Server-rendered apps can render with the user\'s theme, palette and contrast: createM3UI keeps them in cookies with cookies: true and takes what the server read as initialState, so a theme toggle or a palette picker shows the right choice from the first paint, without ClientOnly. The Nuxt module does it for you',
         'Editors autocomplete the palette names wherever you set one (createM3UI, useColorPalette().set(), the Nuxt module\'s options), through a new PaletteId type',
         'Server-rendered pages remember the user\'s window size too, so adaptive layouts like MNavigationSuite show the right navigation (a rail on a desktop) from the first paint on their next visit',
