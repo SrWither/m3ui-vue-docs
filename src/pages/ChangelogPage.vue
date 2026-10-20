@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.1.0',
-    date: 'Unreleased',
+    date: '2026-10-20',
     changes: {
       added: [
         'MBottomSheet can open partially expanded (partial) and be dragged up to the full screen, by its handle or its content, which scrolls once it\'s expanded; v-model:expanded follows the state, and squareCornersWhenFull squares its corners when it fills the screen',
