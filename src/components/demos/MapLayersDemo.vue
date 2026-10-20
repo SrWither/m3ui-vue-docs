@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MCard } from '@m3ui-vue/m3ui-vue'
+import { MCard, MIcon } from '@m3ui-vue/m3ui-vue'
 import { MMap, MMapBaseLayers, MMapControl, MMapHover, MMapIdentify, MMapLayers, orvianAdapter } from '@m3ui-vue/m3ui-vue/map'
 import type { StyleSpecification } from 'maplibre-gl'
 
@@ -95,23 +95,30 @@ const style = {
 
 const adapter = orvianAdapter()
 const hover = ref(true)
+const showLayers = ref(true)
 </script>
 
 <template>
-  <div class="grid w-full gap-3 lg:grid-cols-[1fr_320px]">
-    <MMap :map-style="style" :adapter="adapter" :center="[-64.19, -31.42]" :zoom="12" class="h-[32rem] w-full rounded-xl">
-      <MMapIdentify />
-      <MMapHover v-model="hover" />
-      <MMapControl position="bottom-left" :group="false">
-        <MCard variant="elevated" class="p-2">
-          <MMapBaseLayers />
-        </MCard>
-      </MMapControl>
-      <!-- Inside the map so it can use its layers; drawn beside it on wide screens -->
-      <Teleport to="#map-layers-panel" defer>
+  <MMap :map-style="style" :adapter="adapter" :center="[-64.19, -31.42]" :zoom="12" fullscreen class="h-[32rem] w-full rounded-xl">
+    <MMapIdentify />
+    <MMapHover v-model="hover" />
+
+    <!-- A button that opens the layer list over the map (so it's there in fullscreen too) -->
+    <MMapControl position="top-left">
+      <button type="button" class="grid place-items-center" title="Layers" :aria-pressed="showLayers" @click="showLayers = !showLayers">
+        <MIcon name="layers" :size="20" />
+      </button>
+    </MMapControl>
+    <MMapControl position="top-left" :group="false">
+      <MCard v-if="showLayers" variant="elevated" class="max-h-96 w-72 max-w-[calc(100vw-5rem)] overflow-y-auto p-3">
         <MMapLayers />
-      </Teleport>
-    </MMap>
-    <div id="map-layers-panel" class="max-h-[32rem] overflow-y-auto rounded-xl bg-surface-container-low p-3" />
-  </div>
+      </MCard>
+    </MMapControl>
+
+    <MMapControl position="bottom-left" :group="false">
+      <MCard variant="elevated" class="p-2">
+        <MMapBaseLayers />
+      </MCard>
+    </MMapControl>
+  </MMap>
 </template>

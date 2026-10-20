@@ -259,12 +259,13 @@ const controlProps: PropDef[] = [
   map-style=&quot;https://tiles.openfreemap.org/styles/liberty&quot;
   :center=&quot;[-64.1888, -31.4201]&quot;
   :zoom=&quot;12&quot;
+  fullscreen
   class=&quot;h-80 rounded-xl&quot;
 />`"
       :script="`import 'maplibre-gl/dist/maplibre-gl.css'
 import { MMap } from '@m3ui-vue/m3ui-vue/map'`"
     >
-      <MMap :map-style="STYLE" :center="CORDOBA" :zoom="12" class="h-80 w-full rounded-xl" />
+      <MMap :map-style="STYLE" :center="CORDOBA" :zoom="12" fullscreen class="h-80 w-full rounded-xl" />
     </ComponentDemo>
 
     <ComponentDemo
@@ -341,6 +342,7 @@ const places = [
   :center=&quot;[-64.189, -31.418]&quot;
   :zoom=&quot;11.5&quot;
   persist=&quot;delivery-zones&quot;
+  fullscreen
   class=&quot;h-96 rounded-xl&quot;
 >
   <MMapGeoJson v-if=&quot;showZones&quot; :data=&quot;zones&quot; :layers=&quot;zoneLayers&quot; interactive @click=&quot;pickZone&quot; />
@@ -386,6 +388,7 @@ const fitZones = () => zoneMap.value.map.fitBounds(bounds, { padding: 32 })`"
         :center="KITCHEN"
         :zoom="11.5"
         persist="m3-docs-delivery-zones"
+        fullscreen
         class="h-96 w-full rounded-xl"
       >
         <MMapGeoJson v-if="showZones" id="zones" :data="zonesData" :layers="zoneLayers" interactive @click="pickZone" />
@@ -426,21 +429,29 @@ const fitZones = () => zoneMap.value.map.fitBounds(bounds, { padding: 32 })`"
 
     <ComponentDemo
       title="Layer list, base maps, identify and hover"
-      description="A sample style using the Orvian conventions: switch base maps with the thumbnails, show, hide and fade layers and groups in the list, click a district, a bike lane or a place for its data, and hover them for a summary (its button turns it off)."
-      :code="`<MMap :map-style=&quot;style&quot; :adapter=&quot;orvianAdapter()&quot; class=&quot;h-[32rem] rounded-xl&quot;>
+      description="A sample style using the Orvian conventions: open the layer list from its button to show, hide and fade layers and groups, switch base maps with the thumbnails, click a district, a bike lane or a place for its data, and hover them for a summary (its button turns it off). Try it in fullscreen."
+      :code="`<MMap :map-style=&quot;style&quot; :adapter=&quot;orvianAdapter()&quot; fullscreen class=&quot;h-[32rem] rounded-xl&quot;>
   <MMapIdentify />
   <MMapHover v-model=&quot;hover&quot; />
+
+  <!-- A button that opens the layer list over the map -->
+  <MMapControl position=&quot;top-left&quot;>
+    <button type=&quot;button&quot; title=&quot;Layers&quot; :aria-pressed=&quot;showLayers&quot; @click=&quot;showLayers = !showLayers&quot;>
+      <MIcon name=&quot;layers&quot; :size=&quot;20&quot; />
+    </button>
+  </MMapControl>
+  <MMapControl position=&quot;top-left&quot; :group=&quot;false&quot;>
+    <MCard v-if=&quot;showLayers&quot; variant=&quot;elevated&quot; class=&quot;max-h-96 w-72 overflow-y-auto p-3&quot;>
+      <MMapLayers />
+    </MCard>
+  </MMapControl>
+
   <MMapControl position=&quot;bottom-left&quot; :group=&quot;false&quot;>
     <MCard variant=&quot;elevated&quot; class=&quot;p-2&quot;>
       <MMapBaseLayers />
     </MCard>
   </MMapControl>
-  <!-- Inside the map (it uses its layers), drawn wherever you like -->
-  <Teleport to=&quot;#layers-panel&quot; defer>
-    <MMapLayers />
-  </Teleport>
-</MMap>
-<div id=&quot;layers-panel&quot; />`"
+</MMap>`"
       :script="`// In the style's metadata: alias, group, identify, fields, hover, isbaselayer…
 const style = {
   version: 8,
