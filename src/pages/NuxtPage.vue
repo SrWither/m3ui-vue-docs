@@ -42,10 +42,9 @@ const usageCode = `<template>
 const toast = useM3Toast()
 <\/script>`
 
-const clientOnlyCode = `<template>
-  <ClientOnly>
-    <MIconButton :icon="theme === 'dark' ? 'dark_mode' : 'light_mode'" label="Switch theme" @click="cycle" />
-  </ClientOnly>
+const themeToggleCode = `<template>
+  <!-- Rendered on the server with the user's theme: no ClientOnly needed -->
+  <MIconButton :icon="theme === 'dark' ? 'dark_mode' : 'light_mode'" label="Switch theme" @click="cycle" />
 </template>
 
 <script setup lang="ts">
@@ -54,18 +53,33 @@ const { theme, cycle } = useM3Theme()
 
 const viteSsrCode = `// entry-client.ts
 import { createSSRApp } from 'vue'
-import { createM3UI } from '@m3ui-vue/m3ui-vue'
+import { createM3UI, type M3InitialState } from '@m3ui-vue/m3ui-vue'
 import App from './App.vue'
+
+const cookie = (name: string) => document.cookie.match(new RegExp(\`(?:^|; )\${name}=([^;]*)\`))?.[1]
 
 const app = createSSRApp(App)
 let hydrating = true
-app.use(createM3UI({ palette: 'teal', isHydrating: () => hydrating }))
+app.use(createM3UI({
+  palette: 'teal',
+  cookies: true, // keep the choice in cookies too, for the server
+  // the same values the server read, so the first render matches its HTML
+  initialState: { theme: cookie('m3-theme'), palette: cookie('m3-palette'), contrast: cookie('m3-contrast') } as M3InitialState,
+  isHydrating: () => hydrating,
+}))
 app.mount('#app')
 hydrating = false`
 
-const headScriptCode = `// entry-server.ts: inline it in <head>, before your stylesheets
-import { themeInitScript } from '@m3ui-vue/m3ui-vue'
+const headScriptCode = `// entry-server.ts, per request
+import { createM3UI, themeInitScript, type M3InitialState } from '@m3ui-vue/m3ui-vue'
 
+app.use(createM3UI({
+  palette: 'teal',
+  // from the request's cookies, however your server parses them
+  initialState: { theme: cookies['m3-theme'], palette: cookies['m3-palette'], contrast: cookies['m3-contrast'] } as M3InitialState,
+}))
+
+// inline it in <head>, before your stylesheets
 const head = \`<script>\${themeInitScript({ palette: 'teal' })}<\/script>\``
 
 const options: PropDef[] = [
@@ -79,6 +93,7 @@ const options: PropDef[] = [
   { name: 'components', type: 'boolean', default: 'true', description: 'Auto-import the components. Each one is bundled only where it is used.' },
   { name: 'composables', type: 'boolean | { prefix: string }', default: "{ prefix: 'M3' }", description: 'Auto-import the composables with this prefix (useTheme becomes useM3Theme). false to import them yourself.' },
   { name: 'css', type: 'boolean', default: 'true', description: "Add the components' own stylesheet (@m3ui-vue/m3ui-vue/styles)." },
+  { name: 'cookies', type: 'boolean', default: 'true', description: 'Keep the theme, palette and contrast in cookies too, so the server renders with the user\'s choice.' },
   { name: 'themeScript', type: 'boolean', default: 'true', description: 'Inline themeInitScript() in <head>, so the saved theme is on the page before it paints.' },
 ]
 </script>
@@ -94,7 +109,7 @@ const options: PropDef[] = [
     <MCard class="mb-8 flex items-start gap-3 p-4">
       <MIcon name="info" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <p class="text-body-medium text-on-surface">
-        Server-side rendering needs <strong>@m3ui-vue/m3ui-vue 1.0.2</strong> or later. The module's source and
+        Server-side rendering needs <strong>@m3ui-vue/m3ui-vue 1.0.2</strong> or later, and rendering the user's theme on the server (cookies) <strong>1.0.3</strong> with <strong>@m3ui-vue/nuxt 0.2.0</strong>. The module's source and
         a playground app live in
         <a href="https://github.com/SrWither/m3ui-vue-nuxt" class="text-primary underline">SrWither/m3ui-vue-nuxt</a>.
       </p>
@@ -163,27 +178,26 @@ const options: PropDef[] = [
     <!-- SSR -->
     <h2 class="mb-4 text-headline-small font-medium">What the server knows</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
-      The user's theme lives in their browser's storage and their screen size in their browser, so the server
-      renders the page without either. Three things follow from that.
+      The user's theme, palette and contrast reach the server through cookies. Their screen size and their system's
+      preferences don't, and three things follow from that.
     </p>
 
     <MCard class="mb-4 flex items-start gap-3 p-4">
       <MIcon name="dark_mode" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <div>
-        <p class="mb-2 text-body-medium font-medium text-on-surface">Theme-dependent UI goes in ClientOnly</p>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">Theme-aware UI renders on the server</p>
         <p class="text-body-medium text-on-surface-variant">
           A small script in <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;head&gt;</code>
-          applies the saved dark mode, palette and contrast before the page paints, so it looks right from the start.
-          But <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3Theme()</code> and
+          applies the saved dark mode, palette and contrast before the page paints, and
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3Theme()</code> and
           <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3ColorPalette()</code> report
-          the defaults on the server and switch to the user's choice on the client. Anything rendered from them, like
-          a theme toggle's icon or a selected palette swatch, belongs in
-          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;ClientOnly&gt;</code>, or
-          Vue reports a hydration mismatch.
+          the user's choice already on the server, so a theme toggle's icon or a selected palette swatch hydrate as they
+          are. What stays in the browser is the system: with the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">system</code>
+          theme, whether the page ends up dark is decided there.
         </p>
       </div>
     </MCard>
-    <MCodeEditor :model-value="clientOnlyCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-4" />
+    <MCodeEditor :model-value="themeToggleCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-4" />
 
     <MCard class="mb-4 flex items-start gap-3 p-4">
       <MIcon name="devices" :size="22" class="mt-0.5 shrink-0 text-primary" />
@@ -214,18 +228,21 @@ const options: PropDef[] = [
     <!-- Without Nuxt -->
     <h2 class="mb-4 text-headline-small font-medium">Without Nuxt</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
-      For your own server rendering (Vite SSR or similar), do what the module does. On the client, tell the plugin
-      when hydration ends with <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">isHydrating</code>,
-      so the adaptive layouts match the server's HTML:
+      For your own server rendering (Vite SSR or similar), do what the module does. On the client, keep the choice
+      in cookies with <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">cookies</code>, pass
+      what they hold as <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">initialState</code>, and
+      tell the plugin when hydration ends with <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">isHydrating</code>,
+      so the composables and the adaptive layouts match the server's HTML:
     </p>
     <MCodeEditor :model-value="viteSsrCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-6" />
     <p class="mb-3 text-body-medium text-on-surface-variant">
-      On the server, inline <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">themeInitScript()</code>
+      On the server, give the plugin the same <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">initialState</code>
+      from the request's cookies, and inline <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">themeInitScript()</code>
       in the page's <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">&lt;head&gt;</code>, with the
       same <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">palette</code>,
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">contrast</code> and
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">persistPalette</code> you give the plugin:
     </p>
-    <MCodeEditor :model-value="headScriptCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="150px" class="mb-10" />
+    <MCodeEditor :model-value="headScriptCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" class="mb-10" />
   </div>
 </template>
