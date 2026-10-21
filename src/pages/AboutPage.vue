@@ -268,6 +268,18 @@ const history: TimelineItem[] = [
           public in case it's useful to others. Bug reports and ideas are welcome on
           <a href="https://github.com/SrWither/m3ui-vue" target="_blank" rel="noopener" class="underline">GitHub</a>.
         </p>
+
+        <!-- Optional support: kept inside "Free" on purpose, it changes nothing about the above -->
+        <div class="mt-6 border-t border-on-tertiary-container/15 pt-6">
+          <p class="mb-1 text-title-medium font-medium text-on-tertiary-container">Want to support it?</p>
+          <p class="mb-4 text-body-medium text-on-tertiary-container/80">
+            Completely optional. If M3UI Vue saves you time, you can sponsor its development on GitHub, which helps
+            me spend more time on it. A star on the repo or sharing it with someone helps too.
+          </p>
+          <a href="https://github.com/sponsors/SrWither" target="_blank" rel="noopener">
+            <MButton icon="favorite">Sponsor on GitHub</MButton>
+          </a>
+        </div>
       </div>
     </section>
 
