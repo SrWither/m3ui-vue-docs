@@ -8,6 +8,7 @@ const components = [
   { name: 'MDragDropList', description: 'Reorder a list of items via native HTML5 drag-and-drop.' },
   { name: 'MSwipeToDismiss', description: 'Swipe content left or right to dismiss it, uncovering actions behind.' },
   { name: 'MTransition', description: 'Material 3 navigation transitions: shared axis and fade through.' },
+  { name: 'MContainerTransform', description: 'Whatever you tap (a card, a list item, a FAB) grows into the view it opens, and shrinks back.' },
   { name: 'MTransferList', description: 'Move items between two panels with optional per-panel search.' },
   { name: 'MHotkeys', description: 'Registers global keyboard shortcuts, with an optional on-screen overlay.' },
   { name: 'MInfiniteScroll', description: 'Emits an event to load more content as the user scrolls near the bottom.' },

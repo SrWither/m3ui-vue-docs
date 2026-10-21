@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MContainerTransform, new: whatever you tap (a card, a list item, an avatar, a FAB) grows into the view it opens, full screen or as a centered panel, and shrinks back, Material\'s container transform. useContainerTransform opens one detail from a whole grid or list',
         'MToolbar collapses like Material 3\'s floating toolbar: into its FAB, which grows, or down to a button in the middle between new leading and trailing slots. Optionally as the content scrolls (collapseOnScroll)',
         'MIconButton iconFilled draws the icon filled without making the button a toggle, for media controls',
       ],

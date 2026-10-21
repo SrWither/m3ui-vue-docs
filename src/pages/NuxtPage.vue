@@ -42,6 +42,18 @@ const usageCode = `<template>
 const toast = useM3Toast()
 <\/script>`
 
+const containerTransformCode = `<script setup lang="ts">
+// Auto-imported, prefixed like every composable
+const detail = useM3ContainerTransform<Product>()
+<\/script>
+
+<template>
+  <MCard v-for="p in products" :key="p.id" clickable @click="detail.open($event, p)">…</MCard>
+  <MContainerTransform :controller="detail" mode="dialog">
+    <template #expanded="{ item, close }">…</template>
+  </MContainerTransform>
+</template>`
+
 const themeToggleCode = `<template>
   <!-- Rendered on the server with the user's theme: no ClientOnly needed -->
   <MIconButton :icon="theme === 'dark' ? 'dark_mode' : 'light_mode'" label="Switch theme" @click="cycle" />
@@ -192,13 +204,26 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">usePageProgress</code> &rarr; <code class="font-mono text-primary">useM3PageProgress</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useSpring</code> &rarr; <code class="font-mono text-primary">useM3Spring</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useConfetti</code> &rarr; <code class="font-mono text-primary">useM3Confetti</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useContainerTransform</code> &rarr; <code class="font-mono text-primary">useM3ContainerTransform</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMap</code> &rarr; <code class="font-mono text-primary">useM3Map</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMapLayers</code> &rarr; <code class="font-mono text-primary">useM3MapLayers</code></li>
-      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5 sm:col-span-2"><code class="font-mono text-on-surface-variant">useMapFilter</code> &rarr; <code class="font-mono text-primary">useM3MapFilter</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMapFilter</code> &rarr; <code class="font-mono text-primary">useM3MapFilter</code></li>
     </ul>
     <p class="mb-10 text-body-small text-on-surface-variant">
       The map composables, like the map components, only when <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">maplibre-gl</code> is installed.
     </p>
+
+    <h3 class="mb-3 text-title-large font-medium">Container transform</h3>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      <RouterLink to="/components/utility/mcontainertransform" class="text-primary underline">MContainerTransform</RouterLink>
+      needs nothing extra: wrap an element, or open it from anywhere with
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3ContainerTransform()</code>
+      (the controller can live in a page, a component or a Pinia store). The server renders the elements that open
+      it; the expanded view only ever renders in the browser, after hydration, even with
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">v-model:open</code> true from the
+      start, so it never causes a hydration mismatch.
+    </p>
+    <MCodeEditor :model-value="containerTransformCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-10" />
 
     <!-- Options -->
     <h2 class="mb-4 text-headline-small font-medium">Module options</h2>
