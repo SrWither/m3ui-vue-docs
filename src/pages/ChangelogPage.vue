@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       added: [
         'MListGroup splits a list into groups: in a segmented list each one is its own rounded card of items, set apart from the rest, with an optional title, like a settings screen',
+        'MAnimatedNumber: numbers, clocks and timers whose digits roll to their new value, in any format (dollars, euros, pesos, percent, units, compact numbers, times)',
         'MScheme colors a part of your page with its own scheme: from a color, from the dominant color of a photo (Material You\'s content color), or from one of the palettes, while the rest keeps your theme. seedFromImage() reads a photo\'s color, the same way Android reads a wallpaper\'s',
       ],
     },
