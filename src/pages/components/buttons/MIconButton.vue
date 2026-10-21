@@ -24,6 +24,7 @@ const iconButtonProps: PropDef[] = [
   { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
   { name: 'checked', type: 'boolean', description: 'Makes it a toggle button (v-model:checked): selected colors, a filled icon, and a shape that changes when pressed and when checked. Leave it unset for a plain icon button' },
   { name: 'checkedIcon', type: 'string', description: "Icon shown while checked, when it differs from icon (e.g. 'pause' for 'play_arrow')" },
+  { name: 'iconFilled', type: 'boolean', default: 'false', description: "Draws the icon filled (Material Symbols' FILL axis) without making it a toggle, e.g. a player's skip buttons" },
 ]
 
 const iconButtonEvents: EventDef[] = [
