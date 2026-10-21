@@ -26,6 +26,7 @@ const groups = [
       { name: 'useDevice', description: 'Reactive composable for detecting a mobile-sized viewport.' },
       { name: 'useDebounce', description: 'Debounce a function, cancelled automatically when the component unmounts.' },
       { name: 'useSpring', description: 'Animate numbers on a real spring, with Material 3\'s motion specs, like the components do.' },
+      { name: 'useConfetti', description: 'A burst of confetti in expressive shapes and your theme\'s colors, for the end of a flow.' },
       { name: 'useFieldBg', description: 'Detect the background behind a field so an outlined label can cut through its border.' },
     ],
   },
