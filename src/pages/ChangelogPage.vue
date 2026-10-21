@@ -20,13 +20,18 @@ const versions: Version[] = [
     changes: {
       added: [
         'MToolbar collapses like Material 3\'s floating toolbar: into its FAB, which grows, or down to a button in the middle between new leading and trailing slots. Optionally as the content scrolls (collapseOnScroll)',
+        'MIconButton iconFilled draws the icon filled without making the button a toggle, for media controls',
       ],
       changed: [
         'A FAB next to MToolbar is sized and colored by the toolbar, as in Material 3, and its label names it instead of making it extended',
         'MAnimatedNumber shows dollar-sign currencies with their country in any language: AR$ for Argentine pesos, MX$ for Mexican pesos, US$ for US dollars',
+        'Range MSlider: a handle can no longer pass the other, so you always get [low, high], and each handle can be reached and moved from the keyboard on its own',
+        'MSlider\'s keyboard focus ring takes the slider\'s color',
       ],
       fixed: [
         'MSlider no longer leaves the end dot floating next to the handle when the value is almost at the end of the track',
+        'Range MSlider: tapping beside two overlapping handles moves the one on that side',
+        'Expandable MListItem can be opened and closed from the keyboard',
       ],
     },
   },
