@@ -56,6 +56,7 @@ const ctProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Accessible name of the expanded view' },
   { name: 'scrim', type: 'boolean', default: 'true', description: 'Dims the page behind it, which makes it modal (scroll lock, aria-modal). Without one the page stays usable and a click outside closes it' },
   { name: 'persistent', type: 'boolean', default: 'false', description: 'A click on the scrim (dialog and custom modes), or outside without one, doesn\'t close it' },
+  { name: 'closeOnBack', type: 'boolean', default: 'true', description: 'Android\'s back (button or gesture) closes it, where the browser has the CloseWatcher API (Chrome, Edge). The history and your router are left alone' },
 ]
 const ctSlots: SlotDef[] = [
   { name: '#default', description: 'The element that opens it, with { open, isOpen }: call open() from its click. Its root element is the one that grows' },
