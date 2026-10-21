@@ -40,17 +40,26 @@ const cities: City[] = [
 ]
 const city = useContainerTransform<City>()
 
+// Custom: files growing into a side sheet
+const files = [
+  { name: 'Q3 report.pdf', icon: 'picture_as_pdf', size: '2.4 MB', owner: 'Ana Díaz', edited: 'Yesterday' },
+  { name: 'Launch plan.docx', icon: 'description', size: '380 KB', owner: 'Leo Park', edited: 'Mon' },
+  { name: 'Moodboard.png', icon: 'image', size: '5.1 MB', owner: 'Mia Rossi', edited: 'Oct 12' },
+]
+const file = useContainerTransform<(typeof files)[number]>()
+
 const ctProps: PropDef[] = [
   { name: 'open (v-model)', type: 'boolean', default: 'false', description: 'Whether the expanded view is open. Opening it from here grows it from the default slot\'s element (or the controller\'s last one)' },
   { name: 'controller', type: 'ContainerTransformController', description: 'A useContainerTransform() controller, to open it from elements that live elsewhere: controller.open($event, item)' },
-  { name: 'mode', type: "'fullscreen' | 'dialog'", default: "'fullscreen'", description: 'Where the expanded view opens: over the whole screen, or as a centered panel (wider screens)' },
+  { name: 'mode', type: "'fullscreen' | 'dialog' | 'custom'", default: "'fullscreen'", description: 'Where the expanded view opens: over the whole screen, as a centered panel (wider screens), or custom: the classes you give the component place, size and shape it, anywhere over the page' },
   { name: 'maxWidth', type: 'string', default: "'560px'", description: 'The centered panel\'s maximum width (dialog mode)' },
   { name: 'label', type: 'string', description: 'Accessible name of the expanded view' },
-  { name: 'persistent', type: 'boolean', default: 'false', description: 'Dialog mode: a scrim click doesn\'t close it' },
+  { name: 'scrim', type: 'boolean', default: 'true', description: 'Dims the page behind it, which makes it modal (scroll lock, aria-modal). Without one the page stays usable and a click outside closes it' },
+  { name: 'persistent', type: 'boolean', default: 'false', description: 'A click on the scrim (dialog and custom modes), or outside without one, doesn\'t close it' },
 ]
 const ctSlots: SlotDef[] = [
   { name: '#default', description: 'The element that opens it, with { open, isOpen }: call open() from its click. Its root element is the one that grows' },
-  { name: '#expanded', description: 'The expanded view, with { close, item } (item is what the controller\'s open was given). Its classes and attributes go on the expanded surface' },
+  { name: '#expanded', description: 'The expanded view, with { close, item } (item is what the controller\'s open was given). The classes and attributes you give the component go on the expanded surface, and win over its default background, shape and shadow' },
 ]
 const ctEvents = [
   { name: 'update:open', payload: 'boolean', description: 'The expanded view opened or closed' },
@@ -307,6 +316,91 @@ const place = useContainerTransform()
             <MTextField label="To" />
             <MTextField label="Subject" />
             <MTextField label="Message" multiline :rows="6" />
+          </div>
+        </template>
+      </MContainerTransform>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom: a Corner Chat"
+      description="mode=&quot;custom&quot; leaves the destination to your classes. Here the support FAB grows into a chat window in the corner, without a scrim: the page stays usable and a click outside closes it."
+      :code="`<MContainerTransform
+  mode=&quot;custom&quot;
+  :scrim=&quot;false&quot;
+  class=&quot;bottom-6 right-6 h-[min(480px,calc(100%-48px))] w-[min(360px,calc(100%-48px))] rounded-3xl bg-surface-container shadow-elevation-3&quot;
+>
+  <template #default=&quot;{ open }&quot;>
+    <MFab icon=&quot;support_agent&quot; label=&quot;Help&quot; @click=&quot;open&quot; />
+  </template>
+  <template #expanded=&quot;{ close }&quot;>…</template>
+</MContainerTransform>`"
+    >
+      <MContainerTransform
+        mode="custom"
+        :scrim="false"
+        label="Support chat"
+        class="bottom-6 right-6 flex h-[min(480px,calc(100%-48px))] w-[min(360px,calc(100%-48px))] flex-col rounded-3xl bg-surface-container shadow-elevation-3"
+      >
+        <template #default="{ open }">
+          <MFab icon="support_agent" label="Help" @click="open" />
+        </template>
+        <template #expanded="{ close }">
+          <div class="flex items-center gap-3 bg-primary-container p-3 pl-4 text-on-primary-container">
+            <MIcon name="support_agent" />
+            <div class="flex-1">
+              <p class="text-title-medium">Support</p>
+              <p class="text-body-small opacity-80">Usually replies in a few minutes</p>
+            </div>
+            <MIconButton icon="close" label="Close" @click="close" />
+          </div>
+          <div class="flex flex-1 flex-col gap-2 p-4">
+            <p class="max-w-[80%] self-start rounded-2xl rounded-tl-sm bg-surface-container-highest px-4 py-2 text-body-medium">Hi! How can we help you today?</p>
+            <p class="max-w-[80%] self-end rounded-2xl rounded-tr-sm bg-primary px-4 py-2 text-body-medium text-on-primary">My order hasn't arrived yet</p>
+            <p class="max-w-[80%] self-start rounded-2xl rounded-tl-sm bg-surface-container-highest px-4 py-2 text-body-medium">Sorry about that! Could you share the order number?</p>
+          </div>
+          <div class="p-3"><MTextField label="Message" /></div>
+        </template>
+      </MContainerTransform>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom: a Side Sheet"
+      description="The same with a scrim: each file grows into a details sheet docked to the right edge."
+      :code="`<MListItem v-for=&quot;f in files&quot; :title=&quot;f.name&quot; @click=&quot;file.open($event, f)&quot; />
+<MContainerTransform
+  :controller=&quot;file&quot;
+  mode=&quot;custom&quot;
+  class=&quot;inset-y-0 right-0 w-[min(400px,100%)] rounded-l-3xl bg-surface-container-low&quot;
+>…</MContainerTransform>`"
+    >
+      <MList class="w-full max-w-md rounded-xl bg-surface-container-low">
+        <MListItem v-for="f in files" :key="f.name" :icon="f.icon" :title="f.name" :subtitle="`${f.size} · ${f.edited}`" @click="file.open($event, f)" />
+      </MList>
+      <MContainerTransform
+        :controller="file"
+        mode="custom"
+        :label="file.item.value?.name"
+        class="inset-y-0 right-0 w-[min(400px,100%)] rounded-l-3xl bg-surface-container-low"
+      >
+        <template #expanded="{ item, close }">
+          <div v-if="item" class="flex flex-col gap-4 p-4">
+            <div class="flex items-center gap-2">
+              <MIconButton icon="close" label="Close" @click="close" />
+              <span class="text-title-large">Details</span>
+            </div>
+            <div class="flex h-40 items-center justify-center rounded-2xl bg-secondary-container text-on-secondary-container">
+              <MIcon :name="item.icon" :size="64" />
+            </div>
+            <p class="text-headline-small">{{ item.name }}</p>
+            <MList>
+              <MListItem icon="person" :title="item.owner" subtitle="Owner" />
+              <MListItem icon="schedule" :title="item.edited" subtitle="Last edited" />
+              <MListItem icon="storage" :title="item.size" subtitle="Size" />
+            </MList>
+            <div class="flex gap-2">
+              <MButton variant="tonal" icon="share" @click="close">Share</MButton>
+              <MButton icon="download" @click="close">Download</MButton>
+            </div>
           </div>
         </template>
       </MContainerTransform>
