@@ -5,10 +5,9 @@
  * item are the recipes it's for, each in its own color.
  */
 import { computed } from 'vue'
-import { MButton, MCheckbox, MEmptyState, MIcon, MProgressBar, MSwipeToDismiss, useToast } from '@m3ui-vue/m3ui-vue'
+import { MAnimatedNumber, MButton, MCheckbox, MEmptyState, MIcon, MProgressBar, MScheme, MSwipeToDismiss, useToast } from '@m3ui-vue/m3ui-vue'
 import type { Aisle } from '../data'
 import { byId } from '../data'
-import { schemeStyle } from '../useScheme'
 import { useRecipes, type Grocery } from '../useRecipes'
 
 const { groceries, groceryLabel, go } = useRecipes()
@@ -49,7 +48,7 @@ function clearDone() {
       <template v-if="groceries.length">
         <div class="flex items-center gap-3">
           <MProgressBar :value="(done / groceries.length) * 100" variant="wavy" color="tertiary" class="flex-1" />
-          <span class="text-label-large text-on-surface-variant tabular-nums">{{ done }}/{{ groceries.length }}</span>
+          <span class="flex text-label-large text-on-surface-variant"><MAnimatedNumber :value="done" />/<MAnimatedNumber :value="groceries.length" /></span>
         </div>
         <div>
           <MButton variant="tonal" size="sm" icon="remove_done" :disabled="!done" @click="clearDone">Clear checked</MButton>
@@ -83,10 +82,12 @@ function clearDone() {
               <span class="min-w-0 flex-1">
                 <span class="block truncate text-body-large transition-colors" :class="g.done ? 'text-on-surface-variant line-through' : 'text-on-surface'">{{ g.name }}</span>
                 <span class="flex items-center gap-1 pt-0.5">
-                  <span
+                  <MScheme
                     v-for="id in g.from"
                     :key="id"
-                    :style="schemeStyle(byId(id)!.seed)"
+                    as="span"
+                    :seed="byId(id)!.seed"
+                    variant="content"
                     :title="byId(id)?.title"
                     class="h-2.5 w-2.5 rounded-full bg-primary"
                   />

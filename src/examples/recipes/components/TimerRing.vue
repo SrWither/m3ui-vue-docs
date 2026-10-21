@@ -4,7 +4,7 @@
  * inside. Timers live in useRecipes, so they keep running if you leave cook mode.
  */
 import { computed } from 'vue'
-import { MCircleProgressBar, MIconButton } from '@m3ui-vue/m3ui-vue'
+import { MAnimatedNumber, MCircleProgressBar, MIconButton } from '@m3ui-vue/m3ui-vue'
 import { useRecipes } from '../useRecipes'
 
 const props = withDefaults(defineProps<{ recipe: string; step: number; minutes: number; size?: number }>(), { size: 168 })
@@ -15,17 +15,15 @@ const left = computed(() => (timer.value ? remaining(timer.value) : props.minute
 const running = computed(() => timer.value?.since != null)
 const done = computed(() => !!timer.value && left.value <= 0)
 const value = computed(() => (timer.value ? (1 - left.value / timer.value.total) * 100 : 0))
-const clock = computed(() => {
-  const s = Math.ceil(left.value)
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
-})
+const seconds = computed(() => Math.ceil(left.value))
 </script>
 
 <template>
   <div class="flex items-center gap-3">
     <MCircleProgressBar :value="value" :size="size" :thickness="5" color="tertiary" class="shrink-0">
       <div class="flex flex-col items-center">
-        <span class="sim-display text-headline-large tabular-nums" :class="done ? 'text-tertiary' : 'text-on-surface'">{{ done ? 'Done' : clock }}</span>
+        <span v-if="done" class="sim-display text-headline-large text-tertiary">Done</span>
+        <MAnimatedNumber v-else :value="seconds" type="duration" class="sim-display text-headline-large text-on-surface" />
         <span class="text-label-medium text-on-surface-variant">{{ running ? 'running' : done ? 'ring ring' : `${minutes} min` }}</span>
       </div>
     </MCircleProgressBar>

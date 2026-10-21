@@ -1,8 +1,7 @@
 /*
- * Content color, the heart of Material You: a whole M3 scheme built from one seed color (the
- * dish's) with the library's generateScheme(), applied to a single element as inline --color-*
- * variables. Every bg-primary-container, text-on-surface or MButton inside that element then
- * uses the recipe's colors, while the rest of the app keeps the palette the reader picked.
+ * The open recipe's scheme, for RecipesExample to put on <html> (so teleported pieces like toasts
+ * and sheets wear it too): the library's generateScheme() as inline --color-* variables. Cards and
+ * other pieces use MScheme instead, which does the same on its own element.
  */
 import { computed, reactive, ref, type MaybeRefOrGetter, toValue } from 'vue'
 import { generateScheme, type GeneratedScheme } from '@m3ui-vue/m3ui-vue'
@@ -49,17 +48,6 @@ export function useScheme(seed: MaybeRefOrGetter<string | undefined>) {
     for (const [role, value] of Object.entries(tokens)) style[`--color-${role}`] = value
     return style
   })
-}
-
-/** Same as useScheme for many seeds at once (a grid of cards). */
-export function schemeStyle(seed: string) {
-  load(seed)
-  const scheme = schemes.get(seed)
-  if (!scheme) return undefined
-  const tokens = isDark.value ? scheme.dark : scheme.light
-  const style: Record<string, string> = {}
-  for (const [role, value] of Object.entries(tokens)) style[`--color-${role}`] = value
-  return style
 }
 
 /** True once every seed's scheme is built. */

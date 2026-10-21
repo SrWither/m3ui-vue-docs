@@ -5,7 +5,7 @@
  * to move, steps with a wait show their timer, and the screen stays awake while it's open.
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { MBottomSheet, MButton, MIcon, MIconButton, MList, MListItem, MShape, type ShapeName } from '@m3ui-vue/m3ui-vue'
+import { MBottomSheet, MButton, MIcon, MIconButton, MList, MListItem, MShape, useConfetti, type ShapeName } from '@m3ui-vue/m3ui-vue'
 import { byId, formatQty } from '../data'
 import { useRecipes } from '../useRecipes'
 import TimerRing from '../components/TimerRing.vue'
@@ -25,6 +25,13 @@ const tones = [
 const tone = computed(() => (finished.value ? tones[0]! : tones[cookStep.value % tones.length]!))
 const shapes: ShapeName[] = ['Cookie9Sided', 'Flower', 'Sunny', 'Clover8Leaf', 'SoftBurst', 'Puffy', 'Cookie12Sided']
 const shape = computed<ShapeName>(() => (finished.value ? 'Burst' : shapes[cookStep.value % shapes.length]!))
+
+// Done: confetti from the plate, in the recipe's colors (its scheme is on <html> while cooking)
+const { fire } = useConfetti()
+const plate = ref<HTMLElement>()
+watch(finished, (done) => {
+  if (done) setTimeout(() => plate.value && fire(plate.value, { count: 140, spread: 110 }), 250)
+})
 
 const direction = ref<'next' | 'prev'>('next')
 function goTo(i: number) {
@@ -141,7 +148,7 @@ const clock = (s: number) => `${Math.floor(Math.ceil(s) / 60)}:${String(Math.cei
             <TimerRing v-if="step.timer" :recipe="recipe.id" :step="cookStep" :minutes="step.timer" class="mt-2" />
           </div>
           <div v-else key="done" class="mx-auto flex min-h-full max-w-xl flex-col items-center justify-center gap-6 px-6 py-8 text-center">
-            <span class="relative grid h-40 w-40 place-items-center text-primary">
+            <span ref="plate" class="relative grid h-40 w-40 place-items-center text-primary">
               <MShape shape="SoftBurst" class="sim-spin absolute inset-0" />
               <MIcon name="restaurant" :size="64" filled class="relative text-on-primary" />
             </span>

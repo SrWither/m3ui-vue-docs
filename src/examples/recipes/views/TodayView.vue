@@ -4,12 +4,11 @@
  * dishes cut into shapes, and every recipe as a card in its own colors.
  */
 import { computed, ref } from 'vue'
-import { MCarousel, MChip, MIcon, MTextField, type ShapeName } from '@m3ui-vue/m3ui-vue'
+import { MCarousel, MChip, MIcon, MScheme, MTextField, type ShapeName } from '@m3ui-vue/m3ui-vue'
 import { moods, recipes, type Mood, type Recipe } from '../data'
 import { dishArt } from '../art'
 import { useRecipes } from '../useRecipes'
 import RecipeCard from '../components/RecipeCard.vue'
-import Scheme from '../components/Scheme.vue'
 
 const { go } = useRecipes()
 
@@ -31,6 +30,7 @@ const results = computed(() => {
 
 const picks = ['shakshuka', 'plum-galette', 'green-curry', 'blueberry-pancakes', 'mango-salad', 'miso-ramen'].map((id) => recipes.find((r) => r.id === id)!)
 const pickItems = picks.map((r) => ({ src: dishArt(r), alt: r.title, recipe: r }))
+const pick = ref(0)
 const quick = recipes.filter((r) => r.minutes <= 20)
 const sweet = recipes.filter((r) => r.moods.includes('sweet'))
 
@@ -79,15 +79,20 @@ const open = (r: Recipe) => go({ name: 'recipe', id: r.id })
       <div v-else class="flex flex-col gap-10">
         <section class="flex flex-col gap-3">
           <h2 class="sim-display text-headline-small font-semibold text-on-surface">Tonight's picks</h2>
-          <MCarousel :items="pickItems" variant="hero" height="340px" label="Tonight's picks" @item-click="(item) => open(item.recipe)">
-            <template #item="{ item }">
-              <Scheme :seed="item.recipe.seed" class="relative h-full w-full">
+          <MCarousel v-model="pick" :items="pickItems" variant="hero" height="340px" label="Tonight's picks" @item-click="(item) => open(item.recipe)">
+            <template #item="{ item, index }">
+              <MScheme :seed="item.recipe.seed" variant="content" class="relative h-full w-full">
                 <img :src="item.src" alt="" class="h-full w-full object-cover" />
-                <div class="absolute inset-x-0 bottom-0 flex flex-col gap-1 bg-primary-container/92 p-4 text-on-primary-container backdrop-blur-sm">
+                <!-- Only on the item in front: the others are masked down to a sliver, which would cut the title -->
+                <div
+                  class="absolute inset-x-0 bottom-0 flex flex-col gap-1 bg-primary-container p-4 text-on-primary-container transition-opacity duration-300"
+                  :class="index === pick ? 'opacity-100' : 'opacity-0'"
+                  :aria-hidden="index !== pick"
+                >
                   <span class="text-label-large opacity-80">{{ item.recipe.cuisine }} · {{ item.recipe.minutes }} min</span>
                   <span class="sim-display line-clamp-1 text-headline-small font-semibold">{{ item.recipe.title }}</span>
                 </div>
-              </Scheme>
+              </MScheme>
             </template>
           </MCarousel>
         </section>

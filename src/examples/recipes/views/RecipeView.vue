@@ -5,7 +5,7 @@
  * too, ingredients scale with the servings and tick off, and steps with a wait offer a timer.
  */
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { MButton, MChip, MCheckbox, MFab, MIconButton, MList, MListItem, MShape, type ShapeName } from '@m3ui-vue/m3ui-vue'
+import { MAnimatedNumber, MButton, MChip, MCheckbox, MFab, MIconButton, MList, MListItem, MShape, type ShapeName } from '@m3ui-vue/m3ui-vue'
 import { byId, formatQty, recipes } from '../data'
 import { dishArt } from '../art'
 import { useRecipes } from '../useRecipes'
@@ -119,7 +119,9 @@ const relatedShapes: ShapeName[] = ['Arch', 'Clover4Leaf', 'Cookie9Sided', 'Sunn
           <h2 class="sim-display flex-1 text-headline-small font-semibold text-on-surface">Ingredients</h2>
           <div class="flex items-center gap-1 rounded-full bg-surface-container-high p-1">
             <MIconButton icon="remove" label="Fewer servings" size="xs" :disabled="people <= 1" @click="people--" />
-            <span class="min-w-20 text-center text-label-large text-on-surface tabular-nums">{{ people }} {{ people === 1 ? 'serving' : 'servings' }}</span>
+            <span class="flex min-w-20 items-baseline justify-center gap-1 text-label-large text-on-surface">
+              <MAnimatedNumber :value="people" /> {{ people === 1 ? 'serving' : 'servings' }}
+            </span>
             <MIconButton icon="add" label="More servings" size="xs" :disabled="people >= 12" @click="people++" />
           </div>
         </div>
