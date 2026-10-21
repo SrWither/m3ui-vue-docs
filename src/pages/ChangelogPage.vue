@@ -22,6 +22,8 @@ const versions: Version[] = [
         'MContainerTransform, new: whatever you tap (a card, a list item, an avatar, a FAB) grows into the view it opens, full screen or as a centered panel, and shrinks back, Material\'s container transform. useContainerTransform opens one detail from a whole grid or list',
         'MToolbar collapses like Material 3\'s floating toolbar: into its FAB, which grows, or down to a button in the middle between new leading and trailing slots. Optionally as the content scrolls (collapseOnScroll)',
         'MIconButton iconFilled draws the icon filled without making the button a toggle, for media controls',
+        'MContainerTransform can open anywhere you place it with your own classes (a chat window in a corner, a side sheet), with or without a scrim',
+        'Full-screen MDialog can draw its own top bar in any colors (bare)',
       ],
       changed: [
         'A FAB next to MToolbar is sized and colored by the toolbar, as in Material 3, and its label names it instead of making it extended',
@@ -33,6 +35,7 @@ const versions: Version[] = [
         'MSlider no longer leaves the end dot floating next to the handle when the value is almost at the end of the track',
         'Range MSlider: tapping beside two overlapping handles moves the one on that side',
         'Expandable MListItem can be opened and closed from the keyboard',
+        'Classes given to MDialog, like a background color, now apply to it',
       ],
     },
   },
