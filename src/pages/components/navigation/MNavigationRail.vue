@@ -13,7 +13,7 @@ const railProps: PropDef[] = [
   { name: 'modelValue', type: 'string | number', description: 'Active item value, v-model' },
   { name: 'items', type: 'NavRailItem[]', description: 'Array of rail items (see the type below)' },
   { name: 'alignment', type: "'top' | 'center' | 'bottom'", default: "'top'", description: 'Vertical alignment of items within the rail' },
-  { name: 'expanded', type: 'boolean', default: 'false', description: "M3 WideNavigationRail's expanded state — items switch from icon-over-label in a narrow centered pill to icon-beside-label in a full-width pill (220px rail)" },
+  { name: 'expanded', type: 'boolean', default: 'false', description: "M3 WideNavigationRail's expanded state — items switch from icon-over-label in a narrow centered pill to icon-beside-label in a full-width pill (220 to 360px, fitting the longest label)" },
   { name: 'modal', type: 'boolean', default: 'false', description: "M3 ModalWideNavigationRail: the inline rail stays collapsed at all times and expanded instead opens a Teleported, scrim-backed panel flush against the screen edge above the app, closable via scrim click, Escape, or selecting an item. Emits update:expanded on close." },
   { name: 'hideOnCollapse', type: 'boolean', default: 'false', description: "With modal: no collapsed rail on screen. The expanded rail slides in from off-screen and can be swiped away (past half its width, or with a quick flick). Open it from your own menu button." },
 ]
@@ -92,7 +92,7 @@ const items = [
 
     <ComponentDemo
       title="Expanded Mode"
-      description="M3's wide navigation rail: the expanded prop switches items from a narrow icon-only pill to a full-width icon+label pill (220px rail). The menu-toggle button lives in the #fab slot's header area — same spot the real WideNavigationRail uses for its header menu button."
+      description="M3's wide navigation rail: the expanded prop switches items from a narrow icon-only pill to a full-width icon+label pill (220 to 360px, fitting the longest label). The menu-toggle button lives in the #fab slot's header area — same spot the real WideNavigationRail uses for its header menu button."
       :code="`<MNavigationRail v-model=&quot;active&quot; :items=&quot;items&quot; :expanded=&quot;expanded&quot;>
   <template #fab>
     <MIconButton
