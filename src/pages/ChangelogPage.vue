@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.1.4',
-    date: 'Unreleased',
+    date: '2026-10-21',
     changes: {
       added: [
         'MContainerTransform, new: whatever you tap (a card, a list item, an avatar, a FAB) grows into the view it opens, full screen or as a centered panel, and shrinks back, Material\'s container transform. useContainerTransform opens one detail from a whole grid or list',
