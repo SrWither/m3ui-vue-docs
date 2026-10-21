@@ -126,7 +126,7 @@ const sliderProps: PropDef[] = [
 
     <ComponentDemo
       title="Range"
-      description="Two thumbs to select a range. The active track spans between both values."
+      description="Two thumbs to select a range. The active track spans between both values. A thumb never passes the other, so v-model is always [low, high]; on two overlapping thumbs, the drag's direction picks one. Each thumb is a slider of its own for the keyboard and screen readers (Tab between them, arrows, Home, End), and label names the pair."
       :code="`<MSlider v-model=&quot;range&quot; variant=&quot;range&quot; :show-tooltip=&quot;true&quot; />`"
     >
       <div class="w-full space-y-6">
