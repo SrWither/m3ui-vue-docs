@@ -9,6 +9,7 @@ const iconProps: PropDef[] = [
   { name: 'name', type: 'string', description: 'Material Symbol name (e.g. "settings", "favorite") — required' },
   { name: 'size', type: 'number', default: '24', description: 'Icon size in px' },
   { name: 'filled', type: 'boolean', default: 'false', description: "Filled glyph (the font's FILL axis), as M3 draws a selected icon. Needs the font loaded with FILL, as in Setup" },
+  { name: 'label', type: 'string', description: 'What the icon means, when nothing next to it says so: it becomes an image with this name. Without it the icon is decorative and hidden from screen readers, which would otherwise read its name (e.g. "arrow_drop_down")' },
 ]
 </script>
 

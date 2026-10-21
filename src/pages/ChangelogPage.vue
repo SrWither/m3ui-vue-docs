@@ -25,6 +25,14 @@ const versions: Version[] = [
         'MAnimatedNumber: numbers, clocks and timers whose digits roll to their new value, in any format (dollars, euros, pesos, percent, units, compact numbers, times)',
         'MScheme colors a part of your page with its own scheme: from a color, from the dominant color of a photo (Material You\'s content color), or from one of the palettes, while the rest keeps your theme. seedFromImage() reads a photo\'s color, the same way Android reads a wallpaper\'s',
       ],
+      changed: [
+        'Icons are no longer read aloud by screen readers, which used to say their names ("arrow_drop_down", "close") everywhere. MIcon takes a label for an icon that means something on its own',
+      ],
+      fixed: [
+        'Buttons that show only an icon (clear, close, remove, previous and next, expand) now have a proper name for screen readers, in your app\'s language',
+        'MSelect and MAutocomplete are announced as a list of options, with the selected one; MMultiSelect is named by its label',
+        'MSelect and MMultiSelect no longer show the browser\'s white or black ring when you move through them with the keyboard: they show Material 3\'s focused field instead',
+      ],
     },
   },
   {
