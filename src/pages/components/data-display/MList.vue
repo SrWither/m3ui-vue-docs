@@ -15,7 +15,7 @@ const listProps: PropDef[] = [
   { name: 'dividers', type: "boolean | 'inset'", default: 'false', description: "Show separators between items — 'inset' aligns the line past a leading icon/avatar" },
   { name: 'nav', type: 'boolean', default: 'false', description: 'Navigation variant with rounded (pill) active items, ideal for drawers' },
   { name: 'segmented', type: 'boolean', default: 'false', description: 'Segmented style — each item gets its own background, 2px apart, with rounded outer corners on the first and last item of each run' },
-  { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable single-item selection — items compare their value prop against selected' },
+  { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable single-item selection — items compare their value prop against selected. The list becomes a listbox of options for the keyboard and screen readers: one Tab stop, the arrows, Home and End move between items, Enter and Space select' },
   { name: 'selected', type: 'string | number | null', description: 'Currently selected item value (v-model:selected)' },
   { name: 'lines', type: '1 | 2 | 3', description: "Default line count for child items that don't set their own lines prop" },
 ]
@@ -46,7 +46,7 @@ const listItemProps: PropDef[] = [
   { name: 'value', type: 'string | number', description: 'Selection value — compared against the parent MList selected prop' },
   { name: 'active', type: 'boolean', default: 'false', description: 'Force the active/highlighted state regardless of parent list selection' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disabled state (38% opacity, blocks interaction)' },
-  { name: 'clickable', type: 'boolean', description: 'Force interactive styling/behavior (auto-true when href, to, @click, selectable, or expandable apply)' },
+  { name: 'clickable', type: 'boolean', description: 'Force interactive styling/behavior (auto-true when href, to, @click, selectable, or expandable apply). A clickable item that isn\'t a link is a button inside its list item: focusable, Enter and Space click it' },
   { name: 'href', type: 'string', description: 'Link URL — renders the item as an <a>' },
   { name: 'to', type: 'string | object', description: 'Vue Router destination — renders the item as a router-link' },
   { name: 'expandable', type: 'boolean', default: 'false', description: 'Show an expand/collapse chevron revealing the #children slot' },
