@@ -166,7 +166,8 @@ const options: PropDef[] = [
       Every component works in any page or component without importing it. The ones with an optional dependency
       (<code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MChart</code>,
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MCodeEditor</code>,
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MRichTextEditor</code>…) are
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MRichTextEditor</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMap</code>…) are
       registered once that dependency is installed.
     </p>
     <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-6" />
@@ -178,7 +179,7 @@ const options: PropDef[] = [
       modules. Importing them from <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">@m3ui-vue/m3ui-vue</code>
       under their own names still works.
     </p>
-    <ul class="mb-10 grid gap-px overflow-hidden rounded-xl border border-outline-variant bg-outline-variant text-body-medium sm:grid-cols-2">
+    <ul class="mb-3 grid gap-px overflow-hidden rounded-xl border border-outline-variant bg-outline-variant text-body-medium sm:grid-cols-2">
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useTheme</code> &rarr; <code class="font-mono text-primary">useM3Theme</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useColorPalette</code> &rarr; <code class="font-mono text-primary">useM3ColorPalette</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useToast</code> &rarr; <code class="font-mono text-primary">useM3Toast</code></li>
@@ -189,8 +190,15 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFieldBg</code> &rarr; <code class="font-mono text-primary">useM3FieldBg</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useDebounce</code> &rarr; <code class="font-mono text-primary">useM3Debounce</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">usePageProgress</code> &rarr; <code class="font-mono text-primary">useM3PageProgress</code></li>
-      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5 sm:col-span-2"><code class="font-mono text-on-surface-variant">useSpring</code> &rarr; <code class="font-mono text-primary">useM3Spring</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useSpring</code> &rarr; <code class="font-mono text-primary">useM3Spring</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useConfetti</code> &rarr; <code class="font-mono text-primary">useM3Confetti</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMap</code> &rarr; <code class="font-mono text-primary">useM3Map</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMapLayers</code> &rarr; <code class="font-mono text-primary">useM3MapLayers</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5 sm:col-span-2"><code class="font-mono text-on-surface-variant">useMapFilter</code> &rarr; <code class="font-mono text-primary">useM3MapFilter</code></li>
     </ul>
+    <p class="mb-10 text-body-small text-on-surface-variant">
+      The map composables, like the map components, only when <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">maplibre-gl</code> is installed.
+    </p>
 
     <!-- Options -->
     <h2 class="mb-4 text-headline-small font-medium">Module options</h2>
