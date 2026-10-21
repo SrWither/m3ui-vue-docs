@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MDialog, MButton, MDatePickerModal, MIcon, MTextField, MSelect, MSwitch, useToast } from '@m3ui-vue/m3ui-vue'
+import { MDialog, MButton, MIconButton, MDatePickerModal, MIcon, MTextField, MSelect, MSwitch, useToast } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -18,6 +18,10 @@ const fullscreenDialog = ref(false)
 const fullscreenFormDialog = ref(false)
 const shortDialog = ref(false)
 const bareDialog = ref(false)
+const coloredDialog = ref(false)
+const eventEditor = ref(false)
+const eventTitle = ref('Team offsite')
+const eventAllDay = ref(true)
 const bookingOpen = ref(false)
 const bookingDate = ref<string | null>(null)
 const bookingPicker = ref(false)
@@ -56,7 +60,7 @@ const dialogProps: PropDef[] = [
   { name: 'fullscreen', type: 'boolean', default: 'false', description: 'Full-screen variant — slides up from the bottom, covers the entire viewport' },
   { name: 'closeLabel', type: 'string', description: 'Aria label for the close (X) button — falls back to the locale string when omitted' },
   { name: 'closable', type: 'boolean', default: 'true', description: 'Show the header close (X) button — a library addition, not part of the M3 AlertDialog spec, so it can be turned off' },
-  { name: 'bare', type: 'boolean', default: 'false', description: 'Just the box (surface, shape, elevation), scrim, Escape, scroll lock and animation, with the default slot filling it: no title row, padding, close button or actions. title then only names it for assistive technology. The date and time picker dialogs are built on it' },
+  { name: 'bare', type: 'boolean', default: 'false', description: 'Just the box (surface, shape, elevation), scrim, Escape, scroll lock and animation, with the default slot filling it: no title row, padding, close button or actions. title then only names it for assistive technology. With fullscreen, the slot fills the screen and draws its own top bar. The date and time picker dialogs are built on it' },
 ]
 
 const dialogEvents: EventDef[] = [
@@ -284,6 +288,58 @@ const dialogSlots: SlotDef[] = [
         <template #actions>
           <MButton variant="text" @click="fullscreenFormDialog = false; toast.success('Member created!')">Save</MButton>
         </template>
+      </MDialog>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Your Own Colors"
+      description="Classes on MDialog go on its surface and win over its default background, shape and shadow."
+      :code="`<MDialog v-model=&quot;open&quot; title=&quot;You're all set&quot; class=&quot;bg-tertiary-container text-on-tertiary-container&quot;>
+  …
+</MDialog>`"
+    >
+      <MButton variant="tonal" icon="palette" @click="coloredDialog = true">Open colored dialog</MButton>
+      <MDialog v-model="coloredDialog" title="You're all set" max-width="400px" class="bg-tertiary-container text-on-tertiary-container">
+        <p class="text-on-tertiary-container">Your workspace is ready. We saved your preferences and invited your team.</p>
+        <template #actions>
+          <MButton @click="coloredDialog = false">Done</MButton>
+        </template>
+      </MDialog>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Full-Screen: Your Own Top Bar"
+      description="bare with fullscreen: the slot is the whole screen, so the top bar and every section take whatever colors you give them."
+      :code="`<MDialog v-model=&quot;open&quot; fullscreen bare title=&quot;Edit event&quot;>
+  <div class=&quot;flex h-16 items-center gap-2 bg-primary px-2 text-on-primary&quot;>
+    <MIconButton icon=&quot;close&quot; label=&quot;Close&quot; class=&quot;text-on-primary!&quot; @click=&quot;open = false&quot; />
+    <span class=&quot;flex-1 text-title-large&quot;>Edit event</span>
+    <MButton variant=&quot;tonal&quot; @click=&quot;open = false&quot;>Save</MButton>
+  </div>
+  <div class=&quot;bg-primary-container p-6 text-on-primary-container&quot;>…</div>
+  <div class=&quot;p-6&quot;>…</div>
+</MDialog>`"
+    >
+      <MButton icon="event" @click="eventEditor = true">Edit event</MButton>
+      <MDialog v-model="eventEditor" fullscreen bare title="Edit event">
+        <div class="flex h-16 items-center gap-2 bg-primary px-2 text-on-primary">
+          <MIconButton icon="close" label="Close" class="text-on-primary!" @click="eventEditor = false" />
+          <span class="flex-1 text-title-large">Edit event</span>
+          <MButton variant="tonal" @click="eventEditor = false">Save</MButton>
+        </div>
+        <div class="bg-primary-container px-6 pt-4 pb-8 text-on-primary-container">
+          <p class="text-label-large opacity-80">Fri, Nov 14 · All day</p>
+          <p class="mt-1 text-display-small">{{ eventTitle || 'Untitled' }}</p>
+        </div>
+        <div class="mx-auto flex max-w-2xl flex-col gap-4 p-6">
+          <MTextField v-model="eventTitle" label="Title" />
+          <div class="flex items-center justify-between">
+            <span class="text-body-large text-on-surface">All day</span>
+            <MSwitch v-model="eventAllDay" />
+          </div>
+          <MTextField label="Location" />
+          <MTextField label="Notes" multiline :rows="4" />
+        </div>
       </MDialog>
     </ComponentDemo>
 
