@@ -24,12 +24,16 @@ const versions: Version[] = [
         'MIconButton iconFilled draws the icon filled without making the button a toggle, for media controls',
         'MContainerTransform can open anywhere you place it with your own classes (a chat window in a corner, a side sheet), with or without a scrim',
         'Full-screen MDialog can draw its own top bar in any colors (bare)',
+        'MButton iconFilled draws its icon filled',
       ],
       changed: [
         'A FAB next to MToolbar is sized and colored by the toolbar, as in Material 3, and its label names it instead of making it extended',
         'MAnimatedNumber shows dollar-sign currencies with their country in any language: AR$ for Argentine pesos, MX$ for Mexican pesos, US$ for US dollars',
         'Range MSlider: a handle can no longer pass the other, so you always get [low, high], and each handle can be reached and moved from the keyboard on its own',
         'MSlider\'s keyboard focus ring takes the slider\'s color',
+        'Lists work fully from the keyboard: a selectable list moves with the arrows and selects with Enter, clickable rows can be reached with Tab and pressed with Enter',
+        'The expanded navigation rail grows to fit its longest label (up to 360px) instead of cutting it',
+        'MContainerTransform closes with Android\'s back',
       ],
       fixed: [
         'MSlider no longer leaves the end dot floating next to the handle when the value is almost at the end of the track',
