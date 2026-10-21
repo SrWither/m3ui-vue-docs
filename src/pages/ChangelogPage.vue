@@ -25,6 +25,9 @@ const versions: Version[] = [
         'A FAB next to MToolbar is sized and colored by the toolbar, as in Material 3, and its label names it instead of making it extended',
         'MAnimatedNumber shows dollar-sign currencies with their country in any language: AR$ for Argentine pesos, MX$ for Mexican pesos, US$ for US dollars',
       ],
+      fixed: [
+        'MSlider no longer leaves the end dot floating next to the handle when the value is almost at the end of the track',
+      ],
     },
   },
   {
