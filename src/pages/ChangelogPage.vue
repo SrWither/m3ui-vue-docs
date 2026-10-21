@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.1.3',
-    date: 'Unreleased',
+    date: '2026-10-20',
     changes: {
       added: [
         'MListGroup splits a list into groups: in a segmented list each one is its own rounded card of items, set apart from the rest, with an optional title, like a settings screen',
