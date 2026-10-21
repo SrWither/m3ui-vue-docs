@@ -38,7 +38,7 @@ function search() {
         <button type="button" class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left" @click="go({ name: 'profile', handle: p.handle })">
           <MAvatar :name="p.name" :size="40" />
           <span class="min-w-0">
-            <span class="flex items-center gap-1 text-title-small text-on-surface"><span class="truncate">{{ p.name }}</span><MIcon v-if="p.verified" name="verified" :size="16" class="m3p-fill shrink-0 text-primary" /></span>
+            <span class="flex items-center gap-1 text-title-small text-on-surface"><span class="truncate">{{ p.name }}</span><MIcon v-if="p.verified" name="verified" :size="16" filled class="shrink-0 text-primary" /></span>
             <span class="block truncate text-body-small text-on-surface-variant">@{{ p.handle }}</span>
           </span>
         </button>

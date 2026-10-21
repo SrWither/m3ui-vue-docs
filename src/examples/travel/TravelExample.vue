@@ -103,10 +103,6 @@ onMounted(() => setTimeout(() => screen.value.name === 'explore' && maybeStartTo
 </template>
 
 <style>
-.dw-fill.material-symbols-outlined,
-.dw-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
 .dw-page-enter-active,
 .dw-page-leave-active {
   transition: opacity 150ms ease, transform 150ms ease;

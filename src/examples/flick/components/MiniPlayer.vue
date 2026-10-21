@@ -48,7 +48,7 @@ const open = () => video.value && go({ name: 'watch', id: video.value.id })
             <span class="block truncate text-body-large text-on-surface">{{ video.title }}</span>
             <span class="block truncate text-body-small text-on-surface-variant">{{ channel.name }}</span>
           </button>
-          <MIconButton :icon="playing ? 'pause' : 'play_arrow'" :label="playing ? 'Pause' : 'Play'" class="flk-fill" @click="toggle" />
+          <MIconButton :icon="playing ? 'pause' : 'play_arrow'" :label="playing ? 'Pause' : 'Play'" icon-filled @click="toggle" />
           <MIconButton icon="close" label="Close player" @click="stop" />
         </div>
         <div class="absolute inset-x-0 bottom-0 h-0.5 bg-on-surface/15">

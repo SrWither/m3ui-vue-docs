@@ -72,7 +72,7 @@ function remove_() {
           <MMenuItem icon="delete" danger @click="remove_">Delete playlist</MMenuItem>
         </MMenu>
       </div>
-      <MButton v-if="items.length" icon="play_arrow" class="flk-fill" @click="f.play(items[0]!.id)">Play all</MButton>
+      <MButton v-if="items.length" icon="play_arrow" icon-filled @click="f.play(items[0]!.id)">Play all</MButton>
     </div>
 
     <div class="min-w-0 flex-1">

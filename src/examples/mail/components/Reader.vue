@@ -125,7 +125,7 @@ defineExpose({ reply: () => reply(props.thread.id) })
             </span>
           </div>
         </div>
-        <MIconButton icon="star" :label="thread.starred ? 'Unstar' : 'Star'" :class="thread.starred ? 'm3x-fill text-[#f4b400]!' : ''" @click="toggleStar(thread.id)" />
+        <MIconButton icon="star" :label="thread.starred ? 'Unstar' : 'Star'" :checked="thread.starred" :class="thread.starred ? 'text-[#f4b400]!' : ''" @click="toggleStar(thread.id)" />
       </header>
 
       <div class="mx-2 mb-4 overflow-hidden rounded-2xl bg-surface-container-lowest sm:mx-4">

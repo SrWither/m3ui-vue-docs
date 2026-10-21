@@ -80,7 +80,7 @@ function minimize() {
               <div class="min-w-0">
                 <button type="button" class="flex cursor-pointer items-center gap-1 text-title-medium text-on-surface" @click="f.go({ name: 'channel', id: channel.id })">
                   <span class="truncate">{{ channel.name }}</span>
-                  <MIcon v-if="channel.verified" name="check_circle" :size="16" class="flk-fill text-on-surface-variant" />
+                  <MIcon v-if="channel.verified" name="check_circle" :size="16" filled class="text-on-surface-variant" />
                 </button>
                 <p class="text-body-small text-on-surface-variant">{{ compact(f.subscriberCount(channel.id)) }} subscribers</p>
               </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /* Markdown comment box with Write / Preview tabs, like on the real thing. */
 import { ref } from 'vue'
-import { MAvatar, MTabs } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MIcon, MTabs } from '@m3ui-vue/m3ui-vue'
 import { MMarkdown } from '@m3ui-vue/m3ui-vue/markdown'
 import { me } from '../data'
 
@@ -32,7 +32,7 @@ const tab = ref<'write' | 'preview'>('write')
         </div>
         <div class="mt-2 flex flex-wrap items-center justify-end gap-2">
           <span class="mr-auto flex items-center gap-1 text-label-small text-on-surface-variant">
-            <span class="material-symbols-outlined text-[16px]">markdown</span>Markdown is supported
+            <MIcon name="markdown" :size="16" />Markdown is supported
           </span>
           <slot name="actions" />
         </div>

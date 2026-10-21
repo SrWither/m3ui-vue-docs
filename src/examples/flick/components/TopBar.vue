@@ -40,7 +40,7 @@ const openSource = () => window.open(exampleSource('flick'), '_blank', 'noopener
   <header class="flex h-14 shrink-0 items-center gap-1 bg-surface px-2 sm:gap-2 sm:px-4">
     <MIconButton v-if="props.wide" icon="menu" label="Menu" class="-ml-1" @click="emit('menu')" />
     <button type="button" class="flex cursor-pointer items-center gap-1.5 rounded-full py-1 pr-2 pl-1" aria-label="Flick home" @click="go({ name: 'home' })">
-      <span class="flex h-7 w-10 items-center justify-center rounded-lg bg-primary text-on-primary"><MIcon name="play_arrow" :size="22" class="flk-fill" /></span>
+      <span class="flex h-7 w-10 items-center justify-center rounded-lg bg-primary text-on-primary"><MIcon name="play_arrow" :size="22" filled /></span>
       <span class="text-title-large font-bold tracking-tight text-on-surface">Flick</span>
     </button>
 

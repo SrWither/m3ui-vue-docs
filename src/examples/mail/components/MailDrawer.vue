@@ -46,8 +46,8 @@ function newMail() {
     <template #header>
       <div class="flex items-center gap-2 px-4 pt-4 pb-2" :class="{ 'justify-center px-2': wide && collapsed }">
         <template v-if="!wide">
-          <span class="m3x-fill flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-on-primary">
-            <MIcon name="mail" :size="22" />
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-on-primary">
+            <MIcon name="mail" :size="22" filled />
           </span>
           <span class="flex-1 text-title-large font-medium text-on-surface">Postbox</span>
           <MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" />

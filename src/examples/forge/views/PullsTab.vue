@@ -110,7 +110,8 @@ function rerunChecks() {
           <MIcon
             :name="pr.checks === 'pending' ? 'progress_activity' : pr.checks === 'failure' && name !== 'check' ? (name === 'test' ? 'cancel' : 'block') : 'check_circle'"
             :size="20"
-            :class="[pr.checks === 'pending' ? 'animate-spin text-tertiary' : pr.checks === 'failure' && name !== 'check' ? 'text-error' : 'm3f-fill text-success']"
+            :filled="pr.checks !== 'pending' && !(pr.checks === 'failure' && name !== 'check')"
+            :class="[pr.checks === 'pending' ? 'animate-spin text-tertiary' : pr.checks === 'failure' && name !== 'check' ? 'text-error' : 'text-success']"
           />
           <span class="flex-1 text-body-medium text-on-surface">CI / {{ name }} <span class="text-on-surface-variant">({{ pr.branch }})</span></span>
           <button v-if="run" type="button" class="cursor-pointer text-label-large text-primary hover:underline" @click="openRepo(repo.id, 'actions', { run: run.id })">Details</button>

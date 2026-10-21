@@ -167,7 +167,7 @@ const notInDemo = (what: string) => toast.info(`${what} isn’t part of this dem
           </li>
           <li v-for="e in entries" :key="e.id" class="border-t border-outline-variant">
             <button type="button" class="grid h-10 w-full cursor-pointer grid-cols-[1.25rem_minmax(0,1fr)_auto] items-center gap-3 px-3 text-left hover:bg-on-surface/8 sm:grid-cols-[1.25rem_minmax(0,14rem)_minmax(0,1fr)_auto]" @click="open(String(e.id))">
-              <MIcon :name="e.children ? 'folder' : fileIcon(e.label)" :size="20" :class="e.children ? 'm3f-fill text-primary' : 'text-on-surface-variant'" />
+              <MIcon :name="e.children ? 'folder' : fileIcon(e.label)" :size="20" :filled="!!e.children" :class="e.children ? 'text-primary' : 'text-on-surface-variant'" />
               <span class="truncate text-body-medium text-on-surface hover:underline">{{ e.label }}</span>
               <span class="hidden truncate text-body-medium text-on-surface-variant sm:block">{{ lastCommitFor(repo, String(e.id)).message }}</span>
               <span class="text-label-small text-on-surface-variant">{{ ago(lastCommitFor(repo, String(e.id)).date) }}</span>

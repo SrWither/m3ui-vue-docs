@@ -110,9 +110,9 @@ const row = ref<HTMLElement>()
     <span class="flex shrink-0" @click.stop>
       <MCheckbox :model-value="isSelected" :aria-label="`Select ${thread.subject}`" @update:model-value="toggleSelect" />
     </span>
-    <MIconButton icon="star" :label="thread.starred ? 'Unstar' : 'Star'" size="xs" class="shrink-0" :class="thread.starred ? 'm3x-fill text-[#f4b400]!' : ''" @click.stop="toggleStar(thread.id)" />
+    <MIconButton icon="star" :label="thread.starred ? 'Unstar' : 'Star'" size="xs" class="shrink-0" :checked="thread.starred" :class="thread.starred ? 'text-[#f4b400]!' : ''" @click.stop="toggleStar(thread.id)" />
     <span class="flex w-5 shrink-0 justify-center">
-      <MIcon v-if="thread.important" name="label_important" :size="18" class="m3x-fill text-tertiary" />
+      <MIcon v-if="thread.important" name="label_important" :size="18" filled class="text-tertiary" />
     </span>
     <span class="w-44 shrink-0 truncate pl-1 text-body-medium text-on-surface xl:w-56" :class="{ 'font-bold': thread.unread }">{{ people }}</span>
     <span class="flex min-w-0 flex-1 items-center gap-1.5 pl-2">
@@ -181,7 +181,7 @@ const row = ref<HTMLElement>()
         <div class="flex items-center gap-2">
           <div class="min-w-0 flex-1">
             <p class="truncate text-body-medium" :class="thread.unread ? 'font-bold text-on-surface' : 'text-on-surface'">
-              <MIcon v-if="thread.important" name="label_important" :size="16" class="m3x-fill mr-0.5 align-[-3px] text-tertiary" />{{ thread.subject }}
+              <MIcon v-if="thread.important" name="label_important" :size="16" filled class="mr-0.5 align-[-3px] text-tertiary" />{{ thread.subject }}
             </p>
             <p class="truncate text-body-medium text-on-surface-variant">{{ plain(last.html) }}</p>
           </div>
@@ -190,7 +190,8 @@ const row = ref<HTMLElement>()
             :label="thread.starred ? 'Unstar' : 'Star'"
             size="xs"
             class="-mr-1 shrink-0"
-            :class="thread.starred ? 'm3x-fill text-[#f4b400]!' : ''"
+            :checked="thread.starred"
+            :class="thread.starred ? 'text-[#f4b400]!' : ''"
             @click.stop="toggleStar(thread.id)"
           />
         </div>

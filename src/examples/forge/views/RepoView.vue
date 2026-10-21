@@ -46,7 +46,7 @@ const watching = ref<'all' | 'participating' | 'ignore'>('participating')
           <MMenuItem :icon="watching === 'ignore' ? 'check' : 'notifications_off'" @click="watching = 'ignore'">Ignore</MMenuItem>
         </MMenu>
         <MButton variant="outlined" size="xs" icon="fork_right" class="hidden sm:inline-flex" @click="toast.info('Forking isn’t part of this demo', { icon: 'fork_right' })">Fork {{ repo.forks }}</MButton>
-        <MButton :variant="isStarred ? 'tonal' : 'outlined'" size="xs" :icon="isStarred ? 'star' : 'star_outline'" :class="{ 'm3f-fill': isStarred }" @click="toggleStar(repo.id)">
+        <MButton :variant="isStarred ? 'tonal' : 'outlined'" size="xs" :icon="isStarred ? 'star' : 'star_outline'" :icon-filled="isStarred" @click="toggleStar(repo.id)">
           {{ isStarred ? 'Starred' : 'Star' }} {{ stars(repo) }}
         </MButton>
       </div>

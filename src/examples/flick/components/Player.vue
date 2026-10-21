@@ -203,7 +203,7 @@ onBeforeUnmount(() => {
   clearInterval(countTimer)
 })
 
-const white = 'text-white! [&_.material-symbols-outlined]:drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
+const white = 'text-white! drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
 </script>
 
 <template>
@@ -253,7 +253,7 @@ const white = 'text-white! [&_.material-symbols-outlined]:drop-shadow-[0_1px_2px
         :class="flash.side === 'left' ? 'left-0 w-2/5' : flash.side === 'right' ? 'right-0 w-2/5' : 'inset-x-0'"
       >
         <div class="flex flex-col items-center gap-1">
-          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-black/45"><MIcon :name="flash.icon" :size="36" class="flk-fill" /></span>
+          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-black/45"><MIcon :name="flash.icon" :size="36" filled /></span>
           <span v-if="flash.text" class="rounded-full bg-black/45 px-2 text-label-medium">{{ flash.text }}</span>
         </div>
       </div>
@@ -276,7 +276,7 @@ const white = 'text-white! [&_.material-symbols-outlined]:drop-shadow-[0_1px_2px
         <!-- Touch: big buttons in the middle -->
         <div v-if="!ended" class="flk-touch-controls pointer-events-none flex items-center justify-center" :class="slim ? 'gap-8' : 'gap-10'">
           <MIconButton icon="replay_10" label="Back 10 seconds" :size="slim ? 'sm' : 'md'" :class="white" class="pointer-events-auto bg-black/30!" @click="skip(-10)" />
-          <MIconButton :icon="playing ? 'pause' : 'play_arrow'" :label="playing ? 'Pause' : 'Play'" :size="slim ? 'sm' : 'md'" :class="white" class="flk-fill pointer-events-auto bg-black/30!" @click="toggle()" />
+          <MIconButton :icon="playing ? 'pause' : 'play_arrow'" :label="playing ? 'Pause' : 'Play'" :size="slim ? 'sm' : 'md'" :class="white" icon-filled class="pointer-events-auto bg-black/30!" @click="toggle()" />
           <MIconButton icon="forward_10" label="Forward 10 seconds" :size="slim ? 'sm' : 'md'" :class="white" class="pointer-events-auto bg-black/30!" @click="skip(10)" />
         </div>
 
@@ -290,8 +290,8 @@ const white = 'text-white! [&_.material-symbols-outlined]:drop-shadow-[0_1px_2px
         <div v-else class="pointer-events-auto bg-linear-to-t from-black/75 via-black/40 to-transparent px-3 pt-10 pb-1">
           <SeekBar class="px-1" />
           <div class="flex items-center gap-0.5">
-            <MIconButton :icon="ended ? 'replay' : playing ? 'pause' : 'play_arrow'" :label="ended ? 'Replay' : playing ? 'Pause (k)' : 'Play (k)'" :class="white" class="flk-fill" @click="toggle()" />
-            <MIconButton v-if="nextVideo" icon="skip_next" label="Next" :class="white" class="flk-fill" @click="playNext" />
+            <MIconButton :icon="ended ? 'replay' : playing ? 'pause' : 'play_arrow'" :label="ended ? 'Replay' : playing ? 'Pause (k)' : 'Play (k)'" :class="white" icon-filled @click="toggle()" />
+            <MIconButton v-if="nextVideo" icon="skip_next" label="Next" :class="white" icon-filled @click="playNext" />
             <div class="group/vol flex items-center">
               <MIconButton :icon="volumeIcon" :label="muted ? 'Unmute (m)' : 'Mute (m)'" :class="white" @click="muted = !muted" />
               <div class="hidden w-0 overflow-hidden transition-[width] duration-200 group-focus-within/vol:w-24 group-hover/vol:w-24 sm:block">

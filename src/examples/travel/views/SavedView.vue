@@ -25,7 +25,7 @@ const list = computed(() => saved.value.map(destination))
           </button>
           <!-- MIconButton's root is position: relative, so the wrapper does the positioning -->
           <span class="absolute top-2 right-2">
-            <MIconButton icon="favorite" label="Remove from Saved" variant="filled" size="sm" class="dw-fill" @click="toggleSaved(d.id)" />
+            <MIconButton icon="favorite" label="Remove from Saved" variant="filled" size="sm" icon-filled @click="toggleSaved(d.id)" />
           </span>
         </div>
       </TransitionGroup>

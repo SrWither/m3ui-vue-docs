@@ -28,7 +28,7 @@ const toggleLike = () => (liked.value ? likedComments.delete(props.comment.id) :
         <MIconButton icon="thumb_down" label="Dislike" size="xs" />
         <span v-if="comment.hearted" class="relative mx-1.5 inline-flex" :title="`Hearted by ${creator.name}`">
           <MAvatar :name="creator.name" :size="20" />
-          <MIcon name="favorite" :size="14" class="flk-fill absolute -right-1.5 -bottom-1 text-error" />
+          <MIcon name="favorite" :size="14" filled class="absolute -right-1.5 -bottom-1 text-error" />
         </span>
         <MButton variant="text" size="xs" @click="$emit('reply')">Reply</MButton>
         <MMenu v-if="comment.mine" align="right" class="ml-auto">

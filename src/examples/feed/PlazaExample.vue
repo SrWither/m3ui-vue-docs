@@ -80,10 +80,3 @@ const key = computed(() => JSON.stringify(screen.value))
     <StoryViewer />
   </MNavigationSuite>
 </template>
-
-<style>
-.m3p-fill.material-symbols-outlined,
-.m3p-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
-</style>

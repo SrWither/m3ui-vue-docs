@@ -53,7 +53,7 @@ const fullDate = computed(() => new Date(p.value.date).toLocaleString('en-US', {
         <div class="flex min-w-0 flex-1 gap-1" :class="detail ? 'flex-col gap-0' : 'items-baseline'">
           <button type="button" class="flex min-w-0 cursor-pointer items-center gap-1 text-title-small text-on-surface hover:underline" @click.stop="profile">
             <span class="truncate">{{ author.name }}</span>
-            <MIcon v-if="author.verified" name="verified" :size="16" class="m3p-fill shrink-0 text-primary" />
+            <MIcon v-if="author.verified" name="verified" :size="16" filled class="shrink-0 text-primary" />
           </button>
           <span class="truncate text-body-medium text-on-surface-variant">@{{ author.handle }}<template v-if="!detail"> · <MRelativeTime :value="p.date" locale="en" /></template></span>
         </div>
@@ -100,14 +100,14 @@ const fullDate = computed(() => new Date(p.value.date).toLocaleString('en-US', {
         </MTooltip>
         <MTooltip :text="isLiked ? 'Unlike' : 'Like'">
           <button type="button" class="m3p-action hover:text-error" :class="{ 'text-error': isLiked }" :aria-pressed="isLiked" aria-label="Like" @click="like">
-            <span class="m3p-dot hover:bg-error/10"><MIcon :key="pop" name="favorite" :size="18" :class="{ 'm3p-fill m3p-like': isLiked }" /></span>{{ count(id, 'likes') ? compact(count(id, 'likes')) : '' }}
+            <span class="m3p-dot hover:bg-error/10"><MIcon :key="pop" name="favorite" :size="18" :filled="isLiked" :class="{ 'm3p-like': isLiked }" /></span>{{ count(id, 'likes') ? compact(count(id, 'likes')) : '' }}
           </button>
         </MTooltip>
         <span v-if="!detail" class="m3p-action cursor-default" :title="`${p.views} views`"><span class="m3p-dot"><MIcon name="bar_chart" :size="18" /></span>{{ compact(p.views) }}</span>
         <span class="flex">
           <MTooltip :text="bookmarked.has(id) ? 'Remove bookmark' : 'Bookmark'">
             <button type="button" class="m3p-action hover:text-primary" :class="{ 'text-primary': bookmarked.has(id) }" :aria-pressed="bookmarked.has(id)" aria-label="Bookmark" @click="toggleBookmark(id)">
-              <span class="m3p-dot hover:bg-primary/10"><MIcon name="bookmark" :size="18" :class="{ 'm3p-fill': bookmarked.has(id) }" /></span>
+              <span class="m3p-dot hover:bg-primary/10"><MIcon name="bookmark" :size="18" :filled="bookmarked.has(id)" /></span>
             </button>
           </MTooltip>
           <MTooltip text="Share">

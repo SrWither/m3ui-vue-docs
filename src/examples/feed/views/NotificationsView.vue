@@ -44,7 +44,7 @@ function open(n: Notification) {
       :class="{ 'bg-primary-container/25': !n.read }"
       @click="open(n)"
     >
-      <MIcon :name="look[n.kind].icon" :size="28" class="m3p-fill w-10 shrink-0 text-center" :class="look[n.kind].cls" />
+      <MIcon :name="look[n.kind].icon" :size="28" filled class="w-10 shrink-0 text-center" :class="look[n.kind].cls" />
       <div class="min-w-0 flex-1">
         <div class="mb-1.5 flex -space-x-1.5">
           <MAvatar v-for="w in n.who.slice(0, 5)" :key="w" :name="person(w).name" :size="32" class="ring-2 ring-surface" />

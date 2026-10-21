@@ -57,7 +57,7 @@ const facts = computed(() => [
         @navigation="back"
       >
         <template #actions>
-          <MIconButton :icon="saved ? 'favorite' : 'favorite_border'" :label="saved ? 'Remove from Saved' : 'Save'" :class="{ 'dw-fill text-primary': saved }" @click="toggleSaved(d.id)" />
+          <MIconButton :icon="saved ? 'favorite' : 'favorite_border'" :label="saved ? 'Remove from Saved' : 'Save'" :checked="saved" @click="toggleSaved(d.id)" />
         </template>
       </MTopAppBar>
     </div>
@@ -65,7 +65,7 @@ const facts = computed(() => [
     <MTopAppBar variant="large" :title="d.name" navigation-icon="arrow_back" navigation-label="Back" @navigation="back">
       <template #actions>
         <MTooltip :text="saved ? 'Remove from Saved' : 'Save'" placement="bottom">
-          <MIconButton :icon="saved ? 'favorite' : 'favorite_border'" :label="saved ? 'Remove from Saved' : 'Save'" :class="{ 'dw-fill text-primary': saved }" @click="toggleSaved(d.id)" />
+          <MIconButton :icon="saved ? 'favorite' : 'favorite_border'" :label="saved ? 'Remove from Saved' : 'Save'" :checked="saved" @click="toggleSaved(d.id)" />
         </MTooltip>
         <MTooltip text="Back to the docs" placement="bottom"><MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" /></MTooltip>
         <MTooltip text="View source on GitHub" placement="bottom"><MIconButton icon="code" label="View source on GitHub" @click="openSource" /></MTooltip>
@@ -76,7 +76,7 @@ const facts = computed(() => [
       <p class="-mt-4 mb-4 flex flex-wrap items-center gap-x-2 px-4 text-body-large text-on-surface-variant">
         <span>{{ d.country }}</span>
         <span>·</span>
-        <span class="flex items-center gap-1 text-on-surface"><MIcon name="star" :size="18" class="dw-fill text-primary" />{{ d.rating }}</span>
+        <span class="flex items-center gap-1 text-on-surface"><MIcon name="star" :size="18" filled class="text-primary" />{{ d.rating }}</span>
         <span>({{ d.reviews.toLocaleString('en-US') }} reviews)</span>
       </p>
 

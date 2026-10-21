@@ -59,7 +59,7 @@ function pickFilter(f: Filter) {
 
       <section v-if="filter === 'All'" class="my-8 px-3 sm:px-6" aria-label="Shorts">
         <h2 class="mb-3 flex items-center gap-2 text-title-large text-on-surface">
-          <MIcon name="smart_display" class="flk-fill text-primary" /> Shorts
+          <MIcon name="smart_display" filled class="text-primary" /> Shorts
         </h2>
         <div class="flk-noscroll -mx-3 flex gap-3 overflow-x-auto px-3 sm:-mx-6 sm:px-6">
           <button

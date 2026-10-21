@@ -40,7 +40,7 @@ const tabs = computed(() => [
           {{ following.has(handle) ? 'Following' : 'Follow' }}
         </MToggleButton>
       </div>
-      <h2 class="mt-2 flex items-center gap-1 text-headline-small text-on-surface">{{ p.name }}<MIcon v-if="p.verified" name="verified" :size="22" class="m3p-fill text-primary" /></h2>
+      <h2 class="mt-2 flex items-center gap-1 text-headline-small text-on-surface">{{ p.name }}<MIcon v-if="p.verified" name="verified" :size="22" filled class="text-primary" /></h2>
       <p class="text-body-medium text-on-surface-variant">@{{ p.handle }}</p>
       <p class="mt-3 text-body-large text-on-surface">{{ p.bio }}</p>
       <p class="mt-2 flex flex-wrap gap-4 text-body-medium text-on-surface-variant">

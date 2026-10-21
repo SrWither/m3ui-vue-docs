@@ -53,7 +53,7 @@ const single = computed(() => props.photos.length === 1)
       </button>
     </div>
     <span v-if="heart" :key="heart" class="m3p-heart pointer-events-none absolute inset-0 flex items-center justify-center text-white" aria-hidden="true">
-      <MIcon name="favorite" :size="96" class="m3p-fill drop-shadow-lg" />
+      <MIcon name="favorite" :size="96" filled class="drop-shadow-lg" />
     </span>
     <MLightbox v-model="open" v-model:index="index" :items="items" show-thumbnails />
   </div>

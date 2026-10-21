@@ -22,8 +22,8 @@ const openSource = () => window.open(exampleSource('mail'), '_blank', 'noopener'
   <header class="flex h-16 shrink-0 items-center gap-2 px-2">
     <MTooltip text="Main menu"><MIconButton icon="menu" label="Main menu" @click="$emit('menu')" /></MTooltip>
     <div class="flex w-[13.5rem] shrink-0 items-center gap-2">
-      <span class="m3x-fill flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-on-primary">
-        <MIcon name="mail" :size="22" />
+      <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-on-primary">
+        <MIcon name="mail" :size="22" filled />
       </span>
       <span class="text-title-large font-medium text-on-surface">Postbox</span>
     </div>

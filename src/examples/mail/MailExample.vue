@@ -127,12 +127,6 @@ onBeforeUnmount(() => {
 </style>
 
 <style>
-/* Filled Material Symbols (stars, the logo) anywhere inside an element with this class. */
-.m3x-fill.material-symbols-outlined,
-.m3x-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
-
 /* Email bodies: the same typography MRichTextEditor writes them with. */
 .m3x-body > :first-child { margin-top: 0; }
 .m3x-body p { margin: 0.5em 0; }

@@ -68,7 +68,7 @@ const media = computed(() => results.value.filter((id) => post(id).photos.length
         <button v-for="p in matchingPeople" :key="p.handle" type="button" class="flex w-full cursor-pointer gap-3 border-b border-outline-variant/60 px-4 py-3 text-left hover:bg-on-surface/[0.03]" @click="go({ name: 'profile', handle: p.handle })">
           <MAvatar :name="p.name" :size="44" />
           <span class="min-w-0">
-            <span class="flex items-center gap-1 text-title-small text-on-surface">{{ p.name }}<MIcon v-if="p.verified" name="verified" :size="16" class="m3p-fill text-primary" /></span>
+            <span class="flex items-center gap-1 text-title-small text-on-surface">{{ p.name }}<MIcon v-if="p.verified" name="verified" :size="16" filled class="text-primary" /></span>
             <span class="block text-body-small text-on-surface-variant">@{{ p.handle }}</span>
             <span class="mt-1 block text-body-medium text-on-surface">{{ p.bio }}</span>
           </span>
@@ -96,7 +96,7 @@ const media = computed(() => results.value.filter((id) => post(id).photos.length
             <img :src="post(id).photos[0]!.src" :alt="post(id).photos[0]!.alt" class="w-full transition-transform duration-300 group-hover:scale-105" :style="{ aspectRatio: String(post(id).photos[0]!.ratio) }" />
             <span v-if="post(id).photos.length > 1" class="absolute top-2 right-2 rounded-full bg-black/50 p-1 text-white"><MIcon name="collections" :size="16" /></span>
             <span class="absolute inset-x-0 bottom-0 flex items-center gap-1 bg-linear-to-t from-black/60 to-transparent px-2 pt-6 pb-1.5 text-label-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
-              <MIcon name="favorite" :size="14" class="m3p-fill" />{{ compact(post(id).likes) }} · @{{ post(id).author }}
+              <MIcon name="favorite" :size="14" filled />{{ compact(post(id).likes) }} · @{{ post(id).author }}
             </span>
           </button>
         </MMasonry>

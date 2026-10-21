@@ -24,7 +24,7 @@ const openSource = () => window.open(exampleSource('feed'), '_blank', 'noopener'
         <MAvatar :name="me.name" :size="32" />
       </button>
       <div v-if="logo" class="flex flex-1 items-center justify-center gap-2 sm:justify-start sm:pl-2">
-        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-on-primary"><MIcon name="forum" :size="20" class="m3p-fill" /></span>
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-on-primary"><MIcon name="forum" :size="20" filled /></span>
         <span class="text-title-large font-bold text-on-surface">{{ title }}</span>
       </div>
       <div v-else class="min-w-0 flex-1 pl-2">

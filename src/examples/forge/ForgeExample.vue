@@ -68,11 +68,6 @@ function select(r: SpotlightResult) {
 </template>
 
 <style>
-.m3f-fill.material-symbols-outlined,
-.m3f-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
-
 /* Rendered Markdown (READMEs, comments): readable spacing and headings. */
 .m3f-md { color: var(--color-on-surface); line-height: 1.6; }
 .m3f-md > :first-child { margin-top: 0; }

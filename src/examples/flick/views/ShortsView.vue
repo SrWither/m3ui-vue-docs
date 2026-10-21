@@ -82,7 +82,7 @@ const actions = computed(() => {
 
             <button type="button" class="absolute inset-0 cursor-pointer" :aria-label="paused ? 'Play' : 'Pause'" @click="paused = !paused" />
             <span v-if="paused && i === index" class="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <span class="flex h-16 w-16 items-center justify-center rounded-full bg-black/45 text-white"><MIcon name="play_arrow" :size="40" class="flk-fill" /></span>
+              <span class="flex h-16 w-16 items-center justify-center rounded-full bg-black/45 text-white"><MIcon name="play_arrow" :size="40" filled /></span>
             </span>
 
             <!-- Who and what, at the bottom -->
@@ -108,7 +108,7 @@ const actions = computed(() => {
                 @click="a.run"
               >
                 <span class="flex h-12 w-12 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm" :class="{ 'bg-white! text-black': a.on }">
-                  <MIcon :name="a.icon" :class="{ 'flk-fill': a.on }" />
+                  <MIcon :name="a.icon" :filled="a.on" />
                 </span>
                 <span class="text-label-medium [text-shadow:0_1px_2px_#0008]">{{ a.label }}</span>
               </button>

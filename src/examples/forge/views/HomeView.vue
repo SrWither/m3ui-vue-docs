@@ -84,7 +84,7 @@ const total = computed(() => repos.reduce((s, r) => s + stars(r), 0))
             </div>
             <p class="mt-3 flex flex-wrap items-center gap-4 text-label-medium text-on-surface-variant">
               <span class="flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full" :style="{ backgroundColor: langInfo[r.languages[0]!.lang].color }" />{{ langInfo[r.languages[0]!.lang].label }}</span>
-              <span class="flex items-center gap-1"><MIcon name="star" :size="16" :class="{ 'm3f-fill text-[#f4b400]': starred.includes(r.id) }" />{{ stars(r) }}</span>
+              <span class="flex items-center gap-1"><MIcon name="star" :size="16" :filled="starred.includes(r.id)" :class="{ 'text-[#f4b400]': starred.includes(r.id) }" />{{ stars(r) }}</span>
               <span class="flex items-center gap-1"><MIcon name="fork_right" :size="16" />{{ r.forks }}</span>
               <span class="flex items-center gap-1"><MIcon name="adjust" :size="16" />{{ data(r.id).issues.filter((i) => i.state === 'open').length }} issues</span>
               <span>Updated {{ ago(updated(r.id)) }}</span>

@@ -39,7 +39,7 @@ const sorted = computed(() => [...own.value].sort((a, b) => (sort.value === 'new
         <div class="min-w-0">
           <h1 class="flex items-center gap-2 text-headline-small text-on-surface sm:text-headline-medium">
             <span class="truncate">{{ channel.name }}</span>
-            <MIcon v-if="channel.verified" name="check_circle" :size="20" class="flk-fill text-on-surface-variant" />
+            <MIcon v-if="channel.verified" name="check_circle" :size="20" filled class="text-on-surface-variant" />
           </h1>
           <p class="text-body-medium text-on-surface-variant">
             {{ channel.handle }} · {{ compact(f.subscriberCount(channel.id)) }} subscribers · {{ own.length }} videos

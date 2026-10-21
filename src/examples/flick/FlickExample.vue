@@ -166,7 +166,7 @@ onBeforeUnmount(stop)
         <div class="flex h-14 items-center gap-1 px-2">
           <MIconButton icon="menu" label="Close menu" @click="drawerOpen = false" />
           <span class="flex items-center gap-1.5 pl-1">
-            <span class="flex h-7 w-10 items-center justify-center rounded-lg bg-primary text-on-primary"><MIcon name="play_arrow" :size="22" class="flk-fill" /></span>
+            <span class="flex h-7 w-10 items-center justify-center rounded-lg bg-primary text-on-primary"><MIcon name="play_arrow" :size="22" filled /></span>
             <span class="text-title-large font-bold tracking-tight text-on-surface">Flick</span>
           </span>
         </div>
@@ -199,11 +199,6 @@ onBeforeUnmount(stop)
 </style>
 
 <style>
-/* Filled Material Symbols (play, verified…) anywhere inside an element with this class. */
-.flk-fill.material-symbols-outlined,
-.flk-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
 /* The video grid: as many ~300px columns as fit, one full-width column on phones. */
 .flk-grid {
   display: grid;

@@ -50,7 +50,7 @@ const meta = computed(() => `${compact(props.video.views)} views · ${ago(props.
         <button type="button" class="mt-0.5 flex cursor-pointer items-center gap-1 text-body-medium text-on-surface-variant hover:text-on-surface" :class="{ 'mt-2 sm:mt-3': layout === 'row' }" @click="go({ name: 'channel', id: channel.id })">
           <MAvatar v-if="layout === 'row'" :name="channel.name" :size="24" class="mr-1 hidden sm:flex" />
           <span class="truncate">{{ channel.name }}</span>
-          <MIcon v-if="channel.verified" name="check_circle" :size="14" class="flk-fill shrink-0" />
+          <MIcon v-if="channel.verified" name="check_circle" :size="14" filled class="shrink-0" />
         </button>
         <p v-if="layout !== 'row'" class="text-body-medium text-on-surface-variant">{{ meta }}</p>
         <p v-if="layout === 'row'" class="mt-2 hidden line-clamp-2 text-body-small text-on-surface-variant sm:block">{{ video.description.split('\n')[0] }}</p>
