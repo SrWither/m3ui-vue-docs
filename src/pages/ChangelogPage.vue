@@ -18,7 +18,11 @@ const versions: Version[] = [
     version: '1.1.4',
     date: 'Unreleased',
     changes: {
+      added: [
+        'MToolbar collapses like Material 3\'s floating toolbar: into its FAB, which grows, or down to a button in the middle between new leading and trailing slots. Optionally as the content scrolls (collapseOnScroll)',
+      ],
       changed: [
+        'A FAB next to MToolbar is sized and colored by the toolbar, as in Material 3, and its label names it instead of making it extended',
         'MAnimatedNumber shows dollar-sign currencies with their country in any language: AR$ for Argentine pesos, MX$ for Mexican pesos, US$ for US dollars',
       ],
     },

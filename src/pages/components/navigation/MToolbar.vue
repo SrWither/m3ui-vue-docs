@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { MToolbar, MIconButton, MButton, MDivider, MFab, MTextField } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
+import EventsTable from '@/components/EventsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
@@ -13,12 +15,25 @@ const toolbarProps: PropDef[] = [
   { name: 'color', type: "'surface' | 'primary' | 'secondary' | 'tertiary'", default: "'surface'", description: 'Background color scheme' },
   { name: 'fabPosition', type: "'start' | 'end' | 'none'", default: "'none'", description: 'Where the #fab slot renders relative to the toolbar body' },
   { name: 'align', type: "'start' | 'center' | 'end' | 'between'", default: "'center'", description: 'Item alignment along the main axis' },
+  { name: 'expanded (v-model)', type: 'boolean', default: 'true', description: 'A floating toolbar\'s state. Collapsed, a toolbar with a FAB shows only the FAB (which grows to 80px) and one without shows only its center, closing #leading and #trailing. What it hides is out of reach for keyboard and screen readers. No effect on a docked toolbar' },
+  { name: 'collapseOnScroll', type: 'boolean | string | HTMLElement | null', default: 'false', description: 'Collapse a floating toolbar as the content scrolls down and expand it as it scrolls back up (40px each way, like Compose): true follows the window, or pass the scrolling element or a CSS selector for it' },
+]
+
+const toolbarEvents = [
+  { name: 'update:expanded', payload: 'boolean', description: 'The toolbar collapsed or expanded on scroll (collapseOnScroll)' },
 ]
 
 const toolbarSlots: SlotDef[] = [
-  { name: '#default', description: 'Toolbar items — typically MIconButton/MButton, separated with MDivider' },
-  { name: '#fab', description: 'A FAB rendered alongside the toolbar body, positioned by fabPosition' },
+  { name: '#default', description: 'Toolbar items — typically MIconButton/MButton, separated with MDivider. With #leading or #trailing, the center, which stays when a floating toolbar without a FAB collapses' },
+  { name: '#leading', description: 'Items before the center, closed when a floating toolbar without a FAB collapses' },
+  { name: '#trailing', description: 'Items after the center, closed when a floating toolbar without a FAB collapses' },
+  { name: '#fab', description: 'A FAB rendered alongside the toolbar body, positioned by fabPosition. The toolbar sizes an MFab in it (56px, 80px collapsed) and colors it (primary container, tertiary on a colored toolbar); its label names it' },
 ]
+
+// Demos
+const centered = ref(true)
+const fabbed = ref(true)
+const scroller = ref<HTMLElement | null>(null)
 </script>
 
 <template>
@@ -69,11 +84,11 @@ const toolbarSlots: SlotDef[] = [
 
     <ComponentDemo
       title="With FAB"
-      description="Pair the toolbar with a FAB at start or end for emphasis on a primary action."
+      description="Pair the toolbar with a FAB at start or end for emphasis on a primary action. The toolbar sizes and colors an MFab in the slot; its label names it."
       :code="`<MToolbar variant=&quot;floating&quot; fab-position=&quot;end&quot;>
   <MIconButton icon=&quot;edit&quot; />
   <template #fab>
-    <MFab icon=&quot;add&quot; />
+    <MFab icon=&quot;add&quot; label=&quot;New&quot; />
   </template>
 </MToolbar>`"
     >
@@ -84,7 +99,7 @@ const toolbarSlots: SlotDef[] = [
           <MIconButton icon="mic" label="Audio" />
           <MIconButton icon="attach_file" label="File" />
           <template #fab>
-            <MFab icon="send" size="small" />
+            <MFab icon="send" label="Send" />
           </template>
         </MToolbar>
 
@@ -93,7 +108,94 @@ const toolbarSlots: SlotDef[] = [
           <MIconButton icon="forward" label="Forward" />
           <MIconButton icon="delete" label="Delete" />
           <template #fab>
-            <MFab icon="edit" size="small" color="secondary" />
+            <MFab icon="edit" label="Compose" color="secondary" />
+          </template>
+        </MToolbar>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Collapsing to a Center Button"
+      description="#leading and #trailing close toward the center (the default slot) when v-model:expanded is false, on M3 Expressive's FastSpatial spring. Typically a filled button in the middle that stays."
+      :code="`<MToolbar v-model:expanded=&quot;expanded&quot; variant=&quot;floating&quot;>
+  <template #leading>
+    <MIconButton icon=&quot;arrow_back&quot; label=&quot;Back&quot; />
+    <MIconButton icon=&quot;bookmark&quot; label=&quot;Save&quot; />
+  </template>
+  <MIconButton icon=&quot;add&quot; label=&quot;New&quot; variant=&quot;filled&quot; class=&quot;w-16&quot; />
+  <template #trailing>
+    <MIconButton icon=&quot;share&quot; label=&quot;Share&quot; />
+    <MIconButton icon=&quot;more_vert&quot; label=&quot;More&quot; />
+  </template>
+</MToolbar>`"
+    >
+      <div class="flex flex-col items-center gap-4">
+        <MToolbar v-model:expanded="centered" variant="floating">
+          <template #leading>
+            <MIconButton icon="arrow_back" label="Back" />
+            <MIconButton icon="bookmark" label="Save" />
+          </template>
+          <MIconButton icon="add" label="New" variant="filled" class="w-16" />
+          <template #trailing>
+            <MIconButton icon="share" label="Share" />
+            <MIconButton icon="more_vert" label="More" />
+          </template>
+        </MToolbar>
+        <MButton variant="tonal" :icon="centered ? 'unfold_less' : 'unfold_more'" @click="centered = !centered">
+          {{ centered ? 'Collapse' : 'Expand' }}
+        </MButton>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="FAB That Hides the Toolbar"
+      description="With a FAB, a collapsed toolbar closes into it and the FAB grows from 56 to 80px, keeping the toolbar's footprint so nothing around it moves. Toggle expanded from the FAB's click."
+      :code="`<MToolbar v-model:expanded=&quot;expanded&quot; variant=&quot;floating&quot; fab-position=&quot;end&quot;>
+  <MIconButton icon=&quot;format_bold&quot; label=&quot;Bold&quot; />
+  <MIconButton icon=&quot;format_italic&quot; label=&quot;Italic&quot; />
+  <MIconButton icon=&quot;link&quot; label=&quot;Link&quot; />
+  <template #fab>
+    <MFab :icon=&quot;expanded ? 'close' : 'edit'&quot; :label=&quot;expanded ? 'Hide tools' : 'Show tools'&quot;
+      @click=&quot;expanded = !expanded&quot; />
+  </template>
+</MToolbar>`"
+    >
+      <div class="flex flex-col items-center gap-6">
+        <MToolbar v-model:expanded="fabbed" variant="floating" fab-position="end">
+          <MIconButton icon="format_bold" label="Bold" />
+          <MIconButton icon="format_italic" label="Italic" />
+          <MIconButton icon="format_underlined" label="Underline" />
+          <MIconButton icon="link" label="Link" />
+          <MIconButton icon="format_list_bulleted" label="List" />
+          <template #fab>
+            <MFab :icon="fabbed ? 'close' : 'edit'" :label="fabbed ? 'Hide tools' : 'Show tools'" @click="fabbed = !fabbed" />
+          </template>
+        </MToolbar>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Collapse on Scroll"
+      description="Opt in with collapse-on-scroll: the toolbar collapses as the content scrolls down and comes back as it scrolls up. Pass the scrolling element (a template ref or a CSS selector), or true for the window."
+      :code="`<div ref=&quot;list&quot; class=&quot;overflow-y-auto&quot;>…</div>
+<MToolbar :collapse-on-scroll=&quot;list&quot; variant=&quot;floating&quot; fab-position=&quot;end&quot;>
+  <MIconButton icon=&quot;search&quot; label=&quot;Search&quot; />
+  <MIconButton icon=&quot;filter_list&quot; label=&quot;Filter&quot; />
+  <template #fab>
+    <MFab icon=&quot;add&quot; label=&quot;New&quot; />
+  </template>
+</MToolbar>`"
+    >
+      <div class="relative h-96 w-full overflow-hidden rounded-xl border border-outline-variant">
+        <div ref="scroller" class="h-full overflow-y-auto px-4 pb-28 pt-2">
+          <div v-for="n in 40" :key="n" class="border-b border-outline-variant py-3 text-body-large text-on-surface">Item {{ n }}</div>
+        </div>
+        <MToolbar :collapse-on-scroll="scroller" variant="floating" fab-position="end" class="absolute bottom-4 right-4">
+          <MIconButton icon="search" label="Search" />
+          <MIconButton icon="filter_list" label="Filter" />
+          <MIconButton icon="sort" label="Sort" />
+          <template #fab>
+            <MFab icon="add" label="New" />
           </template>
         </MToolbar>
       </div>
@@ -123,7 +225,7 @@ const toolbarSlots: SlotDef[] = [
           <MIconButton icon="zoom_out" label="Zoom out" />
           <MIconButton icon="fit_screen" label="Fit" />
           <template #fab>
-            <MFab icon="fullscreen" size="small" color="tertiary" />
+            <MFab icon="fullscreen" label="Full screen" />
           </template>
         </MToolbar>
       </div>
@@ -209,7 +311,7 @@ const toolbarSlots: SlotDef[] = [
             <MIconButton icon="contrast" label="Contrast" />
             <MIconButton icon="palette" label="Color" />
             <template #fab>
-              <MFab icon="check" size="small" color="primary" />
+              <MFab icon="check" label="Done" />
             </template>
           </MToolbar>
         </div>
@@ -221,6 +323,9 @@ const toolbarSlots: SlotDef[] = [
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
     <SlotsTable :slots="toolbarSlots" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Events</h3>
+    <EventsTable :events="toolbarEvents" />
 
     <ComponentPager current="MToolbar" />
   </div>
