@@ -147,10 +147,3 @@ onBeforeUnmount(() => {
 }
 </style>
 
-<style>
-/* Filled Material Symbols (play, like, skip…) anywhere inside an element with this class. */
-.m3m-fill.material-symbols-outlined,
-.m3m-fill .material-symbols-outlined {
-  font-variation-settings: 'FILL' 1;
-}
-</style>

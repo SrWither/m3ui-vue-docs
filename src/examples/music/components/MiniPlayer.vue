@@ -20,9 +20,9 @@ const progress = computed(() => (track.value ? (position.value / track.value.dur
           <span class="block truncate text-body-small text-on-surface-variant">{{ artistById.get(track.artistId)!.name }}</span>
         </span>
       </button>
-      <MIconButton icon="favorite" :label="isLiked(track.id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'" :class="{ 'm3m-fill text-primary!': isLiked(track.id) }" @click="toggleLike(track.id)" />
-      <button type="button" class="m3m-fill flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface" :aria-label="playing ? 'Pause' : 'Play'" @click="toggle">
-        <MIcon :name="playing ? 'pause' : 'play_arrow'" :size="30" />
+      <MIconButton icon="favorite" :label="isLiked(track.id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'" :checked="isLiked(track.id)" @click="toggleLike(track.id)" />
+      <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface" :aria-label="playing ? 'Pause' : 'Play'" @click="toggle">
+        <MIcon :name="playing ? 'pause' : 'play_arrow'" :size="30" filled />
       </button>
     </div>
     <div class="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-on-surface/15">

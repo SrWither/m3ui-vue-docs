@@ -55,11 +55,11 @@ const newReleases = [...albums].sort((a, b) => b.year - a.year).slice(0, 8)
         <button
           type="button"
           :aria-label="`Play ${p.title}`"
-          class="m3m-fill hidden h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-on-primary opacity-0 shadow-elevation-2 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 md:flex"
+          class="hidden h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-on-primary opacity-0 shadow-elevation-2 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 md:flex"
           :class="{ 'opacity-100': playingFrom(p.type, p.id) }"
           @click.stop="togglePlayFrom(p.type, p.id)"
         >
-          <MIcon :name="playingFrom(p.type, p.id) ? 'pause' : 'play_arrow'" :size="24" />
+          <MIcon :name="playingFrom(p.type, p.id) ? 'pause' : 'play_arrow'" :size="24" filled />
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /* An artist: banner, follow, popular songs, discography and an about card. */
 import { computed, ref } from 'vue'
-import { MButton, MIconButton, MTooltip } from '@m3ui-vue/m3ui-vue'
+import { MButton, MIcon, MIconButton, MTooltip } from '@m3ui-vue/m3ui-vue'
 import { artistAlbums, artistById, artists, formatCount, popularTracks } from '../catalog'
 import { useMusic } from '../useMusic'
 import PlayButton from '../components/PlayButton.vue'
@@ -26,7 +26,7 @@ const showAll = ref(false)
       <img :src="artist.image" alt="" class="absolute inset-0 h-full w-full object-cover object-[50%_30%]" />
       <div class="absolute inset-0 bg-linear-to-b from-black/0 via-black/10 to-black/70" />
       <div class="absolute inset-x-0 bottom-0 px-4 pb-5 text-white sm:px-6">
-        <p class="flex items-center gap-1 text-label-large"><span class="material-symbols-outlined m3m-fill text-[20px] text-sky-300">verified</span>Verified artist</p>
+        <p class="flex items-center gap-1 text-label-large"><MIcon name="verified" :size="20" filled class="text-sky-300" />Verified artist</p>
         <h1 class="text-display-small font-bold sm:text-display-large">{{ artist.name }}</h1>
         <p class="text-body-medium opacity-90">{{ formatCount(artist.listeners) }} monthly listeners</p>
       </div>

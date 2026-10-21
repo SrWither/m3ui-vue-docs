@@ -94,7 +94,7 @@ function rename() {
           :icon="saved ? 'check_circle' : 'add_circle'"
           :label="saved ? 'Remove from Your Library' : 'Save to Your Library'"
           size="md"
-          :class="saved ? 'm3m-fill text-primary!' : ''"
+          :checked="saved"
           @click="toggleSaved"
         />
       </MTooltip>

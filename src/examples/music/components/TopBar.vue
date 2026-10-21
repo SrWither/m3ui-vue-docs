@@ -31,8 +31,8 @@ const isTab = computed(() => ['home', 'search', 'library'].includes(screen.value
     </template>
     <MIconButton v-else-if="!isTab && canBack" icon="arrow_back" label="Go back" @click="back" />
     <div v-if="!wide && (isTab || !canBack)" class="flex items-center gap-2 pl-2">
-      <span class="m3m-fill flex h-8 w-8 items-center justify-center rounded-full bg-primary text-on-primary">
-        <MIcon name="graphic_eq" :size="20" />
+      <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-on-primary">
+        <MIcon name="graphic_eq" :size="20" filled />
       </span>
       <span class="text-title-large font-bold text-on-surface">Tempo</span>
     </div>

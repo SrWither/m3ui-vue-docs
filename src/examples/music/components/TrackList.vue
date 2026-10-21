@@ -49,12 +49,12 @@ function play(id: string) {
           >
             <span class="flex h-8 w-8 items-center justify-center text-body-medium text-on-surface-variant tabular-nums">
               <template v-if="isCurrent(id)">
-                <MIcon :name="playing ? 'pause' : 'play_arrow'" :size="22" class="m3m-fill hidden text-on-surface group-hover:inline" />
+                <MIcon :name="playing ? 'pause' : 'play_arrow'" :size="22" filled class="hidden text-on-surface group-hover:inline" />
                 <Equalizer :paused="!playing" class="group-hover:hidden" />
               </template>
               <template v-else>
                 <span class="group-hover:hidden">{{ i + 1 }}</span>
-                <MIcon name="play_arrow" :size="22" class="m3m-fill hidden text-on-surface group-hover:inline" />
+                <MIcon name="play_arrow" :size="22" filled class="hidden text-on-surface group-hover:inline" />
               </template>
             </span>
 
@@ -63,7 +63,7 @@ function play(id: string) {
               <span class="min-w-0">
                 <span class="block truncate text-body-large" :class="current === id ? 'text-primary' : 'text-on-surface'">{{ trackById.get(id)!.title }}</span>
                 <span class="flex items-center gap-1 truncate text-body-medium text-on-surface-variant">
-                  <MIcon v-if="isLiked(id)" name="favorite" :size="14" class="m3m-fill shrink-0 text-primary sm:hidden" />
+                  <MIcon v-if="isLiked(id)" name="favorite" :size="14" filled class="shrink-0 text-primary sm:hidden" />
                   {{ artistById.get(trackById.get(id)!.artistId)!.name }}
                 </span>
               </span>
@@ -77,7 +77,8 @@ function play(id: string) {
                 :label="isLiked(id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'"
                 size="xs"
                 class="hidden sm:inline-flex"
-                :class="isLiked(id) ? 'm3m-fill text-primary!' : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100'"
+                :checked="isLiked(id)"
+                :class="isLiked(id) ? '' : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100'"
                 @click="toggleLike(id)"
               />
               <span class="hidden w-12 text-right text-body-medium text-on-surface-variant tabular-nums sm:inline">{{ formatTime(trackById.get(id)!.duration) }}</span>

@@ -118,11 +118,11 @@ const browse = (Object.keys(genres) as Genre[]).map((g) => ({ id: g, ...genres[g
             <button
               type="button"
               :aria-label="`Play ${top.title}`"
-              class="m3m-fill absolute right-4 bottom-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary text-on-primary shadow-elevation-3 transition-[opacity,translate] focus-visible:opacity-100"
+              class="absolute right-4 bottom-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary text-on-primary shadow-elevation-3 transition-[opacity,translate] focus-visible:opacity-100"
               :class="top.playing ? 'opacity-100' : 'translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100'"
               @click.stop="top.play()"
             >
-              <MIcon :name="top.playing ? 'pause' : 'play_arrow'" :size="28" />
+              <MIcon :name="top.playing ? 'pause' : 'play_arrow'" :size="28" filled />
             </button>
           </div>
         </section>

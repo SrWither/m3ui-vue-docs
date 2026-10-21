@@ -75,7 +75,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
               <h2 class="truncate text-headline-small font-bold text-on-surface">{{ track.title }}</h2>
               <button type="button" class="max-w-full cursor-pointer truncate text-body-large text-on-surface-variant hover:underline" @click="openArtist">{{ artist.name }}</button>
             </div>
-            <MIconButton icon="favorite" :label="isLiked(track.id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'" size="md" :class="{ 'm3m-fill text-primary!': isLiked(track.id) }" @click="toggleLike(track.id)" />
+            <MIconButton icon="favorite" :label="isLiked(track.id) ? 'Remove from Liked Songs' : 'Save to Liked Songs'" size="md" :checked="isLiked(track.id)" @click="toggleLike(track.id)" />
           </div>
           <Visualizer class="mb-2" />
           <SeekBar />

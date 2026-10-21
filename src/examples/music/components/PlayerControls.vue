@@ -20,19 +20,19 @@ const size = computed(() => (props.large ? 'md' : 'sm'))
       </span>
     </MTooltip>
     <MTooltip text="Previous">
-      <MIconButton icon="skip_previous" label="Previous" :size="size" class="m3m-fill" @click="prev" />
+      <MIconButton icon="skip_previous" label="Previous" :size="size" icon-filled @click="prev" />
     </MTooltip>
     <button
       type="button"
       :aria-label="playing ? 'Pause' : 'Play'"
-      class="m3m-fill flex shrink-0 cursor-pointer items-center justify-center rounded-full transition-transform hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+      class="flex shrink-0 cursor-pointer items-center justify-center rounded-full transition-transform hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
       :class="large ? 'h-16 w-16 bg-primary text-on-primary' : 'h-9 w-9 bg-on-surface text-surface'"
       @click="toggle"
     >
-      <MIcon :name="playing ? 'pause' : 'play_arrow'" :size="large ? 36 : 24" />
+      <MIcon :name="playing ? 'pause' : 'play_arrow'" :size="large ? 36 : 24" filled />
     </button>
     <MTooltip text="Next">
-      <MIconButton icon="skip_next" label="Next" :size="size" class="m3m-fill" @click="next()" />
+      <MIconButton icon="skip_next" label="Next" :size="size" icon-filled @click="next()" />
     </MTooltip>
     <MTooltip :text="repeatLabel">
       <span class="relative inline-flex">
