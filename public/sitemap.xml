@@ -337,6 +337,10 @@
     <lastmod>2026-10-21</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/data-display/msparkline</loc>
+    <lastmod>2026-10-21</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/data-display/mstatcard</loc>
     <lastmod>2026-10-21</lastmod>
   </url>
@@ -758,6 +762,10 @@
   </url>
   <url>
     <loc>https://m3ui.dev/composables/usecolorpalette</loc>
+    <lastmod>2026-10-21</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/useconfetti</loc>
     <lastmod>2026-10-21</lastmod>
   </url>
   <url>

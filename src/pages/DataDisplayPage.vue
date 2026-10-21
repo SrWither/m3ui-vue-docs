@@ -10,6 +10,7 @@ const components = [
   { name: 'MIcon', description: 'Renders a Material Symbols Outlined glyph by name.' },
   { name: 'MDivider', description: 'A thin separator line, horizontal or vertical, with an optional label.' },
   { name: 'MStatCard', description: 'A compact metric card with a trend indicator and loading skeleton.' },
+  { name: 'MSparkline', description: 'A small line, area or bar trend chart for next to a number, with no chart library.' },
   { name: 'MAnimatedNumber', description: 'A number whose digits roll to their new value on a spring, formatted for your locale.' },
   { name: 'MTimeline', description: 'A vertical event timeline with icon dots and dates.' },
   { name: 'MSkeleton', description: 'A loading placeholder shape with pulse or wave animation.' },
