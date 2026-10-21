@@ -41,7 +41,7 @@ const SECTIONS = {
 }
 
 const DEFAULT_DESCRIPTION =
-  'Material Design 3 component library for Vue 3 + Tailwind CSS v4 — 135+ tree-shakeable components, 40 color palettes, dark mode, and i18n support.'
+  'Material Design 3 component library for Vue 3 + Tailwind CSS v4 — 170+ tree-shakeable components, 40 color palettes, dark mode, and i18n support.'
 
 const STATIC = [
   { path: '/', title: `${SITE_NAME} — Documentation`, description: DEFAULT_DESCRIPTION },

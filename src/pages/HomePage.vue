@@ -168,7 +168,7 @@ const categories = sections.find((s) => s.title === 'Components')!.items.map((it
         </MFlex>
 
         <p class="max-w-2xl text-title-medium text-on-primary-container/80">
-          135+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
+          170+ Material Design 3 components for Vue 3 + Tailwind CSS v4.
           Beautiful, accessible, tree-shakeable. With 40 color palettes or one generated from your own color, dark mode, i18n, and full TypeScript support.
         </p>
 
@@ -187,7 +187,7 @@ const categories = sections.find((s) => s.title === 'Components')!.items.map((it
         <!-- Stats -->
         <MFlex gap="sm" wrap class="mt-4 justify-center">
           <MChip v-if="version" icon="new_releases" tone="primary">v{{ version }}</MChip>
-          <MChip icon="widgets" tone="primary">135+ Components</MChip>
+          <MChip icon="widgets" tone="primary">170+ Components</MChip>
           <MChip icon="palette" tone="secondary">40 Palettes</MChip>
           <MChip icon="dark_mode" tone="tertiary">Dark Mode</MChip>
           <MChip icon="code">TypeScript</MChip>
@@ -437,7 +437,7 @@ const categories = sections.find((s) => s.title === 'Components')!.items.map((it
               </MFlex>
               <MStack gap="sm">
                 <MExpansionPanel v-model="panelOpen" title="What is M3UI?" icon="help">
-                  A Material Design 3 component library for Vue 3 + Tailwind CSS v4 with 135+ components.
+                  A Material Design 3 component library for Vue 3 + Tailwind CSS v4 with 170+ components.
                 </MExpansionPanel>
                 <MExpansionPanel v-model="panelFreeOpen" title="Is it free?" icon="payments">
                   Absolutely! M3UI Vue is MIT licensed — use it in personal projects, commercial apps, SaaS products, or anything else. No attribution required, no strings attached.
