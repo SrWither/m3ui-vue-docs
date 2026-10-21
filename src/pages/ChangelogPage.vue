@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.1.4',
+    date: 'Unreleased',
+    changes: {
+      changed: [
+        'MAnimatedNumber shows dollar-sign currencies with their country in any language: AR$ for Argentine pesos, MX$ for Mexican pesos, US$ for US dollars',
+      ],
+    },
+  },
+  {
     version: '1.1.3',
     date: '2026-10-20',
     changes: {
