@@ -40,6 +40,7 @@ const versions: Version[] = [
         'MNavigationDrawer collapsedLabels: labels under the icons when collapsed, like a navigation rail, and badges on the icons',
         'useThemeTokens live option: a canvas can fade along with the page when the theme changes',
         'v-state-layer: the M3 hover, focus and pressed tint on any element',
+        'v-tooltip: a quick plain tooltip on any element from a string',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
