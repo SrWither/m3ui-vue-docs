@@ -17,7 +17,7 @@ const sideSheetProps: PropDef[] = [
 ]
 
 const sideSheetEvents: EventDef[] = [
-  { name: 'update:modelValue', payload: 'boolean', description: 'Emitted when the sheet closes (scrim click, drag-to-dismiss from the left edge, or the close button) — powers v-model' },
+  { name: 'update:modelValue', payload: 'boolean', description: 'Emitted when the sheet closes (scrim click, drag-to-dismiss from the left edge, Escape, or the close button) — powers v-model' },
 ]
 
 const sideSheetSlots: SlotDef[] = [

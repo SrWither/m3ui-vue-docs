@@ -21,7 +21,7 @@ const bottomSheetProps: PropDef[] = [
 ]
 
 const bottomSheetEvents: EventDef[] = [
-  { name: 'update:modelValue', payload: 'boolean', description: 'Emitted when the sheet closes (scrim click, drag-to-dismiss, or the close button) — powers v-model' },
+  { name: 'update:modelValue', payload: 'boolean', description: 'Emitted when the sheet closes (scrim click, drag-to-dismiss, Escape, or the close button) — powers v-model' },
   { name: 'update:expanded', payload: 'boolean', description: 'Emitted when the sheet moves between partially and fully expanded (or closes) — powers v-model:expanded' },
 ]
 

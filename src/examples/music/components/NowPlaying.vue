@@ -39,12 +39,11 @@ function share() {
 </script>
 
 <template>
-  <!-- Escape leaves the queue sheet (no Escape of its own) open over it alone -->
   <MOverlay
     :model-value="!!(nowPlayingOpen && track && album && artist)"
     :scrim="false"
     :z-index="100"
-    :close-on-escape="!queueOpen"
+    close-on-escape
     lock-scroll
     transition="m3m-sheet"
     class="flex flex-col overflow-hidden bg-surface-container text-on-surface"

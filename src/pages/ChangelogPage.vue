@@ -33,6 +33,7 @@ const versions: Version[] = [
         'Text areas that grow as you type, up to a number of rows: MTextField autoGrow, and useAutoGrow for your own (a chat composer)',
         'useThemeTokens: the theme\'s colors as plain strings for canvases and maps, always current',
         'MChart colors your series from the theme when you don\'t give them colors, and they follow it (colors prop to pick the order)',
+        'Bottom and side sheets close with Escape',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
@@ -44,6 +45,7 @@ const versions: Version[] = [
         'Classes and attributes given to MOverlay now apply',
         'Escape in a menu inside a dialog closes just the menu',
         'MChart follows contrast and custom palettes too, and never keeps half-faded colors after switching the theme',
+        'Escape closes only the topmost thing: a select\'s list, a tooltip, the lightbox or the command palette inside or over a dialog no longer closes the dialog too',
       ],
     },
   },

@@ -54,7 +54,7 @@ function onUp(e: PointerEvent) {
   if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(e.clientY - startY) * 1.5) goTo(cookStep.value + (dx < 0 ? 1 : -1))
 }
 
-// Escape is MOverlay's (close-on-escape, off while the ingredients sheet is open); the arrows move between steps
+// Escape is MOverlay's (the ingredients sheet, opened over it, takes it first); the arrows move between steps
 function onKey(e: KeyboardEvent) {
   if (!cooking.value || (e.target as HTMLElement).closest('input, textarea')) return
   if (e.key === 'ArrowRight') goTo(cookStep.value + 1)
@@ -98,7 +98,7 @@ const clock = (s: number) => `${Math.floor(Math.ceil(s) / 60)}:${String(Math.cei
     :model-value="!!recipe"
     :scrim="false"
     :z-index="40"
-    :close-on-escape="!sheet"
+    close-on-escape
     lock-scroll
     transition="sim-cook"
     class="sim-cook flex flex-col overflow-hidden"
