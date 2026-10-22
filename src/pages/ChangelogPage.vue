@@ -24,6 +24,10 @@ const versions: Version[] = [
         'MRichTextEditor can fill a fixed height, like a mail composer, scrolling its text inside (fill)',
         'MCarousel and MSimpleCarousel can be focused from code, so the arrow keys work as soon as one opens',
         'Menu items can show any icon: a rotated one, a color swatch, an avatar (#icon slot)',
+        'MNavigationDrawer can keep one group open at a time (accordion)',
+      ],
+      changed: [
+        'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',

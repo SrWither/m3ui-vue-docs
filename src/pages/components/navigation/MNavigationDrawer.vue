@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MNavigationDrawer, MButton, MIconButton, MIcon, MAvatar, MAlert } from '@m3ui-vue/m3ui-vue'
+import { MNavigationDrawer, MButton, MIconButton, MIcon, MAvatar, MAlert, MSwitch } from '@m3ui-vue/m3ui-vue'
 import type { DrawerSection } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -21,6 +21,8 @@ const drawerProps: PropDef[] = [
   { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons — inline variant only' },
   { name: 'width', type: 'string', description: 'Custom drawer width (e.g. "320px", "25rem"). Defaults to 22.5rem (360px)' },
   { name: 'side', type: "'left' | 'right' | 'top' | 'bottom'", default: "'left'", description: 'Which side the drawer opens from. Top/bottom are only available for the modal variant — the inline variant always renders on left or right.' },
+  { name: 'expandSelected', type: 'boolean', default: 'true', description: "Opens the groups that hold the selected item (and the selected item, if it's a group) whenever selected changes" },
+  { name: 'accordion', type: 'boolean', default: 'false', description: 'Keeps one group open per level: opening a group, by hand or through expandSelected, closes its siblings' },
   { name: 'swipeEnabled', type: 'boolean', default: 'true', description: 'Lets the modal drawer be swiped closed toward its edge; with false it only closes through v-model or the scrim' },
 ]
 
@@ -117,6 +119,8 @@ const collapsedVal = ref(false)
 
 const nestedSelected = ref<string | number>('dashboard')
 const nestedCollapsed = ref(false)
+const followSelected = ref<string | number>('dashboard')
+const followAccordion = ref(true)
 const nestedSections: DrawerSection[] = [
   {
     items: [
@@ -452,6 +456,44 @@ const sections = [
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
           {{ nestedSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Following the Selected Item"
+      description="When selected changes from outside (a route, a link, a search result), the drawer opens the groups that hold it (expandSelected, on by default). accordion keeps one group open per level, closing the others, whether you open one by hand or by selecting. Jump around with the buttons."
+      :code="`<!-- With vue-router: :selected=&quot;route.path&quot; and items whose value is their path -->
+<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  accordion
+  @select=&quot;selected = $event&quot;
+/>
+<MButton variant=&quot;text&quot; @click=&quot;selected = 'sms-notif'&quot;>Settings › Notifications › SMS</MButton>
+<MButton variant=&quot;text&quot; @click=&quot;selected = 'media'&quot;>Content › Media</MButton>`"
+    >
+      <div class="flex w-full flex-col gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <MButton variant="tonal" size="sm" @click="followSelected = 'sms-notif'">Settings › Notifications › SMS</MButton>
+          <MButton variant="tonal" size="sm" @click="followSelected = 'media'">Content › Media</MButton>
+          <MButton variant="tonal" size="sm" @click="followSelected = 'dashboard'">Dashboard</MButton>
+          <MSwitch v-model="followAccordion" label="accordion" class="ml-2" />
+        </div>
+        <div class="flex h-96 w-full overflow-hidden rounded-xl border border-outline-variant">
+          <MNavigationDrawer
+            :model-value="true"
+            :modal="false"
+            :sections="nestedSections"
+            :selected="followSelected"
+            :accordion="followAccordion"
+            @select="followSelected = $event"
+          />
+          <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+            {{ followSelected }} view
+          </div>
         </div>
       </div>
     </ComponentDemo>
