@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MTimeline, MCard, MAvatar, MChip, MButton, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
+import { MTimeline, MCard, MAvatar, MChip, MButton, MSegmentedButton, MSlider } from '@m3ui-vue/m3ui-vue'
 import type { TimelineItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -17,6 +17,7 @@ const timelineProps: PropDef[] = [
   { name: 'alternating', type: 'boolean', default: 'false', description: 'Alternate items left/right of a central line instead of a single left-aligned column (vertical only)' },
   { name: 'orientation', type: "'vertical' | 'horizontal'", default: "'vertical'", description: "Horizontal lays entries side by side along a line, scrolling sideways when they don't fit" },
   { name: 'bare', type: 'boolean', default: 'false', description: 'Leaves each entry\'s content to the #item slot: no title, description or date' },
+  { name: 'responsive', type: 'boolean', default: 'true', description: 'Lets the alternating layout fold into a single column (line on the left, #opposite under the content) while the timeline is narrower than 32rem. It goes by its own width (a container query), so it also folds in a side column on a wide screen' },
   { name: 'current', type: 'number', description: "Makes it a progress timeline: the index of the current step. The ones before are done (filled, solid line), the current one pulses (aria-current=\"step\"), the ones after are pending (outlined, dashed line). An item's own status wins; items.length marks them all done" },
 ]
 
@@ -75,6 +76,7 @@ const tracking: TimelineItem[] = [
   { title: 'Delivered', description: 'Enjoy your meal', icon: 'home' },
 ]
 const step = ref(1)
+const altWidth = ref(720)
 const trackingLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
 const trackingLayouts = (['vertical', 'alternating', 'horizontal'] as const).map((v) => ({ value: v, label: v }))
 
@@ -132,7 +134,7 @@ const timelineItems: TimelineItem[] = [
 
     <ComponentDemo
       title="Alternating"
-      description="Items alternate left and right of a central line, with icons and connecting vertical track."
+      description="Items alternate left and right of a central line. Narrower than 32rem (its own width, not the screen's), it folds into a single column: drag the slider. responsive: false keeps it alternating."
       :code="`<MTimeline :items=&quot;items&quot; :alternating=&quot;true&quot; />`"
       :script="`import { MTimeline } from '@m3ui-vue/m3ui-vue'
 import type { TimelineItem } from '@m3ui-vue/m3ui-vue'
@@ -145,7 +147,12 @@ const items: TimelineItem[] = [
   { title: 'v1.0 released', description: 'First stable version in production', date: 'Feb 20', icon: 'celebration', color: 'tertiary' },
 ]`"
     >
-      <div class="w-full">
+      <div class="flex w-full flex-col gap-4">
+        <label class="flex max-w-md items-center gap-4 text-body-medium text-on-surface-variant">
+          <span class="w-24 shrink-0 tabular-nums">{{ altWidth }}px</span>
+          <MSlider v-model="altWidth" :min="260" :max="900" :step="10" class="flex-1" />
+        </label>
+        <div class="max-w-full rounded-xl border border-dashed border-outline-variant p-3" :style="{ width: `${altWidth}px` }">
         <MTimeline
           :items="[
             { title: 'Project created', description: 'Initial repo setup', date: 'Jan 15', icon: 'rocket_launch', color: 'primary' },
@@ -156,6 +163,7 @@ const items: TimelineItem[] = [
           ]"
           :alternating="true"
         />
+        </div>
       </div>
     </ComponentDemo>
 

@@ -58,6 +58,7 @@ const versions: Version[] = [
         'MMenu and MContextMenu push submenus grow or shrink smoothly to the new level and slide between levels the M3 way',
         'MMenu and MContextMenu push submenus have a cleaner back header: an arrow and the submenu title, then a divider',
         'MMap keeps the layers you added when its style changes (keepLayers)',
+        'The alternating MTimeline folds into one column when it is narrow',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
