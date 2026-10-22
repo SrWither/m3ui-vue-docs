@@ -5,12 +5,14 @@ import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import MapLayersDemo from '@/components/demos/MapLayersDemo.vue'
+import MapLayersBeside from '@/components/demos/MapLayersBeside.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
 
 const props: PropDef[] = [
   { name: 'search', type: 'boolean', default: 'true', description: 'Show the search field.' },
   { name: 'collapsed', type: 'boolean', default: 'false', description: 'Groups start collapsed.' },
+  { name: 'map', type: 'MapSource', description: 'The map, when the list is outside it (a side panel): the MMap\'s template ref. Not needed inside the MMap.' },
 ]
 const slots: SlotDef[] = [
   { name: 'actions', description: 'Extra buttons in an expanded layer. Scope: layer, visible.' },
@@ -25,7 +27,7 @@ const slots: SlotDef[] = [
       adapter: collapsible groups with partial visibility and a count, each layer's visibility, opacity, description,
       legend and download, and a search. Put it wherever you like: in an expanding
       <RouterLink to="/components/map/mmapcontrol" class="text-primary underline">MMapControl</RouterLink> as here, a
-      side sheet, a drawer. <RouterLink to="/composables/usemaplayers" class="text-primary underline">useMapLayers()</RouterLink>
+      side sheet, a drawer, or a panel beside the map through <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">map</code>. <RouterLink to="/composables/usemaplayers" class="text-primary underline">useMapLayers()</RouterLink>
       gives the same state for a list of your own.
     </p>
 
@@ -74,6 +76,22 @@ const style = {
 }`"
     >
       <MapLayersDemo layers />
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Beside the map"
+      description="Outside the MMap, give the list (and MMapBaseLayers) the map through its template ref. Until the map mounts they show nothing."
+      :code="`<aside>
+  <MMapBaseLayers :map=&quot;map&quot; />
+  <MMapLayers :map=&quot;map&quot; :search=&quot;false&quot; />
+</aside>
+<MMap ref=&quot;map&quot; :map-style=&quot;style&quot; :adapter=&quot;orvianAdapter()&quot; />`"
+      :script="`import { ref } from 'vue'
+import { MMap, MMapBaseLayers, MMapLayers, orvianAdapter } from '@m3ui-vue/m3ui-vue/map'
+
+const map = ref()`"
+    >
+      <MapLayersBeside />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>

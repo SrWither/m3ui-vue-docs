@@ -13,8 +13,15 @@ const adapter = orvianAdapter()
 
 const types: TypeDef[] = [
   {
+    name: 'useMap(map?)',
+    description: 'Outside an MMap (a side panel), pass it the map: its template ref, or a getter for it (() => props.map). Inside one, call it with nothing',
+    fields: [
+      { name: 'map', type: 'MaybeRefOrGetter<MapSource>', description: 'The MMap (its template ref) or its context; until it mounts the result is empty and onReady waits' },
+    ],
+  },
+  {
     name: 'useMap() returns',
-    description: 'Call it in a component placed inside <MMap> (it throws elsewhere); its listeners go when that component unmounts',
+    description: 'Inside <MMap>, or given one (it throws otherwise); its listeners go when that component unmounts',
     fields: [
       { name: 'map', type: 'ComputedRef<Map | undefined>', description: 'MapLibre\'s Map, once its style loaded (undefined before, and on the server)' },
       { name: 'maplibre', type: 'ComputedRef<typeof maplibregl | undefined>', description: 'The maplibre-gl module MMap loaded: its classes (Marker, Popup, LngLatBounds…) without importing it yourself' },

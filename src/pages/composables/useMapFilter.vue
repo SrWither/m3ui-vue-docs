@@ -12,6 +12,13 @@ const adapter = orvianAdapter()
 
 const types: TypeDef[] = [
   {
+    name: 'useMapFilter(map?)',
+    description: 'Outside an MMap (a side panel), pass it the map: its template ref, or a getter for it (() => props.map). Inside one, call it with nothing',
+    fields: [
+      { name: 'map', type: 'MaybeRefOrGetter<MapSource>', description: 'The MMap (its template ref) or its context; until it mounts the result is empty and onReady waits' },
+    ],
+  },
+  {
     name: 'useMapFilter() returns',
     description: 'Inside an <MMap>. MMapFilter is built on it',
     fields: [

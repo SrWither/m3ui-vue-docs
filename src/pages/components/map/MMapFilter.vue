@@ -19,6 +19,7 @@ const filterProps: PropDef[] = [
   { name: 'values', type: '(string | number)[]', description: 'The values to offer; by default the ones in the layer\'s loaded features.' },
   { name: 'labels', type: 'Record<string, string>', description: 'Labels for the values.' },
   { name: 'modelValue', type: '(string | number)[]', description: 'The selected values (v-model). None selected: no filter.' },
+  { name: 'map', type: 'MapSource', description: 'The map, when the chips are outside it (a side panel): the MMap\'s template ref. Not needed inside the MMap.' },
 ]
 const filterEvents: EventDef[] = [
   { name: 'update:modelValue', payload: '(string | number)[]', description: 'A chip was toggled.' },

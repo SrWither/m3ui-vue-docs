@@ -10,6 +10,7 @@ const props: PropDef[] = [
   { name: 'imageBase', type: 'string', default: "''", description: 'Prefix for the thumbnails\' paths (e.g. /images/); full URLs stay as they are.' },
   { name: 'none', type: 'boolean', default: 'true', description: 'Offer "no base layer".' },
   { name: 'vertical', type: 'boolean', default: 'false', description: 'Lay them out in a column.' },
+  { name: 'map', type: 'MapSource', description: 'The map, when the switcher is outside it (a side panel): the MMap\'s template ref. Not needed inside the MMap.' },
 ]
 </script>
 

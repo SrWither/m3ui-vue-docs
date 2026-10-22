@@ -13,6 +13,13 @@ const adapter = orvianAdapter()
 
 const types: TypeDef[] = [
   {
+    name: 'useMapLayers(map?)',
+    description: 'Outside an MMap (a side panel), pass it the map: its template ref, or a getter for it (() => props.map). Inside one, call it with nothing',
+    fields: [
+      { name: 'map', type: 'MaybeRefOrGetter<MapSource>', description: 'The MMap (its template ref) or its context; until it mounts the result is empty and onReady waits' },
+    ],
+  },
+  {
     name: 'useMapLayers() returns',
     description: 'Inside an <MMap> with an adapter. The state is shared: MMapLayers, MMapBaseLayers and your UI stay in sync',
     fields: [
