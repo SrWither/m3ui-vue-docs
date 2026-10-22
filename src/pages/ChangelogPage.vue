@@ -52,6 +52,7 @@ const versions: Version[] = [
         'MTimeline progress: done, current and pending steps, like an order being tracked',
         'MTimeline groups: headers like Today and Yesterday over runs of entries',
         'MTimeline animates new entries in and moves the rest along',
+        'MTimeline limit: show the first entries and a button for the rest',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',

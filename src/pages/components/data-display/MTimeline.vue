@@ -6,6 +6,8 @@ import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import TypesTable from '@/components/TypesTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
+import EventsTable from '@/components/EventsTable.vue'
+import type { EventDef } from '@/components/EventsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
@@ -19,6 +21,8 @@ const timelineProps: PropDef[] = [
   { name: 'bare', type: 'boolean', default: 'false', description: 'Leaves each entry\'s content to the #item slot: no title, description or date' },
   { name: 'responsive', type: 'boolean', default: 'true', description: 'Lets the alternating layout fold into a single column (line on the left, #opposite under the content) while the timeline is narrower than 32rem. It goes by its own width (a container query), so it also folds in a side column on a wide screen' },
   { name: 'animate', type: 'boolean', default: 'true', description: 'Entries added after it mounts fade and slide in, and the others move to their new places, on M3 springs (not with reduced motion). Give items a key, or an insertion looks like a change to every entry after it' },
+  { name: 'limit', type: 'number', description: "Shows only the first entries (groups' headers don't count), with a \"Show N more\" button for the rest that turns into \"Show less\"" },
+  { name: 'expanded', type: 'boolean', description: 'Whether the entries past limit show (v-model:expanded); the timeline keeps its own state when left out' },
   { name: 'current', type: 'number', description: "Makes it a progress timeline: the index of the current step. The ones before are done (filled, solid line), the current one pulses (aria-current=\"step\"), the ones after are pending (outlined, dashed line). An item's own status wins; items.length marks them all done" },
 ]
 
@@ -37,6 +41,10 @@ const timelineTypes: TypeDef[] = [
       { name: 'status', type: "'done' | 'current' | 'pending'", description: "This step's progress, over what the timeline's current gives it" },
     ],
   },
+]
+
+const timelineEvents: EventDef[] = [
+  { name: 'update:expanded', payload: 'boolean', description: 'The "Show more" / "Show less" button was pressed' },
 ]
 
 const timelineSlots: SlotDef[] = [
@@ -120,6 +128,14 @@ function insertMiddle() {
   const late = { key: feedId, title: 'Late event', description: 'Arrived out of order, placed where it belongs', icon: 'history', color: 'secondary' as const, date: 'earlier' }
   feed.value = [...feed.value.slice(0, at), late, ...feed.value.slice(at)].slice(0, 8)
 }
+
+// Show more: a long history
+const history: TimelineItem[] = [
+  'Account created', 'Email verified', 'Profile photo added', 'First order', 'Address changed', 'Second order',
+  'Review posted', 'Password changed', 'Gift card redeemed', 'Third order', 'Newsletter on',
+].map((title, i) => ({ key: i, title, date: `Oct ${i + 2}`, icon: i % 3 === 0 ? 'shopping_bag' : 'person', color: i % 3 === 0 ? 'primary' : 'secondary' }))
+const historyLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
+const historyOpen = ref(false)
 
 const daysLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
 
@@ -375,6 +391,28 @@ const step = ref(1)`"
     </ComponentDemo>
 
     <ComponentDemo
+      title="Show more"
+      description="limit shows the first entries with a button for the rest; the ones it reveals slide in. v-model:expanded if you need the state."
+      :code="`<MTimeline :items=&quot;history&quot; :limit=&quot;4&quot; v-model:expanded=&quot;open&quot; />`"
+      :script="`const open = ref(false)`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <MSegmentedButton v-model="historyLayout" :options="trackingLayouts" />
+          <span class="text-body-medium text-on-surface-variant">expanded: {{ historyOpen }}</span>
+        </div>
+        <MTimeline
+          v-model:expanded="historyOpen"
+          :items="history"
+          :limit="4"
+          dense
+          :alternating="historyLayout === 'alternating'"
+          :orientation="historyLayout === 'horizontal' ? 'horizontal' : 'vertical'"
+        />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
       title="Bare"
       description="With bare the timeline only draws the dots and the line, and #item draws each entry however you like."
       :code="`<MTimeline :items=&quot;releases&quot; bare>
@@ -405,6 +443,9 @@ const step = ref(1)`"
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Types</h3>
     <TypesTable :types="timelineTypes" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Events</h3>
+    <EventsTable :events="timelineEvents" />
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
     <SlotsTable :slots="timelineSlots" />
