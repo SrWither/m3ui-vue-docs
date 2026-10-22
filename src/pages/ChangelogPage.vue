@@ -54,6 +54,7 @@ const versions: Version[] = [
         'MTimeline animates new entries in and moves the rest along',
         'MTimeline limit: show the first entries and a button for the rest',
         'The directives are typed in templates, and render their look on the server too',
+        'viewportFromHeaders: server rendering picks a layout for the device on a first visit',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',

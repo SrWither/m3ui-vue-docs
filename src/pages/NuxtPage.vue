@@ -69,6 +69,8 @@ import { createM3UI, type M3InitialState } from '@m3ui-vue/m3ui-vue'
 import App from './App.vue'
 
 const cookie = (name: string) => document.cookie.match(new RegExp(\`(?:^|; )\${name}=([^;]*)\`))?.[1]
+// the window size the server rendered for (see entry-server.ts), so hydration matches it
+const viewport = (window as { __M3_VIEWPORT__?: { width: number, height: number } }).__M3_VIEWPORT__
 
 const app = createSSRApp(App)
 let hydrating = true
@@ -76,23 +78,29 @@ app.use(createM3UI({
   palette: 'teal',
   cookies: true, // keep the choice in cookies too, for the server
   // the same values the server read, so the first render matches its HTML
-  initialState: { theme: cookie('m3-theme'), palette: cookie('m3-palette'), contrast: cookie('m3-contrast') } as M3InitialState,
+  initialState: { theme: cookie('m3-theme'), palette: cookie('m3-palette'), contrast: cookie('m3-contrast'), viewport } as M3InitialState,
   isHydrating: () => hydrating,
 }))
 app.mount('#app')
 hydrating = false`
 
 const headScriptCode = `// entry-server.ts, per request
-import { createM3UI, themeInitScript, type M3InitialState } from '@m3ui-vue/m3ui-vue'
+import { createM3UI, themeInitScript, viewportFromHeaders, VIEWPORT_HINTS, type M3InitialState } from '@m3ui-vue/m3ui-vue'
+
+// the window's size: its cookie, Chromium's viewport hints, or a guess from the device on a first visit
+const viewport = viewportFromHeaders(request.headers)
 
 app.use(createM3UI({
   palette: 'teal',
   // from the request's cookies, however your server parses them
-  initialState: { theme: cookies['m3-theme'], palette: cookies['m3-palette'], contrast: cookies['m3-contrast'] } as M3InitialState,
+  initialState: { theme: cookies['m3-theme'], palette: cookies['m3-palette'], contrast: cookies['m3-contrast'], viewport } as M3InitialState,
 }))
 
-// inline it in <head>, before your stylesheets
-const head = \`<script>\${themeInitScript({ palette: 'teal' })}<\/script>\``
+// inline it in <head>, before your stylesheets, with the size for the client
+const head = \`<script>\${themeInitScript({ palette: 'teal' })};window.__M3_VIEWPORT__=\${JSON.stringify(viewport ?? null)}<\/script>\`
+
+// optional: ask Chromium for the exact size (Critical-CH repeats a first visit's request once)
+// response.setHeader('Accept-CH', VIEWPORT_HINTS); response.setHeader('Critical-CH', VIEWPORT_HINTS)`
 
 const i18nCode = `// nuxt.config.ts
 export default defineNuxtConfig({
@@ -119,6 +127,7 @@ const options: PropDef[] = [
   { name: 'composables', type: 'boolean | { prefix: string }', default: "{ prefix: 'M3' }", description: 'Auto-import the composables with this prefix (useTheme becomes useM3Theme). false to import them yourself.' },
   { name: 'css', type: 'boolean', default: 'true', description: "Add the components' own stylesheet (@m3ui-vue/m3ui-vue/styles)." },
   { name: 'cookies', type: 'boolean', default: 'true', description: 'Keep the theme, palette and contrast in cookies too, so the server renders with the user\'s choice.' },
+  { name: 'viewportHints', type: 'boolean', default: 'false', description: 'Ask Chromium for the window\'s exact size with client hints (Accept-CH / Critical-CH), so the adaptive layouts render at it on a first visit too, at the cost of one repeated request on that visit. Without it a first visit renders at a size guessed from the device. Needs cookies.' },
   { name: 'themeScript', type: 'boolean', default: 'true', description: 'Inline themeInitScript() in <head>, so the saved theme is on the page before it paints.' },
 ]
 </script>
@@ -280,15 +289,18 @@ const options: PropDef[] = [
     <MCard class="mb-4 flex items-start gap-3 p-4">
       <MIcon name="devices" :size="22" class="mt-0.5 shrink-0 text-primary" />
       <div>
-        <p class="mb-2 text-body-medium font-medium text-on-surface">Adaptive layouts need one visit</p>
+        <p class="mb-2 text-body-medium font-medium text-on-surface">Adaptive layouts on a first visit</p>
         <p class="text-body-medium text-on-surface-variant">
           <RouterLink to="/components/layout/mnavigationsuite" class="text-primary underline">MNavigationSuite</RouterLink>,
           <RouterLink to="/components/layout/mlistdetail" class="text-primary underline">MListDetail</RouterLink> and
           <RouterLink to="/components/layout/msupportingpane" class="text-primary underline">MSupportingPane</RouterLink>
           adapt to their own size, which the server can't measure. The module keeps the window's size in a cookie
           too, so from the second visit on the server renders the layout that fits that screen (a layout in a narrower
-          column corrects itself once the page is interactive). On a first visit there's no size yet: they render
-          their compact layout and switch to the one that fits as soon as the page is interactive.
+          column corrects itself once the page is interactive). On a first visit there's no cookie yet: the server
+          renders for a size that stands for the kind of device (a phone, a tablet or a desktop, from the request), and
+          the layout settles on the exact one once the page is interactive. With
+          <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">viewportHints</code>, Chromium sends
+          the exact size from the first visit too (it repeats that first request once to do it).
         </p>
       </div>
     </MCard>
