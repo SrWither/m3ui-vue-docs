@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       added: [
         'MPullToRefresh gives you its scrolling element and scrollTo() through a template ref, for a back-to-top button or a "new posts" pill',
+        'MProgressBar and MCircleProgressBar take any color for the bar and its track, like white bars over a photo',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',

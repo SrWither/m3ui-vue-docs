@@ -12,7 +12,8 @@ const progressWavy = ref(50)
 const progressProps: PropDef[] = [
   { name: 'value', type: 'number', description: 'Progress 0–100 (omit for indeterminate)' },
   { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Indeterminate animation — also implied by omitting value' },
-  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Bar color' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | string", default: "'primary'", description: 'Bar color: an M3 role or any CSS color (#fff over a photo, say)' },
+  { name: 'trackColor', type: 'string', description: "Track color: an M3 role or any CSS color. Default the role's container, or the bar color at 24% for a CSS color" },
   { name: 'variant', type: "'linear' | 'wavy'", default: "'linear'", description: 'Bar style' },
   { name: 'thickness', type: 'number', default: '4', description: 'Stroke width in px. Defaults to 4dp, matching the real M3 token for both variants.' },
   { name: 'label', type: 'string', description: 'Label text above the bar' },
@@ -107,6 +108,29 @@ const progress = ref(50)`"
           <MProgressBar :value="60" variant="wavy" color="secondary" label="thickness: 3 (default)" />
           <MProgressBar :value="60" variant="wavy" :thickness="5" color="secondary" label="thickness: 5" />
         </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom colors"
+      description="color and trackColor also take any CSS color, for bars that sit on a photo or follow a brand color. Without trackColor, a CSS color gets a track of itself at 24%."
+      :code="`<!-- Story bars over a photo -->
+<MProgressBar v-for=&quot;(v, i) in frames&quot; :key=&quot;i&quot; :value=&quot;v&quot; :thickness=&quot;3&quot;
+  color=&quot;#fff&quot; track-color=&quot;rgb(255 255 255 / 0.35)&quot; class=&quot;flex-1&quot; />
+
+<!-- A brand color -->
+<MProgressBar :value=&quot;70&quot; color=&quot;#1db954&quot; />
+<MProgressBar :value=&quot;70&quot; variant=&quot;wavy&quot; color=&quot;#e8590c&quot; track-color=&quot;surface-container-highest&quot; />`"
+    >
+      <div class="w-full space-y-6">
+        <div class="relative h-40 overflow-hidden rounded-2xl bg-linear-to-br from-indigo-700 via-fuchsia-600 to-amber-400 p-3">
+          <div class="flex gap-1">
+            <MProgressBar v-for="(v, i) in [100, 100, progressVal, 0]" :key="i" :value="v" :thickness="3" color="#fff" track-color="rgb(255 255 255 / 0.35)" class="flex-1" />
+          </div>
+          <p class="mt-3 text-title-small text-white">@ana · 2h</p>
+        </div>
+        <MProgressBar :value="progressVal" color="#1db954" label="#1db954" />
+        <MProgressBar :value="progressVal" variant="wavy" color="#e8590c" track-color="surface-container-highest" label="#e8590c on surface-container-highest" />
       </div>
     </ComponentDemo>
 

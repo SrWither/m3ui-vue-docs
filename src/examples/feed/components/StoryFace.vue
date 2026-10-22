@@ -18,7 +18,9 @@ defineEmits<{ profile: [] }>()
           :key="i"
           :value="i < frame ? 100 : i === frame ? progress : 0"
           :thickness="3"
-          class="m3p-story-bar flex-1"
+          color="#fff"
+          track-color="rgb(255 255 255 / 0.35)"
+          class="flex-1"
         />
       </div>
       <button type="button" class="relative z-10 mt-3 flex cursor-pointer items-center gap-2 text-white" @click.stop="$emit('profile')">
@@ -29,8 +31,3 @@ defineEmits<{ profile: [] }>()
   </div>
 </template>
 
-<style scoped>
-/* White bars over the photo, whatever the palette. */
-.m3p-story-bar :deep(.bg-primary) { background-color: #fff; }
-.m3p-story-bar :deep(.bg-primary-container) { background-color: rgb(255 255 255 / 0.35); }
-</style>

@@ -43,7 +43,8 @@ const circleProgressProps: PropDef[] = [
   { name: 'value', type: 'number', description: 'Progress 0–100 (omit when indeterminate)' },
   { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Spinning arc — no value needed. Identical for both variants.' },
   { name: 'variant', type: "'wavy' | 'circle'", default: "'wavy'", description: 'wavy: animated bumpy ring that fades to circle near 0% and 100%; circle: smooth arc' },
-  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Ring color' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | string", default: "'primary'", description: 'Ring color: an M3 role or any CSS color' },
+  { name: 'trackColor', type: 'string', description: "Track color: an M3 role or any CSS color. Default the role's container, or the ring color at 24% for a CSS color" },
   { name: 'size', type: 'number', default: '48 wavy / 40 circle', description: 'Diameter in px — matches the real M3 WaveSize/Size tokens per variant' },
   { name: 'thickness', type: 'number', default: '4', description: 'Stroke width of the ring/wave in px, matching the real M3 token' },
   { name: 'label', type: 'string', description: 'Label text below the circle' },
@@ -245,6 +246,22 @@ function cancelDl() {
         <span class="w-12 text-center text-title-medium font-medium">{{ circleVal }}%</span>
         <MButton variant="tonal" icon="add" @click="circleVal = Math.min(100, circleVal + 10)">+ 10</MButton>
         <MButton variant="text" @click="circleVal = 0">Reset</MButton>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom colors"
+      description="color and trackColor also take any CSS color: white over a photo or a video, or a brand color. Without trackColor, a CSS color gets a track of itself at 24%."
+      :code="`<MCircleProgressBar :value=&quot;60&quot; color=&quot;#fff&quot; track-color=&quot;rgb(255 255 255 / 0.3)&quot; />
+<MCircleProgressBar :value=&quot;60&quot; color=&quot;#1db954&quot; />
+<MCircleProgressBar :value=&quot;60&quot; variant=&quot;wavy&quot; color=&quot;#e8590c&quot; track-color=&quot;surface-container-highest&quot; />`"
+    >
+      <div class="flex flex-wrap items-center gap-8">
+        <div class="flex h-24 w-24 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-700 to-fuchsia-600">
+          <MCircleProgressBar :value="circleVal" color="#fff" track-color="rgb(255 255 255 / 0.3)" />
+        </div>
+        <MCircleProgressBar :value="circleVal" color="#1db954" />
+        <MCircleProgressBar :value="circleVal" variant="wavy" color="#e8590c" track-color="surface-container-highest" />
       </div>
     </ComponentDemo>
 
