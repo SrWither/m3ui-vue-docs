@@ -41,6 +41,7 @@ const versions: Version[] = [
         'useThemeTokens live option: a canvas can fade along with the page when the theme changes',
         'v-state-layer: the M3 hover, focus and pressed tint on any element',
         'v-tooltip: a quick plain tooltip on any element from a string',
+        'v-focus-ring: the M3 focus ring on keyboard focus for your own elements',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
