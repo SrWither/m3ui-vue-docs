@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MContainerTransform, MCard, MIcon, MIconButton, MButton, MFab, MList, MListItem, MScheme, MTextField, MAnimatedNumber, MSparkline, MSegmentedButton, useContainerTransform } from '@m3ui-vue/m3ui-vue'
+import { MContainerTransform, MCard, MIcon, MIconButton, MButton, MFab, MList, MListItem, MScheme, MTextField, MAnimatedNumber, MSparkline, MSegmentedButton, useContainerTransform, useToast } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -8,6 +8,13 @@ import EventsTable from '@/components/EventsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
+
+// Primary actions confirm with a toast after closing
+const toast = useToast()
+function act(close: () => void, message: string) {
+  close()
+  toast.success(message)
+}
 
 // A grid of places, one detail view for all of them
 interface Place { name: string; country: string; seed: string; icon: string; text: string }
@@ -117,7 +124,7 @@ const ctEvents = [
               Ride tram 28 up to Alfama early, before the crowds. Lunch in Cais do Sodré, the sunset from the
               Miradouro da Senhora do Monte, and pastéis de nata in Belém on the last morning.
             </p>
-            <MButton class="mt-6" icon="bookmark" @click="close">Save trip</MButton>
+            <MButton class="mt-6" icon="bookmark" @click="act(close, 'Trip saved')">Save trip</MButton>
           </div>
         </template>
       </MContainerTransform>
@@ -187,7 +194,7 @@ const place = useContainerTransform()
             <p class="mt-4 text-body-large text-on-surface-variant">{{ item.text }}</p>
             <div class="mt-6 flex justify-end gap-2">
               <MButton variant="text" @click="close">Close</MButton>
-              <MButton icon="reply" @click="close">Reply</MButton>
+              <MButton icon="reply" @click="act(close, 'Reply sent')">Reply</MButton>
             </div>
           </div>
         </template>
@@ -243,7 +250,7 @@ const place = useContainerTransform()
             </div>
             <div class="flex justify-end gap-2">
               <MButton variant="text" @click="close">Cancel</MButton>
-              <MButton icon="confirmation_number" @click="close">Buy</MButton>
+              <MButton icon="confirmation_number" @click="act(close, 'Tickets purchased')">Buy</MButton>
             </div>
           </div>
         </template>
@@ -311,7 +318,7 @@ const place = useContainerTransform()
           <div class="flex items-center gap-2 p-2">
             <MIconButton icon="close" label="Discard" @click="close" />
             <span class="flex-1 text-title-large">New message</span>
-            <MIconButton icon="send" label="Send" variant="filled" @click="close" />
+            <MIconButton icon="send" label="Send" variant="filled" @click="act(close, 'Message sent')" />
           </div>
           <div class="mx-auto flex max-w-2xl flex-col gap-4 p-4">
             <MTextField label="To" />
@@ -399,8 +406,8 @@ const place = useContainerTransform()
               <MListItem icon="storage" :title="item.size" subtitle="Size" />
             </MList>
             <div class="flex gap-2">
-              <MButton variant="tonal" icon="share" @click="close">Share</MButton>
-              <MButton icon="download" @click="close">Download</MButton>
+              <MButton variant="tonal" icon="share" @click="act(close, 'Link copied')">Share</MButton>
+              <MButton icon="download" @click="act(close, 'Download started')">Download</MButton>
             </div>
           </div>
         </template>

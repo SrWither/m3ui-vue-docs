@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { MContainerTransform, MCard, MIcon, MIconButton, MAvatar, MButton, MList, MListItem, useContainerTransform } from '@m3ui-vue/m3ui-vue'
+import { MContainerTransform, MCard, MIcon, MIconButton, MAvatar, MButton, MList, MListItem, useContainerTransform, useToast } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import TypesTable from '@/components/TypesTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
+
+// Primary actions confirm with a toast after closing
+const toast = useToast()
+function act(close: () => void, message: string) {
+  close()
+  toast.success(message)
+}
 
 const albums = [
   { title: 'Night Drive', artist: 'Lumen', icon: 'nightlight', tone: 'bg-primary-container text-on-primary-container' },
@@ -126,8 +133,8 @@ const album = useContainerTransform()
               <MListItem icon="mail" :title="item.mail" subtitle="Work" />
             </MList>
             <div class="mt-2 flex gap-2">
-              <MButton variant="tonal" icon="chat" @click="close">Message</MButton>
-              <MButton icon="call" @click="close">Call</MButton>
+              <MButton variant="tonal" icon="chat" @click="act(close, 'Opening chat')">Message</MButton>
+              <MButton icon="call" @click="act(close, 'Calling…')">Call</MButton>
             </div>
           </div>
         </template>
@@ -180,7 +187,7 @@ const album = useContainerTransform()
               <MIcon name="event_available" :size="40" />
               <p class="text-body-large">Nothing planned</p>
             </div>
-            <MButton class="mt-4 w-full" variant="tonal" icon="add" @click="close">Add a plan</MButton>
+            <MButton class="mt-4 w-full" variant="tonal" icon="add" @click="act(close, 'Plan added')">Add a plan</MButton>
           </div>
         </template>
       </MContainerTransform>
