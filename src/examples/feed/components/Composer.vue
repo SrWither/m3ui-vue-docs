@@ -124,7 +124,7 @@ function submit() {
           </div>
           <div class="flex justify-between">
             <MButton v-if="poll.length < 4" variant="text" icon="add" size="xs" @click="poll.push('')">Add a choice</MButton>
-            <MButton variant="text" size="xs" class="ml-auto text-error!" @click="poll = null">Remove poll</MButton>
+            <MButton variant="text" size="xs" color="error" class="ml-auto" @click="poll = null">Remove poll</MButton>
           </div>
         </div>
       </div>
