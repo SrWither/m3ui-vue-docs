@@ -11,6 +11,7 @@ const skeletonProps: PropDef[] = [
   { name: 'height', type: 'string', description: 'CSS height (defaults to 14px for text, 40px for circular, 100px otherwise)' },
   { name: 'lines', type: 'number', default: '1', description: 'Number of text lines (text variant only) — the last line renders at 60% width' },
   { name: 'animation', type: "'pulse' | 'wave' | 'none'", default: "'pulse'", description: 'Animation style' },
+  { name: 'radius', type: "'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | string", description: "Corner radius: an M3 shape step (none, xs 4px, sm 8px, md 12px, lg 16px, xl 28px, full) or any CSS length, to match the card or thumbnail it stands in for. Defaults to the variant's (a Tailwind rounded-* class works too)" },
 ]
 </script>
 
@@ -79,6 +80,27 @@ const skeletonProps: PropDef[] = [
         <div>
           <p class="mb-2 text-label-medium text-on-surface-variant">none</p>
           <MSkeleton variant="rectangular" height="60px" animation="none" />
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Shape and Size"
+      description="radius matches the corners of what's loading, and Tailwind classes size it: the variant's default size and corners give way to w-*, aspect-*, rounded-* and the like. Here, video thumbnails (aspect-video, radius xl) next to their titles, and an app icon (radius md)."
+      :code="`<div class=&quot;flex gap-4&quot;>
+  <MSkeleton variant=&quot;rounded&quot; radius=&quot;xl&quot; height=&quot;auto&quot; class=&quot;aspect-video w-40 shrink-0&quot; />
+  <div class=&quot;flex-1&quot;><MSkeleton :lines=&quot;3&quot; /></div>
+</div>
+<MSkeleton variant=&quot;rounded&quot; radius=&quot;md&quot; width=&quot;56px&quot; height=&quot;56px&quot; />`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <div v-for="n in 2" :key="n" class="flex gap-4">
+          <MSkeleton variant="rounded" radius="xl" height="auto" class="aspect-video w-40 shrink-0" />
+          <div class="flex-1"><MSkeleton :lines="3" /></div>
+        </div>
+        <div class="flex items-center gap-3">
+          <MSkeleton variant="rounded" radius="md" width="56px" height="56px" />
+          <div class="flex-1"><MSkeleton variant="text" width="40%" /><MSkeleton variant="text" width="25%" class="mt-2" /></div>
         </div>
       </div>
     </ComponentDemo>

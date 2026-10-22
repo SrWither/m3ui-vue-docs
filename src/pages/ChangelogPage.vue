@@ -26,12 +26,14 @@ const versions: Version[] = [
         'Menu items can show any icon: a rotated one, a color swatch, an avatar (#icon slot)',
         'MNavigationDrawer can keep one group open at a time (accordion)',
         'MIconButton takes a color: a role or any CSS color, like white over a video or a translucent black circle',
+        'MSkeleton takes a corner radius (radius) to match what is loading',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
+        'Classes that size or round an MSkeleton (w-40, aspect-video, rounded-xl) now apply',
       ],
     },
   },

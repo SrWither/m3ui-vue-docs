@@ -40,7 +40,7 @@ function pickFilter(f: Filter) {
 
     <div v-if="loading" class="flk-grid px-3 sm:px-6">
       <div v-for="n in 8" :key="n" class="flex flex-col gap-3">
-        <MSkeleton variant="rounded" height="auto" class="aspect-video rounded-xl!" />
+        <MSkeleton variant="rounded" radius="xl" height="auto" class="aspect-video" />
         <div class="flex gap-3">
           <MSkeleton variant="circular" width="36px" height="36px" />
           <div class="flex-1"><MSkeleton :lines="2" /></div>

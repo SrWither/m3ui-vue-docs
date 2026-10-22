@@ -31,7 +31,7 @@ const list = computed(() => {
 
     <template v-if="f.loading.value">
       <div v-for="n in 4" :key="n" class="flex gap-4">
-        <MSkeleton variant="rounded" height="auto" class="aspect-video w-40 shrink-0 rounded-xl! sm:w-60 lg:w-[360px]" />
+        <MSkeleton variant="rounded" radius="xl" height="auto" class="aspect-video w-40 shrink-0 sm:w-60 lg:w-[360px]" />
         <div class="flex-1"><MSkeleton :lines="3" /></div>
       </div>
     </template>

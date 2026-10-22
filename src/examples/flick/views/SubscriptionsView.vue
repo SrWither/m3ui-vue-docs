@@ -42,7 +42,7 @@ const list = computed(() => videos.filter((v) => (only.value ? v.channelId === o
       </div>
 
       <div v-if="loading" class="flk-grid px-3 sm:px-6">
-        <MSkeleton v-for="n in 8" :key="n" variant="rounded" height="auto" class="aspect-video rounded-xl!" />
+        <MSkeleton v-for="n in 8" :key="n" variant="rounded" radius="xl" height="auto" class="aspect-video" />
       </div>
       <div v-else class="flk-grid px-3 sm:px-6">
         <VideoCard v-for="v in list" :key="v.id" :video="v" />
