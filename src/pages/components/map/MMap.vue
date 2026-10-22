@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { ref } from 'vue'
-import { MCard } from '@m3ui-vue/m3ui-vue'
+import { MCard, MSegmentedButton, MSwitch } from '@m3ui-vue/m3ui-vue'
 import { MMap } from '@m3ui-vue/m3ui-vue/map'
 import { MCodeEditor } from '@m3ui-vue/m3ui-vue/code-editor'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -13,11 +13,16 @@ import type { PropDef } from '@/components/PropsTable.vue'
 import type { EventDef } from '@/components/EventsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
 import { CORDOBA, STYLE } from '@/components/demos/mapShared'
+import MapRuntimeArea from '@/components/demos/MapRuntimeArea.vue'
 
 const center = ref<[number, number]>([...CORDOBA])
 const zoom = ref(13)
 const bearing = ref(0)
 const pitch = ref(0)
+
+const styleName = ref<'liberty' | 'positron' | 'dark'>('liberty')
+const styleOptions = (['liberty', 'positron', 'dark'] as const).map((v) => ({ value: v, label: v }))
+const keepLayers = ref(true)
 
 const insideMap = [
   ['MMapMarker', 'pins or your own content at a point, with popups'],
@@ -82,7 +87,9 @@ const conventions = [
 ]
 
 const mapProps: PropDef[] = [
-  { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (MVT Server, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style. Required.' },
+  { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (MVT Server, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style, keeping what was added at runtime (keepLayers). Required.' },
+  { name: 'keepLayers', type: 'boolean | (layer) => boolean', default: 'true', description: 'What happens to sources and layers added at runtime (useMap(), MMapGeoJson, MMapMeasure…) when mapStyle changes: true carries them into the new style, on top of its layers; false drops them, as MapLibre does; a function picks the layers to carry (their sources come along).' },
+  { name: 'transformStyle', type: 'TransformStyleFunction', description: "MapLibre's transformStyle for a mapStyle change, run after keepLayers: edit the next style before it loads." },
   { name: 'center', type: '[number, number]', description: '[lng, lat] (v-model). When left out, the style\'s, or the remembered view\'s.' },
   { name: 'zoom', type: 'number', description: 'Zoom level (v-model).' },
   { name: 'bearing', type: 'number', description: 'Rotation in degrees (v-model).' },
@@ -182,6 +189,42 @@ const pitch = ref(0)`"
         <p class="font-mono text-body-medium text-on-surface-variant">
           {{ center[1].toFixed(4) }}, {{ center[0].toFixed(4) }} · zoom {{ zoom.toFixed(1) }} · {{ Math.round(bearing) }}° · tilt {{ Math.round(pitch) }}°
         </p>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Switching styles"
+      description="The pink area is added at runtime with plain MapLibre calls (addSource / addLayer through useMap()). Switch the style: keepLayers carries it into the new one. Turn keepLayers off and it's gone after a switch, as with MapLibre alone."
+      :code="`<MMap :map-style=&quot;\`https://tiles.openfreemap.org/styles/\${styleName}\`&quot; :keep-layers=&quot;keepLayers&quot;>
+  <MyArea />
+</MMap>`"
+      :script="`// MyArea.vue, inside <MMap>
+import { useMap } from '@m3ui-vue/m3ui-vue/map'
+
+const { onReady } = useMap()
+onReady((map) => {
+  // Only when missing: after a style switch it's already there
+  if (!map.getSource('my-area')) map.addSource('my-area', { type: 'geojson', data: area })
+  if (!map.getLayer('my-area-fill')) map.addLayer({ id: 'my-area-fill', type: 'fill', source: 'my-area', paint: { 'fill-color': '#e91e63', 'fill-opacity': 0.25 } })
+})`"
+    >
+      <div class="flex w-full flex-col gap-3">
+        <div class="flex flex-wrap items-center gap-6">
+          <MSegmentedButton v-model="styleName" :options="styleOptions" />
+          <label class="flex items-center gap-3 text-body-large">
+            <MSwitch v-model="keepLayers" />
+            keepLayers
+          </label>
+        </div>
+        <MMap
+          :map-style="`https://tiles.openfreemap.org/styles/${styleName}`"
+          :keep-layers="keepLayers"
+          :center="CORDOBA"
+          :zoom="12.5"
+          class="h-80 w-full rounded-xl"
+        >
+          <MapRuntimeArea />
+        </MMap>
       </div>
     </ComponentDemo>
 

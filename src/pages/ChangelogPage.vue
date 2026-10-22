@@ -47,6 +47,7 @@ const versions: Version[] = [
         'v-swipe: run a function when an element is swiped, without blocking the page scroll',
         'v-click-outside: close your own panels when a press lands outside them',
         'v-skeleton: the real element becomes its own loading placeholder',
+        'MMap transformStyle, to edit a style before it loads',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
@@ -54,6 +55,7 @@ const versions: Version[] = [
         'The alternating MTimeline draws its line in each entry\'s color',
         'MMenu and MContextMenu push submenus grow or shrink smoothly to the new level and slide between levels the M3 way',
         'MMenu and MContextMenu push submenus have a cleaner back header: an arrow and the submenu title, then a divider',
+        'MMap keeps the layers you added when its style changes (keepLayers)',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
