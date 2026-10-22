@@ -23,6 +23,7 @@ const versions: Version[] = [
         'MProgressBar and MCircleProgressBar take any color for the bar and its track, like white bars over a photo',
         'MRichTextEditor can fill a fixed height, like a mail composer, scrolling its text inside (fill)',
         'MCarousel and MSimpleCarousel can be focused from code, so the arrow keys work as soon as one opens',
+        'Menu items can show any icon: a rotated one, a color swatch, an avatar (#icon slot)',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',

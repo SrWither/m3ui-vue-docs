@@ -461,7 +461,10 @@ const showBrushCursor = computed(() => cursorAt.value && (tool.value === 'brush'
         <MMenuItem icon="rotate_left" @click="p.transformDoc('ccw')">Rotate left</MMenuItem>
         <MMenuItem icon="rotate_right" @click="p.transformDoc('cw')">Rotate right</MMenuItem>
         <MMenuItem icon="flip" @click="p.transformDoc('h')">Flip horizontal</MMenuItem>
-        <MMenuItem icon="flip" class="[&_.material-symbols-outlined]:rotate-90" @click="p.transformDoc('v')">Flip vertical</MMenuItem>
+        <MMenuItem @click="p.transformDoc('v')">
+          <template #icon><MIcon name="flip" :size="20" class="rotate-90" /></template>
+          Flip vertical
+        </MMenuItem>
       </template>
     </MMenuItem>
     <MMenuItem icon="crop" shortcut="C" @click="p.setTool('crop')">Crop…</MMenuItem>

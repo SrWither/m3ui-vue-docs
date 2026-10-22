@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { MMenu, MMenuItem, MMenuDivider, MButton, MIconButton, useToast } from '@m3ui-vue/m3ui-vue'
+import { MMenu, MMenuItem, MMenuDivider, MButton, MIconButton, MIcon, MAvatar, useToast } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -65,6 +65,7 @@ const menuItemEvents = [
 
 const menuItemSlots: SlotDef[] = [
   { name: '#default', description: 'Item label text.' },
+  { name: '#icon', description: 'Replaces the leading icon (an MIcon with a class, an image, an avatar…), { on } while selected or checked. It gets the icon\'s 20px box and color' },
   { name: '#children', description: "Nested submenu items. In the parent MMenu's default 'flyout' mode, clicking or hovering (mouse only) the item opens a side panel — supports unlimited nesting depth. In 'push' mode, clicking the item instead swaps the whole menu panel to the submenu with a back header; hover does nothing." },
 ]
 </script>
@@ -191,6 +192,47 @@ const menuItemSlots: SlotDef[] = [
         <MMenuItem icon="content_paste" shortcut="Ctrl+V">Paste</MMenuItem>
         <MMenuDivider />
         <MMenuItem icon="delete" shortcut="Del" danger>Delete</MMenuItem>
+      </MMenu>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom Icons"
+      description="The #icon slot replaces the leading icon with anything that fits its 20px box, keeping the icon's color: a rotated MIcon, a color swatch, an avatar."
+      :code="`<MMenuItem icon=&quot;flip&quot;>Flip horizontal</MMenuItem>
+<MMenuItem>
+  <template #icon><MIcon name=&quot;flip&quot; :size=&quot;20&quot; class=&quot;rotate-90&quot; /></template>
+  Flip vertical
+</MMenuItem>
+<MMenuDivider />
+<MMenuItem v-for=&quot;c in colors&quot; :key=&quot;c.name&quot;>
+  <template #icon><span class=&quot;size-4 rounded-full&quot; :style=&quot;{ background: c.value }&quot; /></template>
+  {{ c.name }}
+</MMenuItem>
+<MMenuDivider />
+<MMenuItem>
+  <template #icon><MAvatar name=&quot;Ana Torres&quot; :size=&quot;20&quot; /></template>
+  Share with Ana
+</MMenuItem>`"
+    >
+      <MMenu align="left">
+        <template #trigger>
+          <MButton variant="outlined" icon="palette">Format</MButton>
+        </template>
+        <MMenuItem icon="flip">Flip horizontal</MMenuItem>
+        <MMenuItem>
+          <template #icon><MIcon name="flip" :size="20" class="rotate-90" /></template>
+          Flip vertical
+        </MMenuItem>
+        <MMenuDivider />
+        <MMenuItem v-for="c in [{ name: 'Tomato', value: '#e5533d' }, { name: 'Sage', value: '#7fa37a' }, { name: 'Ocean', value: '#2f7fc1' }]" :key="c.name">
+          <template #icon><span class="size-4 rounded-full" :style="{ background: c.value }" /></template>
+          {{ c.name }}
+        </MMenuItem>
+        <MMenuDivider />
+        <MMenuItem>
+          <template #icon><MAvatar name="Ana Torres" :size="20" /></template>
+          Share with Ana
+        </MMenuItem>
       </MMenu>
     </ComponentDemo>
 
