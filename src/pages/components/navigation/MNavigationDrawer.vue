@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { MNavigationDrawer, MButton, MIconButton, MIcon, MAvatar, MAlert, MSwitch } from '@m3ui-vue/m3ui-vue'
 import type { DrawerSection } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -18,7 +18,8 @@ const drawerProps: PropDef[] = [
   { name: 'sections', type: 'DrawerSection[]', description: 'Array of sections (see the types below)' },
   { name: 'title', type: 'string', description: 'Drawer header title (ignored if the #header slot is used)' },
   { name: 'modal', type: 'boolean', default: 'true', description: 'Modal with a Teleported scrim overlay, or an inline sidebar that participates in normal layout flow' },
-  { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons — inline variant only' },
+  { name: 'collapsed', type: 'boolean', default: 'false', description: 'Compact mode (72px) showing only icons — inline variant only. Badges sit on the icon there (a number as a count, text as a dot)' },
+  { name: 'collapsedLabels', type: 'boolean', default: 'false', description: 'In collapsed mode, shows each item\'s label under its icon, with the selection on a pill around the icon, like MNavigationRail — nested items included' },
   { name: 'width', type: 'string', description: 'Custom drawer width (e.g. "320px", "25rem"). Defaults to 22.5rem (360px)' },
   { name: 'side', type: "'left' | 'right' | 'top' | 'bottom'", default: "'left'", description: 'Which side the drawer opens from. Top/bottom are only available for the modal variant — the inline variant always renders on left or right.' },
   { name: 'expandSelected', type: 'boolean', default: 'true', description: "Opens the groups that hold the selected item (and the selected item, if it's a group) whenever selected changes" },
@@ -119,6 +120,16 @@ const collapsedVal = ref(false)
 
 const nestedSelected = ref<string | number>('dashboard')
 const nestedCollapsed = ref(false)
+const labelsCollapsed = ref(true)
+const labelsSelected = ref<string | number>('security')
+// The nested tree plus two badged items (a count and a text badge, shown as a dot when collapsed)
+const labelsSections = computed<DrawerSection[]>(() => [{
+  items: [
+    { value: 'inbox', label: 'Inbox', icon: 'inbox', badge: '12' },
+    { value: 'updates', label: 'Updates', icon: 'campaign', badge: 'New' },
+    ...nestedSections[0]!.items,
+  ],
+}])
 const followSelected = ref<string | number>('dashboard')
 const followAccordion = ref(true)
 const nestedSections: DrawerSection[] = [
@@ -456,6 +467,49 @@ const sections = [
         </MNavigationDrawer>
         <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
           {{ nestedSelected }} view
+        </div>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Collapsed With Labels"
+      description="collapsedLabels shows each item's label under its icon in collapsed mode, like a navigation rail: the selection moves to a pill around the icon, nested items get the same look, and badges sit on the icon."
+      :code="`<MNavigationDrawer
+  :model-value=&quot;true&quot;
+  :modal=&quot;false&quot;
+  :collapsed=&quot;collapsed&quot;
+  collapsed-labels
+  :sections=&quot;sections&quot;
+  :selected=&quot;selected&quot;
+  @select=&quot;selected = $event&quot;
+>
+  <template #toggle>
+    <MIconButton :icon=&quot;collapsed ? 'menu' : 'menu_open'&quot; @click=&quot;collapsed = !collapsed&quot; />
+  </template>
+</MNavigationDrawer>`"
+      :script="`const collapsed = ref(true)
+const selected = ref('security')`"
+    >
+      <div class="flex h-[30rem] w-full overflow-hidden rounded-xl border border-outline-variant">
+        <MNavigationDrawer
+          :model-value="true"
+          :modal="false"
+          :collapsed="labelsCollapsed"
+          collapsed-labels
+          :sections="labelsSections"
+          :selected="labelsSelected"
+          @select="labelsSelected = $event"
+        >
+          <template #toggle>
+            <MIconButton
+              :icon="labelsCollapsed ? 'menu' : 'menu_open'"
+              :label="labelsCollapsed ? 'Expand' : 'Collapse'"
+              @click="labelsCollapsed = !labelsCollapsed"
+            />
+          </template>
+        </MNavigationDrawer>
+        <div class="flex flex-1 items-center justify-center bg-surface-container text-body-medium text-on-surface-variant">
+          {{ labelsSelected }} view
         </div>
       </div>
     </ComponentDemo>
