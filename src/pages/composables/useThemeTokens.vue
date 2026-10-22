@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import { MCard, useThemeTokens } from '@m3ui-vue/m3ui-vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { MCard, MSwitch, useThemeTokens } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import TypesTable from '@/components/TypesTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
 
 const names = ['primary', 'tertiary', 'secondary-container', 'outline-variant', 'on-surface-variant'] as const
-const colors = useThemeTokens(names)
+const settled = useThemeTokens(names)
+const live = useThemeTokens(names, { live: true })
+const followFade = ref(true)
+const colors = computed(() => (followFade.value ? live : settled).value)
 
 const canvas = ref<HTMLCanvasElement>()
 const values = [42, 68, 55, 90, 74, 61, 83]
@@ -56,10 +59,11 @@ watch(colors, draw)
 
 const types: TypeDef[] = [
   {
-    name: 'useThemeTokens(names)',
+    name: 'useThemeTokens(names, options?)',
     description: 'The current values of some color tokens, kept up to date across theme changes',
     fields: [
       { name: 'names', type: 'readonly string[]', required: true, description: "Token names without the prefix: ['primary', 'outline-variant'] reads --color-primary and --color-outline-variant. Pass them as const to get a typed result" },
+      { name: 'options.live', type: 'boolean', description: "Updates every frame while the theme switch's colors fade (as rgba() midway), so a canvas redrawn on change fades with the page instead of jumping to the new colors. Off by default: Chart.js, MChart and maps animate color changes themselves and only need the final values" },
     ],
   },
   {
@@ -82,12 +86,13 @@ const types: TypeDef[] = [
 
     <ComponentDemo
       title="Canvas chart"
-      description="The bars and grid are drawn on a canvas with the token values, and redrawn when they change: switch the theme or the palette in the top bar."
+      description="The bars and grid are drawn on a canvas with the token values, and redrawn when they change: switch the theme or the palette in the top bar. With live on, the canvas fades along with the page; off, it jumps to the new colors once the fade ends."
       :code="`<canvas ref=&quot;canvas&quot; class=&quot;h-56 w-full&quot; />`"
       :script="`import { onMounted, ref, watch } from 'vue'
 import { useThemeTokens } from '@m3ui-vue/m3ui-vue'
 
-const colors = useThemeTokens(['primary', 'tertiary', 'outline-variant'] as const)
+// live: redraw every frame of the theme switch, fading with the page
+const colors = useThemeTokens(['primary', 'tertiary', 'outline-variant'] as const, { live: true })
 const canvas = ref<HTMLCanvasElement>()
 
 function draw() {
@@ -98,15 +103,21 @@ function draw() {
 onMounted(draw)
 watch(colors, draw)`"
     >
-      <div class="flex w-full flex-col gap-4 md:flex-row">
-        <canvas ref="canvas" class="h-56 min-w-0 flex-1" aria-label="Sales by weekday" role="img" />
-        <ul class="flex shrink-0 flex-col gap-2 text-body-small md:w-56">
-          <li v-for="n in names" :key="n" class="flex items-center gap-2">
-            <span class="size-4 shrink-0 rounded-sm border border-outline-variant" :style="{ background: colors[n] }" />
-            <code class="min-w-0 flex-1 truncate text-on-surface-variant">{{ n }}</code>
-            <code class="text-on-surface">{{ colors[n] }}</code>
-          </li>
-        </ul>
+      <div class="flex w-full flex-col gap-4">
+        <label class="flex items-center gap-3 text-body-medium">
+          <MSwitch v-model="followFade" />
+          live (follow the theme switch's fade)
+        </label>
+        <div class="flex w-full flex-col gap-4 md:flex-row">
+          <canvas ref="canvas" class="h-56 min-w-0 flex-1" aria-label="Sales by weekday" role="img" />
+          <ul class="flex shrink-0 flex-col gap-2 text-body-small md:w-56">
+            <li v-for="n in names" :key="n" class="flex items-center gap-2">
+              <span class="size-4 shrink-0 rounded-sm border border-outline-variant" :style="{ background: colors[n] }" />
+              <code class="min-w-0 flex-1 truncate text-on-surface-variant">{{ n }}</code>
+              <code class="text-on-surface">{{ colors[n] }}</code>
+            </li>
+          </ul>
+        </div>
       </div>
     </ComponentDemo>
 
@@ -117,7 +128,7 @@ watch(colors, draw)`"
       <p class="mb-2 text-title-small font-medium">Details</p>
       <ul class="list-inside list-disc space-y-1 text-body-medium text-on-surface-variant">
         <li>Anything that can take a CSS variable (a style binding, an SVG fill) should use <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">var(--color-primary)</code> instead: it follows the theme with no JavaScript</li>
-        <li>It watches the <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">dark</code> class and the palette and contrast attributes on &lt;html&gt;, and the stylesheet a generated palette writes; a change is read right away and again once the 250ms color transition ends</li>
+        <li>It watches the <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">dark</code> class and the palette and contrast attributes on &lt;html&gt;, and the stylesheet a generated palette writes; a change is read right away and again once the 250ms color transition ends. With <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">live</code> it's read every frame in between (Chromium and Safari animate the tokens themselves; in Firefox, which fades each element instead, the same fade is replayed from the old colors)</li>
         <li>MChart already uses it: its axes, legend, tooltips and any dataset without colors follow the theme on their own (pick roles with its <code class="rounded bg-surface-container px-1.5 py-0.5 text-body-small">colors</code> prop). Reach for this for your own canvas, a map layer, or chart colors you compute in code</li>
       </ul>
     </MCard>

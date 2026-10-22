@@ -38,6 +38,7 @@ const versions: Version[] = [
         'v-reveal and useScrollReveal: elements fade or slide in as you scroll to them, cascading through lists',
         'Swipe right to go back in MMenu and MContextMenu push submenus',
         'MNavigationDrawer collapsedLabels: labels under the icons when collapsed, like a navigation rail, and badges on the icons',
+        'useThemeTokens live option: a canvas can fade along with the page when the theme changes',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
