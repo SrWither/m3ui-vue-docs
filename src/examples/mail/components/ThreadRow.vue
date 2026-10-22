@@ -4,10 +4,14 @@
  * - Wide screens: one line like a desktop mail client (checkbox, star, sender, subject and
  *   snippet, date), with archive / delete / read buttons in place of the date on hover.
  * - Phones: avatar, sender, subject and snippet. The avatar turns into a checkbox once
- *   something is selected; a long press selects, a swipe archives (or deletes, to the left).
+ *   something is selected; a long press selects, a swipe archives (or deletes, to the left) through
+ *   MSwipeToDismiss.
+ * No HTML comments next to the template's root (the wide row or the phone one): in dev Vue keeps them, making the
+ * root a fragment that ThreadList's TransitionGroup can't animate (rows vanished and the rest jumped up).
  */
-import { computed, ref } from 'vue'
-import { MAvatar, MCheckbox, MIcon, MIconButton, MTooltip } from '@m3ui-vue/m3ui-vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
+import { MAvatar, MCheckbox, MIcon, MIconButton, MSwipeToDismiss, MTooltip } from '@m3ui-vue/m3ui-vue'
+import type { SwipeToDismissValue } from '@m3ui-vue/m3ui-vue'
 import type { Thread } from '../data'
 import { firstName, isMe, person, plain, shortDate, useMail } from '../useMail'
 import LabelPill from './LabelPill.vue'
@@ -36,72 +40,52 @@ function onClick() {
   else open(props.thread.id)
 }
 
-// Touch gestures: horizontal swipe to archive/delete, long press to select.
-const dx = ref(0)
+// Swiping is MSwipeToDismiss's (right archives, left deletes); a long press on touch selects. Any movement cancels
+// the press, so a swipe or a scroll never selects.
 let startX = 0
 let startY = 0
-let swiping = false
-let tracking = false
 let press: number | undefined
 let suppressClick = false
 
 function onPointerDown(e: PointerEvent) {
   if (e.pointerType !== 'touch') return
-  tracking = true
-  swiping = false
   suppressClick = false
   startX = e.clientX
   startY = e.clientY
   press = window.setTimeout(() => {
-    tracking = false
+    press = undefined
     suppressClick = true
     navigator.vibrate?.(10)
     toggleSelect()
   }, 450)
 }
 function onPointerMove(e: PointerEvent) {
-  if (!tracking) return
-  const x = e.clientX - startX
-  const y = e.clientY - startY
-  if (!swiping) {
-    if (Math.abs(y) > 10) return cancel()
-    if (Math.abs(x) > 12) {
-      swiping = true
-      clearTimeout(press)
-    }
-  }
-  if (swiping) dx.value = x
+  if (press !== undefined && Math.hypot(e.clientX - startX, e.clientY - startY) > 10) cancelPress()
 }
-function onPointerUp() {
+function cancelPress() {
   clearTimeout(press)
-  if (swiping) {
-    suppressClick = true
-    const w = (row.value?.offsetWidth ?? 320) * 0.35
-    if (Math.abs(dx.value) > w) {
-      const id = props.thread.id
-      dx.value = Math.sign(dx.value) * (row.value?.offsetWidth ?? 320)
-      setTimeout(() => (dx.value > 0 ? archive([id]) : remove([id])), 160)
-      return
-    }
-  }
-  cancel()
+  press = undefined
 }
-function cancel() {
-  clearTimeout(press)
-  tracking = false
-  swiping = false
-  dx.value = 0
+const swipe = ref<InstanceType<typeof MSwipeToDismiss>>()
+function onDismiss(direction: Exclude<SwipeToDismissValue, 'settled'>) {
+  const id = props.thread.id
+  if (direction === 'start-to-end') archive([id])
+  else remove([id])
+  // The row usually leaves the list, sliding out while the rows below move up (ThreadList's TransitionGroup); only a
+  // row still here once that's over (a view that still shows it) comes back. Resetting right away slid the leaving
+  // row back in over the gap, hiding the move
+  resetTimer = window.setTimeout(() => swipe.value?.reset(), 400)
 }
-const row = ref<HTMLElement>()
+let resetTimer: number | undefined
+onBeforeUnmount(() => clearTimeout(resetTimer))
 </script>
 
 <template>
-  <!-- Wide screens: a single line -->
   <div
     v-if="wide"
     role="button"
     tabindex="0"
-    class="group relative flex h-11 cursor-pointer items-center gap-1 border-b border-outline-variant/40 pr-5 pl-3 outline-none hover:z-10 hover:shadow-elevation-1 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary"
+    class="group relative flex h-11 cursor-pointer items-center gap-1 border-b border-outline-variant/40 pr-5 pl-3 outline-none transition-[background-color,box-shadow] duration-200 hover:z-10 hover:shadow-elevation-1 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary"
     :class="isSelected ? 'bg-secondary-container' : thread.unread ? 'bg-surface' : 'bg-surface-container-low'"
     @click="open(thread.id)"
     @keydown.enter.self="open(thread.id)"
@@ -135,42 +119,46 @@ const row = ref<HTMLElement>()
     </span>
   </div>
 
-  <!-- Phones -->
-  <div v-else class="relative touch-pan-y overflow-hidden">
-    <!-- Revealed behind the row while swiping -->
+  <MSwipeToDismiss v-else ref="swipe" :disabled="selecting" @dismiss="onDismiss">
+    <!-- Uncovered behind the row while swiping -->
+    <template #background="{ direction }">
+      <div
+        v-if="direction !== 'settled'"
+        class="flex flex-1 items-center px-6"
+        :class="direction === 'start-to-end' ? 'justify-start bg-success-container text-on-success-container' : 'justify-end bg-error-container text-on-error-container'"
+        aria-hidden="true"
+      >
+        <MIcon :name="direction === 'start-to-end' ? 'archive' : 'delete'" :size="24" />
+      </div>
+    </template>
     <div
-      v-if="dx !== 0"
-      class="absolute inset-0 flex items-center px-6"
-      :class="dx > 0 ? 'justify-start bg-success-container text-on-success-container' : 'justify-end bg-error-container text-on-error-container'"
-      aria-hidden="true"
-    >
-      <MIcon :name="dx > 0 ? 'archive' : 'delete'" :size="24" />
-    </div>
-    <div
-      ref="row"
       role="button"
       tabindex="0"
-      class="group relative flex cursor-pointer gap-3 px-3 py-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary"
-      :class="[
-        isSelected ? 'bg-secondary-container' : thread.unread ? 'bg-surface-container-low' : 'bg-surface',
-        dx === 0 ? 'transition-[transform,background-color] duration-200' : '',
-      ]"
-      :style="{ transform: dx ? `translateX(${dx}px)` : undefined }"
+      class="group relative flex cursor-pointer gap-3 px-3 py-3 outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary"
+      :class="isSelected ? 'bg-secondary-container' : thread.unread ? 'bg-surface-container-low' : 'bg-surface'"
       @click="onClick"
       @keydown.enter.self="open(thread.id)"
       @keydown.x.self="toggleSelect"
       @pointerdown="onPointerDown"
       @pointermove="onPointerMove"
-      @pointerup="onPointerUp"
-      @pointercancel="cancel"
-      @contextmenu="tracking && $event.preventDefault()"
+      @pointerup="cancelPress"
+      @pointercancel="cancelPress"
+      @contextmenu="(press !== undefined || suppressClick) && $event.preventDefault()"
     >
       <!-- Avatar, or a check when selected -->
       <div class="relative h-10 w-10 shrink-0" @click.stop="toggleSelect">
-        <MAvatar :name="sender.name" :size="40" class="transition-opacity" :class="{ 'opacity-0': isSelected }" />
-        <div v-if="isSelected" class="absolute inset-0 flex items-center justify-center rounded-full bg-primary text-on-primary">
-          <MIcon name="check" :size="22" />
-        </div>
+        <MAvatar :name="sender.name" :size="40" class="transition-opacity duration-200" :class="{ 'opacity-0': isSelected }" />
+        <!-- The check grows in over the avatar (M3's emphasized curve), and shrinks away -->
+        <Transition
+          enter-active-class="transition-[opacity,transform] duration-250 ease-[cubic-bezier(0.05,0.7,0.1,1)]"
+          leave-active-class="transition-[opacity,transform] duration-150 ease-[cubic-bezier(0.3,0,0.8,0.15)]"
+          enter-from-class="scale-50 opacity-0"
+          leave-to-class="scale-50 opacity-0"
+        >
+          <div v-if="isSelected" class="absolute inset-0 flex items-center justify-center rounded-full bg-primary text-on-primary">
+            <MIcon name="check" :size="22" />
+          </div>
+        </Transition>
       </div>
 
       <div class="min-w-0 flex-1">
@@ -201,5 +189,5 @@ const row = ref<HTMLElement>()
         </div>
       </div>
     </div>
-  </div>
+  </MSwipeToDismiss>
 </template>
