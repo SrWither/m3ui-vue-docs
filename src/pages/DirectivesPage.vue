@@ -7,6 +7,7 @@ const directives = [
   { name: 'v-state-layer', description: 'The Material 3 hover, focus, pressed and dragged tint on any element.' },
   { name: 'v-tooltip', description: 'A plain tooltip on any element from a string, without wrapping it.' },
   { name: 'v-focus-ring', description: 'The Material 3 focus ring on keyboard focus, for your own focusable elements.' },
+  { name: 'v-scroll-elevation', description: 'Your own header takes the scrolled color once the content scrolls under it.' },
   { name: 'v-reveal', description: 'Elements fade or slide in as they scroll into view, cascading through a list.' },
 ]
 </script>
