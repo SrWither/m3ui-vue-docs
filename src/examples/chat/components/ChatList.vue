@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { MAvatar, MChip, MIcon, MIconButton, MMenu, MMenuItem, MMenuDivider, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MChip, MIcon, MIconButton, MMenu, MMenuDivider, MMenuItem, MSearchField, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
 import { exampleSource } from '@/examples/registry'
 import { useChat, shortTime, duration, type Chat } from '../useChat'
 
@@ -49,18 +49,7 @@ function preview(c: Chat) {
 
     <!-- Search -->
     <div class="px-4 pb-2">
-      <label class="flex h-12 items-center gap-3 rounded-full bg-surface-container-high px-4 focus-within:ring-2 focus-within:ring-secondary">
-        <MIcon name="search" class="text-on-surface-variant" />
-        <input
-          v-model="query"
-          type="search"
-          placeholder="Search chats and messages"
-          class="min-w-0 flex-1 bg-transparent text-body-large text-on-surface outline-none placeholder:text-on-surface-variant [&::-webkit-search-cancel-button]:hidden"
-        />
-        <button v-if="query" type="button" class="flex text-on-surface-variant" aria-label="Clear search" @click="query = ''">
-          <MIcon name="close" :size="20" />
-        </button>
-      </label>
+      <MSearchField v-model="query" size="md" placeholder="Search chats and messages" />
     </div>
 
     <!-- Filters -->

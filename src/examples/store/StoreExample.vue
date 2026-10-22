@@ -8,7 +8,7 @@
  * - useStore.ts        catalog, filters, cart, totals;  art.ts  product pictures drawn as SVG
  */
 import { useRouter } from 'vue-router'
-import { MBadge, MIcon, MIconButton, MTooltip } from '@m3ui-vue/m3ui-vue'
+import { MBadge, MIcon, MIconButton, MSearchField, MTooltip } from '@m3ui-vue/m3ui-vue'
 import { useStore } from './useStore'
 import ShopView from './views/ShopView.vue'
 import ProductView from './views/ProductView.vue'
@@ -36,16 +36,7 @@ function onSearch(value: string) {
           <span class="hidden text-title-large font-medium text-on-surface sm:inline">Nook</span>
         </button>
 
-        <label class="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-surface-container-high px-4 focus-within:ring-2 focus-within:ring-secondary sm:max-w-md sm:mx-auto">
-          <MIcon name="search" :size="20" class="text-on-surface-variant" />
-          <input
-            :value="filters.query"
-            type="search"
-            placeholder="Search products"
-            class="min-w-0 flex-1 bg-transparent text-body-large text-on-surface outline-none placeholder:text-on-surface-variant [&::-webkit-search-cancel-button]:hidden"
-            @input="onSearch(($event.target as HTMLInputElement).value)"
-          />
-        </label>
+        <MSearchField :model-value="filters.query" size="md" placeholder="Search products" class="h-11 flex-1 sm:mx-auto sm:max-w-md" @update:model-value="onSearch" />
 
         <MTooltip text="Back to the docs" placement="bottom">
           <MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" />

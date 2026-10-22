@@ -46,6 +46,10 @@ const submittedQuery = ref('')
       A collapsed search field that expands into a docked panel or a fullscreen overlay, with results shown
       below the input.
     </p>
+    <p class="-mt-6 mb-8 text-body-medium text-on-surface-variant">
+      To filter a list or a grid in place, without a results view, use
+      <RouterLink to="/components/inputs/msearchfield" class="text-primary underline">MSearchField</RouterLink>.
+    </p>
 
     <ComponentDemo
       title="Docked (default)"

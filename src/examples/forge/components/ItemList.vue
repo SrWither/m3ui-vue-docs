@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /* The list of issues or pull requests: open/closed switch, search, label filter, rows. */
 import { computed, ref } from 'vue'
-import { MChip, MEmptyState, MIcon, MMultiSelect } from '@m3ui-vue/m3ui-vue'
+import { MChip, MEmptyState, MIcon, MMultiSelect, MSearchField } from '@m3ui-vue/m3ui-vue'
 import { labels, user, type Issue, type PullRequest } from '../data'
 import { ago } from '../time'
 import LabelChip from './LabelChip.vue'
@@ -30,10 +30,7 @@ const labelOptions = labels.map((l) => ({ label: l.name, value: l.id }))
 <template>
   <div>
     <div class="mb-3 flex flex-wrap items-center gap-2">
-      <label class="flex h-10 min-w-0 flex-1 basis-56 items-center gap-2 rounded-full bg-surface-container-high px-4 focus-within:ring-2 focus-within:ring-secondary">
-        <MIcon name="search" :size="20" class="text-on-surface-variant" />
-        <input v-model="query" type="search" :placeholder="pull ? 'Search pull requests' : 'Search issues'" class="min-w-0 flex-1 bg-transparent text-body-medium text-on-surface outline-none placeholder:text-on-surface-variant" />
-      </label>
+      <MSearchField v-model="query" size="sm" :placeholder="pull ? 'Search pull requests' : 'Search issues'" class="flex-1 basis-56" />
       <MMultiSelect v-model="withLabels" :options="labelOptions" label="Labels" variant="outlined" :max-chips="1" class="w-52" />
       <slot name="actions" />
     </div>

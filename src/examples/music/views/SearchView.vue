@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /* Search: genre tiles while empty, then a top result, songs, artists, albums and playlists. */
 import { computed, onMounted, ref } from 'vue'
-import { MChip, MEmptyState, MIcon } from '@m3ui-vue/m3ui-vue'
+import { MChip, MEmptyState, MIcon, MSearchField } from '@m3ui-vue/m3ui-vue'
 import { albums, artistById, artists, genres, tracks, albumById, type Genre } from '../catalog'
 import { useMusic } from '../useMusic'
 import MediaCard from '../components/MediaCard.vue'
@@ -10,10 +10,10 @@ import TrackList from '../components/TrackList.vue'
 
 const { query, go, playlists, playlistImage, playingFrom, togglePlayFrom } = useMusic()
 
-const input = ref<HTMLInputElement>()
+const field = ref<InstanceType<typeof MSearchField>>()
 onMounted(() => {
   // Focus the field on devices with a keyboard; on phones it would pop the keyboard up uninvited.
-  if (matchMedia('(pointer: fine)').matches) input.value?.focus()
+  if (matchMedia('(pointer: fine)').matches) field.value?.focus()
 })
 
 const filter = ref<'all' | 'songs' | 'artists' | 'albums' | 'playlists'>('all')
@@ -62,20 +62,7 @@ const browse = (Object.keys(genres) as Genre[]).map((g) => ({ id: g, ...genres[g
 <template>
   <div class="px-2 pb-6 sm:px-4">
     <div class="sticky top-0 z-10 -mx-2 bg-surface-container-low px-4 pt-2 pb-3 sm:-mx-4 sm:px-6">
-      <label class="flex h-12 items-center gap-3 rounded-full bg-surface-container-highest px-4 focus-within:ring-2 focus-within:ring-secondary">
-        <MIcon name="search" :size="22" class="text-on-surface-variant" />
-        <input
-          ref="input"
-          v-model="query"
-          type="search"
-          placeholder="What do you want to listen to?"
-          aria-label="Search"
-          class="min-w-0 flex-1 bg-transparent text-body-large text-on-surface outline-none placeholder:text-on-surface-variant [&::-webkit-search-cancel-button]:hidden"
-        />
-        <button v-if="query" type="button" aria-label="Clear search" class="flex cursor-pointer text-on-surface-variant" @click="query = ''">
-          <MIcon name="close" :size="20" />
-        </button>
-      </label>
+      <MSearchField ref="field" v-model="query" size="md" placeholder="What do you want to listen to?" label="Search" class="bg-surface-container-highest" />
       <div v-if="results && !empty" class="mt-3 flex gap-2 overflow-x-auto [scrollbar-width:none]">
         <MChip v-for="f in filters" :key="f.id" clickable :selected="filter === f.id" @click="filter = f.id">{{ f.label }}</MChip>
       </div>

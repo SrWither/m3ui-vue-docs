@@ -14,6 +14,7 @@ const components = [
   { name: 'MAutocomplete', description: 'Searchable single-value select with keyboard navigation.' },
   { name: 'MMultiAutocomplete', description: 'Searchable multi-value select with inline chips.' },
   { name: 'MTagInput', description: 'Free-form tag entry — type and press Enter or comma.' },
+  { name: 'MSearchField', description: 'A pill-shaped search input that filters a list or grid in place.' },
   { name: 'MCheckbox', description: 'Checkbox with checked, indeterminate, and disabled states.' },
   { name: 'MSwitch', description: 'A toggle switch with both M3 icon variants.' },
   { name: 'MRadioGroup', description: 'A group of radio buttons sharing a single selection.' },

@@ -2,7 +2,7 @@
 // Start menu: search, every app, and the way back to the docs / to this example's source.
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { MAvatar, MButton, MIcon } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MButton, MIcon, MSearchField } from '@m3ui-vue/m3ui-vue'
 import { exampleSource } from '@/examples/registry'
 import { useDesktop } from '../useDesktop'
 
@@ -11,7 +11,7 @@ const router = useRouter()
 const { apps, open: openApp } = useDesktop()
 
 const query = ref('')
-const input = ref<HTMLInputElement>()
+const field = ref<InstanceType<typeof MSearchField>>()
 const panel = ref<HTMLElement>()
 const results = computed(() => {
   const q = query.value.trim().toLowerCase()
@@ -30,7 +30,7 @@ watch(open, async (v) => {
   if (!v) return
   query.value = ''
   await nextTick()
-  input.value?.focus()
+  field.value?.focus()
 })
 
 function onPointerDown(e: PointerEvent) {
@@ -67,17 +67,7 @@ const tones = {
       class="absolute bottom-16 left-1/2 flex w-[min(560px,calc(100vw-16px))] -translate-x-1/2 flex-col overflow-hidden rounded-3xl bg-surface-container-high shadow-elevation-3"
     >
       <div class="p-4 pb-2">
-        <label class="flex h-12 items-center gap-3 rounded-full bg-surface-container-highest px-4 focus-within:ring-2 focus-within:ring-secondary">
-          <MIcon name="search" class="text-on-surface-variant" />
-          <input
-            ref="input"
-            v-model="query"
-            type="text"
-            placeholder="Search apps"
-            class="min-w-0 flex-1 bg-transparent text-body-large text-on-surface outline-none placeholder:text-on-surface-variant"
-            @keydown.enter="onEnter"
-          />
-        </label>
+        <MSearchField ref="field" v-model="query" size="md" placeholder="Search apps" class="bg-surface-container-highest" @search="onEnter" />
       </div>
 
       <p class="px-6 pt-2 pb-1 text-label-large text-on-surface-variant">{{ query ? 'Results' : 'All apps' }}</p>

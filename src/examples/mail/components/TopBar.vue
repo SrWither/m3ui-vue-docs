@@ -2,14 +2,14 @@
 /* Wide screens: menu, logo, search across all mail, shortcuts, theme, and the example's links. */
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { MAvatar, MIcon, MIconButton, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MIcon, MIconButton, MSearchField, MTooltip, useTheme } from '@m3ui-vue/m3ui-vue'
 import { exampleSource } from '@/examples/registry'
 import { me } from '../data'
 import { useMail } from '../useMail'
 
 defineEmits<{ menu: []; shortcuts: [] }>()
-const input = ref<HTMLInputElement>()
-defineExpose({ focus: () => input.value?.focus() })
+const field = ref<InstanceType<typeof MSearchField>>()
+defineExpose({ focus: () => field.value?.focus() })
 
 const router = useRouter()
 const { query } = useMail()
@@ -28,21 +28,7 @@ const openSource = () => window.open(exampleSource('mail'), '_blank', 'noopener'
       <span class="text-title-large font-medium text-on-surface">Postbox</span>
     </div>
 
-    <label class="flex h-12 max-w-2xl min-w-0 flex-1 items-center gap-2 rounded-full bg-surface-container-high px-4 focus-within:bg-surface-container-highest focus-within:ring-2 focus-within:ring-secondary">
-      <MIcon name="search" :size="22" class="text-on-surface-variant" />
-      <input
-        ref="input"
-        v-model="query"
-        type="search"
-        placeholder="Search mail"
-        aria-label="Search mail"
-        class="min-w-0 flex-1 bg-transparent text-body-large text-on-surface outline-none placeholder:text-on-surface-variant [&::-webkit-search-cancel-button]:hidden"
-        @keydown.esc="query = ''; ($event.target as HTMLInputElement).blur()"
-      />
-      <button v-if="query" type="button" class="flex cursor-pointer text-on-surface-variant" aria-label="Clear search" @click="query = ''">
-        <MIcon name="close" :size="20" />
-      </button>
-    </label>
+    <MSearchField ref="field" v-model="query" size="md" placeholder="Search mail" class="max-w-2xl flex-1 focus-within:bg-surface-container-highest" />
 
     <span class="flex-1" />
     <MTooltip text="Keyboard shortcuts (?)" placement="bottom"><MIconButton icon="keyboard" label="Keyboard shortcuts" @click="$emit('shortcuts')" /></MTooltip>

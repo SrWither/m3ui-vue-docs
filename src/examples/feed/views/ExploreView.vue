@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /* Explore: search posts and people, or browse trending tags and a photo wall (MMasonry) that keeps loading. */
 import { computed, onMounted, ref, watch } from 'vue'
-import { MAvatar, MChip, MEmptyState, MIcon, MInfiniteScroll, MMasonry, MSkeleton, MTabs } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MChip, MEmptyState, MIcon, MInfiniteScroll, MMasonry, MSearchField, MSkeleton, MTabs } from '@m3ui-vue/m3ui-vue'
 import { compact, people, trends } from '../data'
 import { usePlaza } from '../usePlaza'
 import AppHeader from '../components/AppHeader.vue'
@@ -49,11 +49,7 @@ const media = computed(() => results.value.filter((id) => post(id).photos.length
   <div class="h-full overflow-y-auto">
     <AppHeader :title="q ? props.q! : 'Explore'" :back="!!q">
       <form class="px-4 pb-3" @submit.prevent="submit">
-        <label class="flex h-11 items-center gap-2 rounded-full bg-surface-container-high px-4 focus-within:ring-2 focus-within:ring-secondary">
-          <MIcon name="search" :size="20" class="text-on-surface-variant" />
-          <input v-model="query" type="search" placeholder="Search posts, #tags and people" aria-label="Search" class="min-w-0 flex-1 bg-transparent text-body-medium text-on-surface outline-none placeholder:text-on-surface-variant" />
-          <button v-if="query" type="button" class="flex cursor-pointer text-on-surface-variant" aria-label="Clear" @click="query = ''; go({ name: 'explore' })"><MIcon name="close" :size="18" /></button>
-        </label>
+        <MSearchField v-model="query" size="sm" placeholder="Search posts, #tags and people" class="h-11" @clear="go({ name: 'explore' })" />
       </form>
       <MTabs v-if="q" v-model="tab" :tabs="[{ value: 'top', label: 'Top' }, { value: 'people', label: 'People' }, { value: 'media', label: 'Media' }]" />
     </AppHeader>

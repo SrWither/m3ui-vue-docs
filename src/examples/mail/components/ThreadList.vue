@@ -5,7 +5,7 @@
  * drafts instead.
  */
 import { computed, onBeforeUpdate, ref } from 'vue'
-import { MAvatar, MCheckbox, MChip, MEmptyState, MFab, MIcon, MIconButton, MPullToRefresh, MTooltip } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MCheckbox, MChip, MEmptyState, MFab, MIcon, MIconButton, MPullToRefresh, MSearchField, MTooltip } from '@m3ui-vue/m3ui-vue'
 import { me } from '../data'
 import { formatWhen, person, plain, shortDate, useMail } from '../useMail'
 import ThreadRow from './ThreadRow.vue'
@@ -68,18 +68,10 @@ const draftTitle = (to: string[]) => (to.length ? to.map((e) => person(e).name).
   <div class="relative flex h-full flex-col bg-surface">
     <!-- Phones: the search bar opens the drawer and shows your avatar -->
     <div v-if="!wide" class="shrink-0 px-3 pt-3 pb-1">
-      <label class="flex h-14 items-center gap-1 rounded-full bg-surface-container-high pr-2 pl-1 focus-within:ring-2 focus-within:ring-secondary">
-        <MIconButton icon="menu" label="Open menu" @click.prevent="emit('menu')" />
-        <input
-          v-model="query"
-          type="search"
-          placeholder="Search in mail"
-          aria-label="Search in mail"
-          class="min-w-0 flex-1 bg-transparent text-body-large text-on-surface outline-none placeholder:text-on-surface-variant [&::-webkit-search-cancel-button]:hidden"
-        />
-        <MIconButton v-if="query" icon="close" label="Clear search" @click.prevent="query = ''" />
-        <MAvatar v-else :name="me.name" :size="32" class="mx-1" />
-      </label>
+      <MSearchField v-model="query" placeholder="Search in mail" class="pr-3">
+        <template #leading><MIconButton icon="menu" label="Open menu" @click.prevent="emit('menu')" /></template>
+        <template #trailing><MAvatar v-if="!query" :name="me.name" :size="32" /></template>
+      </MSearchField>
     </div>
 
     <!-- Toolbar: the selection's actions, or the folder's name and refresh -->

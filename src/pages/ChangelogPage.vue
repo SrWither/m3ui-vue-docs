@@ -29,6 +29,7 @@ const versions: Version[] = [
         'MSkeleton takes a corner radius (radius) to match what is loading',
         'MOverlay can close on Escape, lock the page scroll and play your own transition, enough for full-screen viewers',
         'MButton and MIconButton take a contentColor for the label or icon, like a neutral text button or dark text on a white button',
+        'MSearchField, new: a rounded search box that filters a list or grid in place, with a clear button and Escape to clear',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
