@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MButtonGroup, MIcon } from '@m3ui-vue/m3ui-vue'
+import type { ButtonGroupOption } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import TypesTable from '@/components/TypesTable.vue'
@@ -10,8 +11,8 @@ import type { PropDef } from '@/components/PropsTable.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
 
 const buttonGroupProps: PropDef[] = [
-  { name: 'modelValue', type: 'unknown', description: 'Selected value(s) — any type (v-model)' },
-  { name: 'options', type: 'ButtonGroupOption[]', description: 'See the type below' },
+  { name: 'modelValue', type: 'T | null | T[]', description: "Selected value (null when none), or values with multiSelect (v-model) — any type, typed after the options' values (MButtonGroup is generic over T)" },
+  { name: 'options', type: 'ButtonGroupOption<T>[]', description: 'See the type below' },
   { name: 'variant', type: "'standard' | 'connected'", default: "'standard'", description: 'Standard (separated) or connected (joined)' },
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: 'Button size' },
   { name: 'multiSelect', type: 'boolean', default: 'false', description: 'Allow multiple selections' },
@@ -26,9 +27,9 @@ const buttonGroupEvents = [
 
 const buttonGroupTypes: TypeDef[] = [
   {
-    name: 'ButtonGroupOption',
+    name: 'ButtonGroupOption<T = unknown>',
     fields: [
-      { name: 'value', type: 'unknown', required: true, description: 'Any type — deep equality via JSON.stringify' },
+      { name: 'value', type: 'T', required: true, description: 'Any type — deep equality via JSON.stringify' },
       { name: 'label', type: 'string', description: 'Button text' },
       { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
       { name: 'disabled', type: 'boolean', description: 'Disables the option' },
@@ -57,8 +58,9 @@ const viewMode = ref<string | null>('grid')
 const sortBy = ref<string | null>('name')
 const fileFilters = ref<string[]>(['images'])
 
-const selectedPriority = ref<Record<string, unknown> | null>({ level: 'medium', color: '#f59e0b' })
-const priorityOptions = [
+interface Priority { level: string; color: string }
+const selectedPriority = ref<Priority | null>({ level: 'medium', color: '#f59e0b' })
+const priorityOptions: ButtonGroupOption<Priority>[] = [
   { value: { level: 'low', color: '#22c55e' }, label: 'Low', icon: 'arrow_downward' },
   { value: { level: 'medium', color: '#f59e0b' }, label: 'Medium', icon: 'remove' },
   { value: { level: 'high', color: '#ef4444' }, label: 'High', icon: 'arrow_upward' },
@@ -156,10 +158,10 @@ const options = [
           <span
             v-if="selectedPriority"
             class="h-3 w-3 rounded-full"
-            :style="{ backgroundColor: (selectedPriority as any).color }"
+            :style="{ backgroundColor: selectedPriority.color }"
           />
           <span class="text-body-medium text-on-surface">
-            Priority: <strong>{{ (selectedPriority as any)?.level ?? 'none' }}</strong>
+            Priority: <strong>{{ selectedPriority?.level ?? 'none' }}</strong>
           </span>
           <span class="text-body-small text-on-surface-variant">
             (value is an object: {{ JSON.stringify(selectedPriority) }})

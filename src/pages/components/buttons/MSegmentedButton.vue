@@ -10,8 +10,8 @@ import type { PropDef } from '@/components/PropsTable.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
 
 const segmentedProps: PropDef[] = [
-  { name: 'modelValue', type: 'string | number | (string | number)[]', description: 'Selected value(s)' },
-  { name: 'options', type: 'SegmentedOption[]', description: 'See the type below' },
+  { name: 'modelValue', type: 'V | V[]', description: "Selected value, or values with multiSelect (v-model); typed after the options' values (MSegmentedButton is generic over V extends string | number)" },
+  { name: 'options', type: 'SegmentedOption<V>[]', description: 'See the type below' },
   { name: 'multiSelect', type: 'boolean', default: 'false', description: 'Allow multiple selections' },
   { name: 'density', type: "'default' | 'comfortable' | 'compact'", default: "'default'", description: 'Button density' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary'", default: "'primary'", description: 'Selected segment color' },
@@ -23,9 +23,9 @@ const segmentedEvents = [
 
 const segmentedTypes: TypeDef[] = [
   {
-    name: 'SegmentedOption',
+    name: 'SegmentedOption<V extends string | number = string | number>',
     fields: [
-      { name: 'value', type: 'string | number', required: true, description: 'Option value' },
+      { name: 'value', type: 'V', required: true, description: "Option value. Type the options (SegmentedOption<'a' | 'b'>[], or as const) and v-model gets that type" },
       { name: 'label', type: 'string', required: true, description: 'Segment text' },
       { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
       { name: 'disabled', type: 'boolean', description: 'Disables the segment' },

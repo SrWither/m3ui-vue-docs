@@ -87,7 +87,7 @@ function refreshProg() {
 
 // Scroll from code + KeepAlive demo
 const feedTab = ref<'news' | 'saved'>('news')
-const feedTabs = [{ value: 'news', label: 'News' }, { value: 'saved', label: 'Saved' }]
+const feedTabs = [{ value: 'news' as const, label: 'News' }, { value: 'saved' as const, label: 'Saved' }]
 const feedPull = ref<InstanceType<typeof MPullToRefresh>>()
 const feedRefreshing = ref(false)
 function refreshFeed() {

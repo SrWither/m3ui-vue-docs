@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MCarousel, MIconButton, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
-import type { CarouselItem, CarouselFlingBehavior } from '@m3ui-vue/m3ui-vue'
+import type { CarouselItem, CarouselFlingBehavior, SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -79,7 +79,7 @@ const places: Place[] = [
 const controlledItems = copy()
 const flingItems = copy()
 const flingMode = ref<CarouselFlingBehavior>('multi-browse')
-const flingModes = [
+const flingModes: SegmentedOption<CarouselFlingBehavior>[] = [
   { value: 'single-advance', label: 'single-advance' },
   { value: 'multi-browse', label: 'multi-browse' },
   { value: 'no-snap', label: 'no-snap' },

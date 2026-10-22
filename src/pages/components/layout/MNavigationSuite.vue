@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MNavigationSuite, MFab, MCard, MIcon, MSegmentedButton, MChip, MAvatar, MListItem, MIconButton } from '@m3ui-vue/m3ui-vue'
-import type { NavigationSuiteItem } from '@m3ui-vue/m3ui-vue'
+import type { NavigationSuiteItem, NavigationSuiteLayout, SegmentedOption } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -64,8 +64,8 @@ const saved = ref([
   { title: 'Night market', subtitle: 'Fridays · free', icon: 'storefront' },
 ])
 
-const forced = ref<string | number | (string | number)[]>('rail-expanded')
-const forcedOptions = [
+const forced = ref<NavigationSuiteLayout>('rail-expanded')
+const forcedOptions: SegmentedOption<NavigationSuiteLayout>[] = [
   { value: 'bar', label: 'bar' },
   { value: 'bar-medium', label: 'bar-medium' },
   { value: 'rail', label: 'rail' },
@@ -177,7 +177,7 @@ const current = ref('home')`"
       <div class="flex w-full min-w-0 flex-col gap-3">
         <MSegmentedButton v-model="forced" :options="forcedOptions" />
         <div class="h-80 w-full overflow-hidden rounded-xl border border-outline-variant">
-          <MNavigationSuite v-model="current2" :items="items" :layout="(forced as any)" class="h-full">
+          <MNavigationSuite v-model="current2" :items="items" :layout="forced" class="h-full">
             <div class="flex h-full items-center justify-center p-4">
               <p class="text-title-medium capitalize text-on-surface-variant">{{ current2 }}</p>
             </div>
