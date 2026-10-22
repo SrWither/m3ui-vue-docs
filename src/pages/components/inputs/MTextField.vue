@@ -14,6 +14,8 @@ const textFilled = ref('')
 const textOutlined = ref('')
 const textPassword = ref('')
 const textMultiline = ref('')
+const textGrow = ref('')
+const textGrowOutlined = ref('')
 const textError = ref('bad value')
 const textClearable = ref('Hello world')
 const textDebounce = ref('')
@@ -35,7 +37,9 @@ const textFieldProps: PropDef[] = [
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
   { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk after the label' },
   { name: 'multiline', type: 'boolean', default: 'false', description: 'Renders a textarea instead of an input' },
-  { name: 'rows', type: 'number', default: '3', description: 'Textarea rows (when multiline)' },
+  { name: 'rows', type: 'number', default: '3', description: 'Textarea rows (when multiline); with autoGrow, the fewest it shrinks to' },
+  { name: 'autoGrow', type: 'boolean', default: 'false', description: 'Multiline only: grows with the text from rows up to maxRows, instead of a fixed height with a drag handle' },
+  { name: 'maxRows', type: 'number', description: 'With autoGrow, the most rows it grows to before scrolling. Unset grows without limit' },
   { name: 'autocomplete', type: 'string', description: 'Passed through to the native autocomplete attribute' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol shown before the input' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show a clear button when the field has a value' },
@@ -106,6 +110,18 @@ const textFieldSlots: SlotDef[] = [
       <div class="mt-4 grid w-full gap-4 sm:grid-cols-2">
         <MTextField v-model="textMultiline" label="Bio" :multiline="true" :rows="3" leading-icon="edit_note" />
         <MTextField v-model="textMultiline" label="Bio" :multiline="true" :rows="3" leading-icon="edit_note" variant="outlined" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Auto-growing"
+      description="With autoGrow a multiline field starts at rows and grows with the text up to maxRows, then scrolls, with no drag handle. For your own bare textarea (a chat composer), the useAutoGrow composable does the same."
+      :code="`<MTextField v-model=&quot;text&quot; label=&quot;Message&quot; multiline auto-grow :rows=&quot;1&quot; :max-rows=&quot;6&quot; />
+<MTextField v-model=&quot;text&quot; label=&quot;Description&quot; multiline auto-grow :rows=&quot;2&quot; variant=&quot;outlined&quot; />`"
+    >
+      <div class="flex w-full max-w-md flex-col gap-4">
+        <MTextField v-model="textGrow" label="Message" multiline auto-grow :rows="1" :max-rows="6" hint="1 to 6 rows, then it scrolls" />
+        <MTextField v-model="textGrowOutlined" label="Description" multiline auto-grow :rows="2" variant="outlined" hint="From 2 rows, no limit" />
       </div>
     </ComponentDemo>
 

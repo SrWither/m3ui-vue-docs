@@ -4,7 +4,7 @@
  * photos from your device, or a poll, and an emoji button. Full screen on phones.
  */
 import { computed, nextTick, ref, watch } from 'vue'
-import { MAvatar, MButton, MCircleProgressBar, MDialog, MEmojiButton, MIcon, MIconButton, MTextField, MTooltip } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MButton, MCircleProgressBar, MDialog, MEmojiButton, MIcon, MIconButton, MTextField, MTooltip, useAutoGrow } from '@m3ui-vue/m3ui-vue'
 import type { Photo } from '../art'
 import { me, person } from '../data'
 import { usePlaza } from '../usePlaza'
@@ -34,12 +34,8 @@ const length = computed(() => [...text.value].length)
 const over = computed(() => length.value > LIMIT)
 const valid = computed(() => !over.value && (text.value.trim() || photos.value.length) && (!poll.value || poll.value.filter((o) => o.trim()).length >= 2))
 
-function grow() {
-  const el = area.value
-  if (!el) return
-  el.style.height = 'auto'
-  el.style.height = `${el.scrollHeight}px`
-}
+// Grows with the text from 3 lines (the dialog scrolls past the screen)
+useAutoGrow(area, { minRows: 3, value: text })
 
 // Photos from your device: object URLs, never uploaded. Their real shape is read once loaded.
 const fileInput = ref<HTMLInputElement>()
@@ -103,7 +99,6 @@ function submit() {
           :placeholder="replyTo ? 'Post your reply' : poll ? 'Ask a question' : 'What’s happening?'"
           aria-label="Post text"
           class="block w-full resize-none bg-transparent pt-2 text-title-medium text-on-surface outline-none placeholder:text-on-surface-variant"
-          @input="grow"
           @keydown.ctrl.enter="submit"
           @keydown.meta.enter="submit"
         />

@@ -201,6 +201,7 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useWindowSizeClass</code> &rarr; <code class="font-mono text-primary">useM3WindowSizeClass</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFieldBg</code> &rarr; <code class="font-mono text-primary">useM3FieldBg</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useDebounce</code> &rarr; <code class="font-mono text-primary">useM3Debounce</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useAutoGrow</code> &rarr; <code class="font-mono text-primary">useM3AutoGrow</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">usePageProgress</code> &rarr; <code class="font-mono text-primary">useM3PageProgress</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useSpring</code> &rarr; <code class="font-mono text-primary">useM3Spring</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useConfetti</code> &rarr; <code class="font-mono text-primary">useM3Confetti</code></li>

@@ -25,6 +25,7 @@ const groups = [
       { name: 'useWindowSizeClass', description: 'M3 window size classes (compact to extra-large) for the window or any element.' },
       { name: 'useDevice', description: 'Reactive composable for detecting a mobile-sized viewport.' },
       { name: 'useDebounce', description: 'Debounce a function, cancelled automatically when the component unmounts.' },
+      { name: 'useAutoGrow', description: 'Grow your own textarea with its text, between a minimum and a maximum of rows.' },
       { name: 'useSpring', description: 'Animate numbers on a real spring, with Material 3\'s motion specs, like the components do.' },
       { name: 'useConfetti', description: 'A burst of confetti in expressive shapes and your theme\'s colors, for the end of a flow.' },
       { name: 'useContainerTransform', description: 'Opens one MContainerTransform from many elements (a grid of cards, one detail view).' },

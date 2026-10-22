@@ -2,7 +2,7 @@
 // Message composer: text (Enter sends, Shift+Enter breaks the line), emoji, photos and a
 // voice note recorder. The button shows a mic while the field is empty, send otherwise.
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { MEmojiSelector, MIcon, MIconButton } from '@m3ui-vue/m3ui-vue'
+import { MEmojiSelector, MIcon, MIconButton, useAutoGrow } from '@m3ui-vue/m3ui-vue'
 import { useChat, duration } from '../useChat'
 
 const emit = defineEmits<{ sent: [] }>()
@@ -13,13 +13,8 @@ const field = ref<HTMLTextAreaElement>()
 const emojiOpen = ref(false)
 const fileInput = ref<HTMLInputElement>()
 
-// Grow with the text, up to about 5 lines.
-function resize() {
-  const el = field.value
-  if (!el) return
-  el.style.height = 'auto'
-  el.style.height = `${Math.min(el.scrollHeight, 132)}px`
-}
+// Grows with the text (typed, sent or an emoji inserted), up to 5 lines.
+useAutoGrow(field, { maxRows: 5, value: text })
 
 function submit() {
   const value = text.value.trim()
@@ -27,7 +22,6 @@ function submit() {
   send({ text: value })
   text.value = ''
   emojiOpen.value = false
-  nextTick(resize)
   emit('sent')
 }
 function onKeydown(e: KeyboardEvent) {
@@ -44,7 +38,6 @@ function addEmoji(emoji: string) {
   nextTick(() => {
     el?.focus()
     el?.setSelectionRange(at + emoji.length, at + emoji.length)
-    resize()
   })
 }
 
@@ -116,8 +109,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocPointer))
           rows="1"
           placeholder="Message"
           aria-label="Message"
-          class="max-h-[132px] min-w-0 flex-1 resize-none bg-transparent py-3 text-body-large text-on-surface outline-none placeholder:text-on-surface-variant"
-          @input="resize"
+          class="min-w-0 flex-1 resize-none bg-transparent py-3 text-body-large text-on-surface outline-none placeholder:text-on-surface-variant"
           @keydown="onKeydown"
         />
         <MIconButton icon="photo_camera" label="Send a photo" class="mb-1" @click="fileInput?.click()" />
