@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { MTimeline, MCard, MAvatar, MChip } from '@m3ui-vue/m3ui-vue'
+import { ref } from 'vue'
+import { MTimeline, MCard, MAvatar, MChip, MButton, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
 import type { TimelineItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -16,6 +17,7 @@ const timelineProps: PropDef[] = [
   { name: 'alternating', type: 'boolean', default: 'false', description: 'Alternate items left/right of a central line instead of a single left-aligned column (vertical only)' },
   { name: 'orientation', type: "'vertical' | 'horizontal'", default: "'vertical'", description: "Horizontal lays entries side by side along a line, scrolling sideways when they don't fit" },
   { name: 'bare', type: 'boolean', default: 'false', description: 'Leaves each entry\'s content to the #item slot: no title, description or date' },
+  { name: 'current', type: 'number', description: "Makes it a progress timeline: the index of the current step. The ones before are done (filled, solid line), the current one pulses (aria-current=\"step\"), the ones after are pending (outlined, dashed line). An item's own status wins; items.length marks them all done" },
 ]
 
 const timelineTypes: TypeDef[] = [
@@ -29,6 +31,7 @@ const timelineTypes: TypeDef[] = [
       { name: 'icon', type: 'string', description: 'Material Symbol shown inside the dot (dot grows to fit it)' },
       { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | 'success'", description: "Dot/connector color — defaults to 'primary'" },
       { name: 'dotColor', type: 'string', description: 'Any CSS color to override color with an exact value instead of a named token' },
+      { name: 'status', type: "'done' | 'current' | 'pending'", description: "This step's progress, over what the timeline's current gives it" },
     ],
   },
 ]
@@ -63,6 +66,17 @@ const order: TimelineItem[] = [
   { title: 'Out for delivery', date: 'Fri 16', icon: 'route', color: 'secondary' },
   { title: 'Delivered', date: 'Est. Fri 16', icon: 'home', color: 'secondary' },
 ]
+
+// Progress: an order being tracked
+const tracking: TimelineItem[] = [
+  { title: 'Order placed', description: 'The restaurant got it', date: '20:14', icon: 'receipt_long' },
+  { title: 'Preparing', description: 'In the kitchen', date: '20:16', icon: 'skillet' },
+  { title: 'On the way', description: 'Leo is bringing it', icon: 'two_wheeler' },
+  { title: 'Delivered', description: 'Enjoy your meal', icon: 'home' },
+]
+const step = ref(1)
+const trackingLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
+const trackingLayouts = (['vertical', 'alternating', 'horizontal'] as const).map((v) => ({ value: v, label: v }))
 
 const releases: (TimelineItem & { version: string; notes: string[] })[] = [
   { key: 'v1.2', title: 'v1.2', version: '1.2.0', notes: ['Horizontal timelines', 'Slots for every part'], color: 'primary' },
@@ -229,6 +243,35 @@ const activity: Activity[] = [
     >
       <div class="w-full">
         <MTimeline :items="order" orientation="horizontal" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Progress"
+      description="current makes it a progress timeline, like an order being tracked: done steps are filled with a solid line, the current one pulses, the rest are outlined with a dashed line. In every layout."
+      :code="`<MTimeline :items=&quot;tracking&quot; :current=&quot;step&quot; />
+
+<MButton @click=&quot;step++&quot;>Next step</MButton>`"
+      :script="`const tracking = [
+  { title: 'Order placed', description: 'The restaurant got it', date: '20:14', icon: 'receipt_long' },
+  { title: 'Preparing', description: 'In the kitchen', date: '20:16', icon: 'skillet' },
+  { title: 'On the way', description: 'Leo is bringing it', icon: 'two_wheeler' },
+  { title: 'Delivered', description: 'Enjoy your meal', icon: 'home' },
+]
+const step = ref(1)`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <MSegmentedButton v-model="trackingLayout" :options="trackingLayouts" />
+          <MButton variant="tonal" icon="undo" :disabled="step === 0" @click="step--">Back</MButton>
+          <MButton icon="redo" :disabled="step === tracking.length" @click="step++">Next step</MButton>
+        </div>
+        <MTimeline
+          :items="tracking"
+          :current="step"
+          :alternating="trackingLayout === 'alternating'"
+          :orientation="trackingLayout === 'horizontal' ? 'horizontal' : 'vertical'"
+        />
       </div>
     </ComponentDemo>
 
