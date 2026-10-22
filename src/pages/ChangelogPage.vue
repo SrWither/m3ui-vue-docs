@@ -35,6 +35,7 @@ const versions: Version[] = [
         'MChart colors your series from the theme when you don\'t give them colors, and they follow it (colors prop to pick the order)',
         'Bottom and side sheets close with Escape',
         'MTimeline takes custom content in every part (dots, titles, an opposite column, whole entries), and can run horizontally',
+        'v-reveal and useScrollReveal: elements fade or slide in as you scroll to them, cascading through lists',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',

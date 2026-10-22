@@ -28,6 +28,7 @@ const groups = [
       { name: 'useDebounce', description: 'Debounce a function, cancelled automatically when the component unmounts.' },
       { name: 'useAutoGrow', description: 'Grow your own textarea with its text, between a minimum and a maximum of rows.' },
       { name: 'useSpring', description: 'Animate numbers on a real spring, with Material 3\'s motion specs, like the components do.' },
+      { name: 'useScrollReveal', description: 'Reveal elements in refs as they scroll into view (the engine behind v-reveal).' },
       { name: 'useConfetti', description: 'A burst of confetti in expressive shapes and your theme\'s colors, for the end of a flow.' },
       { name: 'useContainerTransform', description: 'Opens one MContainerTransform from many elements (a grid of cards, one detail view).' },
       { name: 'useFieldBg', description: 'Detect the background behind a field so an outlined label can cut through its border.' },

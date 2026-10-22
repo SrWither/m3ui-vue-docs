@@ -4,6 +4,7 @@ import { iconMap } from '@/nav/sections'
 
 const directives = [
   { name: 'v-ripple', description: 'The Material 3 press ripple on any element: cards, rows, tiles, your own buttons.' },
+  { name: 'v-reveal', description: 'Elements fade or slide in as they scroll into view, cascading through a list.' },
 ]
 </script>
 
