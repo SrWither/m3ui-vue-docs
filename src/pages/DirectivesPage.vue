@@ -9,6 +9,7 @@ const directives = [
   { name: 'v-focus-ring', description: 'The Material 3 focus ring on keyboard focus, for your own focusable elements.' },
   { name: 'v-scroll-elevation', description: 'Your own header takes the scrolled color once the content scrolls under it.' },
   { name: 'v-long-press', description: 'Run a function when an element is pressed and held, without also clicking it.' },
+  { name: 'v-swipe', description: 'Run a function when an element is swiped left, right, up or down.' },
   { name: 'v-reveal', description: 'Elements fade or slide in as they scroll into view, cascading through a list.' },
 ]
 </script>
