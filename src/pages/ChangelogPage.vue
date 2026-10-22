@@ -36,12 +36,14 @@ const versions: Version[] = [
         'Bottom and side sheets close with Escape',
         'MTimeline takes custom content in every part (dots, titles, an opposite column, whole entries), and can run horizontally',
         'v-reveal and useScrollReveal: elements fade or slide in as you scroll to them, cascading through lists',
+        'Swipe right to go back in MMenu and MContextMenu push submenus',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
         'MSegmentedButton and MButtonGroup type their v-model after the options (TypeScript only)',
         'The alternating MTimeline draws its line in each entry\'s color',
         'MMenu and MContextMenu push submenus grow or shrink smoothly to the new level and slide between levels the M3 way',
+        'MMenu and MContextMenu push submenus have a cleaner back header: an arrow and the submenu title, then a divider',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
