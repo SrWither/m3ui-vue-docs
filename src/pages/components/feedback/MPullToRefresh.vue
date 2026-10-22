@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MPullToRefresh, MCard, MIcon, MList, MListItem, MSwitch, MButton } from '@m3ui-vue/m3ui-vue'
+import { MPullToRefresh, MCard, MIcon, MList, MListItem, MSwitch, MButton, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -83,6 +83,16 @@ function refreshProg() {
     progItems.value = [`Synced · ${new Date().toLocaleTimeString()}`, ...progItems.value]
     progRefreshing.value = false
   }, 1500)
+}
+
+// Scroll from code + KeepAlive demo
+const feedTab = ref<'news' | 'saved'>('news')
+const feedTabs = [{ value: 'news', label: 'News' }, { value: 'saved', label: 'Saved' }]
+const feedPull = ref<InstanceType<typeof MPullToRefresh>>()
+const feedRefreshing = ref(false)
+function refreshFeed() {
+  feedRefreshing.value = true
+  setTimeout(() => (feedRefreshing.value = false), 1000)
 }
 
 const pullToRefreshProps: PropDef[] = [
@@ -309,6 +319,59 @@ async function refreshInbox() {
       </div>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Scrolling from code and KeepAlive"
+      description="A template ref exposes scrollEl (the element that scrolls) and scrollTo(), e.g. for a back-to-top button or a 'new posts' pill. Inside a KeepAlive it keeps its scroll position on its own: scroll News down, switch to Saved and back."
+      :code="`<MSegmentedButton v-model=&quot;tab&quot; :options=&quot;tabs&quot; />
+<MButton variant=&quot;tonal&quot; icon=&quot;vertical_align_top&quot; @click=&quot;pull?.scrollTo({ top: 0, behavior: 'smooth' })&quot;>
+  Back to top
+</MButton>
+<KeepAlive>
+  <MPullToRefresh v-if=&quot;tab === 'news'&quot; key=&quot;news&quot; ref=&quot;pull&quot; ...>...</MPullToRefresh>
+  <MPullToRefresh v-else key=&quot;saved&quot; ...>...</MPullToRefresh>
+</KeepAlive>`"
+      :script="`const pull = ref<InstanceType<typeof MPullToRefresh>>()`"
+    >
+      <div class="flex w-full flex-col items-start gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <MSegmentedButton v-model="feedTab" :options="feedTabs" />
+          <MButton
+            variant="tonal"
+            icon="vertical_align_top"
+            :disabled="feedTab !== 'news'"
+            @click="feedPull?.scrollTo({ top: 0, behavior: 'smooth' })"
+          >
+            Back to top
+          </MButton>
+        </div>
+        <KeepAlive>
+          <MPullToRefresh
+            v-if="feedTab === 'news'"
+            key="news"
+            ref="feedPull"
+            :refreshing="feedRefreshing"
+            @refresh="refreshFeed"
+            class="h-64 w-full max-w-sm rounded-lg border border-outline-variant"
+          >
+            <ul class="divide-y divide-outline-variant">
+              <li v-for="n in 40" :key="n" class="px-4 py-3 text-body-medium">Story {{ n }}</li>
+            </ul>
+          </MPullToRefresh>
+          <MPullToRefresh
+            v-else
+            key="saved"
+            :refreshing="feedRefreshing"
+            @refresh="refreshFeed"
+            class="h-64 w-full max-w-sm rounded-lg border border-outline-variant"
+          >
+            <ul class="divide-y divide-outline-variant">
+              <li v-for="n in 20" :key="n" class="px-4 py-3 text-body-medium">Saved {{ n }}</li>
+            </ul>
+          </MPullToRefresh>
+        </KeepAlive>
+      </div>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="pullToRefreshProps" />
 
@@ -317,6 +380,12 @@ async function refreshInbox() {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
     <SlotsTable :slots="pullToRefreshSlots" />
+
+    <MCard class="mt-4 border-l-4 border-l-tertiary p-5">
+      <p class="mb-2 text-title-small font-medium">Exposed (via template ref)</p>
+      <pre class="overflow-x-auto rounded-lg bg-surface-container p-3 text-body-small"><code>scrollEl: HTMLElement           — The element that scrolls the slot's content
+scrollTo(options: ScrollToOptions) — Scrolls it, like Element.scrollTo()</code></pre>
+    </MCard>
 
     <ComponentPager current="MPullToRefresh" />
   </div>

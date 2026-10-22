@@ -4,7 +4,7 @@
  * posts, scroll down (MInfiniteScroll) for older ones; posts that arrive while you read wait
  * behind the "new posts" pill.
  */
-import { computed, onActivated, onDeactivated, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { MAvatar, MIcon, MInfiniteScroll, MPullToRefresh, MSkeleton, MTabs } from '@m3ui-vue/m3ui-vue'
 import { me, person } from '../data'
 import { usePlaza } from '../usePlaza'
@@ -22,17 +22,11 @@ const hidden = ref(new Set<string>())
 const shown = computed(() => feed.value.filter((id) => !hidden.value.has(id)))
 const hide = (id: string) => (hidden.value = new Set([...hidden.value, id]))
 
-const pull = ref<{ $el: HTMLElement }>()
+const pull = ref<InstanceType<typeof MPullToRefresh>>()
 function showNew() {
   showIncoming()
-  scroller()?.scrollTo({ top: 0, behavior: 'smooth' })
+  pull.value?.scrollTo({ top: 0, behavior: 'smooth' })
 }
-// Kept alive while you visit other pages; the browser drops the scroll position of a detached
-// element, so remember it.
-const scroller = () => pull.value?.$el.querySelector<HTMLElement>('.overflow-y-auto')
-let savedTop = 0
-onDeactivated(() => (savedTop = scroller()?.scrollTop ?? 0))
-onActivated(() => scroller()?.scrollTo({ top: savedTop }))
 
 const newAuthors = computed(() => [...new Set(incoming.value.map((id) => post(id).author))].slice(0, 3))
 </script>

@@ -15,6 +15,18 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.1.5',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'MPullToRefresh gives you its scrolling element and scrollTo() through a template ref, for a back-to-top button or a "new posts" pill',
+      ],
+      fixed: [
+        'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
+      ],
+    },
+  },
+  {
     version: '1.1.4',
     date: '2026-10-21',
     changes: {
