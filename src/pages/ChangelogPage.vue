@@ -43,6 +43,7 @@ const versions: Version[] = [
         'v-tooltip: a quick plain tooltip on any element from a string',
         'v-focus-ring: the M3 focus ring on keyboard focus for your own elements',
         'v-scroll-elevation: your own header changes color once the content scrolls under it',
+        'v-long-press: run a function when an element is pressed and held',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',

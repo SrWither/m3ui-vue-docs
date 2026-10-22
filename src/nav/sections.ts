@@ -38,13 +38,13 @@ export const iconMap: Record<string, string> = {
   MCommandPalette: 'keyboard_command_key', MSpotlightSearch: 'search', MChart: 'bar_chart', MMap: 'map', MShader: 'gradient',
   MMapMarker: 'location_on', MMapPopup: 'chat_bubble', MMapGeoJson: 'polyline', MMapControl: 'tune', MMapLayers: 'layers', MMapBaseLayers: 'satellite_alt', MMapIdentify: 'info', MMapFeatureInfo: 'list_alt', MMapHover: 'arrow_selector_tool', MMapMeasure: 'straighten', MMapFilter: 'filter_alt', MMapSearch: 'travel_explore',
   useTheme: 'dark_mode', useThemeTokens: 'format_paint', useColorPalette: 'palette', useLocale: 'translate', usePageProgress: 'route', useDebounce: 'timer', useAutoGrow: 'expand', useScrollReveal: 'animation', useSpring: 'animation', useConfetti: 'celebration', useFieldBg: 'format_color_fill', useMap: 'map', useMapLayers: 'layers', useMapFilter: 'filter_alt',
-  'v-ripple': 'touch_app', 'v-reveal': 'animation', 'v-state-layer': 'layers', 'v-tooltip': 'tooltip', 'v-focus-ring': 'center_focus_strong', 'v-scroll-elevation': 'vertical_align_top',
+  'v-ripple': 'touch_app', 'v-reveal': 'animation', 'v-state-layer': 'layers', 'v-tooltip': 'tooltip', 'v-focus-ring': 'center_focus_strong', 'v-scroll-elevation': 'vertical_align_top', 'v-long-press': 'touch_app',
 }
 
 // Top-level groups outside Components (Composables, Directives): one page per entry under
 // src/pages/<group>/<name>.vue, routed at /<group>/<lowercased name>.
 export const composableNames = ['useTheme', 'useThemeTokens', 'useColorPalette', 'useLocale', 'useToast', 'useNotification', 'usePageProgress', 'useWindowSizeClass', 'useDevice', 'useDebounce', 'useAutoGrow', 'useSpring', 'useScrollReveal', 'useConfetti', 'useContainerTransform', 'useFieldBg', 'useMap', 'useMapLayers', 'useMapFilter']
-export const directiveNames = ['v-ripple', 'v-state-layer', 'v-tooltip', 'v-focus-ring', 'v-scroll-elevation', 'v-reveal']
+export const directiveNames = ['v-ripple', 'v-state-layer', 'v-tooltip', 'v-focus-ring', 'v-scroll-elevation', 'v-long-press', 'v-reveal']
 
 function pages(base: string, names: string[]): DrawerItem[] {
   return names.map(n => ({ value: `${base}/${n.toLowerCase()}`, label: n, icon: iconMap[n] ?? 'code', to: `${base}/${n.toLowerCase()}` }))
