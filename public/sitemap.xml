@@ -169,6 +169,10 @@
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/inputs/msearchfield</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/inputs/mseekbar</loc>
     <lastmod>2026-10-22</lastmod>
   </url>
@@ -765,6 +769,10 @@
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/composables/useautogrow</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/composables/usecolorpalette</loc>
     <lastmod>2026-10-22</lastmod>
   </url>
@@ -813,11 +821,19 @@
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/composables/usescrollreveal</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/composables/usespring</loc>
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
     <loc>https://m3ui.dev/composables/usetheme</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usethemetokens</loc>
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
@@ -833,7 +849,43 @@
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/directives/v-click-outside</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-focus-ring</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-long-press</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-reveal</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/directives/v-ripple</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-scroll-elevation</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-skeleton</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-state-layer</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-swipe</loc>
+    <lastmod>2026-10-22</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/directives/v-tooltip</loc>
     <lastmod>2026-10-22</lastmod>
   </url>
   <url>
