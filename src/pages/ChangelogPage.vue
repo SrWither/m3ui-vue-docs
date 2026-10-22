@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.2.1',
+    date: '2026-10-22',
+    changes: {
+      fixed: [
+        'MSegmentedButton fills the width it is given, in a column or with w-full, instead of leaving an empty bordered gap',
+      ],
+    },
+  },
+  {
     version: '1.2.0',
     date: '2026-10-22',
     changes: {
