@@ -18,6 +18,7 @@ const timelineProps: PropDef[] = [
   { name: 'orientation', type: "'vertical' | 'horizontal'", default: "'vertical'", description: "Horizontal lays entries side by side along a line, scrolling sideways when they don't fit" },
   { name: 'bare', type: 'boolean', default: 'false', description: 'Leaves each entry\'s content to the #item slot: no title, description or date' },
   { name: 'responsive', type: 'boolean', default: 'true', description: 'Lets the alternating layout fold into a single column (line on the left, #opposite under the content) while the timeline is narrower than 32rem. It goes by its own width (a container query), so it also folds in a side column on a wide screen' },
+  { name: 'animate', type: 'boolean', default: 'true', description: 'Entries added after it mounts fade and slide in, and the others move to their new places, on M3 springs (not with reduced motion). Give items a key, or an insertion looks like a change to every entry after it' },
   { name: 'current', type: 'number', description: "Makes it a progress timeline: the index of the current step. The ones before are done (filled, solid line), the current one pulses (aria-current=\"step\"), the ones after are pending (outlined, dashed line). An item's own status wins; items.length marks them all done" },
 ]
 
@@ -85,12 +86,41 @@ const trackingLayouts = (['vertical', 'alternating', 'horizontal'] as const).map
 // Groups: a day's activity
 const days: TimelineItem[] = [
   { title: 'Morning run', description: '5.2 km along the river', date: '07:10', icon: 'directions_run', color: 'success', group: 'Today' },
-  { title: 'Standup', description: 'Planning the 1.1.5 release', date: '09:30', icon: 'groups', group: 'Today' },
+  { title: 'Standup', description: 'Planning the 1.2.0 release', date: '09:30', icon: 'groups', group: 'Today' },
   { title: 'Lunch with Ana', date: '13:00', icon: 'restaurant', color: 'tertiary', group: 'Today' },
   { title: 'Code review', description: 'MTimeline groups', date: '16:45', icon: 'rate_review', group: 'Yesterday' },
   { title: 'Cinema', date: '21:00', icon: 'movie', color: 'tertiary', group: 'Yesterday' },
   { title: 'Flight to Córdoba', date: '18:20', icon: 'flight_land', color: 'secondary', group: 'Monday, Oct 20' },
 ]
+// Live: events arriving at the top
+const feedPool: Omit<TimelineItem, 'key'>[] = [
+  { title: 'Deploy started', description: 'main → production', icon: 'rocket_launch', color: 'primary' },
+  { title: 'Tests passed', description: '942 of 942', icon: 'check_circle', color: 'success' },
+  { title: 'New comment', description: 'Ana: looks good to me', icon: 'chat', color: 'tertiary' },
+  { title: 'Build failed', description: 'Type error in MTimeline.vue', icon: 'error', color: 'error' },
+  { title: 'Release tagged', description: 'v1.2.0', icon: 'sell', color: 'secondary' },
+]
+let feedId = 3
+const feed = ref<TimelineItem[]>([
+  { key: 3, ...feedPool[1]!, date: 'now' },
+  { key: 2, ...feedPool[2]!, date: '2 min ago' },
+  { key: 1, ...feedPool[0]!, date: '5 min ago' },
+])
+function addEvent() {
+  feedId++
+  feed.value = [{ key: feedId, ...feedPool[feedId % feedPool.length]!, date: 'now' }, ...feed.value].slice(0, 8)
+}
+function removeEvent() {
+  feed.value = feed.value.slice(1)
+}
+// A late event that belongs in the middle (one that arrives out of order, a backfill)
+function insertMiddle() {
+  feedId++
+  const at = Math.floor(feed.value.length / 2)
+  const late = { key: feedId, title: 'Late event', description: 'Arrived out of order, placed where it belongs', icon: 'history', color: 'secondary' as const, date: 'earlier' }
+  feed.value = [...feed.value.slice(0, at), late, ...feed.value.slice(at)].slice(0, 8)
+}
+
 const daysLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
 
 const releases: (TimelineItem & { version: string; notes: string[] })[] = [
@@ -322,6 +352,25 @@ const step = ref(1)`"
             <p class="text-title-small text-on-surface-variant">{{ group }} · {{ items.length }}</p>
           </template>
         </MTimeline>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Live updates"
+      description="Entries added after the timeline mounts slide in wherever they land (on top, or in the middle like an event that arrived late), and the rest move along on a spring instead of jumping (give them a key). animate: false turns it off."
+      :code="`<MTimeline :items=&quot;feed&quot; />
+
+<MButton @click=&quot;feed = [{ key: ++id, title: 'Deploy started', icon: 'rocket_launch' }, ...feed]&quot;>
+  Add event
+</MButton>`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <div class="flex flex-wrap gap-3">
+          <MButton icon="add" @click="addEvent">Add event</MButton>
+          <MButton variant="tonal" icon="vertical_align_center" :disabled="feed.length < 2" @click="insertMiddle">Insert in the middle</MButton>
+          <MButton variant="tonal" icon="remove" :disabled="!feed.length" @click="removeEvent">Remove the newest</MButton>
+        </div>
+        <MTimeline :items="feed" dense />
       </div>
     </ComponentDemo>
 
