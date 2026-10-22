@@ -119,7 +119,7 @@ const current = computed(() => items[index.value]!.d)
                 <p class="truncate text-title-small">{{ current.name }}</p>
                 <p class="flex items-center gap-1 truncate text-body-small opacity-80"><MIcon name="location_on" :size="14" /> {{ current.country }}</p>
               </div>
-              <MIconButton icon="close" label="Close stories" class="pointer-events-auto text-white!" @click="close" />
+              <MIconButton icon="close" label="Close stories" color="#fff" class="pointer-events-auto" @click="close" />
             </div>
           </div>
         </div>

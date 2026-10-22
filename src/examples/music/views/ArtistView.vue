@@ -35,7 +35,7 @@ const showAll = ref(false)
     <div class="flex items-center gap-3 px-4 py-4 sm:px-6">
       <PlayButton :playing="playingFrom('artist', id)" :label="artist.name" @click="togglePlayFrom('artist', id)" />
       <MTooltip :text="shuffle ? 'Shuffle is on' : 'Shuffle'">
-        <MIconButton icon="shuffle" label="Shuffle" size="md" :class="shuffle ? 'text-primary!' : ''" :aria-pressed="shuffle" @click="shuffle = !shuffle" />
+        <MIconButton icon="shuffle" label="Shuffle" size="md" :color="shuffle ? 'primary' : undefined" :aria-pressed="shuffle" @click="shuffle = !shuffle" />
       </MTooltip>
       <MButton :variant="following ? 'tonal' : 'outlined'" size="sm" @click="toggleFollow(id)">{{ following ? 'Following' : 'Follow' }}</MButton>
     </div>

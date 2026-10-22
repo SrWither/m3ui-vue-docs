@@ -41,7 +41,7 @@ const artist = computed(() => (track.value ? artistById.get(track.value.artistId
         <MIconButton icon="fullscreen" label="Now playing view" :disabled="!track" @click="nowPlayingOpen = true" />
       </MTooltip>
       <MTooltip text="Queue">
-        <MIconButton icon="queue_music" label="Queue" :class="{ 'text-primary!': queueOpen }" :aria-pressed="queueOpen" @click="queueOpen = !queueOpen" />
+        <MIconButton icon="queue_music" label="Queue" :color="queueOpen ? 'primary' : undefined" :aria-pressed="queueOpen" @click="queueOpen = !queueOpen" />
       </MTooltip>
       <VolumeControl />
     </div>

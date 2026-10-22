@@ -16,7 +16,7 @@ defineExpose({ open: computed(() => !!menu.value?.open) })
 <template>
   <MMenu ref="menu" submenu-mode="push" align="right">
     <template #trigger>
-      <MIconButton icon="settings" label="Settings" :size="size" :class="buttonClass" />
+      <MIconButton icon="settings" label="Settings" :size="size" color="#fff" :class="buttonClass" />
     </template>
     <MMenuItem v-model:checked="autoplay" icon="autoplay">Autoplay</MMenuItem>
     <MMenuItem icon="slow_motion_video">

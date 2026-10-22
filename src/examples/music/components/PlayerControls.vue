@@ -15,7 +15,7 @@ const size = computed(() => (props.large ? 'md' : 'sm'))
   <div class="flex items-center justify-center" :class="large ? 'gap-3' : 'gap-1'">
     <MTooltip :text="shuffle ? 'Turn off shuffle' : 'Shuffle'">
       <span class="relative inline-flex">
-        <MIconButton icon="shuffle" :label="shuffle ? 'Turn off shuffle' : 'Shuffle'" :size="size" :class="{ 'text-primary!': shuffle }" :aria-pressed="shuffle" @click="shuffle = !shuffle" />
+        <MIconButton icon="shuffle" :label="shuffle ? 'Turn off shuffle' : 'Shuffle'" :size="size" :color="shuffle ? 'primary' : undefined" :aria-pressed="shuffle" @click="shuffle = !shuffle" />
         <span v-if="shuffle" class="absolute bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary" />
       </span>
     </MTooltip>
@@ -36,7 +36,7 @@ const size = computed(() => (props.large ? 'md' : 'sm'))
     </MTooltip>
     <MTooltip :text="repeatLabel">
       <span class="relative inline-flex">
-        <MIconButton :icon="repeat === 'one' ? 'repeat_one' : 'repeat'" :label="repeatLabel" :size="size" :class="{ 'text-primary!': repeat !== 'off' }" @click="cycleRepeat" />
+        <MIconButton :icon="repeat === 'one' ? 'repeat_one' : 'repeat'" :label="repeatLabel" :size="size" :color="repeat !== 'off' ? 'primary' : undefined" @click="cycleRepeat" />
         <span v-if="repeat !== 'off'" class="absolute bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary" />
       </span>
     </MTooltip>

@@ -132,8 +132,8 @@ function submit() {
 
     <template #actions>
       <div class="flex w-full items-center gap-1">
-        <MTooltip text="Photos"><MIconButton icon="image" label="Add photos" class="text-primary!" :disabled="!!poll || photos.length >= 4" @click="fileInput?.click()" /></MTooltip>
-        <MTooltip text="Poll"><MIconButton icon="ballot" label="Add a poll" class="text-primary!" :disabled="!!poll || photos.length > 0 || !!replyTo" @click="poll = ['', '']" /></MTooltip>
+        <MTooltip text="Photos"><MIconButton icon="image" label="Add photos" color="primary" :disabled="!!poll || photos.length >= 4" @click="fileInput?.click()" /></MTooltip>
+        <MTooltip text="Poll"><MIconButton icon="ballot" label="Add a poll" color="primary" :disabled="!!poll || photos.length > 0 || !!replyTo" @click="poll = ['', '']" /></MTooltip>
         <MEmojiButton label="Add emoji" :size="24" @click="insert" />
         <span class="flex-1" />
         <!-- The ring alone, then the characters left inside it near the limit (the slot also hides

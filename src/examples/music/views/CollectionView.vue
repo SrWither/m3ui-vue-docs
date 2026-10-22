@@ -87,7 +87,7 @@ function rename() {
     <div class="flex items-center gap-2 px-4 py-4 sm:px-6">
       <PlayButton v-if="trackIds.length" :playing="playingFrom(type, id)" :label="header.title" @click="togglePlayFrom(type, id)" />
       <MTooltip :text="shuffle ? 'Shuffle is on' : 'Shuffle'">
-        <MIconButton icon="shuffle" label="Shuffle" size="md" :class="shuffle ? 'text-primary!' : ''" :aria-pressed="shuffle" @click="shuffle = !shuffle" />
+        <MIconButton icon="shuffle" label="Shuffle" size="md" :color="shuffle ? 'primary' : undefined" :aria-pressed="shuffle" @click="shuffle = !shuffle" />
       </MTooltip>
       <MTooltip v-if="saved !== null" :text="saved ? 'Remove from Your Library' : 'Save to Your Library'">
         <MIconButton

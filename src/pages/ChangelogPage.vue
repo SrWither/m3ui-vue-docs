@@ -25,6 +25,7 @@ const versions: Version[] = [
         'MCarousel and MSimpleCarousel can be focused from code, so the arrow keys work as soon as one opens',
         'Menu items can show any icon: a rotated one, a color swatch, an avatar (#icon slot)',
         'MNavigationDrawer can keep one group open at a time (accordion)',
+        'MIconButton takes a color: a role or any CSS color, like white over a video or a translucent black circle',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',

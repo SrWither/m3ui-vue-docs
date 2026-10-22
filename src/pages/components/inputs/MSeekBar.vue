@@ -217,7 +217,7 @@ const playing = ref(false)
               </template>
             </MSeekBar>
             <div class="flex items-center gap-1 pb-2 text-white">
-              <MIconButton :icon="video.playing ? 'pause' : 'play_arrow'" :label="video.playing ? 'Pause' : 'Play'" class="text-white!" @click="video.playing = !video.playing" />
+              <MIconButton :icon="video.playing ? 'pause' : 'play_arrow'" :label="video.playing ? 'Pause' : 'Play'" color="#fff" @click="video.playing = !video.playing" />
               <span class="text-label-large tabular-nums">{{ fmt(video.position) }} / {{ fmt(video.duration) }}</span>
             </div>
           </div>

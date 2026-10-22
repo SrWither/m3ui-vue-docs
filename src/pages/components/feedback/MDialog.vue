@@ -312,7 +312,7 @@ const dialogSlots: SlotDef[] = [
       description="bare with fullscreen: the slot is the whole screen, so the top bar and every section take whatever colors you give them."
       :code="`<MDialog v-model=&quot;open&quot; fullscreen bare title=&quot;Edit event&quot;>
   <div class=&quot;flex h-16 items-center gap-2 bg-primary px-2 text-on-primary&quot;>
-    <MIconButton icon=&quot;close&quot; label=&quot;Close&quot; class=&quot;text-on-primary!&quot; @click=&quot;open = false&quot; />
+    <MIconButton icon=&quot;close&quot; label=&quot;Close&quot; color=&quot;var(--color-on-primary)&quot; @click=&quot;open = false&quot; />
     <span class=&quot;flex-1 text-title-large&quot;>Edit event</span>
     <MButton variant=&quot;tonal&quot; @click=&quot;open = false&quot;>Save</MButton>
   </div>
@@ -323,7 +323,7 @@ const dialogSlots: SlotDef[] = [
       <MButton icon="event" @click="eventEditor = true">Edit event</MButton>
       <MDialog v-model="eventEditor" fullscreen bare title="Edit event">
         <div class="flex h-16 items-center gap-2 bg-primary px-2 text-on-primary">
-          <MIconButton icon="close" label="Close" class="text-on-primary!" @click="eventEditor = false" />
+          <MIconButton icon="close" label="Close" color="var(--color-on-primary)" @click="eventEditor = false" />
           <span class="flex-1 text-title-large">Edit event</span>
           <MButton variant="tonal" @click="eventEditor = false">Save</MButton>
         </div>

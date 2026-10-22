@@ -17,6 +17,7 @@ const iconButtonProps: PropDef[] = [
   { name: 'icon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'label', type: 'string', description: 'Accessible label (aria-label and title)' },
   { name: 'variant', type: "'standard' | 'filled' | 'tonal' | 'outlined'", default: "'standard'", description: 'Visual style' },
+  { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | string", description: 'An M3 role or any CSS color (#fff over a photo, rgb(0 0 0 / 0.3) for a scrim-like filled button, currentColor to follow the surrounding text). Standard and outlined use it for the icon; filled for the container with white (or the role\'s on-color) on it; tonal for a 20% container with the color on it. Disabled buttons and toggles keep their own colors' },
   { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | number", default: "'sm'", description: "M3's 5-tier icon button sizing (xs:32, sm:40, md:56, lg:96, xl:136), or a custom pixel value" },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },
@@ -86,6 +87,37 @@ const iconButtonEvents: EventDef[] = [
         <MIconButton icon="settings" label="Squared" shape="squared" variant="tonal" />
         <MIconButton icon="settings" label="Rounded" shape="rounded" variant="outlined" />
         <MIconButton icon="settings" label="Squared" shape="squared" variant="outlined" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Color"
+      description="color takes an M3 role or any CSS color. Standard and outlined buttons use it for the icon, filled ones for the container (white on a CSS color, the role's on-color on a role), tonal ones for a light container. Over media, a white standard button or a translucent black filled one stays readable on any frame."
+      :code="`<MIconButton icon=&quot;send&quot; label=&quot;Send&quot; color=&quot;primary&quot; />
+<MIconButton icon=&quot;delete&quot; label=&quot;Delete&quot; color=&quot;error&quot; variant=&quot;outlined&quot; />
+<MIconButton icon=&quot;favorite&quot; label=&quot;Like&quot; color=&quot;#e5533d&quot; variant=&quot;tonal&quot; />
+<MIconButton icon=&quot;bolt&quot; label=&quot;Boost&quot; color=&quot;tertiary&quot; variant=&quot;filled&quot; />
+
+<!-- Over a video or a photo -->
+<MIconButton icon=&quot;close&quot; label=&quot;Close&quot; color=&quot;#fff&quot; />
+<MIconButton icon=&quot;play_arrow&quot; label=&quot;Play&quot; variant=&quot;filled&quot; color=&quot;rgb(0 0 0 / 0.3)&quot; size=&quot;md&quot; icon-filled />`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <MIconButton icon="send" label="Send" color="primary" />
+          <MIconButton icon="delete" label="Delete" color="error" variant="outlined" />
+          <MIconButton icon="favorite" label="Like" color="#e5533d" variant="tonal" />
+          <MIconButton icon="bolt" label="Boost" color="tertiary" variant="filled" />
+          <MIconButton icon="send" label="Send (disabled)" color="primary" disabled />
+        </div>
+        <div class="relative flex h-40 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-amber-300 via-rose-400 to-indigo-700">
+          <MIconButton icon="close" label="Close" color="#fff" class="absolute top-2 right-2" />
+          <div class="flex items-center gap-4">
+            <MIconButton icon="replay_10" label="Back 10 seconds" variant="filled" color="rgb(0 0 0 / 0.3)" />
+            <MIconButton icon="play_arrow" label="Play" variant="filled" color="rgb(0 0 0 / 0.3)" size="md" icon-filled />
+            <MIconButton icon="forward_10" label="Forward 10 seconds" variant="filled" color="rgb(0 0 0 / 0.3)" />
+          </div>
+        </div>
       </div>
     </ComponentDemo>
 

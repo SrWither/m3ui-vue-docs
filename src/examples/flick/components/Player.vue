@@ -203,7 +203,8 @@ onBeforeUnmount(() => {
   clearInterval(countTimer)
 })
 
-const white = 'text-white! drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
+// White icons with a soft shadow, readable over any frame
+const white = 'drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
 </script>
 
 <template>
@@ -264,10 +265,10 @@ const white = 'text-white! drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
     <Transition name="flk-fade">
       <div v-show="shown || !playing || ended" class="pointer-events-none absolute inset-0 flex flex-col justify-between">
         <div class="flex items-center gap-2 bg-linear-to-b from-black/60 to-transparent" :class="slim ? 'px-1 pt-1 pb-4' : 'px-3 pt-2 pb-8'">
-          <MIconButton v-if="mode === 'full'" icon="arrow_back" label="Exit full screen" :class="white" class="pointer-events-auto" @click="toggleFull" />
+          <MIconButton v-if="mode === 'full'" icon="arrow_back" label="Exit full screen" :class="white" color="#fff" class="pointer-events-auto" @click="toggleFull" />
           <p v-if="mode === 'full'" class="min-w-0 flex-1 truncate text-title-medium">{{ video?.title }}</p>
           <template v-if="slim">
-            <MIconButton icon="keyboard_arrow_down" label="Miniplayer" size="xs" :class="white" class="pointer-events-auto" @click="emit('minimize')" />
+            <MIconButton icon="keyboard_arrow_down" label="Miniplayer" size="xs" :class="white" color="#fff" class="pointer-events-auto" @click="emit('minimize')" />
             <span class="flex-1" />
             <PlayerSettings ref="settings" :quality-label="qualityLabel" :button-class="white" size="xs" class="pointer-events-auto" />
           </template>
@@ -275,25 +276,25 @@ const white = 'text-white! drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
 
         <!-- Touch: big buttons in the middle -->
         <div v-if="!ended" class="flk-touch-controls pointer-events-none flex items-center justify-center" :class="slim ? 'gap-8' : 'gap-10'">
-          <MIconButton icon="replay_10" label="Back 10 seconds" :size="slim ? 'sm' : 'md'" :class="white" class="pointer-events-auto bg-black/30!" @click="skip(-10)" />
-          <MIconButton :icon="playing ? 'pause' : 'play_arrow'" :label="playing ? 'Pause' : 'Play'" :size="slim ? 'sm' : 'md'" :class="white" icon-filled class="pointer-events-auto bg-black/30!" @click="toggle()" />
-          <MIconButton icon="forward_10" label="Forward 10 seconds" :size="slim ? 'sm' : 'md'" :class="white" class="pointer-events-auto bg-black/30!" @click="skip(10)" />
+          <MIconButton icon="replay_10" label="Back 10 seconds" :size="slim ? 'sm' : 'md'" :class="white" variant="filled" color="rgb(0 0 0 / 0.3)" class="pointer-events-auto" @click="skip(-10)" />
+          <MIconButton :icon="playing ? 'pause' : 'play_arrow'" :label="playing ? 'Pause' : 'Play'" :size="slim ? 'sm' : 'md'" :class="white" variant="filled" color="rgb(0 0 0 / 0.3)" icon-filled class="pointer-events-auto" @click="toggle()" />
+          <MIconButton icon="forward_10" label="Forward 10 seconds" :size="slim ? 'sm' : 'md'" :class="white" variant="filled" color="rgb(0 0 0 / 0.3)" class="pointer-events-auto" @click="skip(10)" />
         </div>
 
         <div v-if="slim" class="pointer-events-auto bg-linear-to-t from-black/70 to-transparent pt-4">
           <div class="flex items-center px-3">
             <span class="flex-1 text-label-medium whitespace-nowrap tabular-nums">{{ fmt(position) }} / {{ fmt(video?.duration ?? 0) }}</span>
-            <MIconButton icon="fullscreen" label="Full screen" size="xs" :class="white" @click="toggleFull" />
+            <MIconButton icon="fullscreen" label="Full screen" size="xs" :class="white" color="#fff" @click="toggleFull" />
           </div>
           <SeekBar class="-mb-1 px-1" />
         </div>
         <div v-else class="pointer-events-auto bg-linear-to-t from-black/75 via-black/40 to-transparent px-3 pt-10 pb-1">
           <SeekBar class="px-1" />
           <div class="flex items-center gap-0.5">
-            <MIconButton :icon="ended ? 'replay' : playing ? 'pause' : 'play_arrow'" :label="ended ? 'Replay' : playing ? 'Pause (k)' : 'Play (k)'" :class="white" icon-filled @click="toggle()" />
-            <MIconButton v-if="nextVideo" icon="skip_next" label="Next" :class="white" icon-filled @click="playNext" />
+            <MIconButton :icon="ended ? 'replay' : playing ? 'pause' : 'play_arrow'" :label="ended ? 'Replay' : playing ? 'Pause (k)' : 'Play (k)'" :class="white" color="#fff" icon-filled @click="toggle()" />
+            <MIconButton v-if="nextVideo" icon="skip_next" label="Next" :class="white" color="#fff" icon-filled @click="playNext" />
             <div class="group/vol flex items-center">
-              <MIconButton :icon="volumeIcon" :label="muted ? 'Unmute (m)' : 'Mute (m)'" :class="white" @click="muted = !muted" />
+              <MIconButton :icon="volumeIcon" :label="muted ? 'Unmute (m)' : 'Mute (m)'" :class="white" color="#fff" @click="muted = !muted" />
               <div class="hidden w-0 overflow-hidden transition-[width] duration-200 group-focus-within/vol:w-24 group-hover/vol:w-24 sm:block">
                 <MSlider v-model="vol" :min="0" :max="100" size="xs" class="w-20 px-1" />
               </div>
@@ -301,9 +302,9 @@ const white = 'text-white! drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
             <span class="ml-1 text-label-large whitespace-nowrap tabular-nums">{{ fmt(position) }} / {{ fmt(video?.duration ?? 0) }}</span>
             <span class="flex-1" />
             <PlayerSettings ref="settings" :quality-label="qualityLabel" :button-class="white" />
-            <MIconButton v-if="mode !== 'full'" icon="picture_in_picture_alt" label="Miniplayer (i)" :class="white" @click="emit('minimize')" />
-            <MIconButton v-if="wide && mode !== 'full'" :icon="theater ? 'fit_screen' : 'width_wide'" :label="theater ? 'Default view (t)' : 'Theater mode (t)'" :class="white" @click="theater = !theater" />
-            <MIconButton :icon="mode === 'full' ? 'fullscreen_exit' : 'fullscreen'" :label="mode === 'full' ? 'Exit full screen (f)' : 'Full screen (f)'" :class="white" @click="toggleFull" />
+            <MIconButton v-if="mode !== 'full'" icon="picture_in_picture_alt" label="Miniplayer (i)" :class="white" color="#fff" @click="emit('minimize')" />
+            <MIconButton v-if="wide && mode !== 'full'" :icon="theater ? 'fit_screen' : 'width_wide'" :label="theater ? 'Default view (t)' : 'Theater mode (t)'" :class="white" color="#fff" @click="theater = !theater" />
+            <MIconButton :icon="mode === 'full' ? 'fullscreen_exit' : 'fullscreen'" :label="mode === 'full' ? 'Exit full screen (f)' : 'Full screen (f)'" :class="white" color="#fff" @click="toggleFull" />
           </div>
         </div>
       </div>
@@ -322,7 +323,7 @@ const white = 'text-white! drop-shadow-[0_1px_2px_rgb(0_0_0/0.5)]'
           <button type="button" class="flex-1 cursor-pointer rounded-full bg-white py-2 text-label-large text-black hover:bg-white/90" @click="playNext">Play now</button>
         </div>
       </div>
-      <MIconButton v-else icon="replay" label="Replay" size="lg" :class="white" class="bg-black/40!" @click="toggle()" />
+      <MIconButton v-else icon="replay" label="Replay" size="lg" :class="white" variant="filled" color="rgb(0 0 0 / 0.4)" @click="toggle()" />
     </div>
   </div>
 </template>

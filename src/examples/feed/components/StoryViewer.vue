@@ -203,8 +203,8 @@ function openProfile(handle: string) {
           </div>
 
           <div class="absolute top-6 right-2 flex text-white" @pointerdown.stop>
-            <MIconButton :icon="paused ? 'play_arrow' : 'pause'" :label="paused ? 'Play' : 'Pause'" class="text-white!" @click="paused = !paused" />
-            <MIconButton icon="close" label="Close" class="text-white!" @click="close" />
+            <MIconButton :icon="paused ? 'play_arrow' : 'pause'" :label="paused ? 'Play' : 'Pause'" color="#fff" @click="paused = !paused" />
+            <MIconButton icon="close" label="Close" color="#fff" @click="close" />
           </div>
         </div>
       </div>

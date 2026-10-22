@@ -111,7 +111,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
             </template>
             <template v-else>
               <MIconButton icon="attach_file" label="Attach files" @click="fileInput?.click()" />
-              <MIconButton icon="send" label="Send" class="text-primary!" @click="trySend" />
+              <MIconButton icon="send" label="Send" color="primary" @click="trySend" />
             </template>
           </header>
 
