@@ -130,8 +130,9 @@ const carouselMultiRatio: SimpleCarouselItem[] = [
     <p class="mt-4 text-body-small text-on-surface-variant">
       Also exposes <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">next()</code>,
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">prev()</code>,
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollToItem(index)</code>, and
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollToPage(page)</code>
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollToItem(index)</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollToPage(page)</code>, and
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">focus()</code>
       via <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">defineExpose</code>, reachable through a template ref for imperative control.
     </p>
 

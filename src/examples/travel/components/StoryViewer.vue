@@ -15,7 +15,7 @@ const items = list.map((d) => ({ d, src: photo(d, 1, 720, 1280) }))
 
 const index = ref(0)
 // MCarousel is generic, so InstanceType<typeof MCarousel> doesn't work: type what's exposed.
-const carousel = ref<{ next(): void; prev(): void; scrollToItem(index: number, animate?: boolean): void } | null>(null)
+const carousel = ref<{ next(): void; prev(): void; scrollToItem(index: number, animate?: boolean): void; focus(): void } | null>(null)
 const root = ref<HTMLElement | null>(null)
 const progress = ref(0)
 
@@ -60,7 +60,7 @@ watch(
       document.body.style.overflow = 'hidden'
       await nextTick()
       carousel.value?.scrollToItem(index.value, false)
-      root.value?.querySelector<HTMLElement>('.m3-carousel')?.focus()
+      carousel.value?.focus()
       restart()
     } else {
       document.removeEventListener('keydown', onKey)

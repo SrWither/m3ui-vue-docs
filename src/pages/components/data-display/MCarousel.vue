@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MCarousel, MIconButton } from '@m3ui-vue/m3ui-vue'
-import type { CarouselItem } from '@m3ui-vue/m3ui-vue'
+import { MCarousel, MIconButton, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
+import type { CarouselItem, CarouselFlingBehavior } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -77,9 +77,16 @@ const places: Place[] = [
 ]
 
 const controlledItems = copy()
+const flingItems = copy()
+const flingMode = ref<CarouselFlingBehavior>('multi-browse')
+const flingModes = [
+  { value: 'single-advance', label: 'single-advance' },
+  { value: 'multi-browse', label: 'multi-browse' },
+  { value: 'no-snap', label: 'no-snap' },
+]
 const current = ref(0)
 // MCarousel is generic, so InstanceType<typeof MCarousel> doesn't work: type what's exposed.
-const controlled = ref<{ next(): void; prev(): void; scrollToItem(index: number, animate?: boolean): void } | null>(null)
+const controlled = ref<{ next(): void; prev(): void; scrollToItem(index: number, animate?: boolean): void; focus(): void } | null>(null)
 </script>
 
 <template>
@@ -101,6 +108,17 @@ const controlled = ref<{ next(): void; prev(): void; scrollToItem(index: number,
     >
       <div class="w-full max-w-xl">
         <MCarousel :items="multiBrowseItems" :content-padding="16" label="Landscapes" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Fling behavior"
+      description="What a quick swipe does. single-advance (the default, as in Compose) moves at most one item per fling; multi-browse lets it glide as far as the swipe's speed carries it and then snaps to an item; no-snap glides and stops wherever it lands (the default for uncontained)."
+      :code="`<MCarousel :items=&quot;items&quot; fling-behavior=&quot;multi-browse&quot; :content-padding=&quot;16&quot; />`"
+    >
+      <div class="flex w-full max-w-xl flex-col gap-3">
+        <MSegmentedButton v-model="flingMode" :options="flingModes" />
+        <MCarousel :items="flingItems" :fling-behavior="flingMode" :content-padding="16" label="Landscapes" />
       </div>
     </ComponentDemo>
 
@@ -201,9 +219,10 @@ const carousel = ref()`"
 
     <p class="mt-4 text-body-small text-on-surface-variant">
       Also exposes <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">next()</code>,
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">prev()</code> and
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollToItem(index, animate = true)</code>
-      through a template ref.
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">prev()</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">scrollToItem(index, animate = true)</code> and
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">focus()</code> (moves keyboard focus to it, so the arrow
+      keys scroll it, e.g. when it opens in a full-screen viewer) through a template ref.
     </p>
 
     <ComponentPager current="MCarousel" />
