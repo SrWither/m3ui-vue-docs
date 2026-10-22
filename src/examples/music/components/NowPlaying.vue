@@ -3,8 +3,8 @@
  * The full player: big cover over its own blurred colors, the visualizer, seek bar and controls.
  * Covers the whole app on phones (opened from the mini player) and on wide screens alike.
  */
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { MIconButton, MMenu, MTooltip, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
+import { computed } from 'vue'
+import { MIconButton, MMenu, MOverlay, MTooltip, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import { albumById, artistById } from '../catalog'
 import { useMusic } from '../useMusic'
 import PlayerControls from './PlayerControls.vue'
@@ -36,15 +36,23 @@ function share() {
   void navigator.clipboard?.writeText(`${location.origin}/examples/music`)
   toast.success('Link copied to clipboard', { icon: 'link' })
 }
-
-const onKey = (e: KeyboardEvent) => e.key === 'Escape' && nowPlayingOpen.value && !queueOpen.value && close()
-onMounted(() => document.addEventListener('keydown', onKey))
-onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
 </script>
 
 <template>
-  <Transition name="m3m-sheet">
-    <div v-if="nowPlayingOpen && track && album && artist" class="fixed inset-0 z-100 flex flex-col overflow-hidden bg-surface-container text-on-surface" role="dialog" aria-label="Now playing">
+  <!-- Escape leaves the queue sheet (no Escape of its own) open over it alone -->
+  <MOverlay
+    :model-value="!!(nowPlayingOpen && track && album && artist)"
+    :scrim="false"
+    :z-index="100"
+    :close-on-escape="!queueOpen"
+    lock-scroll
+    transition="m3m-sheet"
+    class="flex flex-col overflow-hidden bg-surface-container text-on-surface"
+    role="dialog"
+    aria-label="Now playing"
+    @update:model-value="close"
+  >
+    <template v-if="track && album && artist">
       <img :src="album.cover" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-125 object-cover opacity-50 blur-3xl" />
       <div class="absolute inset-0 bg-linear-to-b from-surface-container/30 via-surface-container/70 to-surface-container" />
 
@@ -91,32 +99,33 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
           </div>
         </div>
       </main>
-    </div>
-  </Transition>
+    </template>
+  </MOverlay>
 </template>
 
 <style scoped>
 .m3m-cover {
   container-type: size;
 }
-.m3m-sheet-enter-active {
+/* Global: MOverlay plays it on its teleported container, out of this component's scope */
+:global(.m3m-sheet-enter-active) {
   transition: transform 400ms cubic-bezier(0.05, 0.7, 0.1, 1), opacity 200ms;
 }
-.m3m-sheet-leave-active {
+:global(.m3m-sheet-leave-active) {
   transition: transform 200ms cubic-bezier(0.3, 0, 0.8, 0.15), opacity 200ms 50ms;
 }
-.m3m-sheet-enter-from,
-.m3m-sheet-leave-to {
+:global(.m3m-sheet-enter-from),
+:global(.m3m-sheet-leave-to) {
   transform: translateY(100%);
   opacity: 0.6;
 }
 @media (prefers-reduced-motion: reduce) {
-  .m3m-sheet-enter-active,
-  .m3m-sheet-leave-active {
+  :global(.m3m-sheet-enter-active),
+  :global(.m3m-sheet-leave-active) {
     transition: opacity 150ms;
   }
-  .m3m-sheet-enter-from,
-  .m3m-sheet-leave-to {
+  :global(.m3m-sheet-enter-from),
+  :global(.m3m-sheet-leave-to) {
     transform: none;
   }
 }

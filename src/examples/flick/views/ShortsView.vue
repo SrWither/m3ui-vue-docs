@@ -92,7 +92,7 @@ const actions = computed(() => {
                   <MAvatar :name="channelOf(item).name" :size="32" />
                   <span class="text-title-small">{{ channelOf(item).handle }}</span>
                 </button>
-                <MButton v-if="!subscriptions.has(item.channelId)" size="xs" color="#fff" class="text-black!" @click="f.toggleSubscribe(item.channelId)">Subscribe</MButton>
+                <MButton v-if="!subscriptions.has(item.channelId)" size="xs" color="#fff" content-color="#000" @click="f.toggleSubscribe(item.channelId)">Subscribe</MButton>
               </div>
               <p class="mt-2 text-body-medium">{{ item.title }}</p>
             </div>

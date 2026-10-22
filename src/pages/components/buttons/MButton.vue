@@ -16,6 +16,7 @@ const buttonProps: PropDef[] = [
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'sm'", description: "M3's 5-tier expressive button sizing (xs: 32px, sm: 40px, md: 56px, lg: 96px, xl: 136px) — lg/xl are meant for hero-style prominent buttons, not everyday UI" },
   { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
   { name: 'to', type: 'string | RouteLocationRaw', description: 'Vue Router destination — renders as RouterLink instead of button' },
+  { name: 'contentColor', type: 'string', description: "Label and icon color, over what the variant and color give: an M3 role (on-surface for a neutral text button, on-primary-container…) or any CSS color (#000 on a white filled button). Disabled buttons keep their own" },
   { name: 'rippleColor', type: 'string', description: "Any CSS color for the press ripple; defaults to the button's content color. Same ripple as the v-ripple directive" },
 ]
 </script>
@@ -99,6 +100,27 @@ const buttonProps: PropDef[] = [
       <MButton color="#e91e63">Pink</MButton>
       <MButton color="#ff9800" variant="tonal">Orange</MButton>
       <MButton color="teal" variant="elevated">Teal</MButton>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Content Color"
+      description="contentColor sets the label and icon color over what the variant gives: on-surface for neutral text buttons (a menu bar, a toolbar), or a dark label on a light custom color, which otherwise gets white."
+      :code="`<MButton variant=&quot;text&quot; content-color=&quot;on-surface&quot;>File</MButton>
+<MButton variant=&quot;text&quot; content-color=&quot;on-surface&quot;>Edit</MButton>
+<MButton color=&quot;#fff&quot; content-color=&quot;#000&quot;>Subscribe</MButton>
+<MButton color=&quot;#ffd54f&quot; content-color=&quot;#3e2723&quot; icon=&quot;bolt&quot;>Boost</MButton>`"
+    >
+      <div class="flex flex-wrap items-center gap-6">
+        <div class="flex rounded-lg bg-surface-container px-1">
+          <MButton variant="text" size="xs" content-color="on-surface">File</MButton>
+          <MButton variant="text" size="xs" content-color="on-surface">Edit</MButton>
+          <MButton variant="text" size="xs" content-color="on-surface">View</MButton>
+        </div>
+        <div class="flex items-center gap-3 rounded-2xl bg-neutral-900 p-3">
+          <MButton size="xs" color="#fff" content-color="#000">Subscribe</MButton>
+          <MButton size="xs" color="#ffd54f" content-color="#3e2723" icon="bolt">Boost</MButton>
+        </div>
+      </div>
     </ComponentDemo>
 
     <ComponentDemo

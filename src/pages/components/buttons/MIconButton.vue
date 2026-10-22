@@ -18,6 +18,7 @@ const iconButtonProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Accessible label (aria-label and title)' },
   { name: 'variant', type: "'standard' | 'filled' | 'tonal' | 'outlined'", default: "'standard'", description: 'Visual style' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | string", description: 'An M3 role or any CSS color (#fff over a photo, rgb(0 0 0 / 0.3) for a scrim-like filled button, currentColor to follow the surrounding text). Standard and outlined use it for the icon; filled for the container with white (or the role\'s on-color) on it; tonal for a 20% container with the color on it. Disabled buttons and toggles keep their own colors' },
+  { name: 'contentColor', type: 'string', description: 'Icon color over what the variant and color give: an M3 role (on-surface…) or any CSS color (#000 on a white filled button). Disabled buttons and toggles keep their own' },
   { name: 'shape', type: "'rounded' | 'squared'", default: "'rounded'", description: 'Button shape — rounded (pill, always) or squared (corner radius scales with size: 12px xs/sm, 16px md, 28px lg/xl)' },
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | number", default: "'sm'", description: "M3's 5-tier icon button sizing (xs:32, sm:40, md:56, lg:96, xl:136), or a custom pixel value" },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction' },

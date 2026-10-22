@@ -176,7 +176,7 @@ const toolHint = computed(() => tools.find((t) => t.id === tool.value)!.hint)
       <nav class="flex items-center" aria-label="Menu bar">
         <MMenu v-for="m in menus" :key="m.id" align="left">
           <template #trigger>
-            <MButton variant="text" size="xs" class="text-on-surface!">{{ m.label }}</MButton>
+            <MButton variant="text" size="xs" content-color="on-surface">{{ m.label }}</MButton>
           </template>
           <MenuSection :section="m.id" />
         </MMenu>

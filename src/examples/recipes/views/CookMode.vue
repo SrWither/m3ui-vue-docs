@@ -5,7 +5,7 @@
  * to move, steps with a wait show their timer, and the screen stays awake while it's open.
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { MBottomSheet, MButton, MIcon, MIconButton, MList, MListItem, MShape, useConfetti, type ShapeName } from '@m3ui-vue/m3ui-vue'
+import { MBottomSheet, MButton, MIcon, MIconButton, MList, MListItem, MOverlay, MShape, useConfetti, type ShapeName } from '@m3ui-vue/m3ui-vue'
 import { byId, formatQty } from '../data'
 import { useRecipes } from '../useRecipes'
 import TimerRing from '../components/TimerRing.vue'
@@ -54,11 +54,11 @@ function onUp(e: PointerEvent) {
   if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(e.clientY - startY) * 1.5) goTo(cookStep.value + (dx < 0 ? 1 : -1))
 }
 
+// Escape is MOverlay's (close-on-escape, off while the ingredients sheet is open); the arrows move between steps
 function onKey(e: KeyboardEvent) {
   if (!cooking.value || (e.target as HTMLElement).closest('input, textarea')) return
   if (e.key === 'ArrowRight') goTo(cookStep.value + 1)
   else if (e.key === 'ArrowLeft') goTo(cookStep.value - 1)
-  else if (e.key === 'Escape' && !sheet.value) close()
 }
 
 // Keep the screen on while cooking, where the browser allows it.
@@ -94,17 +94,23 @@ const clock = (s: number) => `${Math.floor(Math.ceil(s) / 60)}:${String(Math.cei
 </script>
 
 <template>
-  <Transition name="sim-cook">
-    <div
-      v-if="recipe"
-      class="sim-cook fixed inset-0 z-40 flex flex-col overflow-hidden"
-      :class="[tone.bg, tone.text]"
-      role="dialog"
-      aria-modal="true"
-      :aria-label="`Cooking ${recipe.title}`"
-      @pointerdown="onDown"
-      @pointerup="onUp"
-    >
+  <MOverlay
+    :model-value="!!recipe"
+    :scrim="false"
+    :z-index="40"
+    :close-on-escape="!sheet"
+    lock-scroll
+    transition="sim-cook"
+    class="sim-cook flex flex-col overflow-hidden"
+    :class="[tone.bg, tone.text]"
+    role="dialog"
+    aria-modal="true"
+    :aria-label="`Cooking ${recipe?.title}`"
+    @update:model-value="close"
+    @pointerdown="onDown"
+    @pointerup="onUp"
+  >
+    <template v-if="recipe">
       <MShape :shape="shape" :speed="0.8" class="sim-cook-shape pointer-events-none absolute opacity-20" :class="tone.shape" />
 
       <header class="relative flex h-16 shrink-0 items-center gap-2 px-3 sm:px-5">
@@ -174,6 +180,6 @@ const clock = (s: number) => `${Math.floor(Math.ceil(s) / 60)}:${String(Math.cei
           <MListItem v-for="(ing, i) in recipe.ingredients" :key="ing.name" :title="ing.name" :trailing-text="qty(i)" />
         </MList>
       </MBottomSheet>
-    </div>
-  </Transition>
+    </template>
+  </MOverlay>
 </template>

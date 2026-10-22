@@ -27,6 +27,8 @@ const versions: Version[] = [
         'MNavigationDrawer can keep one group open at a time (accordion)',
         'MIconButton takes a color: a role or any CSS color, like white over a video or a translucent black circle',
         'MSkeleton takes a corner radius (radius) to match what is loading',
+        'MOverlay can close on Escape, lock the page scroll and play your own transition, enough for full-screen viewers',
+        'MButton and MIconButton take a contentColor for the label or icon, like a neutral text button or dark text on a white button',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
@@ -35,6 +37,8 @@ const versions: Version[] = [
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
         'Classes that size or round an MSkeleton (w-40, aspect-video, rounded-xl) now apply',
+        'Classes and attributes given to MOverlay now apply',
+        'Escape in a menu inside a dialog closes just the menu',
       ],
     },
   },

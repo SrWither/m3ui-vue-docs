@@ -6,7 +6,7 @@
  * with your finger, and letting go finishes the turn or settles back.
  */
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { MIconButton } from '@m3ui-vue/m3ui-vue'
+import { MIconButton, MOverlay } from '@m3ui-vue/m3ui-vue'
 import { stories } from '../data'
 import { usePlaza } from '../usePlaza'
 import StoryFace from './StoryFace.vue'
@@ -61,6 +61,7 @@ function close() {
   storyViewer.value = { open: false, index: index.value }
 }
 function next() {
+  if (turn.value) return hurry(1)
   progress.value = 0
   if (frame.value < story.value!.frames.length - 1) return frame.value++
   seenStories.add(story.value!.handle)
@@ -68,6 +69,7 @@ function next() {
   else close()
 }
 function prev() {
+  if (turn.value) return hurry(-1)
   progress.value = 0
   if (frame.value > 0) return frame.value--
   if (index.value > 0) animateTurn(-1, 0, 1)
@@ -76,10 +78,12 @@ function prev() {
 // --- The cube -----------------------------------------------------------------------------------------
 
 let turnRaf = 0
+let turnTo = 0
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
 /** Turns from `from` to `to` (0 = this face, 1 = the neighbor's), then lands on the neighbor or stays. */
 function animateTurn(dir: 1 | -1, from: number, to: number) {
   cancelAnimationFrame(turnRaf)
+  turnTo = to
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return finishTurn(dir, to === 1)
   turn.value = { dir, p: from }
   const duration = TURN_MS * Math.abs(to - from)
@@ -91,6 +95,17 @@ function animateTurn(dir: 1 | -1, from: number, to: number) {
     else finishTurn(dir, to === 1)
   }
   turnRaf = requestAnimationFrame(step)
+}
+/**
+ * An arrow (or tap) while the cube is turning: the same way lands the turn now, so presses in a row each move on
+ * instead of restarting it from the start; the other way turns it back.
+ */
+function hurry(dir: 1 | -1) {
+  const { dir: d, p } = turn.value!
+  cancelAnimationFrame(turnRaf)
+  if (dir !== d) animateTurn(d, p, 0)
+  else if (turnTo === 1) finishTurn(d, true)
+  else animateTurn(d, p, stories[index.value + d] ? 1 : 0)
 }
 function finishTurn(dir: 1 | -1, landed: boolean) {
   turn.value = null
@@ -164,9 +179,9 @@ function tap(fn: () => void) {
   fn()
 }
 
+// Escape is MOverlay's (close-on-escape); the arrows step through the frames
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') close()
-  else if (e.key === 'ArrowRight') next()
+  if (e.key === 'ArrowRight') next()
   else if (e.key === 'ArrowLeft') prev()
 }
 function openProfile(handle: string) {
@@ -176,49 +191,59 @@ function openProfile(handle: string) {
 </script>
 
 <template>
-  <Teleport to="body">
-    <Transition name="m3p-story">
-      <div v-if="storyViewer.open && story" class="fixed inset-0 z-200 flex items-center justify-center bg-black" role="dialog" aria-label="Story">
-        <div
-          ref="stage"
-          class="relative h-full w-full max-w-[min(28rem,calc(100dvh*9/16))] touch-pan-y select-none [perspective:1100px] sm:h-[92dvh]"
-          @pointerdown="onDown"
-          @pointermove="onMove"
-          @pointerup="onUp"
-          @pointercancel="onUp"
-        >
-          <div class="absolute inset-0 [transform-style:preserve-3d]">
-            <StoryFace :key="story.handle" :story="story" :frame="frame" :progress="progress" class="[backface-visibility:hidden] sm:rounded-2xl" :style="faceStyle('current')" @profile="openProfile(story.handle)" />
-            <div v-if="turn" class="pointer-events-none absolute inset-0 bg-black sm:rounded-2xl" :style="{ ...faceStyle('current'), opacity: shade('current') }" />
-            <template v-if="neighbor">
-              <StoryFace :key="neighbor.handle" :story="neighbor" :frame="0" :progress="0" class="[backface-visibility:hidden] sm:rounded-2xl" :style="faceStyle('neighbor')" />
-              <div class="pointer-events-none absolute inset-0 bg-black sm:rounded-2xl" :style="{ ...faceStyle('neighbor'), opacity: shade('neighbor') }" />
-            </template>
-          </div>
+  <MOverlay
+    :model-value="storyViewer.open && !!story"
+    :scrim="false"
+    :z-index="200"
+    close-on-escape
+    lock-scroll
+    transition="m3p-story"
+    class="flex items-center justify-center bg-black"
+    role="dialog"
+    aria-label="Story"
+    @update:model-value="close"
+  >
+    <template v-if="story">
+      <div
+        ref="stage"
+        class="relative h-full w-full max-w-[min(28rem,calc(100dvh*9/16))] touch-pan-y select-none [perspective:1100px] sm:h-[92dvh]"
+        @pointerdown="onDown"
+        @pointermove="onMove"
+        @pointerup="onUp"
+        @pointercancel="onUp"
+      >
+        <div class="absolute inset-0 [transform-style:preserve-3d]">
+          <StoryFace :key="story.handle" :story="story" :frame="frame" :progress="progress" class="[backface-visibility:hidden] sm:rounded-2xl" :style="faceStyle('current')" @profile="openProfile(story.handle)" />
+          <div v-if="turn" class="pointer-events-none absolute inset-0 bg-black sm:rounded-2xl" :style="{ ...faceStyle('current'), opacity: shade('current') }" />
+          <template v-if="neighbor">
+            <StoryFace :key="neighbor.handle" :story="neighbor" :frame="0" :progress="0" class="[backface-visibility:hidden] sm:rounded-2xl" :style="faceStyle('neighbor')" />
+            <div class="pointer-events-none absolute inset-0 bg-black sm:rounded-2xl" :style="{ ...faceStyle('neighbor'), opacity: shade('neighbor') }" />
+          </template>
+        </div>
 
-          <!-- Tap zones: back on the left third, forward on the rest -->
-          <div class="absolute inset-0 top-20 grid grid-cols-[1fr_2fr]">
-            <button type="button" class="cursor-w-resize" aria-label="Previous" @click="tap(prev)" />
-            <button type="button" class="cursor-e-resize" aria-label="Next" @click="tap(next)" />
-          </div>
+        <!-- Tap zones: back on the left third, forward on the rest -->
+        <div class="absolute inset-0 top-20 grid grid-cols-[1fr_2fr]">
+          <button type="button" class="cursor-w-resize" aria-label="Previous" @click="tap(prev)" />
+          <button type="button" class="cursor-e-resize" aria-label="Next" @click="tap(next)" />
+        </div>
 
-          <div class="absolute top-6 right-2 flex text-white" @pointerdown.stop>
-            <MIconButton :icon="paused ? 'play_arrow' : 'pause'" :label="paused ? 'Play' : 'Pause'" color="#fff" @click="paused = !paused" />
-            <MIconButton icon="close" label="Close" color="#fff" @click="close" />
-          </div>
+        <div class="absolute top-6 right-2 flex text-white" @pointerdown.stop>
+          <MIconButton :icon="paused ? 'play_arrow' : 'pause'" :label="paused ? 'Play' : 'Pause'" color="#fff" @click="paused = !paused" />
+          <MIconButton icon="close" label="Close" color="#fff" @click="close" />
         </div>
       </div>
-    </Transition>
-  </Teleport>
+    </template>
+  </MOverlay>
 </template>
 
 <style scoped>
-.m3p-story-enter-active,
-.m3p-story-leave-active {
+/* Global: MOverlay plays it on its teleported container, out of this component's scope */
+:global(.m3p-story-enter-active),
+:global(.m3p-story-leave-active) {
   transition: opacity 200ms ease, transform 250ms cubic-bezier(0.2, 0, 0, 1);
 }
-.m3p-story-enter-from,
-.m3p-story-leave-to {
+:global(.m3p-story-enter-from),
+:global(.m3p-story-leave-to) {
   opacity: 0;
   transform: scale(0.96);
 }
