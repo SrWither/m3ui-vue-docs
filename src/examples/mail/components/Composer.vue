@@ -131,8 +131,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
                 aria-label="Subject"
                 class="h-12 shrink-0 border-b border-outline-variant/60 bg-transparent px-4 text-body-large text-on-surface outline-none placeholder:text-on-surface-variant"
               />
-              <div class="m3x-editor flex min-h-0 flex-1 flex-col p-2">
-                <MRichTextEditor v-model="d.html" placeholder="Write your message…" min-height="180px" />
+              <div class="flex min-h-0 flex-1 flex-col p-2">
+                <MRichTextEditor v-model="d.html" placeholder="Write your message…" fill class="min-h-45 flex-1" />
               </div>
               <ul v-if="d.attachments.length" class="flex flex-wrap gap-2 px-3 pb-2">
                 <li v-for="(a, i) in d.attachments" :key="a.name + i" class="flex h-9 items-center gap-2 rounded-lg bg-surface-container-highest pr-1 pl-2">
@@ -176,15 +176,6 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
 .m3x-compose-leave-to {
   transform: translateY(40px);
   opacity: 0;
-}
-/* The editor fills the space the window has left. */
-.m3x-editor > :deep(div) {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-}
-.m3x-editor :deep(.rte-content) {
-  flex: 1;
 }
 @media (prefers-reduced-motion: reduce) {
   .m3x-compose-enter-active,

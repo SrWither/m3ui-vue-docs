@@ -13,13 +13,17 @@ import type { TypeDef } from '@/components/TypesTable.vue'
 
 const richTextContent = ref('<p>This is <strong>bold</strong> and <em>italic</em> text.</p><p>Try editing this content!</p>')
 const richTextDisabledContent = ref('<p>This editor is <strong>disabled</strong> — the toolbar and content are not editable.</p>')
+const richTextFillContent = ref(
+  '<p>Hi team,</p><p>Here are the notes from today\'s sync:</p><ul><li>The new onboarding ships on Monday</li><li>Design review moves to Thursday</li><li>Please update your tickets before Friday</li></ul><p>Keep typing below: the toolbar stays put and the text scrolls inside the editor, while the editor itself keeps the height of the card.</p><p>Thanks!</p>',
+)
 const richTextEsContent = ref('<p>Editor con la barra de herramientas <strong>en español</strong>.</p>')
 
 const richTextProps: PropDef[] = [
   { name: 'modelValue', type: 'string', description: 'HTML content (v-model)' },
   { name: 'placeholder', type: 'string', description: 'Placeholder text shown on an empty document' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables editing' },
-  { name: 'minHeight', type: 'string', default: "'200px'", description: 'Minimum editor height' },
+  { name: 'minHeight', type: 'string', default: "'200px'", description: 'Minimum height of the text area (not used with fill)' },
+  { name: 'fill', type: 'boolean', default: 'false', description: 'Fills the height you give the editor (class="h-full", flex-1…): the toolbar stays put and the text scrolls inside, instead of the editor growing with its content' },
   { name: 'labels', type: 'RichTextEditorLabels', description: 'Object with all toolbar/dialog label overrides for i18n (see the type below) — defaults come from useLocale()' },
 ]
 
@@ -82,6 +86,26 @@ const content = ref('<p>Hello <strong>world</strong>!</p>')`"
       <div class="w-full">
         <MRichTextEditor v-model="richTextContent" placeholder="Start writing..." />
       </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Fill the height"
+      description="With fill, the editor takes the height you give it (here flex-1 inside a fixed-height card, like a mail composer) and scrolls its text inside, keeping the toolbar in view. Without it the editor grows with its content from minHeight."
+      :code="`<MCard variant=&quot;outlined&quot; class=&quot;flex h-96 flex-col&quot;>
+  <div class=&quot;border-b border-outline-variant px-4 py-3&quot;>To: team@example.com</div>
+  <div class=&quot;border-b border-outline-variant px-4 py-3&quot;>Subject: Sync notes</div>
+  <div class=&quot;flex min-h-0 flex-1 flex-col p-2&quot;>
+    <MRichTextEditor v-model=&quot;content&quot; fill class=&quot;flex-1&quot; />
+  </div>
+</MCard>`"
+    >
+      <MCard variant="outlined" class="flex h-96 w-full flex-col overflow-hidden p-0">
+        <div class="border-b border-outline-variant px-4 py-3 text-body-large text-on-surface-variant">To: team@example.com</div>
+        <div class="border-b border-outline-variant px-4 py-3 text-body-large text-on-surface">Subject: Sync notes</div>
+        <div class="flex min-h-0 flex-1 flex-col p-2">
+          <MRichTextEditor v-model="richTextFillContent" fill class="flex-1" />
+        </div>
+      </MCard>
     </ComponentDemo>
 
     <ComponentDemo
