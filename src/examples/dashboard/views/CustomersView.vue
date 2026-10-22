@@ -5,10 +5,8 @@ import type { DataTableColumn } from '@m3ui-vue/m3ui-vue'
 import { MChart } from '@m3ui-vue/m3ui-vue/chart'
 import { useDashboard } from '../useDashboard'
 import { money } from '../data'
-import { useThemeColors } from '../useThemeColors'
 
 const { customerRows, byCountry, bounds } = useDashboard()
-const colors = useThemeColors()
 
 const returning = computed(() => customerRows.value.filter((c) => c.orders > 1).length)
 const newOnes = computed(() => customerRows.value.filter((c) => c.since >= bounds.value.start).length)
@@ -19,7 +17,6 @@ const countryData = computed(() => ({
   datasets: [{
     label: 'Revenue',
     data: byCountry.value.map(([, v]) => Math.round(v)),
-    backgroundColor: colors.value.tertiary,
     borderRadius: 8,
     maxBarThickness: 28,
   }],
@@ -53,7 +50,7 @@ const date = (d: string) => new Date(`${d}T00:00:00`).toLocaleDateString(undefin
       <section class="rounded-3xl bg-surface-container-low p-4 sm:p-6 lg:col-span-3">
         <h2 class="text-title-large text-on-surface">Revenue by country</h2>
         <p class="mb-4 text-body-medium text-on-surface-variant">Where your customers order from</p>
-        <MChart type="bar" :data="countryData" :options="countryOptions" height="280px" />
+        <MChart type="bar" :data="countryData" :options="countryOptions" :colors="['tertiary']" height="280px" />
       </section>
 
       <section v-if="best" class="flex flex-col items-center justify-center gap-3 rounded-3xl bg-primary-container p-6 text-center text-on-primary-container lg:col-span-2">

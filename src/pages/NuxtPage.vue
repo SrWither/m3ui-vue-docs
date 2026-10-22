@@ -193,6 +193,7 @@ const options: PropDef[] = [
     </p>
     <ul class="mb-3 grid gap-px overflow-hidden rounded-xl border border-outline-variant bg-outline-variant text-body-medium sm:grid-cols-2">
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useTheme</code> &rarr; <code class="font-mono text-primary">useM3Theme</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useThemeTokens</code> &rarr; <code class="font-mono text-primary">useM3ThemeTokens</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useColorPalette</code> &rarr; <code class="font-mono text-primary">useM3ColorPalette</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useToast</code> &rarr; <code class="font-mono text-primary">useM3Toast</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useNotification</code> &rarr; <code class="font-mono text-primary">useM3Notification</code></li>

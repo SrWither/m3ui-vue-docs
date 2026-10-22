@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { MCard, MSegmentedButton, palettes, useColorPalette, useTheme } from '@m3ui-vue/m3ui-vue'
 import { MChart } from '@m3ui-vue/m3ui-vue/chart'
 import ComponentDemo from '@/components/ComponentDemo.vue'
@@ -7,40 +6,30 @@ import PropsTable from '@/components/PropsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 
-// Theme-following chart: dataset colors read from the theme's CSS variables (a canvas can't
-// use var()), re-read when the theme class or the palette attribute on <html> changes.
+// Theme-following chart: MChart colors the datasets that don't set their own from the theme (primary, tertiary,
+// secondary… or the colors prop), and recolors them with the axes when the theme or the palette changes.
 const { palette, set: setPalette } = useColorPalette()
 const { theme } = useTheme()
 const themeOptions = [
-  { value: 'light', label: 'Light', icon: 'light_mode' },
-  { value: 'dark', label: 'Dark', icon: 'dark_mode' },
+  { value: 'light' as const, label: 'Light', icon: 'light_mode' },
+  { value: 'dark' as const, label: 'Dark', icon: 'dark_mode' },
 ]
 const demoPalettes = ['purple', 'blue', 'green', 'red', 'orange', 'pink', 'teal', 'monochrome']
   .map((id) => palettes.find((p) => p.id === id))
   .filter((p): p is (typeof palettes)[number] => !!p)
 
-function readColors() {
-  const s = getComputedStyle(document.documentElement)
-  const get = (n: string) => s.getPropertyValue(`--color-${n}`).trim()
-  return { primary: get('primary'), secondary: get('secondary'), tertiary: get('tertiary') }
-}
-const themeColors = ref({ primary: '', secondary: '', tertiary: '' })
-let colorObserver: MutationObserver | undefined
-onMounted(() => {
-  themeColors.value = readColors()
-  colorObserver = new MutationObserver(() => (themeColors.value = readColors()))
-  colorObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-palette'] })
-})
-onBeforeUnmount(() => colorObserver?.disconnect())
-
-const themedData = computed(() => ({
+const themedData = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
   datasets: [
-    { label: 'Visitors', data: [320, 410, 380, 520, 610, 580, 700], borderColor: themeColors.value.primary, backgroundColor: themeColors.value.primary, tension: 0.35, borderWidth: 3, pointRadius: 3 },
-    { label: 'Sign-ups', data: [120, 180, 150, 240, 300, 260, 340], borderColor: themeColors.value.tertiary, backgroundColor: themeColors.value.tertiary, tension: 0.35, borderWidth: 3, pointRadius: 3 },
-    { label: 'Upgrades', data: [40, 60, 55, 90, 110, 120, 150], borderColor: themeColors.value.secondary, backgroundColor: themeColors.value.secondary, tension: 0.35, borderWidth: 3, pointRadius: 3 },
+    { label: 'Visitors', data: [320, 410, 380, 520, 610, 580, 700], tension: 0.35, borderWidth: 3, pointRadius: 3 },
+    { label: 'Sign-ups', data: [120, 180, 150, 240, 300, 260, 340], tension: 0.35, borderWidth: 3, pointRadius: 3 },
+    { label: 'Upgrades', data: [40, 60, 55, 90, 110, 120, 150], tension: 0.35, borderWidth: 3, pointRadius: 3 },
   ],
-}))
+}
+const channelData = {
+  labels: ['Direct', 'Search', 'Social', 'Email'],
+  datasets: [{ data: [42, 31, 17, 10], borderWidth: 3 }],
+}
 
 const chartData = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -114,6 +103,7 @@ const chartProps: PropDef[] = [
   { name: 'data', type: 'Record<string, any>', description: 'Chart.js data object with labels and datasets. Required — there is no default.' },
   { name: 'options', type: 'Record<string, any>', description: "Chart.js options, deep-merged on top of MChart's own M3-themed defaults (legend/tooltip/axis colors that track the active theme automatically)" },
   { name: 'height', type: 'string', default: "'300px'", description: 'Chart height' },
+  { name: 'colors', type: 'string[]', default: "['primary', 'tertiary', 'secondary', 'success', 'error', 'outline']", description: "Colors for datasets that don't set their own, in order (one per series; per slice in a pie or doughnut): M3 role names or any CSS colors. They follow the theme. A dataset's own colors always win" },
 ]
 </script>
 
@@ -141,33 +131,19 @@ const chartProps: PropDef[] = [
 
     <ComponentDemo
       title="Follows the theme and palette"
-      description="MChart styles its axes, grid, legend and tooltips from the current theme and redraws them when the theme or the palette changes. Dataset colors are yours: read them from the theme's CSS variables (a canvas can't use var()) and the series recolor too. Switch palettes and light/dark here, then hover a point."
-      :code="`<script setup>
-// Theme colors as plain strings for Chart.js, refreshed on theme or palette changes
-function readColors() {
-  const s = getComputedStyle(document.documentElement)
-  const get = (n) => s.getPropertyValue(\`--color-\${n}\`).trim()
-  return { primary: get('primary'), secondary: get('secondary'), tertiary: get('tertiary') }
-}
-const colors = ref(readColors())
-onMounted(() => {
-  new MutationObserver(() => (colors.value = readColors()))
-    .observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-palette'] })
-})
-
-const data = computed(() => ({
+      description="MChart styles its axes, grid, legend and tooltips from the current theme, and gives datasets that don't set their own colors the theme's too: primary, tertiary, secondary, success, error and outline in turn (one per slice in a pie or doughnut). colors picks your own order, from M3 roles or any CSS colors. Everything recolors when the theme, the palette or the contrast changes: switch them here, then hover a point."
+      :code="`<!-- No colors in the data: each series takes the next theme color -->
+<MChart type=&quot;line&quot; :data=&quot;{
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
   datasets: [
-    { label: 'Visitors', data: [320, 410, 380, 520, 610, 580, 700], borderColor: colors.value.primary },
-    { label: 'Sign-ups', data: [120, 180, 150, 240, 300, 260, 340], borderColor: colors.value.tertiary },
-    { label: 'Upgrades', data: [40, 60, 55, 90, 110, 120, 150], borderColor: colors.value.secondary },
+    { label: 'Visitors', data: [320, 410, 380, 520, 610, 580, 700] },
+    { label: 'Sign-ups', data: [120, 180, 150, 240, 300, 260, 340] },
+    { label: 'Upgrades', data: [40, 60, 55, 90, 110, 120, 150] },
   ],
-}))
-<\/script>
+}&quot; />
 
-<template>
-  <MChart type=&quot;line&quot; :data=&quot;data&quot; height=&quot;300px&quot; />
-</template>`"
+<!-- Your own order, roles or CSS colors -->
+<MChart type=&quot;doughnut&quot; :data=&quot;channels&quot; :colors=&quot;['primary', 'tertiary', 'secondary', 'tertiary-container']&quot; />`"
     >
       <div class="flex w-full flex-col gap-4">
         <div class="flex flex-wrap items-center gap-3">
@@ -186,9 +162,10 @@ const data = computed(() => ({
           </div>
           <MSegmentedButton v-model="theme" :options="themeOptions" class="sm:ml-auto" />
         </div>
-        <MCard variant="outlined" class="p-4">
+        <div class="grid gap-4 md:grid-cols-[2fr_1fr]">
           <MChart type="line" :data="themedData" height="300px" />
-        </MCard>
+          <MChart type="doughnut" :data="channelData" :colors="['primary', 'tertiary', 'secondary', 'tertiary-container']" :options="{ cutout: '65%', plugins: { legend: { position: 'bottom' } } }" height="300px" />
+        </div>
       </div>
     </ComponentDemo>
 

@@ -5,11 +5,9 @@ import type { DataTableColumn } from '@m3ui-vue/m3ui-vue'
 import { MChart } from '@m3ui-vue/m3ui-vue/chart'
 import { useDashboard, presets } from '../useDashboard'
 import { customerById, daysAgo, money } from '../data'
-import { useThemeColors, alpha } from '../useThemeColors'
 import StatusChip from '../components/StatusChip.vue'
 
 const { view, range, bounds, current, stats, prevStats, trend, series, byChannel, topProducts, setPreset } = useDashboard()
-const colors = useThemeColors()
 
 const activePreset = computed(() =>
   bounds.value.end === daysAgo(0) ? presets.find((p) => p.days === bounds.value.length)?.id : undefined,
@@ -22,19 +20,17 @@ const cards = computed(() => [
   { title: 'Customers', value: stats.value.customers.toLocaleString(), icon: 'group', color: 'success' as const, trend: trend(stats.value.customers, prevStats.value.customers) },
 ])
 
-// Revenue or orders over time, against the previous period (dashed).
+// Revenue or orders over time, against the previous period (dashed). MChart colors the datasets from the theme
+// (here primary and outline-variant, through its colors prop), following light/dark and palette changes.
 const metric = ref<'revenue' | 'orders'>('revenue')
 const lineData = computed(() => {
   const s = series(metric.value)
-  const c = colors.value
   return {
     labels: s.labels,
     datasets: [
       {
         label: 'This period',
         data: s.now,
-        borderColor: c.primary,
-        backgroundColor: alpha(c.primary, 0.12),
         fill: true,
         tension: 0.35,
         pointRadius: 0,
@@ -44,7 +40,6 @@ const lineData = computed(() => {
       {
         label: 'Previous period',
         data: s.before,
-        borderColor: c['outline-variant'],
         borderDash: [6, 4],
         fill: false,
         tension: 0.35,
@@ -63,19 +58,14 @@ const lineOptions = computed(() => ({
   scales: { y: { beginAtZero: true, ticks: { callback: (v: number) => (metric.value === 'revenue' ? money(v) : v) } } },
 }))
 
-const channelData = computed(() => {
-  const c = colors.value
-  return {
-    labels: byChannel.value.map(([name]) => name),
-    datasets: [{
-      data: byChannel.value.map(([, v]) => Math.round(v)),
-      backgroundColor: [c.primary, c.tertiary, c.secondary, c['tertiary-container']],
-      borderColor: c['surface-container-low'],
-      borderWidth: 3,
-      hoverOffset: 6,
-    }],
-  }
-})
+const channelData = computed(() => ({
+  labels: byChannel.value.map(([name]) => name),
+  datasets: [{
+    data: byChannel.value.map(([, v]) => Math.round(v)),
+    borderWidth: 3,
+    hoverOffset: 6,
+  }],
+}))
 const channelOptions = {
   cutout: '68%',
   plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (ctx: any) => ` ${ctx.label}: ${money(ctx.parsed)}` } } },
@@ -130,7 +120,7 @@ const maxProduct = computed(() => topProducts.value[0]?.revenue ?? 1)
           :options="[{ value: 'revenue', label: 'Revenue' }, { value: 'orders', label: 'Orders' }]"
         />
       </div>
-      <MChart type="line" :data="lineData" :options="lineOptions" height="300px" />
+      <MChart type="line" :data="lineData" :options="lineOptions" :colors="['primary', 'outline-variant']" height="300px" />
     </section>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
@@ -138,7 +128,7 @@ const maxProduct = computed(() => topProducts.value[0]?.revenue ?? 1)
       <section class="rounded-3xl bg-surface-container-low p-4 sm:p-6 lg:col-span-2">
         <h2 class="text-title-large text-on-surface">Sales by channel</h2>
         <p class="mb-4 text-body-medium text-on-surface-variant">Where this period's revenue came from</p>
-        <MChart type="doughnut" :data="channelData" :options="channelOptions" height="260px" />
+        <MChart type="doughnut" :data="channelData" :options="channelOptions" :colors="['primary', 'tertiary', 'secondary', 'tertiary-container']" height="260px" />
       </section>
 
       <!-- Products -->

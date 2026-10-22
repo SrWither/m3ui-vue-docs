@@ -7,6 +7,7 @@ const groups = [
     title: 'Theming',
     items: [
       { name: 'useTheme', description: 'Light, dark or system color scheme, remembered across visits.' },
+      { name: 'useThemeTokens', description: 'The theme\'s colors as strings for canvases and charts, kept current across theme changes.' },
       { name: 'useColorPalette', description: 'Switch the color palette at runtime, or generate one from a seed color.' },
       { name: 'useLocale', description: 'The built-in UI strings in the app language, for your own components.' },
     ],

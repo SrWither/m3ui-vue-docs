@@ -31,6 +31,8 @@ const versions: Version[] = [
         'MButton and MIconButton take a contentColor for the label or icon, like a neutral text button or dark text on a white button',
         'MSearchField, new: a rounded search box that filters a list or grid in place, with a clear button and Escape to clear',
         'Text areas that grow as you type, up to a number of rows: MTextField autoGrow, and useAutoGrow for your own (a chat composer)',
+        'useThemeTokens: the theme\'s colors as plain strings for canvases and maps, always current',
+        'MChart colors your series from the theme when you don\'t give them colors, and they follow it (colors prop to pick the order)',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
@@ -41,6 +43,7 @@ const versions: Version[] = [
         'Classes that size or round an MSkeleton (w-40, aspect-video, rounded-xl) now apply',
         'Classes and attributes given to MOverlay now apply',
         'Escape in a menu inside a dialog closes just the menu',
+        'MChart follows contrast and custom palettes too, and never keeps half-faded colors after switching the theme',
       ],
     },
   },
