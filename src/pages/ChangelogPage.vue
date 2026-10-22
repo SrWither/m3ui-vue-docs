@@ -45,6 +45,7 @@ const versions: Version[] = [
         'v-scroll-elevation: your own header changes color once the content scrolls under it',
         'v-long-press: run a function when an element is pressed and held',
         'v-swipe: run a function when an element is swiped, without blocking the page scroll',
+        'v-click-outside: close your own panels when a press lands outside them',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
