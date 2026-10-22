@@ -23,18 +23,19 @@ const look: Record<string, { icon: string; color: TimelineItem['color']; verb: (
   'opened-pr': { icon: 'call_split', color: 'success', verb: (d) => `opened ${d}` },
 }
 
-const items = computed<TimelineItem[]>(() =>
+// Each item carries its entry: MTimeline is generic, so the #item slot gets it typed
+const items = computed<(TimelineItem & { entry: TimelineEntry })[]>(() =>
   props.entries.map((e) =>
     e.kind === 'comment'
-      ? { title: `${user(e.author).name} commented`, date: ago(e.date), icon: 'chat_bubble', color: 'primary' }
-      : { title: `${user(e.actor).name} ${look[e.action]!.verb(e.detail)}`, date: ago(e.date), icon: look[e.action]!.icon, color: look[e.action]!.color },
+      ? { key: e.id, entry: e, title: `${user(e.author).name} commented`, date: ago(e.date), icon: 'chat_bubble', color: 'primary' }
+      : { key: e.id, entry: e, title: `${user(e.actor).name} ${look[e.action]!.verb(e.detail)}`, date: ago(e.date), icon: look[e.action]!.icon, color: look[e.action]!.color },
   ),
 )
 </script>
 
 <template>
   <MTimeline :items="items" dense>
-    <template v-for="(e, i) in entries" :key="e.id" #[`item-${i}`]>
+    <template #item="{ item: { entry: e } }">
       <article v-if="e.kind === 'comment'" class="overflow-hidden rounded-xl border border-outline-variant bg-surface">
         <header class="flex items-center gap-2 border-b border-outline-variant bg-surface-container-low px-3 py-2">
           <MAvatar :name="user(e.author).name" :size="24" />

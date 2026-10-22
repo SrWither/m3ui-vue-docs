@@ -12,7 +12,7 @@ const components = [
   { name: 'MStatCard', description: 'A compact metric card with a trend indicator and loading skeleton.' },
   { name: 'MSparkline', description: 'A small line, area or bar trend chart for next to a number, with no chart library.' },
   { name: 'MAnimatedNumber', description: 'A number whose digits roll to their new value on a spring, formatted for your locale.' },
-  { name: 'MTimeline', description: 'A vertical event timeline with icon dots and dates.' },
+  { name: 'MTimeline', description: 'An event timeline, vertical or horizontal, with icon dots, dates and custom content.' },
   { name: 'MSkeleton', description: 'A loading placeholder shape with pulse or wave animation.' },
   { name: 'MEmptyState', description: 'A placeholder for empty views with optional action buttons.' },
   { name: 'MResult', description: 'Pre-built result screens for success, errors, and HTTP status codes.' },

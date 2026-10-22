@@ -34,10 +34,12 @@ const versions: Version[] = [
         'useThemeTokens: the theme\'s colors as plain strings for canvases and maps, always current',
         'MChart colors your series from the theme when you don\'t give them colors, and they follow it (colors prop to pick the order)',
         'Bottom and side sheets close with Escape',
+        'MTimeline takes custom content in every part (dots, titles, an opposite column, whole entries), and can run horizontally',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',
         'MSegmentedButton and MButtonGroup type their v-model after the options (TypeScript only)',
+        'The alternating MTimeline draws its line in each entry\'s color',
       ],
       fixed: [
         'MPullToRefresh remembers how far you scrolled when its view is kept alive and comes back',
@@ -46,6 +48,7 @@ const versions: Version[] = [
         'Escape in a menu inside a dialog closes just the menu',
         'MChart follows contrast and custom palettes too, and never keeps half-faded colors after switching the theme',
         'Escape closes only the topmost thing: a select\'s list, a tooltip, the lightbox or the command palette inside or over a dialog no longer closes the dialog too',
+        'MTimeline lines show in every color and reach the next dot',
       ],
     },
   },
