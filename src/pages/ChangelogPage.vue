@@ -50,6 +50,7 @@ const versions: Version[] = [
         'MMap transformStyle, to edit a style before it loads',
         'MMapLayers, MMapBaseLayers and MMapFilter in a panel beside the map, through a map prop',
         'MTimeline progress: done, current and pending steps, like an order being tracked',
+        'MTimeline groups: headers like Today and Yesterday over runs of entries',
       ],
       changed: [
         'MNavigationDrawer opens the group of the selected item on its own, so the page you land on shows where it is in the menu',

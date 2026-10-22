@@ -32,6 +32,7 @@ const timelineTypes: TypeDef[] = [
       { name: 'icon', type: 'string', description: 'Material Symbol shown inside the dot (dot grows to fit it)' },
       { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error' | 'success'", description: "Dot/connector color — defaults to 'primary'" },
       { name: 'dotColor', type: 'string', description: 'Any CSS color to override color with an exact value instead of a named token' },
+      { name: 'group', type: 'string', description: 'A group to show it under ("Today"): a header goes before each run of consecutive entries with the same group, and the line ends with the run' },
       { name: 'status', type: "'done' | 'current' | 'pending'", description: "This step's progress, over what the timeline's current gives it" },
     ],
   },
@@ -41,6 +42,7 @@ const timelineSlots: SlotDef[] = [
   { name: '#item', description: "Extra content under every entry's description (a card, chips, a button). With bare, the entry's whole content", scope: '{ item: T, index: number }' },
   { name: '#title', description: "Replaces an entry's title row (title and date)", scope: '{ item: T, index: number }' },
   { name: '#dot', description: "Replaces an entry's dot (an avatar, an image, a custom shape); the line still runs from it", scope: '{ item: T, index: number }' },
+  { name: '#group', description: "Replaces a group's header", scope: '{ group: string, items: T[] }' },
   { name: '#opposite', description: 'Content across the line: on the empty side in the alternating layout, or in a column before the line in the single-column one (dates, times, amounts)', scope: '{ item: T, index: number }' },
   { name: '#item-{i}', description: 'Extra content under a single entry, by its zero-based index (e.g. #item-0); wins over #item for that entry', scope: '{ item: T, index: number }' },
 ]
@@ -79,6 +81,17 @@ const step = ref(1)
 const altWidth = ref(720)
 const trackingLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
 const trackingLayouts = (['vertical', 'alternating', 'horizontal'] as const).map((v) => ({ value: v, label: v }))
+
+// Groups: a day's activity
+const days: TimelineItem[] = [
+  { title: 'Morning run', description: '5.2 km along the river', date: '07:10', icon: 'directions_run', color: 'success', group: 'Today' },
+  { title: 'Standup', description: 'Planning the 1.1.5 release', date: '09:30', icon: 'groups', group: 'Today' },
+  { title: 'Lunch with Ana', date: '13:00', icon: 'restaurant', color: 'tertiary', group: 'Today' },
+  { title: 'Code review', description: 'MTimeline groups', date: '16:45', icon: 'rate_review', group: 'Yesterday' },
+  { title: 'Cinema', date: '21:00', icon: 'movie', color: 'tertiary', group: 'Yesterday' },
+  { title: 'Flight to Córdoba', date: '18:20', icon: 'flight_land', color: 'secondary', group: 'Monday, Oct 20' },
+]
+const daysLayout = ref<'vertical' | 'alternating' | 'horizontal'>('vertical')
 
 const releases: (TimelineItem & { version: string; notes: string[] })[] = [
   { key: 'v1.2', title: 'v1.2', version: '1.2.0', notes: ['Horizontal timelines', 'Slots for every part'], color: 'primary' },
@@ -280,6 +293,35 @@ const step = ref(1)`"
           :alternating="trackingLayout === 'alternating'"
           :orientation="trackingLayout === 'horizontal' ? 'horizontal' : 'vertical'"
         />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Groups"
+      description="Give entries a group and a header goes before each run of them, the line ending with the run. #group replaces the header (here, with a count)."
+      :code="`<MTimeline :items=&quot;days&quot;>
+  <template #group=&quot;{ group, items }&quot;>
+    <p class=&quot;text-title-small text-on-surface-variant&quot;>{{ group }} · {{ items.length }}</p>
+  </template>
+</MTimeline>`"
+      :script="`const days = [
+  { title: 'Morning run', date: '07:10', icon: 'directions_run', group: 'Today' },
+  { title: 'Standup', date: '09:30', icon: 'groups', group: 'Today' },
+  { title: 'Code review', date: '16:45', icon: 'rate_review', group: 'Yesterday' },
+  // …
+]`"
+    >
+      <div class="flex w-full flex-col gap-4">
+        <MSegmentedButton v-model="daysLayout" :options="trackingLayouts" class="self-start" />
+        <MTimeline
+          :items="days"
+          :alternating="daysLayout === 'alternating'"
+          :orientation="daysLayout === 'horizontal' ? 'horizontal' : 'vertical'"
+        >
+          <template #group="{ group, items }">
+            <p class="text-title-small text-on-surface-variant">{{ group }} · {{ items.length }}</p>
+          </template>
+        </MTimeline>
       </div>
     </ComponentDemo>
 
