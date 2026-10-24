@@ -61,6 +61,9 @@ const app = createApp(App)
 app.use(createM3UI({ palette: 'teal' })) // optional — sets initial palette
 // or generate the whole scheme from your brand color:
 // app.use(createM3UI({ seed: '#0b57d0' }))
+// several apps on one domain under different paths (example.com/admin, example.com/shop)?
+// give each its own prefix so they don't share the stored theme and palette:
+// app.use(createM3UI({ palette: 'teal', storagePrefix: 'admin' }))
 app.mount('#app')`
 
 const agentsCode = `UI components come from @m3ui-vue/m3ui-vue. Before using one, read its API in
@@ -200,7 +203,14 @@ const optionalDeps = [
           own color with <code>seed</code> (<RouterLink to="/palettes#seed" class="text-primary underline">dynamic color</RouterLink>).
           Without it, the default purple palette is used.
         </p>
-        <MCodeEditor :model-value="pluginCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="200px" />
+        <p class="mb-3 text-body-medium text-on-surface-variant">
+          The user's theme and palette are saved in localStorage, which is shared by the whole domain. If several apps
+          live on the same domain under different paths (<code>example.com/admin</code>, <code>example.com/shop</code>),
+          give each one its own <code>storagePrefix</code> so they don't share them (apps on different subdomains are
+          already separate). More on the
+          <RouterLink to="/composables/usecolorpalette" class="text-primary underline">useColorPalette</RouterLink> page.
+        </p>
+        <MCodeEditor :model-value="pluginCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="300px" />
       </div>
     </div>
 
