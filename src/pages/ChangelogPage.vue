@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.2.2',
-    date: 'Unreleased',
+    date: '2026-10-23',
     changes: {
       added: [
         'createM3UI storagePrefix: apps on one domain under different paths (example.com/admin, example.com/shop) keep their own theme, palette and recent colors instead of sharing them',
