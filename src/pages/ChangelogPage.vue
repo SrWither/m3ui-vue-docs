@@ -25,6 +25,9 @@ const versions: Version[] = [
         'useReactions: an emoji or icon floats up swaying, like reactions over a live stream',
         'v-sparkle: stars twinkle over an element to draw the eye to something new, always or on hover',
       ],
+      changed: [
+        'MSlider: a dragged thumb follows your finger smoothly instead of jumping from step to step, and settles on its step when you let go (with stops it still snaps)',
+      ],
       fixed: [
         'Filled multiline MTextField: text scrolled up stays below the label instead of running behind it',
       ],

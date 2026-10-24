@@ -7,6 +7,13 @@ import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 
 const sliderVal = ref(40)
+// Each demo has its own value: a slider dragged re-renders only its demo's sliders, not every one on the page
+const sizesVal = ref(40)
+const stopsVal = ref(40)
+const verticalVal = ref(40)
+const iconVal = ref(40)
+const colorsVal = ref(40)
+const thumbIconVal = ref(40)
 const sliderCentered = ref(0)
 const sliderRange = ref<[number, number]>([20, 70])
 const musicVolume = ref(65)
@@ -22,7 +29,7 @@ const sliderProps: PropDef[] = [
   { name: 'modelValue', type: 'number | [number, number]', description: 'Current value — a tuple when variant is range' },
   { name: 'min', type: 'number', default: '0', description: 'Minimum value' },
   { name: 'max', type: 'number', default: '100', description: 'Maximum value' },
-  { name: 'step', type: 'number', default: '1', description: 'Step increment' },
+  { name: 'step', type: 'number', default: '1', description: 'Step increment: the values emitted snap to it. While dragging (without stops) the thumb follows the pointer smoothly and settles on its step when released' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the slider' },
   { name: 'label', type: 'string', description: 'Label text' },
   { name: 'showValue', type: 'boolean', default: 'false', description: 'Show current value beside label' },
@@ -30,7 +37,7 @@ const sliderProps: PropDef[] = [
   { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Slider orientation' },
   { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'xs'", description: 'Track and thumb size' },
   { name: 'variant', type: "'standard' | 'centered' | 'range'", default: "'standard'", description: 'Standard, centered (from middle), or range (two thumbs)' },
-  { name: 'stops', type: 'boolean', default: 'false', description: 'Show stop dots at each step (max 30 visible)' },
+  { name: 'stops', type: 'boolean', default: 'false', description: 'Show stop dots at each step (max 30 visible), and make a dragged thumb snap from step to step (a discrete slider)' },
   { name: 'icon', type: 'string', description: 'Material Symbol icon shown before the slider — hides once the fill reaches it' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Base color — used for the fill and thumb unless overridden by fillColor/thumbColor' },
   { name: 'fillColor', type: 'string', description: 'Custom color (hex, rgb(), a CSS var…) for the filled/active track and corner dot — not limited to the 4 M3 roles. Defaults to color' },
@@ -65,11 +72,11 @@ const sliderProps: PropDef[] = [
       :code="`<MSlider v-model=&quot;val&quot; size=&quot;md&quot; />`"
     >
       <div class="w-full space-y-6">
-        <MSlider v-model="sliderVal" label="XS" size="xs" :show-value="true" />
-        <MSlider v-model="sliderVal" label="SM" size="sm" :show-value="true" />
-        <MSlider v-model="sliderVal" label="MD" size="md" :show-value="true" :show-tooltip="true" />
-        <MSlider v-model="sliderVal" label="LG" size="lg" :show-value="true" :show-tooltip="true" />
-        <MSlider v-model="sliderVal" label="XL" size="xl" :show-value="true" :show-tooltip="true" />
+        <MSlider v-model="sizesVal" label="XS" size="xs" :show-value="true" />
+        <MSlider v-model="sizesVal" label="SM" size="sm" :show-value="true" />
+        <MSlider v-model="sizesVal" label="MD" size="md" :show-value="true" :show-tooltip="true" />
+        <MSlider v-model="sizesVal" label="LG" size="lg" :show-value="true" :show-tooltip="true" />
+        <MSlider v-model="sizesVal" label="XL" size="xl" :show-value="true" :show-tooltip="true" />
       </div>
     </ComponentDemo>
 
@@ -79,8 +86,8 @@ const sliderProps: PropDef[] = [
       :code="`<MSlider v-model=&quot;val&quot; :step=&quot;10&quot; :stops=&quot;true&quot; />`"
     >
       <div class="w-full space-y-6">
-        <MSlider v-model="sliderVal" label="Step 10" :step="10" :stops="true" :show-value="true" size="sm" />
-        <MSlider v-model="sliderVal" label="Step 20" :step="20" :stops="true" :show-value="true" size="md" color="secondary" />
+        <MSlider v-model="stopsVal" label="Step 10" :step="10" :stops="true" :show-value="true" size="sm" />
+        <MSlider v-model="stopsVal" label="Step 20" :step="20" :stops="true" :show-value="true" size="md" color="secondary" />
       </div>
     </ComponentDemo>
 
@@ -91,23 +98,23 @@ const sliderProps: PropDef[] = [
     >
       <div class="flex items-stretch gap-8" style="height: 360px">
         <div class="flex flex-1 flex-col items-center gap-2">
-          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="xs" />
+          <MSlider v-model="verticalVal" orientation="vertical" :show-tooltip="true" size="xs" />
           <span class="text-label-small text-on-surface-variant">XS</span>
         </div>
         <div class="flex flex-1 flex-col items-center gap-2">
-          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="sm" icon="volume_up" />
+          <MSlider v-model="verticalVal" orientation="vertical" :show-tooltip="true" size="sm" icon="volume_up" />
           <span class="text-label-small text-on-surface-variant">Volume</span>
         </div>
         <div class="flex flex-1 flex-col items-center gap-2">
-          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="md" icon="brightness_6" color="tertiary" />
+          <MSlider v-model="verticalVal" orientation="vertical" :show-tooltip="true" size="md" icon="brightness_6" color="tertiary" />
           <span class="text-label-small text-on-surface-variant">Brightness</span>
         </div>
         <div class="flex flex-1 flex-col items-center gap-2">
-          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="lg" icon="thermostat" color="secondary" :step="10" :stops="true" />
+          <MSlider v-model="verticalVal" orientation="vertical" :show-tooltip="true" size="lg" icon="thermostat" color="secondary" :step="10" :stops="true" />
           <span class="text-label-small text-on-surface-variant">Temperature</span>
         </div>
         <div class="flex flex-1 flex-col items-center gap-2">
-          <MSlider v-model="sliderVal" orientation="vertical" :show-tooltip="true" size="xl" icon="speed" color="error" />
+          <MSlider v-model="verticalVal" orientation="vertical" :show-tooltip="true" size="xl" icon="speed" color="error" />
           <span class="text-label-small text-on-surface-variant">Speed</span>
         </div>
       </div>
@@ -141,8 +148,8 @@ const sliderProps: PropDef[] = [
       :code="`<MSlider v-model=&quot;val&quot; icon=&quot;volume_up&quot; :show-tooltip=&quot;true&quot; />`"
     >
       <div class="w-full space-y-6">
-        <MSlider v-model="sliderVal" icon="volume_up" :show-tooltip="true" size="sm" />
-        <MSlider v-model="sliderVal" icon="brightness_6" :show-tooltip="true" size="md" color="tertiary" />
+        <MSlider v-model="iconVal" icon="volume_up" :show-tooltip="true" size="sm" />
+        <MSlider v-model="iconVal" icon="brightness_6" :show-tooltip="true" size="md" color="tertiary" />
       </div>
     </ComponentDemo>
 
@@ -155,10 +162,10 @@ const sliderProps: PropDef[] = [
 <MSlider v-model=&quot;val&quot; fill-color=&quot;#2a9d8f&quot; thumb-color=&quot;#f4a261&quot; :show-value=&quot;true&quot; label=&quot;both, independent hex&quot; />`"
     >
       <div class="w-full space-y-6">
-        <MSlider v-model="sliderVal" color="tertiary" :show-value="true" label="color (M3 role)" />
-        <MSlider v-model="sliderVal" fill-color="#e63946" :show-value="true" label="fillColor (hex)" />
-        <MSlider v-model="sliderVal" thumb-color="#4361ee" :show-value="true" label="thumbColor (hex)" />
-        <MSlider v-model="sliderVal" fill-color="#2a9d8f" thumb-color="#f4a261" :show-value="true" label="both, independent hex" />
+        <MSlider v-model="colorsVal" color="tertiary" :show-value="true" label="color (M3 role)" />
+        <MSlider v-model="colorsVal" fill-color="#e63946" :show-value="true" label="fillColor (hex)" />
+        <MSlider v-model="colorsVal" thumb-color="#4361ee" :show-value="true" label="thumbColor (hex)" />
+        <MSlider v-model="colorsVal" fill-color="#2a9d8f" thumb-color="#f4a261" :show-value="true" label="both, independent hex" />
       </div>
     </ComponentDemo>
 
@@ -170,8 +177,8 @@ const sliderProps: PropDef[] = [
 <MSlider v-model=&quot;range&quot; variant=&quot;range&quot; thumb-icon=&quot;drag_indicator&quot; thumb-color=&quot;#264653&quot; :show-value=&quot;true&quot; />`"
     >
       <div class="w-full space-y-6">
-        <MSlider v-model="sliderVal" thumb-icon="drag_indicator" :show-value="true" label="Default" />
-        <MSlider v-model="sliderVal" thumb-icon="volume_up" thumb-color="#e76f51" :show-value="true" label="Custom color (hex)" />
+        <MSlider v-model="thumbIconVal" thumb-icon="drag_indicator" :show-value="true" label="Default" />
+        <MSlider v-model="thumbIconVal" thumb-icon="volume_up" thumb-color="#e76f51" :show-value="true" label="Custom color (hex)" />
         <MSlider v-model="sliderRange" variant="range" thumb-icon="drag_indicator" thumb-color="#264653" :show-value="true" label="Range" />
       </div>
     </ComponentDemo>
