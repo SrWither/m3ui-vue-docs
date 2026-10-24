@@ -21,6 +21,9 @@ const versions: Version[] = [
       added: [
         'createM3UI storagePrefix: apps on one domain under different paths (example.com/admin, example.com/shop) keep their own theme, palette and recent colors instead of sharing them',
       ],
+      fixed: [
+        'Filled multiline MTextField: text scrolled up stays below the label instead of running behind it',
+      ],
     },
   },
   {
