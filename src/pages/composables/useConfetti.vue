@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, ref, shallowRef } from 'vue'
 import { MButton, MCard, MIcon, MScheme, MCheckbox, useConfetti } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import TypesTable from '@/components/TypesTable.vue'
@@ -7,6 +7,18 @@ import ComponentPager from '@/components/ComponentPager.vue'
 import type { TypeDef } from '@/components/TypesTable.vue'
 
 const { fire } = useConfetti()
+
+// A rain that lasts, or keeps going until it's stopped
+const stopRain = shallowRef<(() => void) | null>(null)
+function toggleRain() {
+  if (stopRain.value) {
+    stopRain.value()
+    stopRain.value = null
+  } else {
+    stopRain.value = fire({ from: 'top', count: 60, duration: Infinity })
+  }
+}
+onBeforeUnmount(() => stopRain.value?.())
 
 // A checklist: finishing it celebrates from the card
 const tasks = ref([
@@ -25,7 +37,7 @@ const types: TypeDef[] = [
     name: 'useConfetti()',
     description: 'Returns fire(). fireConfetti(origin?, options?) is the same as a plain function, outside components',
     fields: [
-      { name: 'fire(origin?, options?)', type: '(origin?: MouseEvent | Element | { x, y } | ConfettiOptions, options?: ConfettiOptions) => void', required: true, description: 'Bursts from the pointer of a click (from the element for a keyboard click), from an element\'s center, or from a point in viewport pixels; with only options (or nothing), from the lower middle of the screen. The colors are read from the origin, so a burst inside an MScheme takes its scheme' },
+      { name: 'fire(origin?, options?)', type: '(origin?: MouseEvent | Element | { x, y } | ConfettiOptions, options?: ConfettiOptions) => StopConfetti', required: true, description: 'Returns a function that stops a confetti with a duration early. Bursts from the pointer of a click (from the element for a keyboard click), from an element\'s center, or from a point in viewport pixels; with only options (or nothing), from the lower middle of the screen. The colors are read from the origin, so a burst inside an MScheme takes its scheme' },
     ],
   },
   {
@@ -39,6 +51,7 @@ const types: TypeDef[] = [
       { name: 'spread', type: 'number', description: 'Cone the pieces leave in, in degrees (70)' },
       { name: 'velocity', type: 'number', description: 'Launch speed in px/s (950)' },
       { name: 'size', type: 'number', description: 'Piece size in px (14)' },
+      { name: 'duration', type: 'number', description: 'Keep it going for this long, in ms: a rain that keeps falling (from: \'top\') or a fountain from the point, count then being pieces per second. Infinity runs until the returned stop(). Unset: one burst' },
     ],
   },
 ]
@@ -121,6 +134,28 @@ function toggle(i, value) {
         </MButton>
         <MButton variant="tonal" @click="fire($event, { shapes: ['Sunny', 'SoftBurst'], spread: 120, velocity: 700 })">Sunny burst</MButton>
         <MButton icon="water_drop" @click="fire({ from: 'top' })">Let it rain</MButton>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="A Rain That Lasts"
+      description="With duration it keeps raining for that long, count being pieces per second; the last ones finish falling after it ends. Infinity rains until you call the function fire() returns. From a point, it's a fountain."
+      :code="`<script setup>
+const { fire } = useConfetti()
+let stop = null
+</script>
+
+<template>
+  <MButton @click=&quot;fire({ from: 'top', duration: 5000 })&quot;>Rain for 5 seconds</MButton>
+  <MButton @click=&quot;stop = fire({ from: 'top', count: 60, duration: Infinity })&quot;>Start</MButton>
+  <MButton @click=&quot;stop?.()&quot;>Stop</MButton>
+  <MButton @click=&quot;fire($event, { duration: 2000, count: 40, velocity: 800, spread: 30 })&quot;>Fountain</MButton>
+</template>`"
+    >
+      <div class="flex flex-wrap justify-center gap-3">
+        <MButton variant="tonal" icon="timer" @click="fire({ from: 'top', duration: 5000 })">Rain for 5 seconds</MButton>
+        <MButton :icon="stopRain ? 'stop' : 'water_drop'" @click="toggleRain">{{ stopRain ? 'Stop the rain' : 'Rain until stopped' }}</MButton>
+        <MButton variant="tonal" icon="celebration" @click="fire($event, { duration: 2000, count: 40, velocity: 800, spread: 30 })">Fountain</MButton>
       </div>
     </ComponentDemo>
 
