@@ -22,6 +22,7 @@ const versions: Version[] = [
         'createM3UI storagePrefix: apps on one domain under different paths (example.com/admin, example.com/shop) keep their own theme, palette and recent colors instead of sharing them',
         'useConfetti duration: a rain or a fountain that keeps going as long as you say, or until you stop it',
         'useFireworks: rockets that burst the classic way, sparks trailing streaks that fall as they fade, or into rings, hearts and flowers',
+        'useReactions: an emoji or icon floats up swaying, like reactions over a live stream',
       ],
       fixed: [
         'Filled multiline MTextField: text scrolled up stays below the label instead of running behind it',

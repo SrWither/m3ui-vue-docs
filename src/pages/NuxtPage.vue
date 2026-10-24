@@ -218,6 +218,7 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useScrollReveal</code> &rarr; <code class="font-mono text-primary">useM3ScrollReveal</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useConfetti</code> &rarr; <code class="font-mono text-primary">useM3Confetti</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFireworks</code> &rarr; <code class="font-mono text-primary">useM3Fireworks</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useReactions</code> &rarr; <code class="font-mono text-primary">useM3Reactions</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useContainerTransform</code> &rarr; <code class="font-mono text-primary">useM3ContainerTransform</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMap</code> &rarr; <code class="font-mono text-primary">useM3Map</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMapLayers</code> &rarr; <code class="font-mono text-primary">useM3MapLayers</code></li>
