@@ -32,7 +32,9 @@ const types: TypeDef[] = [
     <h1 class="mb-2 text-headline-large font-medium">useTheme</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
       Light, dark or system color scheme. The choice is saved in localStorage and applied as the
-      <code>dark</code> class on <code>&lt;html&gt;</code>, which every component and token follows.
+      <code>dark</code> class on <code>&lt;html&gt;</code>, which every component and token follows. Several apps on
+      one domain under different paths keep their own with <code>createM3UI({ storagePrefix })</code> (see
+      <RouterLink to="/composables/usecolorpalette" class="text-primary underline">useColorPalette</RouterLink>).
     </p>
 
     <ComponentDemo

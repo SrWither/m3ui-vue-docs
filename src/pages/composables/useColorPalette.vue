@@ -138,6 +138,25 @@ app.use(createM3UI({ palette: 'teal', persistPalette: false }))`"
       </MCard>
     </ComponentDemo>
 
+    <ComponentDemo
+      title="Several apps on one domain"
+      description="The choices live in localStorage (and cookies with cookies: true), which belong to the whole origin: two apps at example.com/admin and example.com/shop would share one theme and palette. Give each one its own storagePrefix and every key becomes <prefix>-m3-…: theme, palette, seed, contrast, recent colors and emoji."
+      :code="`// example.com/admin
+app.use(createM3UI({ palette: 'teal', storagePrefix: 'admin' })) // admin-m3-theme, admin-m3-palette…
+
+// example.com/shop
+app.use(createM3UI({ palette: 'red', storagePrefix: 'shop' }))
+
+// server-rendered: the same prefix for the head script and the viewport cookie
+themeInitScript({ palette: 'red', storagePrefix: 'shop' })
+viewportFromHeaders(request.headers, { storagePrefix: 'shop' })`"
+    >
+      <MCard variant="filled" class="p-4 text-body-medium text-on-surface-variant">
+        Apps on different subdomains (admin.example.com, shop.example.com) are already separate origins and never
+        share them.
+      </MCard>
+    </ComponentDemo>
+
     <h3 class="mb-3 mt-6 text-title-large font-medium">API</h3>
     <TypesTable :types="types" />
 
