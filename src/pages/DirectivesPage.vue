@@ -12,6 +12,7 @@ const directives = [
   { name: 'v-swipe', description: 'Run a function when an element is swiped left, right, up or down.' },
   { name: 'v-click-outside', description: 'Run a function when a press lands outside an element, to close your own panels.' },
   { name: 'v-skeleton', description: 'The real element becomes its own loading placeholder, keeping its size.' },
+  { name: 'v-sparkle', description: 'Little stars twinkle over an element, to draw the eye to something new or special.' },
   { name: 'v-reveal', description: 'Elements fade or slide in as they scroll into view, cascading through a list.' },
 ]
 </script>

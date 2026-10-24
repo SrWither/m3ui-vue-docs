@@ -23,6 +23,7 @@ const versions: Version[] = [
         'useConfetti duration: a rain or a fountain that keeps going as long as you say, or until you stop it',
         'useFireworks: rockets that burst the classic way, sparks trailing streaks that fall as they fade, or into rings, hearts and flowers',
         'useReactions: an emoji or icon floats up swaying, like reactions over a live stream',
+        'v-sparkle: stars twinkle over an element to draw the eye to something new, always or on hover',
       ],
       fixed: [
         'Filled multiline MTextField: text scrolled up stays below the label instead of running behind it',
