@@ -30,6 +30,7 @@ const groups = [
       { name: 'useSpring', description: 'Animate numbers on a real spring, with Material 3\'s motion specs, like the components do.' },
       { name: 'useScrollReveal', description: 'Reveal elements in refs as they scroll into view (the engine behind v-reveal).' },
       { name: 'useConfetti', description: 'A burst of confetti in expressive shapes and your theme\'s colors, for the end of a flow.' },
+      { name: 'useFireworks', description: 'Rockets that burst into rings, hearts and flowers of sparks in your theme\'s colors, for the big moments.' },
       { name: 'useContainerTransform', description: 'Opens one MContainerTransform from many elements (a grid of cards, one detail view).' },
       { name: 'useFieldBg', description: 'Detect the background behind a field so an outlined label can cut through its border.' },
     ],
