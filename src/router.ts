@@ -132,6 +132,11 @@ const router = createRouter({
       meta: { title: 'Map components' },
     },
     {
+      path: '/components/media',
+      component: () => import('./pages/MediaPage.vue'),
+      meta: { title: 'Media components' },
+    },
+    {
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
       meta: { title: 'Examples' },

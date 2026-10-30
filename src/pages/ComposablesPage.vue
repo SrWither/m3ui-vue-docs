@@ -44,6 +44,12 @@ const groups = [
       { name: 'useMapFilter', description: 'Filter a map layer on top of the filter its style already has: ranges, dates, searches.' },
     ],
   },
+  {
+    title: 'Media (from /media)',
+    items: [
+      { name: 'useMediaPlayer', description: 'The state and controls of an audio or video element, or of a clock for anything else that plays, with the lock screen\'s controls.' },
+    ],
+  },
 ]
 </script>
 
