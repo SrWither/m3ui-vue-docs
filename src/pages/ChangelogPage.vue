@@ -22,6 +22,8 @@ const versions: Version[] = [
         'Media components (from /media): MVideoPlayer, a video player after Media3\'s, with subtitles, chapters, gestures (double tap to skip, hold for 2×), keyboard shortcuts, full screen, picture in picture and HLS; it can also play anything you draw, over a clock',
         'MAudioPlayer: a mini player card or a full player with shuffle, repeat, speed and volume',
         'useMediaPlayer: the state and controls of an audio or video element (or a clock) for a player of your own, with the lock screen\'s media controls',
+        'PDF components (from /pdf): MPdfViewer, a PDF viewer with search, thumbnails, the outline, zoom and pinch, and annotations you keep as JSON: highlights, notes, drawings, and an eraser you drag (or your stylus\'s eraser end)',
+        'usePdf: load a PDF for a viewer of your own, with thumbnails and a search through the whole document',
         'MIconButton iconSize: set the icon\'s size yourself',
       ],
     },

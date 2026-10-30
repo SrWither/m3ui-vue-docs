@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invoice INV-2026-0142</title>
+<style>
+  @page { size: A4; margin: 18mm; }
+  body { font-family: 'Helvetica Neue', 'DejaVu Sans', sans-serif; font-size: 10pt; color: #1c1b1f; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1mm solid #6750a4; padding-bottom: 6mm; }
+  .brand { font-size: 20pt; font-weight: 700; color: #6750a4; }
+  h1 { font-size: 26pt; margin: 0; text-align: right; color: #1c1b1f; }
+  .muted { color: #625b71; }
+  .grid { display: flex; justify-content: space-between; margin: 8mm 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 4mm; }
+  th { text-align: left; background: #f3edf7; padding: 3mm; font-size: 9pt; color: #49454f; }
+  td { padding: 3mm; border-bottom: 0.3mm solid #e6e0e9; }
+  td.num, th.num { text-align: right; }
+  .totals { margin-left: auto; width: 70mm; margin-top: 6mm; }
+  .totals div { display: flex; justify-content: space-between; padding: 1.5mm 0; }
+  .totals .grand { border-top: 0.5mm solid #1c1b1f; font-weight: 700; font-size: 12pt; padding-top: 3mm; }
+  footer { margin-top: 18mm; font-size: 9pt; color: #625b71; }
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand">Lattice Studio</div><div class="muted">Design and illustration<br>412 Harbour Lane, Unit 3<br>hello@lattice.studio</div></div>
+  <div><h1>Invoice</h1><div class="muted" style="text-align:right">INV-2026-0142<br>Issued 14 October 2026<br>Due 13 November 2026</div></div>
+</header>
+<div class="grid">
+  <div><strong>Billed to</strong><br>Greenway Cooperative<br>Attn. Mara Ellison<br>88 Orchard Road<br>accounts@greenway.coop</div>
+  <div style="text-align:right"><strong>Project</strong><br>Pocket Gardens field guide<br>Second edition</div>
+</div>
+<h2 id="items" style="font-size:12pt">Items</h2>
+<table>
+  <tr><th>Description</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Amount</th></tr>
+  <tr><td>Cover illustration and lettering</td><td class="num">1</td><td class="num">$650.00</td><td class="num">$650.00</td></tr>
+  <tr><td>Chapter illustrations</td><td class="num">8</td><td class="num">$120.00</td><td class="num">$960.00</td></tr>
+  <tr><td>Layout and typesetting, 10 pages</td><td class="num">10</td><td class="num">$45.00</td><td class="num">$450.00</td></tr>
+  <tr><td>Revisions (two rounds)</td><td class="num">4 h</td><td class="num">$60.00</td><td class="num">$240.00</td></tr>
+  <tr><td>Print-ready PDF and web export</td><td class="num">1</td><td class="num">$120.00</td><td class="num">$120.00</td></tr>
+</table>
+<div class="totals">
+  <div><span>Subtotal</span><span>$2,420.00</span></div>
+  <div><span>Discount (cooperative, 10%)</span><span>−$242.00</span></div>
+  <div><span>Tax (8%)</span><span>$174.24</span></div>
+  <div class="grand"><span>Total due</span><span>$2,352.24</span></div>
+</div>
+<footer>
+  <p><strong>Payment.</strong> Bank transfer to Lattice Studio, reference INV-2026-0142, within 30 days. Thank you for working with us.</p>
+  <p>Questions about this invoice? Write to hello@lattice.studio. This is a sample document for <a href="https://m3ui.dev">m3ui.dev</a>; the businesses and people in it are fictional.</p>
+</footer>
+</body>
+</html>

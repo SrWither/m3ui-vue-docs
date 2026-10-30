@@ -224,6 +224,7 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMapLayers</code> &rarr; <code class="font-mono text-primary">useM3MapLayers</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMapFilter</code> &rarr; <code class="font-mono text-primary">useM3MapFilter</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMediaPlayer</code> &rarr; <code class="font-mono text-primary">useM3MediaPlayer</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">usePdf</code> &rarr; <code class="font-mono text-primary">useM3Pdf</code></li>
     </ul>
     <p class="mb-10 text-body-small text-on-surface-variant">
       The map composables, like the map components, only when <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">maplibre-gl</code> is installed.

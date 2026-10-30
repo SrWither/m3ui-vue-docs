@@ -137,6 +137,11 @@ const router = createRouter({
       meta: { title: 'Media components' },
     },
     {
+      path: '/components/pdf',
+      component: () => import('./pages/PdfPage.vue'),
+      meta: { title: 'PDF components' },
+    },
+    {
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
       meta: { title: 'Examples' },

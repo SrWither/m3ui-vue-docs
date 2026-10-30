@@ -50,6 +50,12 @@ const groups = [
       { name: 'useMediaPlayer', description: 'The state and controls of an audio or video element, or of a clock for anything else that plays, with the lock screen\'s controls.' },
     ],
   },
+  {
+    title: 'PDF (from /pdf)',
+    items: [
+      { name: 'usePdf', description: 'Load a PDF with pdf.js: pages, outline, metadata, text search, thumbnails, download and print.' },
+    ],
+  },
 ]
 </script>
 
