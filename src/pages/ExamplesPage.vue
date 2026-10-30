@@ -128,6 +128,25 @@ import { examples, exampleSource } from '@/examples/registry'
             </span>
           </div>
           <!-- Three dishes, each cut into a shape and wearing its own color -->
+          <div v-else-if="e.id === 'files'" class="absolute inset-[12%] flex overflow-hidden rounded-2xl bg-surface-container shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- The drive: a sidebar, folders, and file cards with a PDF page, a photo and a film -->
+            <span class="flex w-[24%] flex-col gap-[6%] p-[4%]">
+              <span class="h-[12%] w-[70%] rounded-lg bg-primary-container" />
+              <span v-for="n in 4" :key="n" class="h-[6%] rounded-full" :class="n === 1 ? 'bg-secondary-container' : 'bg-on-surface/10'" />
+            </span>
+            <span class="m-[3%] ml-0 flex flex-1 flex-col gap-[5%] rounded-xl bg-surface p-[4%]">
+              <span class="flex h-[14%] gap-[4%]">
+                <span v-for="c in ['#4CAF50', '#FFB300', '#29B6F6']" :key="c" class="flex flex-1 items-center gap-[8%] rounded-lg bg-surface-container px-[5%]"><span class="aspect-square h-1/2 rounded-sm" :style="{ background: c }" /><span class="h-[14%] flex-1 rounded-full bg-on-surface/15" /></span>
+              </span>
+              <span class="flex flex-1 gap-[4%]">
+                <span class="flex flex-1 flex-col rounded-lg bg-surface-container p-[4%] transition-transform duration-300 group-hover:-translate-y-0.5">
+                  <span class="flex flex-1 flex-col gap-[6%] rounded bg-white p-[8%]"><span class="h-[10%] w-3/4 rounded-sm bg-[#24502f]" /><span v-for="n in 4" :key="n" class="h-[5%] rounded-sm bg-black/15" /><span class="h-[5%] w-1/2 rounded-sm bg-[#FFE14D]" /></span>
+                </span>
+                <span class="flex flex-1 flex-col rounded-lg bg-surface-container p-[4%]"><span class="flex-1 rounded bg-gradient-to-b from-[#9fd3ff] to-[#4f9a5a]" /></span>
+                <span class="flex flex-1 flex-col rounded-lg bg-surface-container p-[4%]"><span class="flex flex-1 items-center justify-center rounded bg-gradient-to-br from-[#5b3d7a] to-[#1d1b2e]"><span class="aspect-square w-1/3 rounded-full bg-white/40" /></span></span>
+              </span>
+            </span>
+          </div>
           <div v-else-if="e.id === 'recipes'" class="absolute inset-[12%] flex items-center justify-center gap-[4%] rounded-2xl bg-surface p-[5%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span v-for="(d, i) in [{ s: 'Cookie9Sided', c: '#c8432b', b: '#ffdad3' }, { s: 'Clover4Leaf', c: '#e5b92c', b: '#ffefc2' }, { s: 'Sunny', c: '#3b4ca0', b: '#dee0ff' }] as const" :key="i" class="relative flex aspect-[3/4] flex-1 flex-col items-center gap-[8%] rounded-xl p-[6%]" :style="{ background: d.b }">
               <MShape :shape="d.s" class="aspect-square w-full transition-transform duration-500 group-hover:rotate-12" :fill="d.c" />

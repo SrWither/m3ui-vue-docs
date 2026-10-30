@@ -135,6 +135,15 @@ export const examples: ExampleApp[] = [
     uses: ['generateScheme', 'MShape', 'MCarousel', 'MList', 'MCircleProgressBar', 'MLoadingIndicator', 'MSwipeToDismiss', 'MBottomSheet', 'MNavigationRail', 'MShortNavigationBar', 'MProgressBar', 'useToast'],
     component: () => import('./recipes/RecipesExample.vue'),
   },
+  {
+    id: 'files',
+    title: 'Files',
+    description:
+      'A cloud drive where every file opens for real: PDFs you search, zoom and annotate with highlights, notes and drawings, videos and music that play, and photos in a lightbox. Folders, recent, starred and trash with undo, grid or list, multi-select, right-click menus and drag-and-drop uploads.',
+    icon: 'folder_open',
+    uses: ['MPdfViewer', 'MVideoPlayer', 'MAudioPlayer', 'usePdf', 'MNavigationDrawer', 'MBreadcrumbs', 'MSegmentedButton', 'MContextMenu', 'MLightbox', 'MSideSheet', 'MChip', 'useToast'],
+    component: () => import('./files/FilesExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`

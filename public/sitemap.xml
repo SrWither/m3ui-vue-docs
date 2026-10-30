@@ -829,6 +829,10 @@
     <lastmod>2026-10-30</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/composables/usepdf</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/composables/usereactions</loc>
     <lastmod>2026-10-30</lastmod>
   </url>
@@ -954,6 +958,10 @@
   </url>
   <url>
     <loc>https://m3ui.dev/examples/recipes</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/examples/files</loc>
     <lastmod>2026-10-30</lastmod>
   </url>
 </urlset>
