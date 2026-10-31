@@ -55,7 +55,7 @@ const setField = (key: string, value: unknown) => set({ config: { ...props.node.
     <footer class="flex gap-2 border-t border-outline-variant px-4 py-3">
       <MButton variant="text" icon="content_copy" @click="emit('duplicate')">Duplicate</MButton>
       <span class="flex-1" />
-      <MButton variant="text" icon="delete" class="text-error!" @click="emit('delete')">Delete</MButton>
+      <MButton variant="text" icon="delete" color="error" @click="emit('delete')">Delete</MButton>
     </footer>
   </div>
 </template>

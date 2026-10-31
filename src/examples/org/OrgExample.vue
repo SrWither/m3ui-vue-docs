@@ -149,7 +149,8 @@ function onInit(f: FlowContext) {
               :key="d.id"
               type="filter"
               :selected="org.filter.value === d.id"
-              class="shrink-0 bg-surface!"
+              elevated
+              class="shrink-0"
               @update:selected="(on) => (org.filter.value = on ? d.id : null)"
             >{{ d.id }}</MChip>
             <span class="flex-1" />

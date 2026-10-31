@@ -27,7 +27,7 @@ const openSource = () => window.open(exampleSource('automations'), '_blank', 'no
     />
     <span v-if="wide" class="flex-1" />
     <MTooltip text="Tidy up" placement="bottom"><MIconButton icon="account_tree" label="Tidy up" @click="emit('tidy')" /></MTooltip>
-    <MButton :loading="w.running.value" icon="play_arrow" :class="!wide && 'px-3!'" @click="emit('run')">{{ wide ? 'Test run' : 'Run' }}</MButton>
+    <MButton :loading="w.running.value" icon="play_arrow" @click="emit('run')">{{ wide ? 'Test run' : 'Run' }}</MButton>
     <MTooltip :text="`Theme: ${theme}`" placement="bottom"><MIconButton :icon="themeIcon" :label="`Theme: ${theme}`" @click="cycle" /></MTooltip>
     <MTooltip text="Back to the docs" placement="bottom"><MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" /></MTooltip>
     <MTooltip text="View source on GitHub" placement="bottom"><MIconButton icon="code" label="View source on GitHub" @click="openSource" /></MTooltip>
