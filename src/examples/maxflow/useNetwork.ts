@@ -15,7 +15,7 @@ const frames = shallowRef<Frame[]>([])
 const index = ref(0)
 
 function load(p: Preset) {
-  presetId.value = p.id
+  presetId.value = p.id === 'random' ? `random-${Date.now()}` : p.id
   frames.value = []
   nodes.value = p.nodes.map((n) => ({
     id: n.id,

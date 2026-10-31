@@ -6,7 +6,8 @@
 import { computed } from 'vue'
 import { MAnimatedNumber, MButton, MDivider, MIcon, MIconButton, MNumberField, MProgressBar, MSlider, MTextField } from '@m3ui-vue/m3ui-vue'
 import type { FlowEdge, FlowNode } from '@m3ui-vue/m3ui-vue/flow'
-import { presets } from '../presets'
+import { ref } from 'vue'
+import { presets, randomPreset } from '../presets'
 import { useNetwork, type EdgeData, type VertexData } from '../useNetwork'
 
 const props = defineProps<{ playing: boolean; speed: number; selectedNode?: FlowNode<VertexData>; selectedEdge?: FlowEdge<EdgeData> }>()
@@ -19,8 +20,17 @@ const emit = defineEmits<{
   add: []
 }>()
 const n = useNetwork()
-const preset = computed(() => presets.find((p) => p.id === n.presetId.value))
+const lastRandom = ref<ReturnType<typeof randomPreset> | null>(null)
+const preset = computed(() => presets.find((p) => p.id === n.presetId.value) ?? (n.presetId.value.startsWith('random') ? lastRandom.value : undefined))
 const label = (id: string) => n.nodes.value.find((x) => x.id === id)?.data?.label ?? id
+// Random networks: how many vertices, how many extra edges, how big the capacities
+const size = ref(8)
+const density = ref(0.5)
+const maxCap = ref(20)
+function generate() {
+  lastRandom.value = randomPreset({ vertices: size.value, density: density.value, maxCapacity: maxCap.value })
+  n.load(lastRandom.value)
+}
 const atEnd = computed(() => n.index.value >= n.frames.value.length - 1)
 </script>
 
@@ -90,6 +100,12 @@ const atEnd = computed(() => n.index.value >= n.frames.value.length - 1)
         <li>Delete removes what's selected; Ctrl+Z undoes.</li>
       </ul>
       <MButton variant="tonal" icon="add_circle" class="self-start" @click="emit('add')">Add a vertex</MButton>
+      <MDivider />
+      <div class="text-title-small">Random network</div>
+      <MSlider v-model="size" :min="3" :max="20" :step="1" label="Vertices" show-value />
+      <MSlider v-model="density" :min="0" :max="1" :step="0.1" label="Extra edges" show-value />
+      <MSlider v-model="maxCap" :min="1" :max="50" :step="1" label="Max capacity" show-value />
+      <MButton variant="tonal" icon="casino" class="self-start" @click="generate">Generate</MButton>
     </template>
   </div>
 </template>

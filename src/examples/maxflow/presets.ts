@@ -90,3 +90,45 @@ export const presets: Preset[] = [
     ],
   },
 ]
+
+/**
+ * A random network: the inner vertices in columns between the source and the sink, every one reachable from the
+ * source and reaching the sink, then extra edges (forwards, and a few backwards or within a column) up to `density`
+ * (0–1) of what's possible, capacities 1 to `maxCapacity`.
+ */
+export function randomPreset(opts: { vertices: number; density: number; maxCapacity: number }): Preset {
+  const n = Math.max(2, Math.round(opts.vertices))
+  const columns = Math.max(1, Math.round(Math.sqrt(n)))
+  const cols: string[][] = Array.from({ length: columns }, () => [])
+  const nodes: Preset['nodes'] = [{ id: 's', label: 's', x: 0, y: 0 }]
+  for (let i = 0; i < n; i++) cols[i % columns]!.push(`r${i}`)
+  cols.forEach((c, ci) => c.forEach((id, ri) => nodes.push({ id, label: `v${nodes.length}`, x: (ci + 1) * 200, y: (ri - (c.length - 1) / 2) * 130 + (ci % 2) * 30 })))
+  nodes.push({ id: 't', label: 't', x: (columns + 1) * 200, y: 0 })
+  nodes[0]!.y = 0
+  const cap = () => 1 + Math.floor(Math.random() * opts.maxCapacity)
+  const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)]!
+  const keys = new Set<string>()
+  const edges: Preset['edges'] = []
+  const add = (a: string, b: string) => {
+    if (a === b || keys.has(`${a}>${b}`) || keys.has(`${b}>${a}`)) return
+    keys.add(`${a}>${b}`)
+    edges.push([a, b, cap()])
+  }
+  // Everyone gets a way in from the column before and a way out to the column after
+  cols.forEach((c, ci) => c.forEach((id) => {
+    add(ci === 0 ? 's' : pick(cols[ci - 1]!), id)
+    add(id, ci === columns - 1 ? 't' : pick(cols[ci + 1]!))
+  }))
+  const all = ['s', ...cols.flat(), 't']
+  const target = Math.round(edges.length + opts.density * n * 1.5)
+  for (let tries = 0; edges.length < target && tries < 500; tries++) {
+    const a = pick(all.slice(0, -1))
+    const b = pick(all.slice(1))
+    const ca = cols.findIndex((c) => c.includes(a))
+    const cb = cols.findIndex((c) => c.includes(b))
+    // Mostly one column onwards; sometimes within a column or one back (so paths can cancel flow)
+    const ok = a === 's' ? cb === 0 : b === 't' ? ca === columns - 1 : cb - ca === 1 || (Math.random() < 0.25 && Math.abs(cb - ca) <= 1)
+    if (ok) add(a, b)
+  }
+  return { id: 'random', name: 'Random', description: `A random network of ${n} inner vertices and ${edges.length} edges, capacities up to ${opts.maxCapacity}. Generate another, or edit it.`, nodes, edges }
+}

@@ -28,7 +28,7 @@ const selectedNode = computed(() => (selection.value.nodes.length === 1 ? n.node
 const selectedEdge = computed(() => (!selectedNode.value && selection.value.edges.length === 1 ? n.edges.value.find((x) => x.id === selection.value.edges[0]) : undefined))
 const sheetOpen = ref(false)
 
-watch(() => n.presetId.value, (id) => { if (id) setTimeout(() => flow.value?.fitView(), 50) })
+watch(() => n.nodes.value.length && n.presetId.value, (id) => { if (id) setTimeout(() => flow.value?.fitView(), 50) })
 watch(n.running, (r) => {
   if (r) selection.value = { nodes: [], edges: [] }
   playing.value = false
