@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.1',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'MPdfViewer: the picked color in the annotation toolbar no longer looks jagged in Firefox',
+      ],
+    },
+  },
+  {
     version: '1.3.0',
     date: '2026-10-31',
     changes: {
