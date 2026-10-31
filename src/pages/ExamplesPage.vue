@@ -201,6 +201,18 @@ import { examples, exampleSource } from '@/examples/registry'
               <circle cx="86" cy="30" r="6" class="fill-surface-container-highest transition-colors duration-300 group-hover:fill-primary" />
             </svg>
           </div>
+          <div v-else-if="e.id === 'sketchbook'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A ruled page with a heading, a highlighted line and a brush stroke being drawn -->
+            <svg viewBox="0 0 100 60" class="absolute inset-0 size-full">
+              <rect x="22" y="4" width="56" height="52" rx="2" fill="#fffdf8" />
+              <path v-for="i in 6" :key="i" :d="`M26 ${14 + i * 6.5} H74`" stroke="rgba(30,90,200,.25)" stroke-width="0.4" />
+              <rect x="26" y="7" width="22" height="3.5" rx="1.5" class="fill-primary" />
+              <rect x="26" y="24" width="30" height="4" fill="#fdd835" opacity="0.5" />
+              <path d="M27 25.5 q3 -2 6 0 t6 0 t6 0 t6 0" fill="none" stroke="#1d1b20" stroke-width="0.8" />
+              <path d="M27 38 q3 -2 6 0 t6 0 t6 0 t6 0 t6 0 t6 0" fill="none" stroke="#1d1b20" stroke-width="0.8" />
+              <path d="M30 50 C40 40 50 56 70 44" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round" class="transition-[stroke-dashoffset] duration-500 [stroke-dasharray:60] [stroke-dashoffset:0] group-hover:[stroke-dashoffset:60]" />
+            </svg>
+          </div>
           <div v-else-if="e.id === 'roadmap'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <!-- A Gantt chart: a list on the left, bars stepping down to a milestone, today's line -->
             <span class="absolute inset-y-0 left-0 w-[24%] border-r border-outline-variant bg-surface-container-low" />

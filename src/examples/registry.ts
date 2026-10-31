@@ -198,6 +198,15 @@ export const examples: ExampleApp[] = [
     uses: ['MFlow', 'MFlowHandle', 'MFlowControls', 'MFlowMinimap', 'MSwitch', 'MSegmentedButton', 'MSelect', 'MMenu', 'MSideSheet', 'useToast'],
     component: () => import('./circuits/CircuitsExample.vue'),
   },
+  {
+    id: 'sketchbook',
+    title: 'Sketchbook',
+    description:
+      'Boards and notebooks to draw and write in: pens that follow a stylus\' pressure, an eraser that cuts strokes (and the pen\'s eraser end), shapes, text, a lasso, layers, ruled or squared paper, a photo to trace, PNG and SVG export. Kept in your browser.',
+    icon: 'draw',
+    uses: ['MDrawCanvas', 'MDrawToolbar', 'MDrawLayers', 'MMenu', 'MSideSheet', 'useToast'],
+    component: () => import('./sketchbook/SketchbookExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
