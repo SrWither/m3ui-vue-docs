@@ -42,7 +42,7 @@ const order = [
 ]
 const label = (section) => sectionLabels[section.replace(/^components\//, '')]
 // A directive page is named as it's written in templates ('v-ripple'); its export is 'vRipple'.
-const apiName = (name) => name.replace(/^v-(\w)/, (_, c) => `v${c.toUpperCase()}`)
+const apiName = (name) => name.replace(/-(\w)/g, (_, c) => c.toUpperCase())
 
 const decode = (s) => s
   .replace(/<code[^>]*>([\s\S]*?)<\/code>/g, '`$1`')
