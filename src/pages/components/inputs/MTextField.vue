@@ -26,6 +26,11 @@ function onDebounced(v: string) {
 const textRequired = ref('')
 const textTrailing = ref('Hello')
 
+const textFieldExposed: PropDef[] = [
+  { name: 'focus(options?) / blur()', type: 'function', description: 'Focus the field, or take focus away' },
+  { name: 'select() / setSelectionRange(start, end)', type: 'function', description: 'Select all its text, or part of it (a file name without its extension)' },
+  { name: 'inputEl', type: 'HTMLInputElement | HTMLTextAreaElement', description: 'The element itself. MNumberField, MMaskField and MTagInput expose the same (MNumberField without setSelectionRange)' },
+]
 const textFieldProps: PropDef[] = [
   { name: 'modelValue', type: 'string | number', description: 'Bound value (v-model)' },
   { name: 'label', type: 'string', description: 'Field label' },
@@ -200,6 +205,9 @@ function fetchResults(value: string) {
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Slots</h3>
     <SlotsTable :slots="textFieldSlots" />
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Exposed</h3>
+    <PropsTable :props="textFieldExposed" />
 
     <ComponentPager current="MTextField" />
   </div>

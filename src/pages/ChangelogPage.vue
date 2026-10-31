@@ -36,6 +36,7 @@ const versions: Version[] = [
         'MDrawToolbar, MDrawLayers and useDrawing: the tools, colors (any, with a color picker), sizes and undo toolbar, the layers panel, and the canvas\' controls for tools of your own',
         'MImageCropper: crop a picture to a frame you drag and resize, at an aspect or free, square or round for avatars; rotate, flip and export it as a file',
         'MIconButton iconSize: set the icon\'s size yourself',
+        'MTextField, MNumberField, MMaskField and MTagInput: focus them and select their text from code (focus, select, setSelectionRange)',
       ],
     },
   },

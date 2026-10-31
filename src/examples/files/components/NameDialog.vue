@@ -8,16 +8,15 @@ const props = defineProps<{ title: string; action: string; initial: string }>()
 const emit = defineEmits<{ submit: [string] }>()
 
 const name = ref('')
-const field = ref<HTMLElement>()
+const field = ref<InstanceType<typeof MTextField>>()
 watch(open, async (o) => {
   if (!o) return
   name.value = props.initial
   await nextTick()
-  const input = field.value?.querySelector('input')
-  if (!input) return
-  input.focus()
+  // The name without its extension selected, ready to type over
+  field.value?.focus()
   const dot = props.initial.lastIndexOf('.')
-  input.setSelectionRange(0, dot > 0 ? dot : props.initial.length)
+  field.value?.setSelectionRange(0, dot > 0 ? dot : props.initial.length)
 })
 function submit() {
   if (!name.value.trim()) return
@@ -28,8 +27,8 @@ function submit() {
 
 <template>
   <MDialog v-model="open" :title="title" max-width="max-w-[400px]">
-    <form ref="field" @submit.prevent="submit">
-      <MTextField v-model="name" label="Name" variant="outlined" class="w-full" />
+    <form @submit.prevent="submit">
+      <MTextField ref="field" v-model="name" label="Name" variant="outlined" class="w-full" />
     </form>
     <template #actions>
       <MButton variant="text" @click="open = false">Cancel</MButton>
