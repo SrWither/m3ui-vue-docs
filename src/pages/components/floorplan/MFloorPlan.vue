@@ -109,7 +109,7 @@ const props: PropDef[] = [
   { name: 'v-model:decor', type: 'FloorDecor[]', default: '[]', description: 'Doors, windows, plants, columns, restroom, kitchen, register, stairs, text, and kinds of yours; editing drags, resizes (corner) and turns them (handle)' },
   { name: 'v-model:tool', type: "'select' | 'wall' | 'area'", default: "'select'", description: 'Editing: select moves things (Delete removes a picked zone, wall or decor); wall draws one corner per click (double-click or Enter ends, Escape cancels); area drags out a zone' },
   { name: 'statuses', type: 'Record<string, FloorStatus>', default: 'free, occupied, bill, reserved', description: 'Your statuses: a color (an M3 role like primary or tertiary, or any CSS color), an icon, a name' },
-  { name: 'editable', type: 'boolean', default: 'false', description: 'Drag tables (several when selected), turn them by the handle, nudge with the arrows (Shift: 5 steps); Delete, Ctrl+D duplicates, Ctrl+Z / Ctrl+Shift+Z undo and redo' },
+  { name: 'editable', type: 'boolean', default: 'false', description: 'Drag tables (several when selected; by touch, hold one down to add it), turn them by the handle, nudge with the arrows (Shift: 5 steps); Delete, Ctrl+D duplicates, Ctrl+Z / Ctrl+Shift+Z undo and redo' },
   { name: 'width / height', type: 'number', default: '1000 / 600', description: "The plan's size in plan units; it scales to the component's width" },
   { name: 'grid', type: 'number', default: '10', description: 'Snapping step in plan units (0: none)' },
   { name: 'showGrid', type: 'boolean', default: 'true', description: 'Dots on the grid while editing' },
