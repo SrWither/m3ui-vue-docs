@@ -38,6 +38,9 @@ const SECTIONS = {
   editors: 'EditorsPage.vue',
   advanced: 'AdvancedPage.vue',
   map: 'MapPage.vue',
+  media: 'MediaPage.vue',
+  pdf: 'PdfPage.vue',
+  flow: 'FlowPage.vue',
 }
 
 const DEFAULT_DESCRIPTION =
