@@ -35,7 +35,8 @@ const hidden = computed(() => {
 
 /**
  * The chart's nodes: one per person, hidden under a folded manager. Positions belong to MFlow's tree layout, so
- * existing nodes keep theirs; a new or unfolded person starts where their manager is and springs out from there.
+ * existing nodes keep theirs; a new or unfolded person appears where their manager is (MFlow shows a node that
+ * was hidden right at its position) and springs out from there to its place in the tree, fading in (`crew-node`).
  */
 const nodes = shallowRef<FlowNode<Person>[]>([])
 function syncNodes() {
@@ -43,9 +44,12 @@ function syncNodes() {
   nodes.value = people.value.map((p) => {
     const old = prev.get(p.id)
     const isHidden = hidden.value.has(p.id)
-    const from = (p.managerId && prev.get(p.managerId)?.position) || { x: 0, y: 0 }
+    // The nearest manager up the chain that was showing (unfolding several levels at once)
+    let m = p.managerId ? prev.get(p.managerId) : undefined
+    for (let i = 0; m?.hidden && i < 50; i++) m = m.data?.managerId ? prev.get(m.data.managerId) : undefined
+    const from = m?.position ?? { x: 0, y: 0 }
     const position = old && !old.hidden ? old.position : { ...from }
-    return { id: p.id, type: 'person', position, data: p, hidden: isHidden || undefined, connectable: false }
+    return { id: p.id, type: 'person', position, data: p, hidden: isHidden || undefined, connectable: false, class: 'crew-node' }
   })
 }
 syncNodes()
@@ -59,6 +63,17 @@ function toggle(id: string) {
   else s.add(id)
   collapsed.value = s
   syncNodes()
+}
+/**
+ * Before folding a team: everyone in it springs into their manager's spot and fades (MFlow springs any position
+ * set from outside), so the team folds into the card instead of vanishing. Resolves when it has.
+ */
+function gather(id: string): Promise<void> {
+  const at = nodes.value.find((n) => n.id === id)?.position
+  const members = new Set(team(id))
+  if (!at || !members.size) return Promise.resolve()
+  nodes.value = nodes.value.map((n) => (members.has(n.id) && !n.hidden ? { ...n, position: { ...at }, class: 'crew-node crew-leaving' } : n))
+  return new Promise((resolve) => setTimeout(resolve, 280))
 }
 function expandAll() {
   collapsed.value = new Set()
@@ -85,5 +100,5 @@ function reassign(id: string, managerId: string): boolean {
 }
 
 export function useOrg() {
-  return { people, byId, reports, team, chain, nodes, edges, collapsed, filter, focusId, toggle, expandAll, collapseAll, reveal, reassign }
+  return { people, byId, reports, team, chain, nodes, edges, collapsed, filter, focusId, toggle, gather, expandAll, collapseAll, reveal, reassign }
 }

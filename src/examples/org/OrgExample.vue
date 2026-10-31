@@ -63,8 +63,16 @@ function open(id: string) {
 }
 // Folding or unfolding someone's team lays the chart out again, which would move their card: the view moves the
 // other way, with the same spring the nodes use, so the card stays put on screen while the rest settles around it
-function toggle(id: string) {
+const folding = new Set<string>()
+async function toggle(id: string) {
+  if (folding.has(id)) return
   const before = flow.value?.getAbsolutePosition(id)
+  // Folding: the team gathers into the card first, then hides
+  if (!org.collapsed.value.has(id)) {
+    folding.add(id)
+    await org.gather(id)
+    folding.delete(id)
+  }
   org.toggle(id)
   afterLayout((f) => {
     const after = org.nodes.value.find((n) => n.id === id)?.position
@@ -175,3 +183,20 @@ function onInit(f: FlowContext) {
     </MSideSheet>
   </div>
 </template>
+
+<style>
+/* People fade in as they appear (an unfolded team), and out as they fold into their manager */
+.crew-node {
+  animation: crew-in 300ms cubic-bezier(0.2, 0, 0, 1);
+  transition: opacity 250ms cubic-bezier(0.2, 0, 0, 1);
+}
+.crew-leaving {
+  opacity: 0;
+}
+@keyframes crew-in {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crew-node { animation: none; transition: none; }
+}
+</style>
