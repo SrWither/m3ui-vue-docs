@@ -34,6 +34,7 @@ const versions: Version[] = [
         'MGanttControls and useGantt: the zoom, today and undo toolbar, and the chart\'s controls from inside it; scheduleTasks and criticalPath to plan without the chart; import and export CSV, JSON and Microsoft Project files',
         'Drawing components (from /draw): MDrawCanvas, a canvas to sketch and write on with pens that follow a stylus\' pressure, an eraser that cuts strokes (and the pen\'s eraser end), shapes, text, a lasso to move and scale, layers and undo; endless or in pages with lines, grid or dots; fingers only pan and zoom once a stylus is used; export as SVG or PNG',
         'MDrawToolbar, MDrawLayers and useDrawing: the tools, colors (any, with a color picker), sizes and undo toolbar, the layers panel, and the canvas\' controls for tools of your own',
+        'MFloorPlan: a floor plan of tables for a restaurant or an event: arrange them by dragging, then run service with each table colored by a status of yours, with chairs, a badge and merged tables',
         'MImageCropper: crop a picture to a frame you drag and resize, at an aspect or free, square or round for avatars; rotate, flip and export it as a file',
         'MIconButton iconSize: set the icon\'s size yourself',
         'MTextField, MNumberField, MMaskField and MTagInput: focus them and select their text from code (focus, select, setSelectionRange)',
