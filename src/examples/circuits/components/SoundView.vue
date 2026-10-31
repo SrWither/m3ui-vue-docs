@@ -64,12 +64,26 @@ const keys = computed(() => {
   return { white, black }
 })
 const held = computed(() => (state.value.gate ? state.value.note : -1))
+// A click presses and releases within one frame, before the voice (applied once per frame) ever sees the key down:
+// a note lasts at least MIN_NOTE ms
+const MIN_NOTE = 140
+let pressedAt = 0
+let release = 0
 function play(note: number | null) {
-  c.poke(props.id, (st) => {
-    if (note === null) st.gate = 0
-    else Object.assign(st, { note, gate: 1 })
-  })
+  clearTimeout(release)
+  if (note === null) {
+    const left = MIN_NOTE - (performance.now() - pressedAt)
+    if (left > 0) {
+      release = window.setTimeout(() => play(null), left)
+      return
+    }
+    if (c.sim.state.get(props.id)?.gate) c.poke(props.id, (st) => (st.gate = 0))
+    return
+  }
+  pressedAt = performance.now()
+  c.poke(props.id, (st) => Object.assign(st, { note, gate: 1 }))
 }
+onBeforeUnmount(() => clearTimeout(release))
 const KEYMAP = 'zsxdcvgbhnjmq2w3er5t6y7u'
 let keyDown = ''
 function key(e: KeyboardEvent, down: boolean) {
@@ -87,9 +101,13 @@ function key(e: KeyboardEvent, down: boolean) {
 const press = (note: number) => ({
   onPointerdown: (e: PointerEvent) => {
     e.preventDefault()
-    ;(e.currentTarget as HTMLElement).closest<HTMLElement>('[data-piano]')?.focus()
-    ;(e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId)
+    const key = e.currentTarget as HTMLElement
     play(note)
+    key.closest<HTMLElement>('[data-piano]')?.focus()
+    // Let go of the implicit touch capture so sliding along plays each key (throws if there's none)
+    try {
+      if (key.hasPointerCapture(e.pointerId)) key.releasePointerCapture(e.pointerId)
+    } catch {}
   },
   // Sliding across the keys plays each one
   onPointerenter: (e: PointerEvent) => e.buttons & 1 && play(note),
