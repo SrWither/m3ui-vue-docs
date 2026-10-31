@@ -6,6 +6,7 @@ import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
 import { mask, resolve, same, widthOf, X, Z, type Sig } from './logic'
 import { partByKind, type Params, type PartDef, type Pin } from './parts'
 import { getCircuit, interfaceNodes, type PartData, type PartNode } from './library'
+import { applyOp, type PokeOp } from './ops'
 
 export type { PartData, PartNode }
 
@@ -330,11 +331,52 @@ export class Simulator {
   }
 
   /** Changes a part's state (a switch flipped, a button pressed, a RAM word edited) and propagates it */
-  poke(id: string, change: (state: any) => void) {
+  poke(id: string, op: PokeOp) {
     const st = this.state.get(id)
     if (!st) return
-    change(st)
+    applyOp(st, op)
     this.settle([id])
+  }
+
+  // ── Handing the simulation to a Worker and back ──
+  /**
+   * The parts' states and every signal, to rebuild this simulation elsewhere (full) or to show it (light: no ROM
+   * cells, no RAM words, a screen's pixels only when they changed). Structured-cloneable.
+   */
+  exportState(full: boolean) {
+    const states: Record<string, any> = {}
+    for (const [id, st] of this.state) {
+      if (full) {
+        states[id] = st
+        continue
+      }
+      const copy: any = {}
+      for (const k in st) {
+        if (k === 'cells' || k === 'mem' || k === 'back') continue
+        if (k === 'front' && !st.dirty) continue
+        copy[k] = st[k]
+      }
+      states[id] = copy
+    }
+    return { states, vals: this.vals, oscillating: this.oscillating }
+  }
+  /** Takes in what exportState gave (after building the same circuit) */
+  importState(data: { states: Record<string, any>; vals: Sig[]; oscillating?: boolean }) {
+    for (const [id, s] of Object.entries(data.states)) {
+      const p = this.index.get(id)
+      const st = this.state.get(id)
+      if (!st || p === undefined) continue
+      Object.assign(st, s)
+    }
+    if (data.vals.length === this.vals.length) this.vals = data.vals
+    this.oscillating = !!data.oscillating
+  }
+  /** After a light export has been sent: what it carried once (new pixels, PCM samples) isn't sent again */
+  drain() {
+    for (const st of this.state.values()) {
+      if (st.dirty) st.dirty = false
+      if (st.queue && 'level' in st) st.queue = []
+    }
   }
   /** Half a clock period: every clock flips */
   tick() {

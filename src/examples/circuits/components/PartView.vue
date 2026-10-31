@@ -32,7 +32,7 @@ const isOne = (s?: Sig) => !!s && known(s) && s.v !== 0
 const tone = (s?: Sig) => (!s || (!s.k && !s.e) ? 'text-secondary' : s.e ? 'text-error' : '')
 
 // ── Interaction ─────────────────────────────────────────────────────────────────────────────────────────
-const setValue = (v: number) => c.poke(props.id, (st) => (st.value = v >>> 0))
+const setValue = (v: number) => c.poke(props.id, { set: { value: v >>> 0 } })
 const flipBit = (i: number) => setValue((state.value.value ?? 0) ^ (2 ** i))
 function press(on: boolean) {
   if ((state.value.value ?? 0) !== +on) setValue(+on)

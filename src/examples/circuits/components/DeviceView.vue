@@ -47,7 +47,7 @@ function type(e: KeyboardEvent) {
   const code = e.key === 'Enter' ? 10 : e.key === 'Backspace' ? 8 : e.key === 'Tab' ? 9 : e.key === 'Escape' ? 27 : e.key.length === 1 ? e.key.charCodeAt(0) : -1
   if (code < 0 || code > 127 || e.ctrlKey || e.metaKey) return
   e.preventDefault()
-  c.poke(props.id, (st) => st.queue.push(code))
+  c.poke(props.id, { push: ['queue', code] })
 }
 
 // ── Joypad ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -57,7 +57,7 @@ function hold(name: (typeof PAD_BUTTONS)[number], down: boolean) {
   const b = bit(name)
   const now = buttons.value
   const next = down ? now | b : now & ~b
-  if (next !== now) c.poke(props.id, (st) => (st.buttons = next))
+  if (next !== now) c.poke(props.id, { set: { buttons: next } })
 }
 const KEYS: Record<string, (typeof PAD_BUTTONS)[number]> = {
   ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right',
@@ -73,7 +73,7 @@ function key(e: KeyboardEvent, down: boolean) {
   if (!e.repeat) hold(name, down)
 }
 function releaseAll() {
-  if (buttons.value) c.poke(props.id, (st) => (st.buttons = 0))
+  if (buttons.value) c.poke(props.id, { set: { buttons: 0 } })
 }
 const DPAD = [
   { name: 'Up', icon: 'arrow_drop_up', cls: 'col-start-2 row-start-1' },

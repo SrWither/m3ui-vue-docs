@@ -6,12 +6,36 @@ export interface Sig { m: number; v: number; k: number; e: number }
 
 const u = (x: number) => x >>> 0
 export const mask = (width: number) => (width >= 32 ? 0xffffffff : 2 ** width - 1)
+// Signals never change once made, so the common ones are shared instead of allocated on every evaluation: every
+// fully known value up to 12 bits, and Z and X of each width. That keeps a clock tick nearly allocation-free and
+// lets `same()` answer most comparisons by identity.
+const INTERN_MAX = 0xfff
+const knownCache = new Map<number, Sig[]>()
+/** A fully known signal of mask `m` (shared for small buses) */
+export function knownSig(m: number, v: number): Sig {
+  if (m > INTERN_MAX) return { m, v, k: m, e: 0 }
+  let t = knownCache.get(m)
+  if (!t) knownCache.set(m, (t = []))
+  return (t[v] ??= { m, v, k: m, e: 0 })
+}
 export const all = (value: number, width: number): Sig => {
   const m = mask(width)
-  return { m, v: u(value & m), k: m, e: 0 }
+  return knownSig(m, u(value & m))
 }
-export const Z = (m: number): Sig => ({ m, v: 0, k: 0, e: 0 })
-export const X = (m: number): Sig => ({ m, v: 0, k: 0, e: m })
+const zCache = new Map<number, Sig>()
+const xCache = new Map<number, Sig>()
+export const Z = (m: number): Sig => {
+  let s = zCache.get(m)
+  if (!s) zCache.set(m, (s = { m, v: 0, k: 0, e: 0 }))
+  return s
+}
+export const X = (m: number): Sig => {
+  let s = xCache.get(m)
+  if (!s) xCache.set(m, (s = { m, v: 0, k: 0, e: m }))
+  return s
+}
+/** A gate's result: shared when it's fully known */
+const result = (m: number, v: number, k: number): Sig => (k === m ? knownSig(m, v) : { m, v, k, e: u(m & ~k) })
 
 /** Every bit 0 or 1 */
 export const known = (s: Sig) => s.k === s.m
@@ -22,24 +46,22 @@ export const widthOf = (s: Sig) => Math.round(Math.log2(s.m + 1))
 export function and(a: Sig, b: Sig, m: number): Sig {
   const one = a.v & a.k & b.v & b.k & m
   const zero = ((~a.v & a.k) | (~b.v & b.k)) & m
-  const k = u(one | zero)
-  return { m, v: u(one), k, e: u(m & ~k) }
+  return result(m, u(one), u(one | zero))
 }
 export function or(a: Sig, b: Sig, m: number): Sig {
   const one = ((a.v & a.k) | (b.v & b.k)) & m
   const zero = ~a.v & a.k & ~b.v & b.k & m
-  const k = u(one | zero)
-  return { m, v: u(one), k, e: u(m & ~k) }
+  return result(m, u(one), u(one | zero))
 }
 export function xor(a: Sig, b: Sig, m: number): Sig {
   const k = u(a.k & b.k & m)
-  return { m, v: u((a.v ^ b.v) & k), k, e: u(m & ~k) }
+  return result(m, u((a.v ^ b.v) & k), k)
 }
 export function not(a: Sig, m: number): Sig {
   const k = u(a.k & m)
-  return { m, v: u(~a.v & k), k, e: u(m & ~k) }
+  return result(m, u(~a.v & k), k)
 }
-export const same = (a: Sig, b: Sig) => a.v === b.v && a.k === b.k && a.e === b.e && a.m === b.m
+export const same = (a: Sig, b: Sig) => a === b || (a.v === b.v && a.k === b.k && a.e === b.e && a.m === b.m)
 
 /** What an input sees when several outputs drive it: agreeing bits pass, Z gives way, disagreeing bits are X */
 export function resolve(drivers: Sig[], m: number): Sig {

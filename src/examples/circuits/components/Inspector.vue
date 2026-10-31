@@ -126,11 +126,11 @@ function setWord(i: number, text: string) {
   const value = (v & (2 ** cellWidth.value - 1)) >>> 0
   // An edit changes what it holds now and what it starts with after a reset
   image()[i] = value
-  c.poke(c.prefix.value + props.node!.id, (st) => { if (st.mem) st.mem[i] = value })
+  c.poke(c.prefix.value + props.node!.id, { index: [isRam.value ? 'mem' : 'cells', i, value] })
 }
 function clearWords() {
   image().fill(0)
-  c.poke(c.prefix.value + props.node!.id, (st) => st.mem?.fill(0))
+  c.poke(c.prefix.value + props.node!.id, { fill: [isRam.value ? 'mem' : 'cells', 0] })
 }
 
 // ── Memory files ────────────────────────────────────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ async function loadFile(e: Event) {
   if (!file) return
   const { words, format: kind } = parseMemoryFile(new Uint8Array(await file.arrayBuffer()), cellWidth.value)
   const cells = setCells(params.value.image!, words, size.value, cellWidth.value)
-  c.poke(c.prefix.value + props.node!.id, (st) => st.mem?.set(cells))
+  c.poke(c.prefix.value + props.node!.id, { assign: [isRam.value ? 'mem' : 'cells', cells] })
   follow.value = false
   page.value = 0
   const unit = byteMode.value ? 'bytes' : 'words'

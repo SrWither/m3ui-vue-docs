@@ -24,6 +24,10 @@ const hzLabel = (hz: number) => (hz === Infinity ? 'Max' : hz >= 1e6 ? `${+(hz /
 // Below what was asked: the circuit can't keep up (shown while it runs, after its first second)
 const behind = computed(() => c.playing.value && c.actualHz.value > 0 && (c.hz.value === Infinity || c.actualHz.value < c.hz.value * 0.9))
 const fileInput = ref<HTMLInputElement>()
+// Ctrl+O opens the file picker from the page
+defineExpose({ pickFile: () => fileInput.value?.click() })
+/** A fresh, empty circuit (the Blank preset) */
+const blank = () => c.load(presets.find((p) => p.id === 'blank')!)
 function picked(e: Event) {
   const f = (e.target as HTMLInputElement).files?.[0]
   if (f) emit('open', f)
@@ -56,13 +60,15 @@ function picked(e: Event) {
     <span class="flex-1" />
     <MTooltip v-if="!wide" text="Parts" placement="bottom"><MIconButton icon="add_circle" label="Parts" @click="emit('palette')" /></MTooltip>
     <MTooltip v-if="!wide && canInspect" text="Settings of the selection" placement="bottom"><MIconButton icon="tune" label="Settings of the selection" @click="emit('inspect')" /></MTooltip>
+    <MTooltip text="New circuit (blank)" placement="bottom"><MIconButton icon="note_add" label="New circuit" @click="blank" /></MTooltip>
     <MMenu align="right">
       <template #trigger>
         <MTooltip text="Save and open" placement="bottom"><MIconButton icon="folder_open" label="Save and open" /></MTooltip>
       </template>
-      <MMenuItem icon="download" @click="emit('save')">Save as JSON</MMenuItem>
+      <MMenuItem icon="note_add" @click="blank">New circuit</MMenuItem>
       <MMenuDivider />
-      <MMenuItem icon="upload_file" @click="fileInput?.click()">Open a JSON circuit…</MMenuItem>
+      <MMenuItem icon="download" shortcut="Ctrl+S" @click="emit('save')">Save as JSON</MMenuItem>
+      <MMenuItem icon="upload_file" shortcut="Ctrl+O" @click="fileInput?.click()">Open a JSON circuit…</MMenuItem>
     </MMenu>
     <input ref="fileInput" type="file" accept=".json,application/json" class="hidden" @change="picked" />
     <MTooltip :text="c.muted.value ? 'Sound off' : 'Sound on'" placement="bottom"><MIconButton :icon="c.muted.value ? 'volume_off' : 'volume_up'" :label="c.muted.value ? 'Turn the sound on' : 'Turn the sound off'" @click="c.muted.value = !c.muted.value" /></MTooltip>

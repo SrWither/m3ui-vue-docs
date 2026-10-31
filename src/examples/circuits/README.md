@@ -12,6 +12,8 @@ circuits/
 ├── logic.ts              signals: buses up to 32 bits of 0/1/Z/X as bit masks, gate logic, resolving drivers
 ├── parts.ts              every kind of part: pins from its parameters, how it computes, the state it keeps
 ├── devices.ts            screen, joypad, keyboard and terminal
+├── simWorker.ts          the simulation in a Worker for fast clocks (1 kHz and up, Max)
+├── ops.ts                what the user does to a part (a switch, a key, a memory word) as data, here or in the Worker
 ├── sim.ts                the netlist (subcircuits and tunnels flattened away) and the event-driven propagation
 ├── library.ts            the project's circuits as parts: a circuit's input/output pins become a subcircuit's pins
 ├── audio.ts              Web Audio: one context, a voice per buzzer/synthesizer (pulse waves with NES duties, noise), PCM streams
@@ -82,6 +84,15 @@ circuits/
   note + gate out, playable from the computer's keyboard). The parts' eval stays pure: it writes the sound it wants into
   its state and SoundView applies it once per frame. The bar's speaker button mutes everything.
 - **Saving**: the whole project (every circuit, switch values, memory images) as one JSON file; version-1 files still open.
+- **Turbo**: from 1 kHz (and at Max) the clock runs in a Worker (`simWorker.ts`) with its own copy of the circuit:
+  it runs all the time instead of 12 ms a frame, and the page stays smooth. Each slice it sends the signals and the
+  parts' light state (no ROM or RAM words; a screen's pixels only when they changed; PCM samples once); the page
+  takes them in as they come and draws once a frame. What you do meanwhile (switches, keys, the joypad, the piano,
+  memory edits) goes to it as data (`ops.ts`). Pausing brings back the whole state, RAM included; an edit to the
+  circuit takes the state back, rebuilds and hands it over again. Tiny8 runs at about 160 kHz in Chrome at Max, a
+  small circuit at over 2 MHz. Stepping and slow clocks stay on the page, to watch every edge.
+- **New** (the bar's button or the folder menu) starts a blank circuit; **Ctrl+S** saves the project as JSON and
+  **Ctrl+O** opens one.
 - **The clock** goes from 0.5 Hz to 10 MHz, or Max. Each frame runs what's due for at most 12 ms so the page stays
   responsive; when a circuit can't keep up, the bar shows the frequency it really reaches.
 - **Branching wires**: drag from any wire to another pin to wire the same output there (MFlow's `edgeBranching`).

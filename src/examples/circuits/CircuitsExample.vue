@@ -30,6 +30,7 @@ const wide = computed(() => widthClass.value !== 'compact' && widthClass.value !
 const flow = ref<InstanceType<typeof MFlow>>()
 const canvas = ref<HTMLElement>()
 const palette = ref<InstanceType<typeof Palette>>()
+const topBar = ref<InstanceType<typeof TopBar>>()
 const selection = ref<FlowSelection>({ nodes: [], edges: [] })
 const selectedNode = computed(() => (selection.value.nodes.length === 1 ? c.nodes.value.find((n) => n.id === selection.value.nodes[0]) : undefined))
 const selectedEdge = computed(() => (!selectedNode.value && selection.value.edges.length === 1 ? c.edges.value.find((e) => e.id === selection.value.edges[0]) : undefined))
@@ -116,7 +117,21 @@ function endGrab() {
   window.removeEventListener('pointerup', endGrab)
   window.removeEventListener('pointercancel', endGrab)
 }
+// Ctrl+S saves, Ctrl+O opens (Cmd on a Mac), wherever the focus is
+function onKey(e: KeyboardEvent) {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return
+  const k = e.key.toLowerCase()
+  if (k === 's') {
+    e.preventDefault()
+    save()
+  } else if (k === 'o') {
+    e.preventDefault()
+    topBar.value?.pickFile()
+  }
+}
+window.addEventListener('keydown', onKey)
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKey)
   endGrab()
   c.playing.value = false
 })
@@ -131,7 +146,7 @@ function save() {
   const url = URL.createObjectURL(new Blob([c.toJSON()], { type: 'application/json' }))
   const a = document.createElement('a')
   a.href = url
-  a.download = `${c.presetId.value || 'circuit'}.json`
+  a.download = `${c.presetId.value && c.presetId.value !== 'blank' ? c.presetId.value : 'circuit'}.json`
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -149,7 +164,7 @@ async function open(file: File) {
 
 <template>
   <div class="flex h-dvh flex-col overflow-hidden text-on-surface" :class="wide ? 'bg-surface-container' : 'bg-surface'">
-    <TopBar :wide="wide" :can-inspect="!!(selectedNode || selectedEdge)" @save="save" @open="open" @palette="paletteOpen = true" @inspect="inspectorOpen = true" />
+    <TopBar ref="topBar" :wide="wide" :can-inspect="!!(selectedNode || selectedEdge)" @save="save" @open="open" @palette="paletteOpen = true" @inspect="inspectorOpen = true" />
     <div class="flex min-h-0 flex-1">
       <aside v-if="wide" class="mb-2 ml-2 w-64 shrink-0 overflow-y-auto rounded-2xl bg-surface">
         <Palette ref="palette" @pick="pick" @grab="onGrab" />

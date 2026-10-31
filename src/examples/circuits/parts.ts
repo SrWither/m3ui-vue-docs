@@ -101,11 +101,13 @@ function gate(kind: string, label: string, icon: string, shape: PartDef['gate'],
     eval: ({ in: ins, p }) => {
       const m = mask(w(p))
       // Unconnected inputs are left out, as in Logisim
-      const used = ins.filter((s) => !isZ(s))
-      if (!used.length) return [X(m)]
-      let out = used[0]!
-      for (const s of used.slice(1)) out = fn(out, s, m)
-      return [inverted ? not(out, m) : out]
+      let out: Sig | null = null
+      for (let i = 0; i < ins.length; i++) {
+        const s = ins[i]!
+        if (isZ(s)) continue
+        out = out ? fn(out, s, m) : s
+      }
+      return [!out ? X(m) : inverted ? not(out, m) : out]
     },
   }
 }

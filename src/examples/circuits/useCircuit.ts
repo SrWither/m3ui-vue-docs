@@ -7,6 +7,7 @@ import { presets, type Preset } from './presets'
 import { pinsOf, Simulator, type PartData, type PartNode } from './sim'
 import { partByKind } from './parts'
 import { setMuted } from './audio'
+import { applyOp, type PokeOp } from './ops'
 import { contains, setCircuitResolver, type CircuitDef } from './library'
 import { cloneImage, decodeImage, encodeImage, hasImage, newImageId, setCells } from './memory'
 
@@ -52,6 +53,10 @@ function uninspect(depth = 0) {
   edges.value = def.edges
 }
 const sim = new Simulator()
+/** The simulation's Worker while a fast clock runs there (see Turbo below); declared early, load() runs at import */
+let worker: Worker | null = null
+let gen = 0
+let redraw = 0
 const version = ref(0)
 const playing = ref(false)
 /** Clock frequency: full periods per second */
@@ -66,12 +71,16 @@ watch(muted, (m) => setMuted(m))
 const structure = computed(() =>
   JSON.stringify([nodes.value.map((n) => [n.id, n.data]), edges.value.map((e) => [e.source, e.sourceHandle, e.target, e.targetHandle])]),
 )
-watch(structure, () => {
+watch(structure, async () => {
   // Looking inside an instance shows its circuit's nodes, but the simulation stays the whole circuit's
   if (inspecting.value) return
+  // An edit while the Worker runs: take its state back, rebuild here, and hand it over again
+  const turbo = !!worker
+  if (turbo) await stopTurbo()
   ownImages()
   sim.build(nodes.value, edges.value)
   changed()
+  if (turbo && wantTurbo()) startTurbo()
 })
 
 // ROMs and RAMs name their image; a copied one gets its own copy of the image (else both would share it)
@@ -152,6 +161,7 @@ function load(p: Preset) {
 }
 /** Puts a circuit on the canvas, simulated on its own (its input pins are yours to flip) */
 function show(id: string) {
+  stopTurbo(false)
   const def = circuits.value.find((x) => x.id === id)!
   currentId.value = id
   nodes.value = def.nodes
@@ -238,10 +248,91 @@ function loop(t: number) {
   }
   frame = requestAnimationFrame(loop)
 }
-watch(playing, (on) => {
-  cancelAnimationFrame(frame)
+// ── Turbo: fast clocks run in a Worker ──────────────────────────────────────────────────────────────────
+// From TURBO_HZ (or Max) the simulation moves to simWorker.ts, so it runs all the time instead of 12 ms a frame and
+// the page stays smooth. Each slice it sends the signals and the parts' light state; they're taken in as they come
+// (so no screen update or sound sample is lost) and drawn once a frame. Pausing brings the whole state back.
+const TURBO_HZ = 1000
+const wantTurbo = () => playing.value && hz.value >= TURBO_HZ && typeof Worker !== 'undefined'
+/** The circuit the simulation runs: the open one, even while looking inside an instance */
+const runNodes = () => (inspecting.value ? circuits.value.find((x) => x.id === currentId.value)!.nodes : nodes.value)
+const runEdges = () => (inspecting.value ? circuits.value.find((x) => x.id === currentId.value)!.edges : edges.value)
+const plain = <T>(v: T): T => JSON.parse(JSON.stringify(v))
+function startTurbo() {
+  const g = ++gen
+  const w = new Worker(new URL('./simWorker.ts', import.meta.url), { type: 'module' })
+  worker = w
+  window0 = performance.now()
+  windowTicks = 0
+  w.onmessage = (e) => {
+    if (g !== gen) return
+    const m = e.data
+    if (m.type !== 'frame') return
+    // PCM samples pile up until the speaker plays them; everything else is the Worker's latest
+    for (const [id, st] of Object.entries(m.states as Record<string, any>)) {
+      const mine = sim.state.get(id)
+      if (mine && 'level' in mine && st.queue) st.queue = [...mine.queue, ...st.queue]
+    }
+    sim.importState(m)
+    ticks.value += m.ticks
+    windowTicks += m.ticks
+    const now = performance.now()
+    if (now - window0 >= 1000) {
+      actualHz.value = (windowTicks / 2) * (1000 / (now - window0))
+      window0 = now
+      windowTicks = 0
+    }
+    if (sim.oscillating) playing.value = false
+    if (!redraw) redraw = requestAnimationFrame(() => {
+      redraw = 0
+      changed()
+    })
+  }
+  // The open circuit as it is now (not stashed: while looking inside an instance the canvas shows another one)
+  const all = circuits.value.map((x) => (x.id === currentId.value && !inspecting.value ? { ...x, nodes: nodes.value, edges: edges.value } : x))
+  w.postMessage({
+    type: 'start',
+    nodes: plain(runNodes()),
+    edges: plain(runEdges().map(({ id, source, sourceHandle, target, targetHandle }) => ({ id, source, sourceHandle, target, targetHandle }))),
+    circuits: plain(all.map(({ id, name, nodes, edges }) => ({ id, name, nodes, edges: edges.map(({ id, source, sourceHandle, target, targetHandle }) => ({ id, source, sourceHandle, target, targetHandle })) }))),
+    state: sim.exportState(true),
+    hz: hz.value,
+  })
+}
+/** Stops the Worker; with `sync`, waits for its whole state (RAM included) first */
+function stopTurbo(sync = true): Promise<void> {
+  const w = worker
+  worker = null
+  if (!w) return Promise.resolve()
+  const g = ++gen
+  if (!sync) {
+    w.terminate()
+    return Promise.resolve()
+  }
+  return new Promise((resolve) => {
+    w.onmessage = (e) => {
+      if (e.data.type !== 'final') return
+      w.terminate()
+      if (g === gen) {
+        sim.importState(e.data)
+        changed()
+      }
+      resolve()
+    }
+    w.postMessage({ type: 'stop' })
+  })
+}
+watch([playing, hz], async () => {
+  if (frame) cancelAnimationFrame(frame)
+  frame = 0
   actualHz.value = 0
-  if (!on) return
+  if (wantTurbo()) {
+    if (worker) worker.postMessage({ type: 'hz', hz: hz.value })
+    else startTurbo()
+    return
+  }
+  if (worker) await stopTurbo()
+  if (!playing.value || wantTurbo()) return
   last = window0 = performance.now()
   windowTicks = 0
   // The first half period right away, so a slow clock answers the button at once
@@ -250,6 +341,7 @@ watch(playing, (on) => {
 })
 
 function step() {
+  if (worker) return
   sim.tick()
   ticks.value++
   changed()
@@ -260,12 +352,19 @@ function cycle() {
   step()
 }
 function reset() {
+  const turbo = !!worker
+  stopTurbo(false)
   sim.reset()
+  if (turbo && wantTurbo()) startTurbo()
   ticks.value = 0
   changed()
 }
-function poke(id: string, change: (state: any) => void) {
-  sim.poke(id, change)
+function poke(id: string, op: PokeOp) {
+  if (worker) {
+    // Shown at once here, simulated there
+    applyOp(sim.state.get(id), op)
+    worker.postMessage({ type: 'poke', id, op })
+  } else sim.poke(id, op)
   changed()
 }
 

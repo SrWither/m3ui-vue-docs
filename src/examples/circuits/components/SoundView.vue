@@ -77,11 +77,11 @@ function play(note: number | null) {
       release = window.setTimeout(() => play(null), left)
       return
     }
-    if (c.sim.state.get(props.id)?.gate) c.poke(props.id, (st) => (st.gate = 0))
+    if (c.sim.state.get(props.id)?.gate) c.poke(props.id, { set: { gate: 0 } })
     return
   }
   pressedAt = performance.now()
-  c.poke(props.id, (st) => Object.assign(st, { note, gate: 1 }))
+  c.poke(props.id, { set: { note, gate: 1 } })
 }
 onBeforeUnmount(() => clearTimeout(release))
 const KEYMAP = 'zsxdcvgbhnjmq2w3er5t6y7u'
