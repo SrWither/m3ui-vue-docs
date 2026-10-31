@@ -85,7 +85,7 @@ const addrDigits = computed(() => Math.max(2, Math.ceil((params.value.select ?? 
 /** The words the memory starts with (its image) */
 const image = (): Cells => cellsOf(params.value.image, size.value, cellWidth.value)
 /** What it holds now: a RAM's live words, a ROM's image */
-const live = (): Cells => (isRam.value ? (c.sim.state.get(props.node!.id)?.mem as Cells | undefined) : undefined) ?? image()
+const live = (): Cells => (isRam.value ? (c.sim.state.get(c.prefix.value + props.node!.id)?.mem as Cells | undefined) : undefined) ?? image()
 const perRow = computed(() => (params.value.asm ? 1 : digits.value <= 2 ? 8 : digits.value <= 4 ? 4 : 2))
 const ROWS = 32
 const perPage = computed(() => perRow.value * ROWS)
@@ -105,7 +105,7 @@ const rows = computed(() => {
 // Where the address input points right now
 const current = computed(() => {
   c.version.value
-  const a = props.node ? c.sim.inputsOf(props.node.id)[0] : undefined
+  const a = props.node ? c.sim.inputsOf(c.prefix.value + props.node.id)[0] : undefined
   return a && a.k === a.m ? a.v : -1
 })
 watch([current, follow, perPage], () => {
@@ -126,11 +126,11 @@ function setWord(i: number, text: string) {
   const value = (v & (2 ** cellWidth.value - 1)) >>> 0
   // An edit changes what it holds now and what it starts with after a reset
   image()[i] = value
-  c.poke(props.node!.id, (st) => { if (st.mem) st.mem[i] = value })
+  c.poke(c.prefix.value + props.node!.id, (st) => { if (st.mem) st.mem[i] = value })
 }
 function clearWords() {
   image().fill(0)
-  c.poke(props.node!.id, (st) => st.mem?.fill(0))
+  c.poke(c.prefix.value + props.node!.id, (st) => st.mem?.fill(0))
 }
 
 // ── Memory files ────────────────────────────────────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ async function loadFile(e: Event) {
   if (!file) return
   const { words, format: kind } = parseMemoryFile(new Uint8Array(await file.arrayBuffer()), cellWidth.value)
   const cells = setCells(params.value.image!, words, size.value, cellWidth.value)
-  c.poke(props.node!.id, (st) => st.mem?.set(cells))
+  c.poke(c.prefix.value + props.node!.id, (st) => st.mem?.set(cells))
   follow.value = false
   page.value = 0
   const unit = byteMode.value ? 'bytes' : 'words'
@@ -161,8 +161,8 @@ function download(kind: 'bin' | 'logisim') {
 const wire = computed(() => {
   c.version.value
   if (!props.edge) return null
-  const s = c.sim.edgeSignal(props.edge)
-  const { from, to } = c.sim.widthsOf(props.edge)
+  const s = c.sim.edgeSignal(props.edge, c.prefix.value)
+  const { from, to } = c.sim.widthsOf(props.edge, c.prefix.value)
   const name = (id: string) => {
     const n = c.nodes.value.find((x) => x.id === id)
     return n?.data?.label || partByKind.get(n?.data?.kind ?? '')?.label || id

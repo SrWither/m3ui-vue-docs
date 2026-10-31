@@ -41,6 +41,7 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
   // The top level's subcircuits and tunnels: what their outputs carry and what reaches their inputs, for drawing
   const virtualOut = new Map<string, string[]>()
   const virtualIn = new Map<string, string[][]>()
+  const pinsAt = new Map<string, { inputs: Pin[]; outputs: Pin[] }>()
 
   function expand(nodes: PartNode[], edges: FlowEdge[], prefix: string, nested: boolean, stack: string[]) {
     const byId = new Map(nodes.map((n) => [n.id, n]))
@@ -80,20 +81,25 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
       if (kind === 'sub') {
         const ip = ios.get(dst.id)?.inputs[i]
         if (ip) addAlias(`@${prefix}${dst.id}/${ip.id}`, ds)
-        if (!nested) virtualIn.set(dst.id, Object.assign(virtualIn.get(dst.id) ?? [], { [i]: [...(virtualIn.get(dst.id)?.[i] ?? []), ...ds] }))
+        const k = prefix + dst.id
+        virtualIn.set(k, Object.assign(virtualIn.get(k) ?? [], { [i]: [...(virtualIn.get(k)?.[i] ?? []), ...ds] }))
       } else if (kind === 'tunnel') addAlias(tunnel(dst), ds)
       else if (nested && kind === 'outpin') addAlias(`@${prefix}${dst.id}`, ds)
       else conns.push({ id: prefix + dst.id, i, drivers: ds })
     }
-    if (!nested) {
-      for (const n of nodes) {
-        const k = kindOf(n)
-        if (k === 'tunnel') {
-          virtualOut.set(outKey(n.id, 0), source(n, 0))
-          virtualIn.set(n.id, [source(n, 0)])
-        }
-        if (k === 'sub') ios.get(n.id)?.outputs.forEach((_, o) => virtualOut.set(outKey(n.id, o), source(n, o)))
+    // What the UI shows for the parts that aren't simulated, at every level (to look inside a subcircuit)
+    for (const n of nodes) {
+      const k = kindOf(n)
+      const def = partByKind.get(k)
+      if (!def) continue
+      pinsAt.set(prefix + n.id, def.pins({ ...def.params, ...n.data!.params }))
+      if (k === 'tunnel') {
+        virtualOut.set(outKey(prefix + n.id, 0), source(n, 0))
+        virtualIn.set(prefix + n.id, [source(n, 0)])
       }
+      if (k === 'sub') ios.get(n.id)?.outputs.forEach((_, o) => virtualOut.set(outKey(prefix + n.id, o), source(n, o)))
+      if (nested && k === 'pin') virtualOut.set(outKey(prefix + n.id, 0), [`@${prefix}${n.id}`])
+      if (nested && k === 'outpin') virtualIn.set(prefix + n.id, [[`@${prefix}${n.id}`]])
     }
   }
   expand(nodes, edges, '', false, [])
@@ -117,6 +123,7 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
     conns: conns.map((c) => ({ ...c, drivers: resolveAll(c.drivers) })),
     virtualOut: new Map([...virtualOut].map(([k, ds]) => [k, resolveAll(ds)])),
     virtualIn: new Map([...virtualIn].map(([k, list]) => [k, Array.from(list, (ds) => resolveAll(ds ?? []))])),
+    pinsAt,
   }
 }
 
@@ -166,7 +173,7 @@ export class Simulator {
     this.parts = new Map()
     this.virtualOut = flat.virtualOut
     this.virtualIn = flat.virtualIn
-    this.topPins = new Map(nodes.filter((n) => partByKind.has(n.data?.kind ?? '')).map((n) => [n.id, pinsOf(n.data!)]))
+    this.topPins = flat.pinsAt
     this.ids = []
     this.index = new Map()
     this.defs = []
@@ -257,15 +264,15 @@ export class Simulator {
     return pin && this.virtualOut.has(k) ? this.merged(this.virtualOut.get(k), pin.width) : undefined
   }
   /** What an edge carries, or null when its ends have different widths */
-  edgeSignal(e: FlowEdge): Sig | null {
-    const s = this.output(e.source, handleIndex(e.sourceHandle))
-    const pin = this.topPins.get(e.target)?.inputs[handleIndex(e.targetHandle)]
+  edgeSignal(e: FlowEdge, prefix = ''): Sig | null {
+    const s = this.output(prefix + e.source, handleIndex(e.sourceHandle))
+    const pin = this.topPins.get(prefix + e.target)?.inputs[handleIndex(e.targetHandle)]
     if (!s || !pin) return null
     return s.m === mask(pin.width) ? s : null
   }
-  widthsOf(e: FlowEdge) {
-    const from = this.topPins.get(e.source)?.outputs[handleIndex(e.sourceHandle)]?.width
-    const to = this.topPins.get(e.target)?.inputs[handleIndex(e.targetHandle)]?.width
+  widthsOf(e: FlowEdge, prefix = '') {
+    const from = this.topPins.get(prefix + e.source)?.outputs[handleIndex(e.sourceHandle)]?.width
+    const to = this.topPins.get(prefix + e.target)?.inputs[handleIndex(e.targetHandle)]?.width
     return { from, to }
   }
 

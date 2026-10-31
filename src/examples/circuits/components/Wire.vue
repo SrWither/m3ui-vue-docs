@@ -20,9 +20,9 @@ const props = defineProps<{
 const c = useCircuit()
 const look = computed(() => {
   c.version.value
-  const s = c.sim.edgeSignal(props.edge)
+  const s = c.sim.edgeSignal(props.edge, c.prefix.value)
   if (!s) {
-    const { from, to } = c.sim.widthsOf(props.edge)
+    const { from, to } = c.sim.widthsOf(props.edge, c.prefix.value)
     return { stroke: 'var(--color-error)', width: 3, dash: '6 4', label: from && to ? `${from}≠${to} bits` : '' }
   }
   const bus = widthOf(s) > 1

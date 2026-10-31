@@ -20,6 +20,37 @@ const currentId = ref('main')
 const getCircuit = (id: string) => (id === currentId.value ? { id, name: current()?.name ?? '', nodes: nodes.value, edges: edges.value } : circuits.value.find((x) => x.id === id))
 setCircuitResolver(getCircuit)
 const current = () => circuits.value.find((x) => x.id === currentId.value)
+/** Looking inside subcircuit instances, outermost first: the canvas shows the innermost one's circuit, live */
+const inspecting = ref<{ id: string; name: string; circuit: string }[] | null>(null)
+/** Ids on the canvas are this prefix plus the node's id in the simulation */
+const prefix = computed(() => (inspecting.value ? inspecting.value.map((x) => x.id).join('/') + '/' : ''))
+function inspect(nodeId: string) {
+  const n = nodes.value.find((x) => x.id === nodeId)
+  const def = circuits.value.find((x) => x.id === n?.data?.params.circuit)
+  if (!n || !def) return
+  if (!inspecting.value) stash()
+  inspecting.value = [...(inspecting.value ?? []), { id: nodeId, name: n.data!.label || def.name, circuit: def.id }]
+  nodes.value = def.nodes
+  edges.value = def.edges
+  version.value++
+}
+/** Back out to `depth` levels of instances (0: the circuit itself) */
+function uninspect(depth = 0) {
+  if (!inspecting.value) return
+  const path = inspecting.value.slice(0, depth)
+  if (path.length) {
+    const def = circuits.value.find((x) => x.id === path[path.length - 1]!.circuit)!
+    inspecting.value = path
+    nodes.value = def.nodes
+    edges.value = def.edges
+    version.value++
+    return
+  }
+  inspecting.value = null
+  const def = circuits.value.find((x) => x.id === currentId.value)!
+  nodes.value = def.nodes
+  edges.value = def.edges
+}
 const sim = new Simulator()
 const version = ref(0)
 const playing = ref(false)
@@ -36,6 +67,8 @@ const structure = computed(() =>
   JSON.stringify([nodes.value.map((n) => [n.id, n.data]), edges.value.map((e) => [e.source, e.sourceHandle, e.target, e.targetHandle])]),
 )
 watch(structure, () => {
+  // Looking inside an instance shows its circuit's nodes, but the simulation stays the whole circuit's
+  if (inspecting.value) return
   ownImages()
   sim.build(nodes.value, edges.value)
   changed()
@@ -102,6 +135,7 @@ function changed() {
 }
 
 function load(p: Preset) {
+  inspecting.value = null
   playing.value = false
   presetId.value = p.id
   ticks.value = 0
@@ -132,6 +166,7 @@ function stash() {
   circuits.value = circuits.value.map((x) => (x.id === currentId.value ? { ...x, nodes: nodes.value, edges: edges.value, state: sim.snapshot() } : x))
 }
 function openCircuit(id: string) {
+  uninspect()
   if (id === currentId.value || !circuits.value.some((x) => x.id === id)) return
   playing.value = false
   stash()
@@ -309,5 +344,5 @@ function fromJSON(text: string) {
 }
 
 export function useCircuit() {
-  return { muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
+  return { inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
 }

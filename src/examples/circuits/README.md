@@ -54,7 +54,9 @@ circuits/
   another as a part: its input pins become the part's inputs and its output pins its outputs, top to bottom, named by
   their labels. The simulator flattens them into one netlist (ids `instance/inner`, nested as deep as it goes), and
   their pins, like tunnels, are aliases resolved to the real outputs behind them, so crossing them costs no delay.
-  Double-click one to open it. A circuit can't contain itself, directly or through others.
+  Double-click an instance to look inside it, live and read-only (its own signals, as deep as it nests; the
+  simulator keeps every level's virtual pins), and Edit circuit to change its definition. A circuit can't contain
+  itself, directly or through others.
 - **Memories** up to 16 MiB (24 address bits of bytes) keep their words in typed arrays outside MFlow's nodes
   (`params.image`), saved as base64. The inspector pages through them, following the address input, and loads raw
   binaries (.bin, .rom, .nes without its header), Intel HEX or hex words (Logisim's `v2.0 raw` too), and downloads them

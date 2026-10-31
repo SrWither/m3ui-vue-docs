@@ -106,7 +106,8 @@ const title = computed(() => props.data.label || (props.data.kind === 'sub' ? ge
 // A probe's value as signed decimal
 const signedDec = (s: Sig) => (s.v >= 2 ** (widthOf(s) - 1) ? s.v - 2 ** widthOf(s) : s.v)
 const bits = computed(() => params.value.width ?? 1)
-const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
+// Inside a subcircuit instance an input pin has no state of its own: it shows what reaches it
+const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.value) ? out0.value.v : 0)) & mask(bits.value))
 </script>
 
 <template>

@@ -10,7 +10,7 @@
  * - components/          PartView (a part on the canvas), Wire (a wire by its value), Palette, Inspector, TopBar
  */
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { MIcon, MIconButton, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
+import { MButton, MIcon, MIconButton, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowSelection } from '@m3ui-vue/m3ui-vue/flow'
 import { useCircuit } from './useCircuit'
 import { presets } from './presets'
@@ -44,9 +44,14 @@ watch(c.currentId, () => {
   setTimeout(() => flow.value?.fitView(), 60)
 })
 // Double-click a subcircuit to open it
+// Double-click a subcircuit to look inside that instance, live
 function onNodeDblclick(n: PartNode) {
-  if (n.data?.kind === 'sub' && n.data.params.circuit) c.openCircuit(n.data.params.circuit)
+  if (n.data?.kind === 'sub' && n.data.params.circuit) c.inspect(n.id)
 }
+watch(c.prefix, () => {
+  selection.value = { nodes: [], edges: [] }
+  setTimeout(() => flow.value?.fitView(), 60)
+})
 
 watch(c.presetId, (id) => {
   selection.value = { nodes: [], edges: [] }
@@ -74,6 +79,7 @@ function centered(kind: string, at: { x: number; y: number }): PartNode {
 }
 let offset = 0
 function pick(kind: string) {
+  if (c.inspecting.value) return toast.info('Inside an instance: edit its circuit to add parts')
   const s = flow.value!.size
   const v = flow.value!.viewport
   const n = centered(kind, { x: (s.width / 2 - v.x) / v.zoom + (offset % 5) * 20, y: (s.height / 2 - v.y) / v.zoom + (offset % 5) * 20 })
@@ -86,6 +92,7 @@ function pick(kind: string) {
 // A part pressed in the palette becomes a real one as soon as the pointer is over the canvas, and MFlow drags it
 let grabbed: { kind: string; id: number } | null = null
 function onGrab(kind: string, e: PointerEvent) {
+  if (c.inspecting.value) return
   grabbed = { kind, id: e.pointerId }
   window.addEventListener('pointermove', onGrabMove)
   window.addEventListener('pointerup', endGrab)
@@ -150,7 +157,8 @@ async function open(file: File) {
 
       <main ref="canvas" class="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-surface" :class="wide && 'mx-2 mb-2 rounded-2xl'">
         <MFlow
-          :key="c.currentId.value"
+          :key="c.currentId.value + c.prefix.value"
+          :locked="!!c.inspecting.value"
           ref="flow"
           v-model:nodes="c.nodes.value"
           v-model:edges="c.edges.value"
@@ -174,7 +182,7 @@ async function open(file: File) {
           @node-dblclick="onNodeDblclick"
         >
           <template #node-part="{ node, data, selected }">
-            <PartView :id="node.id" :data="data" :selected="selected" />
+            <PartView :id="c.prefix.value + node.id" :data="data" :selected="selected" />
           </template>
           <template #edge-wire="{ edge, selected, path, labelX, labelY }">
             <Wire v-bind="{ edge, selected, path, labelX, labelY }" />
@@ -184,7 +192,17 @@ async function open(file: File) {
           <MFlowMinimap v-if="wide" />
         </MFlow>
 
-        <div v-if="inSub && !c.oscillating.value" class="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-tertiary-container py-1 pr-3 pl-1 text-label-large text-on-tertiary-container">
+        <div v-if="c.inspecting.value && !c.oscillating.value" class="absolute top-3 left-3 flex flex-wrap items-center gap-1 rounded-full bg-secondary-container py-1 pr-1 pl-1 text-label-large text-on-secondary-container">
+          <MIconButton icon="arrow_back" label="Back out of the instance" size="xs" @click="c.uninspect(c.inspecting.value.length - 1)" />
+          <button type="button" class="hover:underline" @click="c.uninspect(0)">{{ currentName }}</button>
+          <template v-for="(lvl, i) in c.inspecting.value" :key="i">
+            <MIcon name="chevron_right" :size="16" />
+            <button type="button" class="hover:underline" @click="c.uninspect(i + 1)">{{ lvl.name }}</button>
+          </template>
+          <span class="mx-1 text-label-medium opacity-70">live, read-only</span>
+          <MButton variant="tonal" size="xs" icon="edit" @click="c.openCircuit(c.inspecting.value[c.inspecting.value.length - 1]!.circuit)">Edit circuit</MButton>
+        </div>
+        <div v-else-if="inSub && !c.oscillating.value" class="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-tertiary-container py-1 pr-3 pl-1 text-label-large text-on-tertiary-container">
           <MIconButton icon="arrow_back" :label="`Back to ${main!.name}`" size="xs" @click="c.openCircuit(main!.id)" />
           {{ main!.name }} <MIcon name="chevron_right" :size="16" /> {{ currentName }}
         </div>
