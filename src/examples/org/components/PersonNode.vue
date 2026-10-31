@@ -1,11 +1,12 @@
 <script setup lang="ts">
-/* A person on the chart: avatar, name, role, department; a button under the card folds and unfolds their team. */
+/* A person on the chart: avatar, name, role, department; a button under the card asks to fold or unfold their team. */
 import { computed } from 'vue'
 import { MAvatar, MIcon } from '@m3ui-vue/m3ui-vue'
 import { deptOf, type Person } from '../people'
 import { useOrg } from '../useOrg'
 
 const props = defineProps<{ person: Person; selected: boolean; dragging: boolean; dropTarget: boolean }>()
+const emit = defineEmits<{ toggle: [] }>()
 const org = useOrg()
 const teamSize = computed(() => org.team(props.person.id).length)
 const directs = computed(() => org.reports.value.get(props.person.id)?.length ?? 0)
@@ -45,7 +46,7 @@ const dept = computed(() => deptOf(props.person.dept))
       class="absolute bottom-0 left-1/2 flex h-6 -translate-x-1/2 cursor-pointer items-center gap-0.5 rounded-full border border-outline-variant bg-surface-container-high px-2 text-label-small text-on-surface-variant transition-colors outline-none hover:bg-secondary-container hover:text-on-secondary-container focus-visible:ring-2 focus-visible:ring-secondary"
       :aria-label="folded ? `Show ${person.name}'s team (${teamSize})` : `Hide ${person.name}'s team`"
       :aria-expanded="!folded"
-      @click="org.toggle(person.id)"
+      @click="emit('toggle')"
     >
       {{ folded ? teamSize : directs }}
       <MIcon :name="folded ? 'expand_more' : 'expand_less'" :size="16" />

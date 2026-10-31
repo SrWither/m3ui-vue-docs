@@ -4,7 +4,7 @@
  * steps from the palette onto the canvas (or tap to add), connect them, set them up in the inspector, and test run
  * the workflow: each step lights up in turn, down the branch its condition takes, with a log of the run.
  * - components/TopBar.vue     logo, the workflow's name, tidy up, test run, theme, docs and source
- * - components/Palette.vue    the kinds of steps, to drag onto the canvas or tap
+ * - components/Palette.vue    the kinds of steps, to drag onto the canvas (they become nodes on the way, startDrag) or tap
  * - components/StepNode.vue   a step on the canvas, with its run status
  * - components/Inspector.vue  the selected step's settings
  * - components/RunLog.vue     the last run, over the canvas
@@ -12,7 +12,7 @@
  * - useWorkflow.ts / catalog.ts  the workflow, the test run, and the kinds of steps
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { MBottomSheet, MFab, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
+import { MBottomSheet, MFab, MIcon, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import { MFlow, MFlowControls, MFlowMinimap, arrowPath, type FlowConnection, type FlowEdge, type FlowNode, type FlowSelection, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import { kindById } from './catalog'
 import { makeStep, newId, useWorkflow, type StepData } from './useWorkflow'
@@ -66,11 +66,40 @@ function pick(kind: string) {
   const n = w.nodes.value.length % 5
   add(kind, { x: c.x + n * 16, y: c.y + n * 16 })
 }
-function dropFromPalette(kind: string, at: { x: number; y: number }) {
-  const r = canvas.value!.getBoundingClientRect()
-  if (at.x < r.left || at.x > r.right || at.y < r.top || at.y > r.bottom) return
-  add(kind, flow.value!.screenToFlow(at))
+// Dragging a step out of the palette: a ghost follows the pointer until it's over the canvas, where the step
+// becomes a real node that MFlow drags on (startDrag), so it can be dropped straight onto an edge
+const ghost = ref<{ kind: string; x: number; y: number } | null>(null)
+let grabbed: { kind: string; id: number; x: number; y: number } | null = null
+function onGrab(kind: string, e: PointerEvent) {
+  grabbed = { kind, id: e.pointerId, x: e.clientX, y: e.clientY }
+  window.addEventListener('pointermove', onGrabMove)
+  window.addEventListener('pointerup', endGrab)
+  window.addEventListener('pointercancel', endGrab)
 }
+function onGrabMove(e: PointerEvent) {
+  if (!grabbed || e.pointerId !== grabbed.id) return
+  if (!ghost.value && Math.hypot(e.clientX - grabbed.x, e.clientY - grabbed.y) < 6) return
+  document.body.style.userSelect = 'none'
+  const r = canvas.value!.getBoundingClientRect()
+  if (e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom) {
+    const at = flow.value!.screenToFlow({ x: e.clientX, y: e.clientY })
+    const step = makeStep(grabbed.kind, { x: at.x - 120, y: at.y - 36 })
+    flow.value!.addNodes(step)
+    flow.value!.startDrag(step.id, e)
+    endGrab()
+    return
+  }
+  ghost.value = { kind: grabbed.kind, x: e.clientX, y: e.clientY }
+}
+function endGrab() {
+  window.removeEventListener('pointermove', onGrabMove)
+  window.removeEventListener('pointerup', endGrab)
+  window.removeEventListener('pointercancel', endGrab)
+  document.body.style.userSelect = ''
+  grabbed = null
+  ghost.value = null
+}
+onBeforeUnmount(endGrab)
 
 // A connection dropped on nothing offers a step there
 const addMenu = ref<{ x: number; y: number; at: FlowXY; from: { nodeId: string; handleId: string | null } } | null>(null)
@@ -148,7 +177,7 @@ const edgeTone = (e: FlowEdge, selected: boolean) => w.activeEdges.has(e.id) ? '
     <TopBar :wide="wide" @run="run" @tidy="tidy" />
     <div class="flex min-h-0 flex-1">
       <aside v-if="wide" class="mb-2 ml-2 w-64 shrink-0 overflow-y-auto rounded-2xl bg-surface">
-        <Palette @pick="pick" @drop="dropFromPalette" />
+        <Palette @pick="pick" @grab="onGrab" />
       </aside>
 
       <main ref="canvas" class="relative min-w-0 flex-1 overflow-hidden bg-surface" :class="wide && 'mx-2 mb-2 rounded-2xl'">
@@ -211,6 +240,17 @@ const edgeTone = (e: FlowEdge, selected: boolean) => w.activeEdges.has(e.id) ? '
     <MBottomSheet v-if="!wide" v-model="paletteOpen" title="Add a step">
       <Palette @pick="pick" />
     </MBottomSheet>
+
+    <Teleport to="body">
+      <div
+        v-if="ghost"
+        class="pointer-events-none fixed z-50 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-md border border-primary bg-surface px-3 py-2 shadow-elevation-4"
+        :style="{ left: `${ghost.x}px`, top: `${ghost.y}px` }"
+      >
+        <MIcon :name="kindById.get(ghost.kind)!.icon" :size="20" class="text-primary" />
+        <span class="text-title-small text-on-surface">{{ kindById.get(ghost.kind)!.label }}</span>
+      </div>
+    </Teleport>
   </div>
 </template>
 

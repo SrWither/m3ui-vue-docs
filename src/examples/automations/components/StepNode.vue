@@ -22,7 +22,7 @@ const subtitle = computed(() => {
       :icon="kind.icon"
       :color="colorOf(kind.category)"
       :handles="kind.category === 'trigger' ? 'source' : kind.branches ? 'target' : 'both'"
-      class="w-full max-w-none!"
+      class="w-full"
     >
       <template #trailing>
         <MCircleProgressBar v-if="status === 'running'" indeterminate :size="20" />

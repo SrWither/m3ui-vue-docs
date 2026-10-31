@@ -37,7 +37,9 @@ const profileOpen = computed({
 
 // Once the chart has laid itself out again (MFlow does it on its own when its shape changes; doing it here too
 // lets us wait for it), run `then`
-async function afterLayout(then: (f: FlowContext) => void) {
+// Through the template ref Vue unwraps MFlow's refs: `f.viewport.zoom`, not `f.viewport.value.zoom`
+type Flow = InstanceType<typeof MFlow>
+async function afterLayout(then: (f: Flow) => void) {
   await nextTick()
   await nextTick()
   const f = flow.value
@@ -45,7 +47,7 @@ async function afterLayout(then: (f: FlowContext) => void) {
   await f.layout()
   then(f)
 }
-function centerOn(f: FlowContext, id: string, zoom?: number) {
+function centerOn(f: Flow, id: string, zoom?: number) {
   const p = f.getAbsolutePosition(id)
   const s = f.getSize(id)
   f.setCenter(p.x + s.width / 2, p.y + s.height / 2, { zoom })
@@ -56,12 +58,20 @@ function open(id: string) {
   org.reveal(id)
   org.focusId.value = id
   selection.value = { nodes: [id], edges: [] }
-  afterLayout((f) => centerOn(f, id, Math.max(1, f.viewport.value.zoom)))
+  afterLayout((f) => centerOn(f, id, Math.max(1, f.viewport.zoom)))
   setTimeout(() => { if (org.focusId.value === id) org.focusId.value = null }, 2500)
 }
+// Folding or unfolding someone's team lays the chart out again, which would move their card: the view moves the
+// other way, with the same spring the nodes use, so the card stays put on screen while the rest settles around it
 function toggle(id: string) {
+  const before = flow.value?.getAbsolutePosition(id)
   org.toggle(id)
-  afterLayout((f) => centerOn(f, id))
+  afterLayout((f) => {
+    const after = org.nodes.value.find((n) => n.id === id)?.position
+    if (!before || !after) return
+    const v = f.viewport
+    f.setViewport({ x: v.x - (after.x - before.x) * v.zoom, y: v.y - (after.y - before.y) * v.zoom })
+  })
 }
 const fitAll = () => afterLayout((f) => f.fitView())
 
@@ -124,10 +134,10 @@ function onInit(f: FlowContext) {
           @node-dblclick="(n) => toggle(n.id)"
         >
           <template #node-person="{ node, selected: isSelected, dragging }">
-            <PersonNode :person="node.data" :selected="isSelected" :dragging="dragging" :drop-target="dropTarget === node.id" />
+            <PersonNode :person="node.data" :selected="isSelected" :dragging="dragging" :drop-target="dropTarget === node.id" @toggle="toggle(node.id)" />
           </template>
 
-          <div data-flow-panel class="absolute top-3 right-3 left-3 z-20 flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width: none">
+          <div class="absolute top-3 right-3 left-3 z-20 flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width: none">
             <MSegmentedButton
               v-model="direction"
               :options="[{ value: 'vertical', label: compact ? '' : 'Top down', icon: 'south' }, { value: 'horizontal', label: compact ? '' : 'Left to right', icon: 'east' }]"
@@ -148,7 +158,7 @@ function onInit(f: FlowContext) {
           </div>
           <MFlowControls :lock="false" />
           <MFlowMinimap v-if="!compact" :node-color="(n) => org.filter.value && (n.data as Person).dept !== org.filter.value ? 'var(--color-surface-container-highest)' : undefined" />
-          <div v-if="!compact" data-flow-panel class="pointer-events-none absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-surface-container-high px-4 py-2 text-body-small text-on-surface-variant shadow-elevation-1">
+          <div v-if="!compact" class="pointer-events-none absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-surface-container-high px-4 py-2 text-body-small text-on-surface-variant shadow-elevation-1">
             Drag someone onto a person to change who they report to · double click folds a team
           </div>
         </MFlow>

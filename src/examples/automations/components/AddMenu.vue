@@ -39,11 +39,9 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="el"
-    data-flow-panel
     role="menu"
     class="absolute z-30 overflow-y-auto rounded-sm bg-surface-container py-2 shadow-elevation-2"
     :style="{ left: `${left}px`, top: `${top}px`, width: `${W}px`, maxHeight: `${H}px` }"
-    data-flow-nowheel
   >
     <div class="px-3 pb-1 text-label-medium text-on-surface-variant">Add a step</div>
     <button

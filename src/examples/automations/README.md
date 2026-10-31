@@ -23,7 +23,9 @@ automations/
 
 ## How it works
 
-- **Building**: drag a step from the palette onto the canvas (or tap it to add it in the middle), then drag from a
+- **Building**: drag a step from the palette onto the canvas (or tap it to add it in the middle). As soon as it's
+  over the canvas it becomes a real node that MFlow drags on (`addNodes` + `startDrag`), so it can go straight onto
+  an edge, where it splices in between two steps. Then drag from a
   step's right handle to the next one. Drop a connection on empty canvas to pick a step to add there, already
   connected. Click an edge for its × to disconnect, or pull a connected input away. Delete, Ctrl+Z, Ctrl+C / V
   and Shift + drag (select several) are MFlow's own; "Tidy up" runs its layered layout.
