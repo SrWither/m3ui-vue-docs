@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.3.1',
-    date: 'Unreleased',
+    date: '2026-10-31',
     changes: {
       added: [
         'Floor plan components: MFloorPlanToolbar and MFloorPlanInspector to arrange a room (add tables from your presets and decor of any kind, edit what is picked, with slots for fields of your own), and useFloorPlan for controls of your own',
