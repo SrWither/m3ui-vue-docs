@@ -204,7 +204,7 @@ const types: TypeDef[] = [
       { name: 'width / height', type: 'number', description: 'A fixed size; otherwise measured (a group wraps its children)' },
       { name: 'parentId / extent', type: "string / 'parent'", description: 'The group it moves with; extent keeps it inside' },
       { name: 'sourcePosition / targetPosition', type: "'top' | 'right' | 'bottom' | 'left'", description: "The default node's handle sides" },
-      { name: 'hidden, draggable, selectable, connectable, deletable, class', type: '…', description: 'Per node' },
+      { name: 'hidden, draggable, selectable, connectable, deletable, insertable, class', type: '…', description: 'Per node (insertable: false keeps it from splicing into an edge)' },
     ],
   },
   {

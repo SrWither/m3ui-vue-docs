@@ -24,6 +24,7 @@ const props: PropDef[] = [
   { name: 'fit', type: 'boolean', default: 'true', description: 'Fit view button' },
   { name: 'lock', type: 'boolean', default: 'true', description: "Lock button (MFlow's v-model:locked)" },
   { name: 'history', type: 'boolean', default: 'false', description: 'Undo and redo buttons' },
+  { name: 'delete', type: 'boolean', default: 'true', description: 'A delete button that grows in while something deletable is selected (touch has no Delete key); it respects deletable and beforeDelete' },
 ]
 const slots: SlotDef[] = [{ name: 'default', description: 'More buttons at the end' }]
 </script>
@@ -32,7 +33,7 @@ const slots: SlotDef[] = [{ name: 'default', description: 'More buttons at the e
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MFlowControls</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      Zoom, fit, lock, and optionally undo and redo, as an M3 floating toolbar over an MFlow. Put it in MFlow's default
+      Zoom, fit, lock, optionally undo and redo, and a delete button while something is selected, as an M3 floating toolbar over an MFlow. Put it in MFlow's default
       slot. Add buttons of your own in its slot; <code>useFlow()</code> (or MFlow's template ref) gives them the same
       controls. From <code>/flow</code>.
     </p>
