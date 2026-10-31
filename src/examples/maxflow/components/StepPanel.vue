@@ -55,7 +55,8 @@ const atEnd = computed(() => n.index.value >= n.frames.value.length - 1)
         <span class="flex items-center gap-1.5"><span class="h-1 w-5 rounded-full bg-primary" />Augmenting path</span>
         <span class="flex items-center gap-1.5"><span class="h-1 w-5 rounded-full bg-tertiary" />Saturated</span>
         <span class="flex items-center gap-1.5"><span class="h-1 w-5 rounded-full bg-error" />Minimum cut</span>
-        <span v-if="n.algorithm.value === 'dinic'" class="flex items-center gap-1.5"><span class="flex size-4 items-center justify-center rounded-full bg-tertiary text-[10px] text-on-tertiary">2</span>Level</span>
+        <span v-if="n.algorithm.value !== 'edmonds-karp'" class="flex items-center gap-1.5"><span class="flex size-4 items-center justify-center rounded-full bg-tertiary text-[10px] text-on-tertiary">2</span>{{ n.frame.value.excess ? 'Excess' : 'Level' }}</span>
+        <span v-if="n.algorithm.value === 'wave'" class="flex items-center gap-1.5"><span class="size-4 rounded-full ring-4 ring-error/35" />Blocked</span>
       </div>
       <MButton variant="tonal" icon="edit" @click="n.stop()">Edit the network</MButton>
     </template>
@@ -83,7 +84,8 @@ const atEnd = computed(() => n.index.value >= n.frames.value.length - 1)
         <MButton variant="text" icon="delete" color="error" class="self-start" @click="emit('remove')">Delete edge</MButton>
       </template>
       <ul v-else class="flex list-disc flex-col gap-1 pl-5 text-body-medium text-on-surface-variant">
-        <li>Drag the vertices around; drag from a vertex's right edge to another to add an edge.</li>
+        <li>Double click the canvas to add a vertex there.</li>
+        <li>Drag from a vertex's right edge onto another to add an edge, or into empty space to add a vertex already connected.</li>
         <li>Click an edge to change its capacity, a vertex to rename it or make it the source or the sink.</li>
         <li>Delete removes what's selected; Ctrl+Z undoes.</li>
       </ul>

@@ -9,6 +9,16 @@ export interface Preset {
 
 export const presets: Preset[] = [
   {
+    id: 'blank',
+    name: 'Blank',
+    description: 'Just a source and a sink: double click the canvas to add vertices, and drag from a vertex\'s right edge to another (or into empty space, to make a new one) to add edges.',
+    nodes: [
+      { id: 's', label: 's', x: 0, y: 140 },
+      { id: 't', label: 't', x: 600, y: 140 },
+    ],
+    edges: [],
+  },
+  {
     id: 'clrs',
     name: 'Classic',
     description: 'The textbook network (Cormen et al., Introduction to Algorithms): edges both ways between the middle vertices, maximum flow 23.',

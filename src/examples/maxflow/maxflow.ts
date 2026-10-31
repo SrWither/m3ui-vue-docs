@@ -1,5 +1,6 @@
-// Maximum flow, step by step: Edmonds–Karp (Ford–Fulkerson with BFS augmenting paths) and Dinic (BFS level graph,
-// then a blocking flow of DFS paths). Each algorithm runs to the end at once and records a frame per step, so the
+// Maximum flow, step by step: Edmonds–Karp (Ford–Fulkerson with BFS augmenting paths), Dinic (BFS level graph,
+// then a blocking flow of DFS paths) and the wave algorithm (Dinic's phases with Karzanov's preflow waves for the
+// blocking flow, O(V³) overall). Each algorithm runs to the end at once and records a frame per step, so the
 // page can step forwards and backwards through them freely.
 
 export interface Net {
@@ -26,12 +27,15 @@ export interface Frame {
   /** The augmenting path being pushed */
   path?: Arc[]
   bottleneck?: number
+  /** Wave: flow piled up at each vertex, and the vertices that can't push theirs on */
+  excess?: Record<string, number>
+  blocked?: string[]
   /** At the end: the source side of a minimum cut, and the edges across it */
   cut?: { side: string[]; edges: string[] }
   done?: boolean
 }
 
-export type Algorithm = 'edmonds-karp' | 'dinic'
+export type Algorithm = 'edmonds-karp' | 'dinic' | 'wave'
 
 interface ResArc { edge: string; dir: 'fwd' | 'back'; to: string; cap: number }
 
@@ -190,4 +194,79 @@ export function dinic(net: Net): Frame[] {
   return frames
 }
 
-export const run = (algorithm: Algorithm, net: Net) => (algorithm === 'dinic' ? dinic(net) : edmondsKarp(net))
+/**
+ * The wave algorithm: Dinic's phases, but each blocking flow is a preflow pushed in waves. The source floods all its
+ * level arcs; a forward wave walks the levels upwards and every vertex with excess pushes it on (a vertex that can't
+ * push it all is blocked for the rest of the phase); a backward wave walks them downwards and every blocked vertex
+ * returns its excess along the arcs it came in by, latest first. Waves repeat until no vertex holds excess.
+ */
+export function wave(net: Net): Frame[] {
+  let flow: Record<string, number> = Object.fromEntries(net.edges.map((e) => [e.id, 0]))
+  const frames: Frame[] = [{ flow, total: 0, title: 'Start with no flow', detail: 'The wave algorithm keeps Dinic\'s phases, but finds each blocking flow with a preflow: vertices may hold more than they pass on for a while, and waves move that excess up the levels and, where it\'s stuck, back down.' }]
+  const sinkFlow = (f: Record<string, number>) => net.edges.reduce((s, e) => s + (e.target === net.sink ? f[e.id]! : 0) - (e.source === net.sink ? f[e.id]! : 0), 0)
+  const capOf = (edge: string, dir: 'fwd' | 'back') => {
+    const e = net.edges.find((x) => x.id === edge)!
+    return dir === 'fwd' ? e.capacity - flow[edge]! : flow[edge]!
+  }
+  for (let phase = 1; frames.length < LIMIT; phase++) {
+    const { level, order } = bfs(net, flow)
+    if (!(net.sink in level)) break
+    frames.push({ flow, total: sinkFlow(flow), visited: order, levels: level, title: `Phase ${phase}: level graph`, detail: `As in Dinic, only arcs that climb one level count; ${label(net, net.sink)} is at level ${level[net.sink]}.` })
+    const excess: Record<string, number> = {}
+    const blocked = new Set<string>()
+    const came = new Map<string, { from: string; edge: string; dir: 'fwd' | 'back'; amt: number }[]>()
+    const out = (u: string) => (residual(net, flow).get(u) ?? []).filter((a) => level[a.to] === level[u]! + 1)
+    let touched: Arc[] = []
+    const push = (u: string, edge: string, dir: 'fwd' | 'back', to: string, amt: number) => {
+      flow = { ...flow, [edge]: flow[edge]! + (dir === 'fwd' ? amt : -amt) }
+      if (u !== net.source) excess[u] = (excess[u] ?? 0) - amt
+      if (to !== net.sink) excess[to] = (excess[to] ?? 0) + amt
+      ;(came.get(to) ?? came.set(to, []).get(to)!).push({ from: u, edge, dir, amt })
+      touched.push({ edge, dir })
+    }
+    const inner = order.filter((v) => v !== net.source && v !== net.sink).sort((a, b) => level[a]! - level[b]!)
+    const shown = () => Object.fromEntries(inner.filter((v) => excess[v]).map((v) => [v, excess[v]!]))
+    for (const a of out(net.source)) if (a.cap > 0) push(net.source, a.edge, a.dir, a.to, a.cap)
+    frames.push({ flow, total: sinkFlow(flow), levels: level, excess: shown(), path: touched, title: `Phase ${phase}: flood out of ${label(net, net.source)}`, detail: 'Every level arc out of the source is filled to capacity. The vertices they reach now hold that flow as excess (the numbers on them).' })
+    for (let w = 1; frames.length < LIMIT && inner.some((v) => (excess[v] ?? 0) > 0); w++) {
+      touched = []
+      const newlyBlocked: string[] = []
+      for (const v of inner) {
+        if (blocked.has(v) || !((excess[v] ?? 0) > 0)) continue
+        for (const a of out(v)) {
+          if ((excess[v] ?? 0) <= 0) break
+          if (blocked.has(a.to)) continue
+          const c = capOf(a.edge, a.dir)
+          if (c > 0) push(v, a.edge, a.dir, a.to, Math.min(excess[v]!, c))
+        }
+        if ((excess[v] ?? 0) > 0) { blocked.add(v); newlyBlocked.push(v) }
+      }
+      if (touched.length || newlyBlocked.length) {
+        frames.push({ flow, total: sinkFlow(flow), levels: level, excess: shown(), blocked: [...blocked], path: touched, title: `Wave ${w}, forward`, detail: 'Level by level, every vertex with excess pushes it up its arcs to unblocked vertices.' + (newlyBlocked.length ? ` ${newlyBlocked.map((v) => label(net, v)).join(', ')} couldn't pass it all on: blocked for this phase.` : '') })
+      }
+      touched = []
+      for (const v of [...inner].reverse()) {
+        if (!blocked.has(v) || !((excess[v] ?? 0) > 0)) continue
+        const stack = came.get(v) ?? []
+        while ((excess[v] ?? 0) > 0 && stack.length) {
+          const rec = stack[stack.length - 1]!
+          const amt = Math.min(excess[v]!, rec.amt)
+          flow = { ...flow, [rec.edge]: flow[rec.edge]! + (rec.dir === 'fwd' ? -amt : amt) }
+          excess[v]! -= amt
+          if (rec.from !== net.source) excess[rec.from] = (excess[rec.from] ?? 0) + amt
+          rec.amt -= amt
+          if (!rec.amt) stack.pop()
+          touched.push({ edge: rec.edge, dir: rec.dir === 'fwd' ? 'back' : 'fwd' })
+        }
+      }
+      if (touched.length) {
+        frames.push({ flow, total: sinkFlow(flow), levels: level, excess: shown(), blocked: [...blocked], path: touched, title: `Wave ${w}, backward`, detail: 'Back down the levels, each blocked vertex returns its excess along the arcs it arrived by, latest first; the vertices below try to send it elsewhere in the next wave.' })
+      }
+    }
+    frames.push({ flow, total: sinkFlow(flow), levels: level, title: `Phase ${phase} done: blocking flow`, detail: 'No vertex holds excess any more: the preflow is a flow again, and it blocks every level path, as in Dinic.' })
+  }
+  frames.push(cutOf(net, flow, sinkFlow(flow)))
+  return frames
+}
+
+export const run = (algorithm: Algorithm, net: Net) => (algorithm === 'dinic' ? dinic(net) : algorithm === 'wave' ? wave(net) : edmondsKarp(net))

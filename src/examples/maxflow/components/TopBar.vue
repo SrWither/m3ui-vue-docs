@@ -33,7 +33,7 @@ function setAlgorithm(a: Algorithm) {
     <MSelect v-model="preset" :options="presets.map((p) => ({ value: p.id, label: p.name }))" label="Network" variant="outlined" class="w-48" />
     <MSegmentedButton
       :model-value="n.algorithm.value"
-      :options="[{ value: 'edmonds-karp', label: 'Edmonds–Karp' }, { value: 'dinic', label: 'Dinic' }]"
+      :options="[{ value: 'edmonds-karp', label: 'Edmonds–Karp' }, { value: 'dinic', label: 'Dinic' }, { value: 'wave', label: 'Wave' }]"
       @update:model-value="setAlgorithm($event as Algorithm)"
     />
     <span class="flex-1" />

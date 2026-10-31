@@ -1,23 +1,21 @@
 <script setup lang="ts">
 /*
- * Max flow example (Flowlab): maximum flow, step by step, built only with m3ui-vue on MFlow. Edit a network (move
- * vertices, draw edges, set capacities, pick the source and the sink) or start from a preset, then watch
- * Edmonds–Karp or Dinic solve it: every augmenting path lights up as flow is pushed, Dinic shows each phase's levels,
- * and the end marks a minimum cut. Step back and forth, or play it.
+ * Max flow example (Flowlab): maximum flow, step by step, built only with m3ui-vue on MFlow. Edit a network (double
+ * click to add a vertex, drag from one to connect, set capacities, pick the source and the sink) or start from a
+ * preset, then watch Edmonds–Karp, Dinic or the wave algorithm solve it: augmenting paths light up as flow is pushed,
+ * Dinic and wave show each phase's levels, wave its excess and blocked vertices, and the end marks a minimum cut.
+ * Everything is drawn by MFlow itself: `circle` nodes and edges restyled declaratively (color, width, label tone,
+ * animated, dashed) for each step.
  * - components/TopBar.vue     logo, presets, algorithm, theme, docs and source
- * - components/Vertex.vue     a vertex (#node-vertex): source, sink, reached, level, side of the cut
- * - components/NetEdge.vue    an edge (#edge-net): flow/capacity, the path, the cut
  * - components/StepPanel.vue  the step controls and explanations, or the editing tools
- * - maxflow.ts                Edmonds–Karp and Dinic, each recording a frame per step
- * - useNetwork.ts / presets.ts  the network, the run, and the networks to start from
+ * - maxflow.ts                Edmonds–Karp, Dinic and wave, each recording a frame per step
+ * - useNetwork.ts / presets.ts  the network, the run, how each step looks, and the networks to start from
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { MSideSheet, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
-import { MFlow, MFlowControls, type FlowConnection, type FlowEdge, type FlowNode, type FlowSelection } from '@m3ui-vue/m3ui-vue/flow'
+import { MFlow, MFlowControls, type FlowConnection, type FlowEdge, type FlowNode, type FlowSelection, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import { useNetwork, type EdgeData, type VertexData } from './useNetwork'
 import TopBar from './components/TopBar.vue'
-import Vertex from './components/Vertex.vue'
-import NetEdge from './components/NetEdge.vue'
 import StepPanel from './components/StepPanel.vue'
 
 const n = useNetwork()
@@ -25,14 +23,12 @@ const { widthClass } = useWindowSizeClass()
 const wide = computed(() => widthClass.value !== 'compact' && widthClass.value !== 'medium')
 
 const flow = ref<InstanceType<typeof MFlow>>()
-const canvas = ref<HTMLElement>()
 const selection = ref<FlowSelection>({ nodes: [], edges: [] })
 const selectedNode = computed(() => (selection.value.nodes.length === 1 ? n.nodes.value.find((x) => x.id === selection.value.nodes[0]) : undefined))
 const selectedEdge = computed(() => (!selectedNode.value && selection.value.edges.length === 1 ? n.edges.value.find((x) => x.id === selection.value.edges[0]) : undefined))
 const sheetOpen = ref(false)
 
-// A new network, or a run that starts, refits the view; a run clears the selection
-watch(() => n.presetId.value, () => setTimeout(() => flow.value?.fitView(), 50))
+watch(() => n.presetId.value, (id) => { if (id) setTimeout(() => flow.value?.fitView(), 50) })
 watch(n.running, (r) => {
   if (r) selection.value = { nodes: [], edges: [] }
   playing.value = false
@@ -53,25 +49,47 @@ watch([playing, speed], ([on]) => {
 })
 onBeforeUnmount(() => clearInterval(timer))
 
-// ── What the current step shows ─────────────────────────────────────────────────────────────────────────
-const flowOf = (id: string) => n.frame.value?.flow[id] ?? 0
-const pathDir = computed(() => new Map((n.frame.value?.path ?? []).map((a) => [a.edge, a.dir])))
-const cut = computed(() => new Set(n.frame.value?.cut?.edges ?? []))
-const cutSide = computed(() => new Set(n.frame.value?.cut?.side ?? []))
-const visited = computed(() => new Set(n.frame.value?.visited ?? []))
-function edgeState(id: string) {
-  if (cut.value.has(id)) return 'cut' as const
-  return pathDir.value.get(id) ?? null
+// ── MFlow draws n.shownNodes / n.shownEdges (dressed for the step); edits come back stripped to the network ──
+function onNodes(next: FlowNode[]) {
+  n.nodes.value = next.map((x) => ({ id: x.id, type: 'circle', position: x.position, data: { label: x.data.label, kind: x.data.kind } as VertexData }))
 }
-// Opposite edges between the same two vertices sit side by side
-const pairs = computed(() => new Set(n.edges.value.map((e) => `${e.source}>${e.target}`)))
-const offsetOf = (e: FlowEdge) => (pairs.value.has(`${e.target}>${e.source}`) ? 7 : 0)
+function onEdges(next: FlowEdge[]) {
+  n.edges.value = next.map((e) => ({ id: e.id, source: e.source, target: e.target, data: { capacity: (e.data as EdgeData | undefined)?.capacity ?? 5 } }))
+}
 
 // ── Editing ─────────────────────────────────────────────────────────────────────────────────────────────
-// Nothing flows into the source or out of the sink
+const edited = () => (n.presetId.value = '')
 function isValidConnection(c: FlowConnection) {
+  // Nothing flows into the source or out of the sink
   const kind = (id: string) => n.nodes.value.find((x) => x.id === id)?.data?.kind
   return kind(c.target) !== 'source' && kind(c.source) !== 'sink'
+}
+let added = 0
+function vertexAt(at: FlowXY): FlowNode<VertexData> {
+  return { id: `x${Date.now().toString(36)}${added}`, type: 'circle', position: { x: at.x - 28, y: at.y - 28 }, data: { label: `u${++added}`, kind: 'inner' } }
+}
+// A double click on the canvas adds a vertex there
+function addAt(at: FlowXY) {
+  if (n.running.value) return
+  const v = vertexAt(at)
+  flow.value!.addNodes(v)
+  selection.value = { nodes: [v.id], edges: [] }
+  edited()
+}
+function addVertex() {
+  const s = flow.value!.size
+  const v = flow.value!.viewport
+  addAt({ x: (s.width / 2 - v.x) / v.zoom + (added % 4) * 16, y: (s.height / 2 - v.y) / v.zoom })
+}
+// An edge dragged into empty space ends at a new vertex
+function onConnectEnd(e: { connection: FlowConnection | null; position: FlowXY; from: { nodeId: string; type: 'source' | 'target' } }) {
+  if (e.connection || e.from.type !== 'source' || n.nodes.value.find((x) => x.id === e.from.nodeId)?.data?.kind === 'sink') return
+  const v = vertexAt(e.position)
+  // Both in the same tick: MFlow's history takes them as one step
+  n.nodes.value = [...n.nodes.value, v]
+  n.edges.value = [...n.edges.value, { id: `e${v.id}`, source: e.from.nodeId, target: v.id, data: { capacity: 5 } }]
+  selection.value = { nodes: [v.id], edges: [] }
+  edited()
 }
 function patchVertex(patch: Partial<VertexData>) {
   const id = selectedNode.value!.id
@@ -80,33 +98,22 @@ function patchVertex(patch: Partial<VertexData>) {
     if (patch.kind && patch.kind !== 'inner' && x.id !== id && x.data!.kind === patch.kind) return { ...x, data: { ...x.data!, kind: 'inner' } }
     return x.id === id ? { ...x, data: { ...x.data!, ...patch } } : x
   })
-  n.presetId.value = ''
+  edited()
 }
 function setCapacity(value: number) {
   const id = selectedEdge.value!.id
   n.edges.value = n.edges.value.map((e) => (e.id === id ? { ...e, data: { capacity: Math.max(0, Math.round(value)) } } : e))
-  n.presetId.value = ''
+  edited()
 }
 function removeSelected() {
   flow.value?.remove({ nodes: selectedNode.value ? [selectedNode.value.id] : [], edges: selectedEdge.value ? [selectedEdge.value.id] : [] })
 }
-let added = 0
-function addVertex() {
-  const r = canvas.value!.getBoundingClientRect()
-  const c = flow.value!.screenToFlow({ x: r.left + r.width / 2, y: r.top + r.height / 2 })
-  const id = `x${Date.now().toString(36)}`
-  const node: FlowNode<VertexData> = { id, type: 'vertex', position: { x: c.x - 28 + (added % 4) * 16, y: c.y - 28 + (added % 4) * 16 }, data: { label: `u${++added}`, kind: 'inner' } }
-  flow.value!.addNodes(node)
-  selection.value = { nodes: [id], edges: [] }
-  n.presetId.value = ''
-}
-// Any edit makes it a network of your own
-const edited = () => (n.presetId.value = '')
 
 // On phones the panel is a sheet; selecting something while editing opens it
 watch(selection, (s) => { if (!wide.value && !n.running.value && (s.nodes.length || s.edges.length)) sheetOpen.value = true })
 
 // Space plays or pauses, ← → step (outside the canvas and fields)
+const canvas = ref<HTMLElement>()
 function onKey(e: KeyboardEvent) {
   const t = e.target as HTMLElement
   if (!n.running.value || canvas.value?.contains(t) || t.closest('input, textarea, [contenteditable]')) return
@@ -116,6 +123,8 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => window.addEventListener('keydown', onKey))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
+
+const panel = { 'onVertex': patchVertex, 'onCapacity': setCapacity, 'onRemove': removeSelected, 'onAdd': addVertex }
 </script>
 
 <template>
@@ -125,11 +134,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
       <main ref="canvas" class="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-surface" :class="wide && 'mb-2 ml-2 rounded-2xl'">
         <MFlow
           ref="flow"
-          v-model:nodes="n.nodes.value"
-          v-model:edges="n.edges.value"
+          :nodes="n.shownNodes.value"
+          :edges="n.shownEdges.value"
           v-model:selection="selection"
           :locked="n.running.value"
-          :default-edge-options="{ type: 'net', data: { capacity: 5 } }"
+          :history="!n.running.value"
+          :default-edge-options="{ data: { capacity: 5 } }"
           :is-valid-connection="isValidConnection"
           :edges-reconnectable="false"
           :insert-on-edge="false"
@@ -137,72 +147,27 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
           fit-view
           label="Flow network"
           class="absolute inset-0"
+          @update:nodes="onNodes"
+          @update:edges="onEdges"
+          @pane-dblclick="addAt"
           @connect="edited"
+          @connect-end="onConnectEnd"
           @delete="edited"
         >
-          <template #node-vertex="{ node, selected }">
-            <Vertex
-              :label="node.data.label"
-              :kind="node.data.kind"
-              :selected="selected"
-              :editing="!n.running.value"
-              :visited="visited.has(node.id) && !n.frame.value?.done"
-              :level="n.frame.value?.levels?.[node.id]"
-              :cut-side="cutSide.has(node.id)"
-            />
-          </template>
-          <template #edge-net="{ edge, sourceX, sourceY, targetX, targetY, selected }">
-            <!-- The source handle sits on the vertex's right edge, 28px from its center; the target handle at the center -->
-            <NetEdge
-              :from="{ x: sourceX - 28, y: sourceY }"
-              :to="{ x: targetX, y: targetY }"
-              :capacity="(edge.data as EdgeData).capacity"
-              :flow="flowOf(edge.id)"
-              :state="edgeState(edge.id)"
-              :selected="selected"
-              :offset="offsetOf(edge)"
-            />
-          </template>
           <MFlowControls :lock="false" history />
         </MFlow>
       </main>
 
       <aside v-if="wide" class="mr-2 mb-2 ml-2 w-96 shrink-0 overflow-y-auto rounded-2xl bg-surface">
-        <StepPanel
-          v-model:playing="playing"
-          v-model:speed="speed"
-          :selected-node="selectedNode"
-          :selected-edge="selectedEdge"
-          @vertex="patchVertex"
-          @capacity="setCapacity"
-          @remove="removeSelected"
-          @add="addVertex"
-        />
+        <StepPanel v-model:playing="playing" v-model:speed="speed" :selected-node="selectedNode" :selected-edge="selectedEdge" v-bind="panel" />
       </aside>
       <section v-else class="max-h-[45%] shrink-0 overflow-y-auto border-t border-outline-variant">
-        <StepPanel
-          v-model:playing="playing"
-          v-model:speed="speed"
-          @vertex="patchVertex"
-          @capacity="setCapacity"
-          @remove="removeSelected"
-          @add="addVertex"
-        />
+        <StepPanel v-model:playing="playing" v-model:speed="speed" v-bind="panel" />
       </section>
     </div>
 
     <MSideSheet v-if="!wide" v-model="sheetOpen">
-      <StepPanel
-        v-if="selectedNode || selectedEdge"
-        v-model:playing="playing"
-        v-model:speed="speed"
-        :selected-node="selectedNode"
-        :selected-edge="selectedEdge"
-        @vertex="patchVertex"
-        @capacity="setCapacity"
-        @remove="removeSelected"
-        @add="addVertex"
-      />
+      <StepPanel v-if="selectedNode || selectedEdge" v-model:playing="playing" v-model:speed="speed" :selected-node="selectedNode" :selected-edge="selectedEdge" v-bind="panel" />
     </MSideSheet>
   </div>
 </template>
