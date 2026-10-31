@@ -60,10 +60,14 @@ function answer(yes: boolean) {
 // ── Splice into an edge ─────────────────────────────────────────────────────────────────────────────────
 const spliceNodes = ref<FlowNode[]>([
   { id: 'fetch', type: 'input', position: { x: 0, y: 40 }, data: { label: 'Fetch orders', icon: 'download' } },
-  { id: 'save', type: 'output', position: { x: 560, y: 40 }, data: { label: 'Save report', icon: 'save' } },
-  { id: 'clean', position: { x: 280, y: 200 }, data: { label: 'Clean up data', icon: 'cleaning_services' } },
+  { id: 'save', position: { x: 300, y: 40 }, data: { label: 'Save report', icon: 'save' } },
+  { id: 'notify', type: 'output', position: { x: 580, y: 40 }, data: { label: 'Notify team', icon: 'notifications' } },
+  { id: 'clean', position: { x: 150, y: 220 }, data: { label: 'Clean up data', icon: 'cleaning_services' } },
 ])
-const spliceEdges = ref<FlowEdge[]>([{ id: 's1', source: 'fetch', target: 'save', animated: true }])
+const spliceEdges = ref<FlowEdge[]>([
+  { id: 's1', source: 'fetch', target: 'save', animated: true },
+  { id: 's2', source: 'save', target: 'notify' },
+])
 
 // ── Custom nodes ────────────────────────────────────────────────────────────────────────────────────────
 const customNodes = ref<FlowNode[]>([
@@ -158,7 +162,7 @@ const flowProps: PropDef[] = [
   { name: 'guides', type: 'boolean', default: 'true', description: 'Alignment guides (and snapping to them) while dragging one node' },
   { name: 'layout', type: "'tree' | 'layered' | FlowLayout | null", default: 'null', description: "Lays the nodes out whenever the graph's shape changes" },
   { name: 'layoutOptions', type: 'FlowLayoutOptions', description: '{ direction, gap, levelGap }' },
-  { name: 'insertOnEdge', type: 'boolean', default: 'true', description: 'A node with no connections dropped onto an edge splices into it (A → C becomes A → B → C); the edge lights up while it\'s over one' },
+  { name: 'insertOnEdge', type: 'boolean', default: 'true', description: 'A node with no connections dropped onto an edge splices into it (A → C becomes A → B → C); the edge lights up while it\'s over one, and without room the next nodes move along' },
   { name: 'dropIntoGroups', type: 'boolean', default: 'false', description: 'Nodes dropped on a group join it, and leave it when dropped outside' },
   { name: 'animate', type: 'boolean', default: 'true', description: 'Positions spring to their new place when changed from outside' },
   { name: 'getId', type: "(kind: 'node' | 'edge') => string", description: 'Ids for pasted nodes and new edges' },
@@ -283,7 +287,7 @@ const edges = ref<FlowEdge[]>([
 
     <ComponentDemo
       title="Splice Into an Edge"
-      description="Drag Clean up data onto the edge between the other two: it lights up, and dropped there the node goes in between, keeping the edge's look. One Ctrl+Z puts everything back."
+      description="Drag Clean up data onto the edge between Fetch orders and Save report: it lights up, and dropped there the node goes in between, keeping the edge's look. There's no room, so Save report and what comes after it move along. One Ctrl+Z puts everything back."
       flush
       :code="`<MFlow v-model:nodes=&quot;nodes&quot; v-model:edges=&quot;edges&quot; fit-view @insert=&quot;({ node, edge }) => save(node, edge)&quot; />`"
     >
