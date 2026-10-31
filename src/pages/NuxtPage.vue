@@ -189,8 +189,10 @@ const options: PropDef[] = [
       (<code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MChart</code>,
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MCodeEditor</code>,
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MRichTextEditor</code>,
-      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMap</code>…) are
-      registered once that dependency is installed.
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMap</code>,
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MPdfViewer</code>…) are
+      registered once that dependency is installed. The families of 1.3.0 that need nothing more (media players,
+      MFlow, MGantt, the drawing canvas, MFloorPlan, MImageCropper) are registered like any other component.
     </p>
     <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-6" />
 
@@ -226,12 +228,16 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useMediaPlayer</code> &rarr; <code class="font-mono text-primary">useM3MediaPlayer</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">usePdf</code> &rarr; <code class="font-mono text-primary">useM3Pdf</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFlow</code> &rarr; <code class="font-mono text-primary">useM3Flow</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFlowNode</code> &rarr; <code class="font-mono text-primary">useM3FlowNode</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useGantt</code> &rarr; <code class="font-mono text-primary">useM3Gantt</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useDrawing</code> &rarr; <code class="font-mono text-primary">useM3Drawing</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useResourceTimeline</code> &rarr; <code class="font-mono text-primary">useM3ResourceTimeline</code></li>
     </ul>
     <p class="mb-10 text-body-small text-on-surface-variant">
-      The map composables, like the map components, only when <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">maplibre-gl</code> is installed.
+      The map composables, like the map components, only when <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">maplibre-gl</code> is installed;
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">useM3Pdf</code> and MPdfViewer only with
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">pdfjs-dist</code> (from @m3ui-vue/nuxt 0.4.1).
+      New composables of the library are picked up from its API index, with no module release needed.
     </p>
 
     <h3 class="mb-3 text-title-large font-medium">Container transform</h3>
