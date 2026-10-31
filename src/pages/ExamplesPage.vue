@@ -147,6 +147,28 @@ import { examples, exampleSource } from '@/examples/registry'
               </span>
             </span>
           </div>
+          <div v-else-if="e.id === 'automations'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A workflow: a trigger, a condition splitting in two, and the steps after it, joined by curves -->
+            <span class="absolute inset-0 bg-[radial-gradient(var(--color-outline-variant)_1px,transparent_1px)] [background-size:10px_10px] opacity-60" />
+            <svg viewBox="0 0 100 60" class="absolute inset-0 size-full" preserveAspectRatio="none" fill="none">
+              <path d="M24 30 C30 30 30 30 36 30" class="stroke-outline" stroke-width="0.8" />
+              <path d="M58 30 C64 30 62 16 68 16" class="stroke-primary" stroke-width="0.8" stroke-dasharray="2 1.5" />
+              <path d="M58 30 C64 30 62 44 68 44" class="stroke-outline" stroke-width="0.8" />
+            </svg>
+            <span class="absolute top-[42%] left-[6%] h-[16%] w-[18%] rounded-md border border-outline-variant bg-surface p-[1.5%]"><span class="block aspect-square h-full rounded-sm bg-tertiary-container" /></span>
+            <span class="absolute top-[42%] left-[36%] h-[16%] w-[22%] rounded-md border border-outline-variant bg-surface p-[1.5%]"><span class="block aspect-square h-full rounded-sm bg-secondary-container" /></span>
+            <span class="absolute top-[19%] left-[68%] h-[16%] w-[24%] rounded-md border border-primary bg-surface p-[1.5%] transition-transform duration-300 group-hover:-translate-y-0.5"><span class="block aspect-square h-full rounded-sm bg-primary-container" /></span>
+            <span class="absolute top-[65%] left-[68%] h-[16%] w-[24%] rounded-md border border-outline-variant bg-surface p-[1.5%] opacity-50"><span class="block aspect-square h-full rounded-sm bg-primary-container" /></span>
+          </div>
+          <div v-else-if="e.id === 'org'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A tree of people: one at the top, three below, a few under them, joined by right-angled lines -->
+            <svg viewBox="0 0 100 60" class="absolute inset-0 size-full" preserveAspectRatio="none" fill="none">
+              <path d="M50 16 V22 M18 22 H82 M18 22 V28 M50 22 V28 M82 22 V28 M50 38 V42 M38 42 H62 M38 42 V46 M62 42 V46" class="stroke-outline" stroke-width="0.6" />
+            </svg>
+            <span class="absolute top-[8%] left-[38%] flex h-[18%] w-[24%] items-center gap-[6%] rounded-md border border-primary bg-surface px-[2%]"><span class="aspect-square h-[60%] rounded-full bg-primary" /><span class="h-[14%] flex-1 rounded-full bg-on-surface/20" /></span>
+            <span v-for="(x, i) in [6, 38, 70]" :key="x" class="absolute top-[46%] flex h-[18%] w-[24%] items-center gap-[6%] rounded-md border border-outline-variant bg-surface px-[2%] transition-transform duration-300" :class="i === 1 && 'group-hover:-translate-y-0.5'" :style="{ left: `${x}%` }"><span class="aspect-square h-[60%] rounded-full" :class="['bg-tertiary', 'bg-secondary', 'bg-error'][i]" /><span class="h-[14%] flex-1 rounded-full bg-on-surface/15" /></span>
+            <span v-for="x in [28, 52]" :key="x" class="absolute top-[76%] flex h-[16%] w-[20%] items-center gap-[6%] rounded-md border border-outline-variant bg-surface px-[2%]" :style="{ left: `${x}%` }"><span class="aspect-square h-[55%] rounded-full bg-secondary/60" /><span class="h-[14%] flex-1 rounded-full bg-on-surface/15" /></span>
+          </div>
           <div v-else-if="e.id === 'recipes'" class="absolute inset-[12%] flex items-center justify-center gap-[4%] rounded-2xl bg-surface p-[5%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span v-for="(d, i) in [{ s: 'Cookie9Sided', c: '#c8432b', b: '#ffdad3' }, { s: 'Clover4Leaf', c: '#e5b92c', b: '#ffefc2' }, { s: 'Sunny', c: '#3b4ca0', b: '#dee0ff' }] as const" :key="i" class="relative flex aspect-[3/4] flex-1 flex-col items-center gap-[8%] rounded-xl p-[6%]" :style="{ background: d.b }">
               <MShape :shape="d.s" class="aspect-square w-full transition-transform duration-500 group-hover:rotate-12" :fill="d.c" />

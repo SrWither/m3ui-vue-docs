@@ -144,6 +144,24 @@ export const examples: ExampleApp[] = [
     uses: ['MPdfViewer', 'MVideoPlayer', 'MAudioPlayer', 'usePdf', 'MNavigationDrawer', 'MBreadcrumbs', 'MSegmentedButton', 'MContextMenu', 'MLightbox', 'MSideSheet', 'MChip', 'useToast'],
     component: () => import('./files/FilesExample.vue'),
   },
+  {
+    id: 'automations',
+    title: 'Automations',
+    description:
+      'A workflow builder in the style of n8n or Zapier: drag triggers, actions and conditions onto a canvas, connect them, set each one up, and test run the workflow as every step lights up in turn down the branch it takes. Undo, copy and paste, tidy up.',
+    icon: 'cable',
+    uses: ['MFlow', 'MFlowNode', 'MFlowHandle', 'MFlowControls', 'MFlowMinimap', 'layoutLayered', 'MSideSheet', 'MBottomSheet', 'MSelect', 'MTextField', 'useToast'],
+    component: () => import('./automations/AutomationsExample.vue'),
+  },
+  {
+    id: 'org',
+    title: 'Org Chart',
+    description:
+      'A company\'s org chart that lays itself out: fold and unfold teams, filter by department, search and fly to anyone, open a profile, and drag a person onto someone else to change who they report to as every card springs to its new place.',
+    icon: 'account_tree',
+    uses: ['MFlow', 'layoutTree', 'MFlowControls', 'MFlowMinimap', 'MAvatar', 'MChip', 'MSegmentedButton', 'MSearchField', 'MSideSheet', 'MList', 'useToast'],
+    component: () => import('./org/OrgExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
