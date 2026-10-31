@@ -55,6 +55,7 @@ const viewerProps: PropDef[] = [
   { name: 'annotate', type: 'boolean', default: 'false', description: 'Shows the edit button and the annotation toolbar' },
   { name: 'tool', type: "'select' | 'highlight' | 'note' | 'ink' | 'eraser'", default: "'select'", description: 'The active tool (v-model:tool)' },
   { name: 'colors', type: 'string[]', description: 'Colors offered for annotations' },
+  { name: 'inkWidths', type: 'number[]', default: '[1, 2, 4, 8]', description: "The pen's widths in PDF points, offered in the toolbar while drawing (the second is the default)" },
   { name: 'author', type: 'string', description: "Written into new annotations' author" },
   { name: 'sidebar', type: "'thumbnails' | 'outline' | null", default: 'null', description: 'The side panel (v-model:sidebar)' },
   { name: 'toolbar', type: 'boolean', default: 'true', description: 'Shows the top bar' },
@@ -135,7 +136,7 @@ const page = ref(1)`"
 
     <ComponentDemo
       title="Annotations"
-      description="The edit button opens the toolbar: highlight text, place notes, draw, erase, undo. Selecting text with the select tool offers Copy and Highlight; a click on an annotation opens it for a comment, another color or deleting it."
+      description="The edit button opens the toolbar: highlight text, place notes, draw in four widths, erase, undo. Selecting text with the select tool offers Copy and Highlight; a click or a tap on an annotation (a highlight too) opens it for a comment, another color or deleting it."
       flush
       :code="`<MPdfViewer
   :src=&quot;file.url&quot;
