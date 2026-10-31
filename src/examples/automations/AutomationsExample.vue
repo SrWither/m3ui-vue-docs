@@ -4,7 +4,7 @@
  * steps from the palette onto the canvas (or tap to add), connect them, set them up in the inspector, and test run
  * the workflow: each step lights up in turn, down the branch its condition takes, with a log of the run.
  * - components/TopBar.vue     logo, the workflow's name, tidy up, test run, theme, docs and source
- * - components/Palette.vue    the kinds of steps, to drag onto the canvas (they become nodes on the way, startDrag) or tap
+ * - components/Palette.vue    the kinds of steps, to drag onto the canvas (with a finger, a short press or a sideways drag; they become nodes on the way, startDrag) or tap
  * - components/StepNode.vue   a step on the canvas, with its run status
  * - components/Inspector.vue  the selected step's settings
  * - components/RunLog.vue     the last run, over the canvas
@@ -36,10 +36,20 @@ const selectedStep = computed(() => {
   const ids = selection.value.nodes
   return ids.length === 1 ? w.nodes.value.find((n) => n.id === ids[0]) : undefined
 })
+// On a phone the inspector is a sheet over the canvas: it opens on a tap on a step (or on adding one from the
+// palette), not on every selection, or it would slide in under a finger dragging a node
+const sheetWanted = ref(false)
 const inspectorOpen = computed({
-  get: () => !!selectedStep.value,
-  set: (v) => { if (!v) selection.value = { nodes: [], edges: [] } },
+  get: () => !!selectedStep.value && (wide.value || sheetWanted.value),
+  set: (v) => {
+    sheetWanted.value = v
+    if (!v) selection.value = { nodes: [], edges: [] }
+  },
 })
+watch(selectedStep, (step) => { if (!step) sheetWanted.value = false })
+function onNodeClick(node: FlowNode) {
+  if (node.id === selectedStep.value?.id) sheetWanted.value = true
+}
 const paletteOpen = ref(false)
 
 // Any edit after a run clears its colors
@@ -65,6 +75,7 @@ function pick(kind: string) {
   const c = viewCenter()
   const n = w.nodes.value.length % 5
   add(kind, { x: c.x + n * 16, y: c.y + n * 16 })
+  sheetWanted.value = true
 }
 // Dragging a step out of the palette: a ghost follows the pointer until it's over the canvas, where the step
 // becomes a real node that MFlow drags on (startDrag), so it can be dropped straight onto an edge
@@ -75,6 +86,34 @@ function onGrab(kind: string, e: PointerEvent) {
   window.addEventListener('pointermove', onGrabMove)
   window.addEventListener('pointerup', endGrab)
   window.addEventListener('pointercancel', endGrab)
+  if (e.pointerType !== 'touch') return
+  // A finger grabs with a short press or a sideways drag: the ghost shows at once and the sheet gets out of the way
+  ghost.value = { kind, x: e.clientX, y: e.clientY }
+  paletteOpen.value = false
+  blockTouch(e)
+}
+// The finger's moves mustn't scroll the palette or the page, until it's lifted (also while MFlow drags the
+// node). Touchmoves go to where the touch began, even after the sheet closed and took that button away, so
+// they're cancelled there as well as on window
+let touchBlock: { id: number; targets: EventTarget[] } | null = null
+function preventTouch(e: Event) {
+  if (e.cancelable) e.preventDefault()
+}
+function blockTouch(e: PointerEvent) {
+  unblockTouch()
+  touchBlock = { id: e.pointerId, targets: [e.target!, window] }
+  for (const t of touchBlock.targets) t.addEventListener('touchmove', preventTouch, { passive: false })
+  window.addEventListener('pointerup', onTouchEnd)
+  window.addEventListener('pointercancel', onTouchEnd)
+}
+function onTouchEnd(e: PointerEvent) {
+  if (touchBlock && e.pointerId === touchBlock.id) unblockTouch()
+}
+function unblockTouch() {
+  for (const t of touchBlock?.targets ?? []) t.removeEventListener('touchmove', preventTouch)
+  touchBlock = null
+  window.removeEventListener('pointerup', onTouchEnd)
+  window.removeEventListener('pointercancel', onTouchEnd)
 }
 function onGrabMove(e: PointerEvent) {
   if (!grabbed || e.pointerId !== grabbed.id) return
@@ -99,7 +138,10 @@ function endGrab() {
   grabbed = null
   ghost.value = null
 }
-onBeforeUnmount(endGrab)
+onBeforeUnmount(() => {
+  endGrab()
+  unblockTouch()
+})
 
 // A connection dropped on nothing offers a step there
 const addMenu = ref<{ x: number; y: number; at: FlowXY; from: { nodeId: string; handleId: string | null } } | null>(null)
@@ -192,6 +234,7 @@ const edgeTone = (e: FlowEdge, selected: boolean) => w.activeEdges.has(e.id) ? '
           label="Workflow"
           class="absolute inset-0"
           @connect-end="onConnectEnd"
+          @node-click="onNodeClick"
         >
           <template #node-step="{ data, node }">
             <StepNode :data="data" :status="statusOf(node.id)" />
@@ -238,7 +281,7 @@ const edgeTone = (e: FlowEdge, selected: boolean) => w.activeEdges.has(e.id) ? '
       <Inspector v-if="selectedStep" :key="selectedStep.id" :node="selectedStep" @update="update" @duplicate="duplicate" @delete="remove" @close="inspectorOpen = false" />
     </MSideSheet>
     <MBottomSheet v-if="!wide" v-model="paletteOpen" title="Add a step">
-      <Palette @pick="pick" />
+      <Palette @pick="pick" @grab="onGrab" />
     </MBottomSheet>
 
     <Teleport to="body">

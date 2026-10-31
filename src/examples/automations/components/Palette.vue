@@ -1,8 +1,9 @@
 <script setup lang="ts">
 /*
- * Every kind of step, by category. A click (or a tap) adds one in the middle of the view; with a mouse or a stylus,
- * pressing one emits `grab` so the page can drag it onto the canvas (AutomationsExample turns it into a real node
- * as soon as it's over the canvas, so it can be dropped straight onto an edge).
+ * Every kind of step, by category. A click (or a tap) adds one in the middle of the view; pressing one with a mouse
+ * or a stylus, or with a finger a short press or a sideways drag (an up/down swipe still scrolls the list), emits `grab` so the page can drag
+ * it onto the canvas (AutomationsExample turns it into a real node as soon as it's over the canvas, so it can be
+ * dropped straight onto an edge).
  */
 import { onBeforeUnmount } from 'vue'
 import { MIcon } from '@m3ui-vue/m3ui-vue'
@@ -16,23 +17,48 @@ const CONTAINER = {
   tertiary: 'bg-tertiary-container text-on-tertiary-container',
 }
 
+const LONG_PRESS = 200
 // A press that turned into a drag doesn't also add the step with its click
-let start: { x: number; y: number } | null = null
+let start: { id: number; x: number; y: number; touch: boolean; kind: string } | null = null
 let moved = false
+let timer: ReturnType<typeof setTimeout> | undefined
 function track(e: PointerEvent) {
-  if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 6) moved = true
+  if (!start || e.pointerId !== start.id) return
+  const dx = e.clientX - start.x
+  const dy = e.clientY - start.y
+  if (Math.hypot(dx, dy) <= (start.touch ? 8 : 6)) return
+  if (start.touch && timer) {
+    // Before the press is long enough: sideways grabs it at once (the list only scrolls up and down), else it's a scroll
+    if (Math.abs(dx) > Math.abs(dy)) grab(start.kind, e)
+    else release()
+  } else moved = true
 }
 function release() {
+  clearTimeout(timer)
+  timer = undefined
   window.removeEventListener('pointermove', track)
+  window.removeEventListener('pointerup', release)
+  window.removeEventListener('pointercancel', release)
   start = null
 }
 function down(e: PointerEvent, kind: Kind) {
+  release()
   moved = false
-  if (e.pointerType === 'touch' || e.button !== 0) return
-  start = { x: e.clientX, y: e.clientY }
+  if (e.button !== 0) return
+  const touch = e.pointerType === 'touch'
+  start = { id: e.pointerId, x: e.clientX, y: e.clientY, touch, kind: kind.id }
   window.addEventListener('pointermove', track)
-  window.addEventListener('pointerup', release, { once: true })
-  emit('grab', kind.id, e)
+  window.addEventListener('pointerup', release)
+  window.addEventListener('pointercancel', release)
+  if (!touch) return emit('grab', kind.id, e)
+  timer = setTimeout(() => grab(kind.id, e), LONG_PRESS)
+}
+function grab(kind: string, e: PointerEvent) {
+  clearTimeout(timer)
+  timer = undefined
+  moved = true
+  navigator.vibrate?.(10)
+  emit('grab', kind, e)
 }
 function click(kind: Kind) {
   if (!moved) emit('pick', kind.id)
@@ -49,8 +75,9 @@ onBeforeUnmount(release)
         v-for="k in kinds.filter((x) => x.category === c.id)"
         :key="k.id"
         type="button"
-        class="flex w-full cursor-grab items-center gap-3 rounded-md px-2 py-2 text-left transition-colors outline-none hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
+        class="flex w-full cursor-grab items-center gap-3 rounded-md px-2 py-2 text-left transition-colors outline-none touch-pan-y select-none [-webkit-touch-callout:none] hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
         @pointerdown="down($event, k)"
+        @contextmenu.prevent
         @click="click(k)"
       >
         <span class="flex size-9 shrink-0 items-center justify-center rounded-sm" :class="CONTAINER[colorOf(k.category)]">

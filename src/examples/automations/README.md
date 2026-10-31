@@ -23,7 +23,9 @@ automations/
 
 ## How it works
 
-- **Building**: drag a step from the palette onto the canvas (or tap it to add it in the middle). As soon as it's
+- **Building**: drag a step from the palette onto the canvas (or tap it to add it in the middle); with a finger,
+  press it a moment or drag it sideways, so an up/down swipe still scrolls the list (on a phone the "Add a step" sheet gets out of the way
+  as soon as the step is grabbed). As soon as it's
   over the canvas it becomes a real node that MFlow drags on (`addNodes` + `startDrag`), so it can go straight onto
   an edge, where it splices in between two steps. Then drag from a
   step's right handle to the next one. Drop a connection on empty canvas to pick a step to add there, already
