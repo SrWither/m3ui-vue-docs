@@ -213,6 +213,20 @@ import { examples, exampleSource } from '@/examples/registry'
               <path d="M30 50 C40 40 50 56 70 44" fill="none" stroke="#43a047" stroke-width="3" stroke-linecap="round" class="transition-[stroke-dashoffset] duration-500 [stroke-dasharray:60] [stroke-dashoffset:0] group-hover:[stroke-dashoffset:60]" />
             </svg>
           </div>
+          <div v-else-if="e.id === 'floor'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface-container-low shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A room: round and square tables in their states, chairs around them, one turning seated on hover -->
+            <svg viewBox="0 0 100 60" class="absolute inset-0 size-full">
+              <rect x="4" y="4" width="92" height="52" rx="2" fill="none" stroke-width="1.4" class="stroke-on-surface-variant" />
+              <g v-for="(tb, i) in [[22, 20, 'fill-primary-container'], [50, 20, 'fill-surface-container-highest'], [78, 20, 'fill-tertiary-container']]" :key="i">
+                <circle v-for="a in 4" :key="a" :cx="(tb[0] as number) + Math.cos(a * 1.5708) * 9" :cy="(tb[1] as number) + Math.sin(a * 1.5708) * 9" r="2" class="fill-outline-variant" />
+                <circle :cx="tb[0]" :cy="tb[1]" r="6" :class="tb[2]" />
+              </g>
+              <rect x="16" y="36" width="26" height="12" rx="2" class="fill-secondary-container" />
+              <rect x="58" y="36" width="12" height="12" rx="2" class="fill-surface-container-highest transition-colors duration-300 group-hover:fill-primary-container" />
+              <rect x="74" y="36" width="12" height="12" rx="2" class="fill-surface-container-highest" />
+              <rect x="55" y="33" width="34" height="18" rx="3" fill="none" stroke-dasharray="2 1.5" stroke-width="0.8" class="stroke-primary" />
+            </svg>
+          </div>
           <div v-else-if="e.id === 'roadmap'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <!-- A Gantt chart: a list on the left, bars stepping down to a milestone, today's line -->
             <span class="absolute inset-y-0 left-0 w-[24%] border-r border-outline-variant bg-surface-container-low" />

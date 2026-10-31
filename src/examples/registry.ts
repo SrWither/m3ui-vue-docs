@@ -207,6 +207,15 @@ export const examples: ExampleApp[] = [
     uses: ['MDrawCanvas', 'MDrawToolbar', 'MDrawLayers', 'MMenu', 'MSideSheet', 'useToast'],
     component: () => import('./sketchbook/SketchbookExample.vue'),
   },
+  {
+    id: 'floor',
+    title: 'Floor',
+    description:
+      'A restaurant host stand on a floor plan: every table colored by what\'s happening there, minutes seated, a waitlist that points at the table that fits each party, bills, joined tables; then switch to Layout and move tables, add new ones, draw walls and zones.',
+    icon: 'table_restaurant',
+    uses: ['MFloorPlan', 'MSegmentedButton', 'MChip', 'MNumberField', 'MSlider', 'MBottomSheet', 'MMenu', 'useToast'],
+    component: () => import('./floor/FloorExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
