@@ -41,6 +41,7 @@ const SECTIONS = {
   media: 'MediaPage.vue',
   pdf: 'PdfPage.vue',
   flow: 'FlowPage.vue',
+  gantt: 'GanttPage.vue',
 }
 
 const DEFAULT_DESCRIPTION =

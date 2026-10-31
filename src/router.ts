@@ -147,6 +147,11 @@ const router = createRouter({
       meta: { title: 'Flow components' },
     },
     {
+      path: '/components/gantt',
+      component: () => import('./pages/GanttPage.vue'),
+      meta: { title: 'Gantt components' },
+    },
+    {
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
       meta: { title: 'Examples' },

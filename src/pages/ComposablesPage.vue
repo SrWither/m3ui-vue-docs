@@ -59,6 +59,7 @@ const groups = [
     title: 'Flow (from /flow)',
     items: [
       { name: 'useFlow', description: "The enclosing MFlow's state and controls: view, selection, editing, layout, undo, from inside it." },
+      { name: 'useGantt', description: "The enclosing MGantt's (or MResourceTimeline's, with useResourceTimeline) state and controls: zoom, scroll, editing, scheduling, undo." },
     ],
   },
 
