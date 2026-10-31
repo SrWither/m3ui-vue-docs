@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.3.0',
-    date: 'Unreleased',
+    date: '2026-10-31',
     changes: {
       added: [
         'Media components (from /media): MVideoPlayer, a video player after Media3\'s, with subtitles, chapters, gestures (double tap to skip, hold for 2×), keyboard shortcuts, full screen, picture in picture and HLS; it can also play anything you draw, over a clock',
