@@ -18,7 +18,11 @@ const versions: Version[] = [
     version: '1.3.1',
     date: 'Unreleased',
     changes: {
+      added: [
+        'MDrawCanvas backgroundImageBox: place a photo to trace on an endless canvas, at its size; fitting the view takes it in',
+      ],
       fixed: [
+        'MDrawCanvas and MFloorPlan take your own position, background and corners (absolute inset-0 used to lose to their defaults)',
         'MPdfViewer: the picked color in the annotation toolbar no longer looks jagged in Firefox',
       ],
     },

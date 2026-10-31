@@ -59,6 +59,7 @@ const props: PropDef[] = [
   { name: 'background', type: "'none' | 'grid' | 'dots' | 'lines'", default: "'none'", description: 'A ruling on the paper' },
   { name: 'backgroundSize', type: 'number', default: '24', description: "The ruling's spacing" },
   { name: 'backgroundImage', type: 'string', default: '—', description: 'An image under the drawing to trace or annotate: fills each page, or sits at (0, 0)' },
+  { name: 'backgroundImageBox', type: '{ x, y, width, height }', default: '—', description: 'Infinite canvas: where the background image sits and its size; fitView takes it in' },
   { name: 'penOnly', type: "boolean | 'auto'", default: "'auto'", description: "Fingers only pan and zoom (palm rejection). 'auto': once a stylus has touched the canvas" },
   { name: 'pressure', type: 'boolean', default: 'true', description: "Follow a stylus' pressure; without one, speed thins the line" },
   { name: 'smoothing', type: 'number', default: '0.5', description: 'How much strokes are smoothed, 0–1' },
