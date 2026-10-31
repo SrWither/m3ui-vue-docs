@@ -171,6 +171,24 @@ export const examples: ExampleApp[] = [
     uses: ['MFlow', 'MFlowHandle', 'MFlowControls', 'MAnimatedNumber', 'MSegmentedButton', 'MSelect', 'MNumberField', 'MSlider', 'MProgressBar', 'MSideSheet'],
     component: () => import('./maxflow/MaxflowExample.vue'),
   },
+  {
+    id: 'roadmap',
+    title: 'Roadmap',
+    description:
+      'A project planner: phases, tasks and milestones on a Gantt chart. Drag to reschedule as everything that depends on a task follows it, link tasks, see the critical path and how far the plan slipped from its baseline, and import or export CSV, JSON or Microsoft Project.',
+    icon: 'view_timeline',
+    uses: ['MGantt', 'MGanttControls', 'criticalPath', 'toMsProjectXml', 'MSideSheet', 'MDatePicker', 'MSlider', 'MMenu', 'MAvatar', 'useToast'],
+    component: () => import('./roadmap/RoadmapExample.vue'),
+  },
+  {
+    id: 'shifts',
+    title: 'Shifts',
+    description:
+      'A restaurant\'s staff rota for the week: drag shifts to another hour or another person, add them by dragging across empty time, and catch double bookings and anyone over their contracted hours.',
+    icon: 'badge',
+    uses: ['MResourceTimeline', 'MGanttControls', 'MChip', 'MDialog', 'MBottomSheet', 'MTimePicker', 'MDatePicker', 'MSwitch', 'useToast'],
+    component: () => import('./shifts/ShiftsExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`

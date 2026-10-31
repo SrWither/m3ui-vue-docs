@@ -187,6 +187,29 @@ import { examples, exampleSource } from '@/examples/registry'
               <rect x="63" y="17" width="10" height="5" rx="2.5" class="fill-primary-container" />
             </svg>
           </div>
+          <div v-else-if="e.id === 'roadmap'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A Gantt chart: a list on the left, bars stepping down to a milestone, today's line -->
+            <span class="absolute inset-y-0 left-0 w-[24%] border-r border-outline-variant bg-surface-container-low" />
+            <span v-for="i in 6" :key="i" class="absolute left-[4%] h-[3%] rounded-full bg-on-surface/20" :style="{ top: `${12 + i * 13}%`, width: `${10 + (i % 3) * 4}%` }" />
+            <span class="absolute top-0 bottom-0 left-[52%] w-[0.6%] bg-primary" />
+            <span class="absolute top-[22%] left-[28%] h-[7%] w-[22%] rounded-sm bg-tertiary-container" />
+            <span class="absolute top-[35%] left-[42%] h-[7%] w-[26%] rounded-sm bg-error/80 transition-transform duration-300 group-hover:translate-x-1" />
+            <span class="absolute top-[48%] left-[46%] h-[7%] w-[16%] rounded-sm bg-primary-container" />
+            <span class="absolute top-[61%] left-[66%] h-[7%] w-[18%] rounded-sm bg-error/80 transition-transform duration-300 group-hover:translate-x-1" />
+            <span class="absolute top-[73%] left-[86%] size-[5%] rotate-45 rounded-[1px] bg-error" />
+          </div>
+          <div v-else-if="e.id === 'shifts'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A rota: people in rows with avatars, shifts as blocks along the week, one double booking -->
+            <span class="absolute inset-y-0 left-0 w-[22%] border-r border-outline-variant bg-surface-container-low" />
+            <span v-for="i in 5" :key="i" class="absolute left-[4%] flex h-[12%] w-[15%] items-center gap-[10%]" :style="{ top: `${4 + i * 17}%` }"><span class="aspect-square h-full rounded-full bg-secondary-container" /><span class="h-[25%] flex-1 rounded-full bg-on-surface/20" /></span>
+            <span
+              v-for="(b, i) in [[1, 26, 14, 'bg-tertiary-container'], [1, 58, 14, 'bg-tertiary-container'], [2, 40, 16, 'bg-primary-container'], [2, 74, 16, 'bg-primary-container'], [3, 30, 10, 'bg-secondary-container'], [3, 62, 10, 'bg-secondary-container'], [4, 48, 18, 'bg-primary-container'], [5, 66, 20, 'bg-surface-container-highest']]"
+              :key="i"
+              class="absolute h-[10%] rounded-sm"
+              :class="[b[3], i === 6 ? 'outline-2 outline-error transition-transform duration-300 group-hover:translate-x-1' : '']"
+              :style="{ top: `${5 + (b[0] as number) * 17}%`, left: `${b[1]}%`, width: `${b[2]}%` }"
+            />
+          </div>
           <div v-else-if="e.id === 'recipes'" class="absolute inset-[12%] flex items-center justify-center gap-[4%] rounded-2xl bg-surface p-[5%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span v-for="(d, i) in [{ s: 'Cookie9Sided', c: '#c8432b', b: '#ffdad3' }, { s: 'Clover4Leaf', c: '#e5b92c', b: '#ffefc2' }, { s: 'Sunny', c: '#3b4ca0', b: '#dee0ff' }] as const" :key="i" class="relative flex aspect-[3/4] flex-1 flex-col items-center gap-[8%] rounded-xl p-[6%]" :style="{ background: d.b }">
               <MShape :shape="d.s" class="aspect-square w-full transition-transform duration-500 group-hover:rotate-12" :fill="d.c" />

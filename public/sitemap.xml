@@ -765,6 +765,66 @@
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/media</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/media/maudioplayer</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/media/mvideoplayer</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/pdf</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/pdf/mpdfviewer</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/flow</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/flow/mflow</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/flow/mflowcontrols</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/flow/mflowhandle</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/flow/mflowminimap</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/flow/mflownode</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/gantt</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/gantt/mgantt</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/gantt/mganttcontrols</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/gantt/mresourcetimeline</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/composables</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
@@ -802,6 +862,10 @@
   </url>
   <url>
     <loc>https://m3ui.dev/composables/useflow</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usegantt</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
@@ -978,6 +1042,14 @@
   </url>
   <url>
     <loc>https://m3ui.dev/examples/maxflow</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/examples/roadmap</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/examples/shifts</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
 </urlset>
