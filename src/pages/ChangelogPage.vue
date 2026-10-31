@@ -26,7 +26,7 @@ const versions: Version[] = [
         'usePdf: load a PDF for a viewer of your own, with thumbnails and a search through the whole document',
         'Flow components (from /flow): MFlow, a node editor for workflows, automations and org charts. Drag nodes, connect and disconnect them, pan and zoom (pinch on touch), select several, undo and redo, copy and paste, group nodes, drop a loose node onto a connection to put it in between (the rest moves along to make room), and lay everything out automatically as a tree or in layers',
         'MFlowNode, MFlowHandle, MFlowControls and MFlowMinimap: the default node, connection points for nodes of your own, the zoom and undo toolbar, and an overview map',
-        'useFlow: control a flow from inside it (fit the view, center on a node, add or remove nodes, lay it out, undo)',
+        'useFlow: control a flow from inside it (fit the view, center on a node, add or remove nodes, lay it out, undo), and drag nodes in from a palette of your own',
         'MIconButton iconSize: set the icon\'s size yourself',
       ],
     },

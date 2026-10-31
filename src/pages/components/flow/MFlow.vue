@@ -186,9 +186,9 @@ const flowEvents: EventDef[] = [
 ]
 
 const flowSlots: SlotDef[] = [
-  { name: 'default', description: 'Over the canvas: MFlowControls, MFlowMinimap, panels of yours (useFlow() works inside). Props: { flow }' },
+  { name: 'default', description: 'Over the canvas: MFlowControls, MFlowMinimap, panels of yours. The canvas\'s gestures and wheel leave what\'s here alone, and useFlow() works inside. Props: { flow }' },
   { name: 'node-<type>', description: 'Nodes of that type. Props: { node, data, selected, dragging }' },
-  { name: 'edge-<type>', description: 'Edges of that type, as SVG inside a <g>. Props: { edge, path, labelX, labelY, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, selected }' },
+  { name: 'edge-<type>', description: 'Edges of that type, as SVG inside a <g>. Props: { edge, path, labelX, labelY, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, sourceAngle, targetAngle, sourceInset, targetInset, selected, highlighted }: the angles are the directions the path leaves and arrives in (for arrowPath), the insets how far an end sits inside a handle, highlighted that a dragged node would splice in' },
   { name: 'edge-label', description: "An edge's label instead of the chip. Props: { edge, selected }" },
   { name: 'empty', description: 'Shown while there are no nodes' },
 ]
@@ -462,6 +462,14 @@ function beforeDelete({ nodes }) {
         </div>
       </div>
     </ComponentDemo>
+
+    <h3 class="mb-3 mt-6 text-title-large font-medium">Content inside nodes</h3>
+    <p class="mb-4 text-body-medium text-on-surface-variant">
+      Buttons, inputs, selects and links inside a node work as usual and never start a drag. For anything else that
+      shouldn't drag the node (a slider, a canvas), add <code>data-flow-nodrag</code>; for an area inside a node that
+      scrolls on its own, add <code>data-flow-nowheel</code> so the wheel scrolls it instead of moving the view.
+      Panels in MFlow's default slot need neither.
+    </p>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
     <PropsTable :props="flowProps" />

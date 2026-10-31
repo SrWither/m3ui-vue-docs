@@ -32,6 +32,7 @@ const api: PropDef[] = [
   { name: "layout(fn?, options?)", type: '(\'tree\' | \'layered\' | FlowLayout) => Promise', description: 'Lay out now, animated and undoable' },
   { name: 'undo() / redo() / canUndo / canRedo', type: 'function / ComputedRef', description: 'History' },
   { name: 'copy() / cut() / paste(at?)', type: 'function', description: 'The clipboard (shared by every MFlow on the page)' },
+  { name: 'startDrag(id, event)', type: '(id: string, e: PointerEvent) => void', description: 'Drags a node with a pointer that\'s already down: add a node from a palette outside the canvas, then hand it the event, and it follows the pointer (guides, splicing into an edge) until let go' },
 ]
 </script>
 
@@ -41,7 +42,9 @@ const api: PropDef[] = [
     <p class="mb-8 text-body-large text-on-surface-variant">
       The enclosing MFlow's state and controls, from any component rendered inside it: a panel in its default slot, a
       node of yours in a <code>#node-&lt;type&gt;</code> slot. Outside the canvas, MFlow's template ref exposes the
-      same. <code>useFlowNode()</code> gives a node's own component its <code>node</code>, <code>selected</code> and
+      same, with one difference Vue makes: through a template ref the refs come unwrapped
+      (<code>flow.value.viewport.zoom</code>, <code>flow.value.canUndo</code>), while <code>useFlow()</code> returns them as refs
+      (<code>flow.viewport.value.zoom</code>). <code>useFlowNode()</code> gives a node's own component its <code>node</code>, <code>selected</code> and
       <code>dragging</code>. From <code>/flow</code>.
     </p>
 
