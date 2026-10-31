@@ -142,6 +142,11 @@ const router = createRouter({
       meta: { title: 'PDF components' },
     },
     {
+      path: '/components/flow',
+      component: () => import('./pages/FlowPage.vue'),
+      meta: { title: 'Flow components' },
+    },
+    {
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
       meta: { title: 'Examples' },

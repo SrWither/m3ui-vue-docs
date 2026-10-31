@@ -55,7 +55,13 @@ const groups = [
     items: [
       { name: 'usePdf', description: 'Load a PDF with pdf.js: pages, outline, metadata, text search, thumbnails, download and print.' },
     ],
+  },  {
+    title: 'Flow (from /flow)',
+    items: [
+      { name: 'useFlow', description: "The enclosing MFlow's state and controls: view, selection, editing, layout, undo, from inside it." },
+    ],
   },
+
 ]
 </script>
 
