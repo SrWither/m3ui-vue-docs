@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MButton, MConfirmDialog, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
-import { MFlow, MFlowControls, MFlowHandle, MFlowMinimap, type FlowConnection, type FlowEdge, type FlowNode, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
+import { MButton, MConfirmDialog, MSegmentedButton, MTextField } from '@m3ui-vue/m3ui-vue'
+import { MFlow, MFlowControls, MFlowHandle, MFlowMinimap, parseDot, parseMermaid, toDot, toMermaid, type FlowConnection, type FlowEdge, type FlowNode, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -106,6 +106,63 @@ function hire() {
   layoutNodes.value = [...layoutNodes.value, { ...team(id, `Hire ${hires}`, 'New'), position: { ...from } }]
   layoutEdges.value = [...layoutEdges.value, { id: `l-${id}`, source: parent, target: id, type: 'smoothstep', markerEnd: 'none' }]
 }
+
+// ── DOT and Mermaid ─────────────────────────────────────────────────────────────────────────────────────
+const SAMPLES = {
+  dot: `digraph deploy {
+  rankdir=LR;
+  push [label="Push to main"];
+  subgraph cluster_ci {
+    label="CI";
+    lint -> test;
+    build;
+  }
+  push -> lint;
+  push -> build;
+  test -> deploy [label="green"];
+  build -> deploy;
+  deploy -> notify [style=dashed, color=gray];
+  deploy -> rollback [label="fails", color=red];
+}`,
+  mermaid: `flowchart LR
+  A[Order placed] --> B{In stock?}
+  B -->|Yes| C[Pack]
+  B -->|No| D[Back order]
+  D -.-> B
+  subgraph ship [Shipping]
+    C --> E[Label] --> F((Sent))
+  end
+  F ==> G[Delivered]`,
+}
+const textLang = ref<'dot' | 'mermaid'>('dot')
+const text = ref(SAMPLES.dot)
+const textError = ref('')
+const textNodes = ref<FlowNode[]>([])
+const textEdges = ref<FlowEdge[]>([])
+const textDir = ref<'horizontal' | 'vertical'>('horizontal')
+const textKey = ref(0)
+function readText() {
+  try {
+    const g = textLang.value === 'dot' ? parseDot(text.value) : parseMermaid(text.value)
+    textNodes.value = g.nodes
+    textEdges.value = g.edges
+    textDir.value = g.direction
+    textError.value = ''
+    textKey.value++
+  } catch (e) {
+    textError.value = (e as Error).message
+  }
+}
+function writeText() {
+  text.value = (textLang.value === 'dot' ? toDot : toMermaid)(textNodes.value, textEdges.value, { direction: textDir.value })
+  textError.value = ''
+}
+function sample(lang: 'dot' | 'mermaid') {
+  textLang.value = lang
+  text.value = SAMPLES[lang]
+  readText()
+}
+readText()
 
 // ── Groups ──────────────────────────────────────────────────────────────────────────────────────────────
 const groupNodes = ref<FlowNode[]>([
@@ -386,6 +443,54 @@ function dagreLayout(nodes, edges, { sizes, direction }) {
         >
           <MFlowControls />
         </MFlow>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="DOT and Mermaid"
+      description="parseDot and parseMermaid read a Graphviz graph or a Mermaid flowchart into nodes and edges, laid out in layers along the graph's direction (clusters and subgraphs become groups); toDot and toMermaid write them back. Edit the text and read it, or move and connect nodes and write them out."
+      flush
+      :code="`<MFlow v-model:nodes=&quot;nodes&quot; v-model:edges=&quot;edges&quot; :direction=&quot;direction&quot; fit-view />`"
+      :script="`import { parseDot, parseMermaid, toDot, toMermaid } from '@m3ui-vue/m3ui-vue/flow'
+
+const graph = parseDot(source) // or parseMermaid(source); throws a SyntaxError with line and column
+nodes.value = graph.nodes
+edges.value = graph.edges
+direction.value = graph.direction // from rankdir / flowchart LR
+
+// Options: { layout: 'layered' | 'tree' | false, layoutOptions, nodeType, edgeType }
+// Every DOT attribute is kept in data.attrs; Mermaid shapes in data.shape
+
+const dot = toDot(nodes.value, edges.value, { direction: direction.value, name: 'deploy' })
+const mermaid = toMermaid(nodes.value, edges.value, { direction: direction.value })`"
+    >
+      <div class="flex flex-col gap-3 p-4 sm:p-6">
+        <div class="flex flex-wrap items-center gap-3">
+          <MSegmentedButton :model-value="textLang" :options="[{ value: 'dot', label: 'DOT' }, { value: 'mermaid', label: 'Mermaid' }]" @update:model-value="sample($event as 'dot' | 'mermaid')" />
+          <MButton variant="tonal" icon="arrow_downward" @click="readText">Read</MButton>
+          <MButton variant="outlined" icon="arrow_upward" @click="writeText">Write</MButton>
+        </div>
+        <div class="grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+          <MTextField
+            v-model="text"
+            multiline
+            :rows="14"
+            :label="textLang === 'dot' ? 'DOT' : 'Mermaid'"
+            :error="!!textError"
+            :error-label="textError"
+            class="font-mono text-body-small"
+          />
+          <MFlow
+            :key="textKey"
+            v-model:nodes="textNodes"
+            v-model:edges="textEdges"
+            :direction="textDir"
+            fit-view
+            class="h-[420px] rounded-xl border border-outline-variant"
+          >
+            <MFlowControls />
+          </MFlow>
+        </div>
       </div>
     </ComponentDemo>
 
