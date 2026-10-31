@@ -187,6 +187,20 @@ import { examples, exampleSource } from '@/examples/registry'
               <rect x="63" y="17" width="10" height="5" rx="2.5" class="fill-primary-container" />
             </svg>
           </div>
+          <div v-else-if="e.id === 'circuits'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- Two switches into an AND gate lighting an LED, one wire on -->
+            <svg viewBox="0 0 100 60" class="absolute inset-0 size-full">
+              <rect x="8" y="14" width="16" height="9" rx="4.5" class="fill-primary" />
+              <circle cx="19.5" cy="18.5" r="3" class="fill-on-primary" />
+              <rect x="8" y="37" width="16" height="9" rx="4.5" class="fill-surface-container-highest" />
+              <circle cx="12.5" cy="41.5" r="3" class="fill-outline" />
+              <path d="M24 18.5 H34 V24 H42" fill="none" stroke-width="1.6" class="stroke-primary" />
+              <path d="M24 41.5 H34 V36 H42" fill="none" stroke-width="1.2" class="stroke-outline-variant" />
+              <path d="M42 18 H52 A12 12 0 0 1 52 42 H42 Z" stroke-width="1.4" class="fill-surface-container-high stroke-on-surface-variant" />
+              <path d="M64 30 H80" fill="none" stroke-width="1.2" class="stroke-outline-variant" />
+              <circle cx="86" cy="30" r="6" class="fill-surface-container-highest transition-colors duration-300 group-hover:fill-primary" />
+            </svg>
+          </div>
           <div v-else-if="e.id === 'roadmap'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <!-- A Gantt chart: a list on the left, bars stepping down to a milestone, today's line -->
             <span class="absolute inset-y-0 left-0 w-[24%] border-r border-outline-variant bg-surface-container-low" />

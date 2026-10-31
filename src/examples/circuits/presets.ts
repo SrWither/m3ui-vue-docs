@@ -1,0 +1,354 @@
+// Circuits to start from, built with a small helper so the wiring reads like a netlist.
+import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
+import type { Params } from './parts'
+import type { PartNode } from './sim'
+
+export interface Preset {
+  id: string
+  name: string
+  description: string
+  nodes: PartNode[]
+  edges: FlowEdge[]
+  /** Switch / pin values */
+  state?: Record<string, { value: number }>
+  /** Clock speed it runs best at */
+  hz?: number
+}
+
+function builder() {
+  const nodes: PartNode[] = []
+  const edges: FlowEdge[] = []
+  const part = (id: string, kind: string, x: number, y: number, params: Params = {}, label?: string) => {
+    nodes.push({ id, type: 'part', position: { x, y }, data: { kind, params, label } })
+    return id
+  }
+  // From output `o` of `a` to input `i` of `b`
+  const wire = (a: string, o: number, b: string, i: number) => {
+    edges.push({ id: `${a}.${o}-${b}.${i}`, source: a, sourceHandle: `o${o}`, target: b, targetHandle: `i${i}` })
+  }
+  return { nodes, edges, part, wire }
+}
+
+function srLatch(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('S', 'button', 0, 0, {}, 'Set')
+  part('R', 'button', 0, 200, {}, 'Reset')
+  part('n1', 'nor', 200, 20)
+  part('n2', 'nor', 200, 180)
+  part('Q', 'led', 400, 40, { color: 'primary' }, 'Q')
+  part('Qn', 'led', 400, 200, { color: 'tertiary' }, 'Q̅')
+  wire('S', 0, 'n1', 0)
+  wire('n2', 0, 'n1', 1)
+  wire('R', 0, 'n2', 1)
+  wire('n1', 0, 'n2', 0)
+  wire('n2', 0, 'Q', 0)
+  wire('n1', 0, 'Qn', 0)
+  return { id: 'latch', name: 'SR latch', description: 'Two NOR gates feeding each other remember one bit. Hold Set or Reset; it starts unknown (X) until you do.', nodes, edges }
+}
+
+function adder4(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  const state: Record<string, { value: number }> = {}
+  part('c0', 'const', 0, 1000, { width: 1, value: 0 }, 'Carry in')
+  for (let i = 0; i < 4; i++) {
+    const y = i * 240
+    part(`a${i}`, 'switch', 0, y, {}, `A${i}`)
+    part(`b${i}`, 'switch', 0, y + 80, {}, `B${i}`)
+    part(`x1${i}`, 'xor', 180, y)
+    part(`x2${i}`, 'xor', 360, y + 20)
+    part(`g1${i}`, 'and', 180, y + 100)
+    part(`g2${i}`, 'and', 360, y + 120)
+    part(`o${i}`, 'or', 540, y + 120)
+    part(`s${i}`, 'led', 560, y + 20, {}, `S${i}`)
+    wire(`a${i}`, 0, `x1${i}`, 0)
+    wire(`b${i}`, 0, `x1${i}`, 1)
+    wire(`a${i}`, 0, `g1${i}`, 0)
+    wire(`b${i}`, 0, `g1${i}`, 1)
+    wire(`x1${i}`, 0, `x2${i}`, 0)
+    wire(`x1${i}`, 0, `g2${i}`, 0)
+    const carry = i === 0 ? 'c0' : `o${i - 1}`
+    wire(carry, 0, `x2${i}`, 1)
+    wire(carry, 0, `g2${i}`, 1)
+    wire(`g1${i}`, 0, `o${i}`, 0)
+    wire(`g2${i}`, 0, `o${i}`, 1)
+    wire(`x2${i}`, 0, `s${i}`, 0)
+  }
+  state.a0 = { value: 1 }
+  state.a1 = { value: 1 }
+  state.b0 = { value: 1 }
+  state.b2 = { value: 1 }
+  part('cout', 'led', 740, 860, { color: 'error' }, 'Carry out')
+  wire('o3', 0, 'cout', 0)
+  for (const [id, src, x] of [['A', 'a', 760], ['B', 'b', 900], ['S', 's', 1040]] as const) {
+    part(`m${id}`, 'merge', x, 260, { width: 4, parts: 4 })
+    part(`h${id}`, 'hex', x, 440, {}, id === 'S' ? 'A + B' : id)
+    for (let i = 0; i < 4; i++) wire(src === 's' ? `x2${i}` : `${src}${i}`, 0, `m${id}`, i)
+    wire(`m${id}`, 0, `h${id}`, 0)
+  }
+  return {
+    id: 'adder',
+    name: '4-bit adder',
+    description: 'Four full adders made of XOR, AND and OR gates, the carry rippling from one to the next. Flip the A and B switches.',
+    nodes,
+    edges,
+    state,
+  }
+}
+
+function counter(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('clk', 'clock', 0, 0)
+  for (let i = 0; i < 4; i++) {
+    part(`t${i}`, 'tff', 180 + i * 200, 0)
+    part(`l${i}`, 'led', 200 + i * 200, 160, {}, `Q${i}`)
+    wire(i === 0 ? 'clk' : `t${i - 1}`, i === 0 ? 0 : 1, `t${i}`, 1)
+    wire(`t${i}`, 0, `l${i}`, 0)
+  }
+  part('m', 'merge', 1000, 0, { width: 4, parts: 4 })
+  for (let i = 0; i < 4; i++) wire(`t${i}`, 0, 'm', i)
+  part('h', 'hex', 1180, 0, {}, 'Ripple')
+  wire('m', 0, 'h', 0)
+  part('c', 'counter', 180, 300, { width: 8 })
+  part('p', 'probe', 400, 300, { width: 8 }, 'Counter')
+  wire('clk', 0, 'c', 1)
+  wire('c', 0, 'p', 0)
+  return {
+    id: 'counter',
+    name: 'Counters',
+    description: 'Four T flip-flops, each clocked by the one before it (a ripple counter), next to the built-in 8-bit counter. Press play.',
+    nodes,
+    edges,
+  }
+}
+
+// Tiny8: an 8-bit accumulator CPU. Instruction = op (high nibble) | a (low nibble). Program in a ROM, data in a RAM.
+//   0 OUT  out ← acc      1 LDA a  acc ← ram[a]       2 ADD a  acc ← acc + ram[a]   3 SUB a  acc ← acc − ram[a]
+//   4 STA a  ram[a] ← acc  5 LDI a  acc ← a             6 JMP a  pc ← a               7 JZ a   pc ← a if acc = 0
+function tiny8(id: string, name: string, description: string, program: number[], data: number[]): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('clk', 'clock', 0, 0)
+  part('pc', 'pc', 160, 0, { width: 4 })
+  part('rom', 'rom', 380, 0, { select: 4, width: 8, contents: program, asm: true }, 'Program')
+  part('ins', 'split', 600, 0, { width: 8, parts: 2 }, 'Instruction')
+  part('opb', 'split', 780, 120, { width: 4, parts: 4 }, 'Opcode bits')
+  part('op3', 'merge', 960, 120, { width: 3, parts: 3 }, 'Opcode')
+  part('dec', 'decoder', 1140, 120, { select: 3 })
+  part('ram', 'ram', 780, 400, { select: 4, width: 8, contents: data }, 'Data')
+  part('add', 'adder', 1000, 400, { width: 8 })
+  part('sub', 'subtractor', 1000, 540, { width: 8 })
+  part('hi0', 'const', 600, 700, { width: 4, value: 0 })
+  part('imm', 'merge', 780, 660, { width: 8, parts: 2 }, 'Immediate')
+  part('mux', 'mux', 1240, 400, { select: 3, width: 8 }, 'ALU result')
+  part('acc', 'register', 1460, 400, { width: 8 }, 'Accumulator')
+  part('z8', 'const', 1460, 640, { width: 8, value: 0 })
+  part('zero', 'comparator', 1640, 600, { width: 8 }, 'acc = 0?')
+  part('jz', 'and', 1400, 140)
+  part('jmp', 'or', 1560, 120)
+  part('out', 'register', 1700, 380, { width: 8 }, 'Output')
+  part('outp', 'probe', 1900, 380, { width: 8 }, 'Output')
+  part('outs', 'split', 1900, 500, { width: 8, parts: 2 })
+  part('h1', 'hex', 2080, 480)
+  part('h0', 'hex', 2180, 480)
+  part('accp', 'probe', 1700, 260, { width: 8 }, 'Accumulator')
+  part('pcp', 'probe', 160, 200, { width: 4 }, 'PC')
+
+  // Fetch: the PC addresses the program, the instruction splits into op and a
+  wire('clk', 0, 'pc', 3)
+  wire('pc', 0, 'rom', 0)
+  wire('pc', 0, 'pcp', 0)
+  wire('rom', 0, 'ins', 0)
+  wire('ins', 1, 'opb', 0)
+  for (let i = 0; i < 3; i++) wire('opb', i, 'op3', i)
+  wire('op3', 0, 'dec', 0)
+  // Execute: memory, arithmetic, and the mux that picks the accumulator's next value
+  wire('ins', 0, 'ram', 0)
+  wire('acc', 0, 'ram', 1)
+  wire('dec', 4, 'ram', 2)
+  wire('clk', 0, 'ram', 3)
+  wire('acc', 0, 'add', 0)
+  wire('ram', 0, 'add', 1)
+  wire('acc', 0, 'sub', 0)
+  wire('ram', 0, 'sub', 1)
+  wire('ins', 0, 'imm', 0)
+  wire('hi0', 0, 'imm', 1)
+  for (const i of [0, 4, 6, 7]) wire('acc', 0, 'mux', i)
+  wire('ram', 0, 'mux', 1)
+  wire('add', 0, 'mux', 2)
+  wire('sub', 0, 'mux', 3)
+  wire('imm', 0, 'mux', 5)
+  wire('op3', 0, 'mux', 8)
+  wire('mux', 0, 'acc', 0)
+  wire('clk', 0, 'acc', 2)
+  // Jumps: JMP always, JZ when the accumulator is 0
+  wire('acc', 0, 'zero', 0)
+  wire('z8', 0, 'zero', 1)
+  wire('dec', 7, 'jz', 0)
+  wire('zero', 1, 'jz', 1)
+  wire('dec', 6, 'jmp', 0)
+  wire('jz', 0, 'jmp', 1)
+  wire('jmp', 0, 'pc', 1)
+  wire('ins', 0, 'pc', 0)
+  // Output
+  wire('acc', 0, 'out', 0)
+  wire('dec', 0, 'out', 1)
+  wire('clk', 0, 'out', 2)
+  wire('out', 0, 'outp', 0)
+  wire('out', 0, 'outs', 0)
+  wire('outs', 1, 'h1', 0)
+  wire('outs', 0, 'h0', 0)
+  wire('acc', 0, 'accp', 0)
+  return { id, name, description, nodes, edges }
+}
+
+function byteRam(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('A', 'pin', 0, 0, { width: 4 }, 'Address')
+  part('D', 'pin', 0, 120, { width: 16 }, 'Data in')
+  part('size', 'pin', 0, 240, { width: 2 }, 'Size (0 byte, 1 half)')
+  part('we', 'switch', 0, 340, {}, 'Write enable')
+  part('clk', 'button', 0, 420, {}, 'Clock')
+  part('ram', 'ram', 340, 80, { select: 4, width: 16, addressing: 'byte', contents: [0x34, 0x12, 0x78, 0x56, 0xbc, 0x9a, 0xf0, 0xde] }, 'Byte RAM')
+  part('q', 'probe', 560, 120, { width: 16 }, 'Read')
+  wire('A', 0, 'ram', 0)
+  wire('D', 0, 'ram', 1)
+  wire('we', 0, 'ram', 2)
+  wire('clk', 0, 'ram', 3)
+  wire('size', 0, 'ram', 4)
+  wire('ram', 0, 'q', 0)
+  return {
+    id: 'bytes',
+    name: 'Byte-addressed RAM',
+    description: 'A 16-bit RAM where every address is a byte: size 0 reads or writes one byte, size 1 two (little-endian, so address 0 reads 0x1234). Turn on write enable and press Clock to store.',
+    nodes,
+    edges,
+    state: { size: { value: 1 }, D: { value: 0xbeef } },
+  }
+}
+
+// A joypad moves a cursor that paints: x and y registers step by ±1 through an adder, a subtractor and a mux
+// picked by the pad's arrows
+function sketch(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('clk', 'clock', 0, 0)
+  part('pad', 'joypad', 0, 120)
+  part('bits', 'split', 240, 100, { width: 8, parts: 8 }, 'Buttons')
+  part('one', 'const', 240, 440, { width: 5, value: 1 })
+  for (const [axis, y0, plus, minus] of [['x', 0, 7, 6], ['y', 300, 5, 4]] as const) {
+    part(`${axis}sel`, 'merge', 440, y0 + 20, { width: 2, parts: 2 }, axis === 'x' ? 'Right / Left' : 'Down / Up')
+    part(`${axis}inc`, 'adder', 440, y0 + 120, { width: 5 }, `${axis} + 1`)
+    part(`${axis}dec`, 'subtractor', 620, y0 + 120, { width: 5 }, `${axis} − 1`)
+    part(`${axis}mux`, 'mux', 820, y0, { select: 2, width: 5 }, `next ${axis}`)
+    part(axis, 'register', 1000, y0 + 40, { width: 5 }, axis)
+    wire('bits', plus, `${axis}sel`, 0)
+    wire('bits', minus, `${axis}sel`, 1)
+    wire(axis, 0, `${axis}inc`, 0)
+    wire('one', 0, `${axis}inc`, 1)
+    wire(axis, 0, `${axis}dec`, 0)
+    wire('one', 0, `${axis}dec`, 1)
+    wire(axis, 0, `${axis}mux`, 0)
+    wire(`${axis}inc`, 0, `${axis}mux`, 1)
+    wire(`${axis}dec`, 0, `${axis}mux`, 2)
+    wire(axis, 0, `${axis}mux`, 3)
+    wire(`${axis}sel`, 0, `${axis}mux`, 4)
+    wire(`${axis}mux`, 0, axis, 0)
+    wire('clk', 0, axis, 2)
+  }
+  part('ink', 'pin', 1000, 520, { width: 3 }, 'Color (RGB)')
+  part('pen', 'const', 1000, 620, { width: 1, value: 1 })
+  part('scr', 'screen', 1240, 0, { cols: 32, rows: 32, mode: 'rgb3' }, 'Sketch')
+  wire('pad', 0, 'bits', 0)
+  wire('x', 0, 'scr', 0)
+  wire('y', 0, 'scr', 1)
+  wire('ink', 0, 'scr', 2)
+  wire('pen', 0, 'scr', 3)
+  wire('clk', 0, 'scr', 4)
+  wire('bits', 2, 'scr', 5)
+  return {
+    id: 'sketch',
+    name: 'Sketch (joypad + screen)',
+    description: 'Press play, click the joypad and draw with the arrows (or WASD): two registers step the cursor through an adder, a subtractor and a mux. Select clears; the input pin picks the color.',
+    nodes,
+    edges,
+    state: { ink: { value: 6 } },
+    hz: 10,
+  }
+}
+
+// A counter sweeps every pixel; the color is x XOR y XOR the frame, through the NES palette
+function pattern(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('clk', 'clock', 0, 0)
+  part('n', 'counter', 160, 0, { width: 18 }, 'Pixel')
+  part('xyz', 'split', 380, 0, { width: 18, parts: 3 }, 'x · y · frame')
+  part('mix', 'xor', 600, 120, { inputs: 3, width: 6 })
+  part('on', 'const', 600, 260, { width: 1, value: 1 })
+  part('scr', 'screen', 820, 0, { cols: 64, rows: 64, mode: 'nes', pixel: 4 }, 'Pattern')
+  wire('clk', 0, 'n', 1)
+  wire('n', 0, 'xyz', 0)
+  wire('xyz', 0, 'scr', 0)
+  wire('xyz', 1, 'scr', 1)
+  for (let i = 0; i < 3; i++) wire('xyz', i, 'mix', i)
+  wire('mix', 0, 'scr', 2)
+  wire('on', 0, 'scr', 3)
+  wire('clk', 0, 'scr', 4)
+  return {
+    id: 'pattern',
+    name: 'Screen pattern',
+    description: 'An 18-bit counter split into x, y and a frame number paints a 64×64 screen pixel by pixel, each one colored x XOR y XOR frame from the NES palette. Press play.',
+    nodes,
+    edges,
+    hz: 5000,
+  }
+}
+
+// Type into the keyboard: each clock edge moves one key from its queue to the terminal
+function echo(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('clk', 'clock', 0, 0)
+  part('kb', 'keyboard', 160, 0)
+  part('tty', 'tty', 420, 0, { cols: 32, rows: 8 })
+  part('cls', 'button', 160, 200, {}, 'Clear')
+  wire('kb', 1, 'kb', 0)
+  wire('clk', 0, 'kb', 1)
+  wire('kb', 0, 'tty', 0)
+  wire('kb', 1, 'tty', 1)
+  wire('clk', 0, 'tty', 2)
+  wire('cls', 0, 'tty', 3)
+  return {
+    id: 'echo',
+    name: 'Keyboard → terminal',
+    description: 'Press play and type into the keyboard: on each clock edge the first key in its queue goes to the terminal (avail drives both read and we).',
+    nodes,
+    edges,
+    hz: 20,
+  }
+}
+
+const blank = (): Preset => ({ id: 'blank', name: 'Blank', description: 'An empty canvas: add parts from the palette and wire their pins.', nodes: [], edges: [] })
+
+export const presets: Preset[] = [
+  tiny8(
+    'cpu',
+    'Tiny8 CPU · Fibonacci',
+    'An 8-bit accumulator CPU: a program counter fetches from a ROM, a decoder and a mux pick what the accumulator becomes, a RAM holds the data. It prints the Fibonacci numbers. Press play.',
+    // a = 0, b = 1; loop: out a; tmp = a + b; a = b; b = tmp
+    [0x50, 0x4e, 0x51, 0x4f, 0x1e, 0x00, 0x2f, 0x4d, 0x1f, 0x4e, 0x1d, 0x4f, 0x64, 0x00, 0x00, 0x00],
+    [],
+  ),
+  tiny8(
+    'countdown',
+    'Tiny8 CPU · Countdown',
+    'The same CPU running another program: counts down from 9 with SUB, stops with JZ and loops on itself at 0.',
+    // acc = 9; loop: out; acc -= ram[15]; if acc = 0 goto end; goto loop; end: out; goto end
+    [0x59, 0x00, 0x3f, 0x75, 0x61, 0x00, 0x66, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    Object.assign(Array(16).fill(0), { 15: 1 }),
+  ),
+  adder4(),
+  sketch(),
+  pattern(),
+  echo(),
+  counter(),
+  srLatch(),
+  byteRam(),
+  blank(),
+]

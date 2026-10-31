@@ -189,6 +189,15 @@ export const examples: ExampleApp[] = [
     uses: ['MResourceTimeline', 'MGanttControls', 'MChip', 'MDialog', 'MBottomSheet', 'MTimePicker', 'MDatePicker', 'MSwitch', 'useToast'],
     component: () => import('./shifts/ShiftsExample.vue'),
   },
+  {
+    id: 'circuits',
+    title: 'Circuits',
+    description:
+      'A digital logic simulator: wire gates, multiplexers, adders, flip-flops, registers, a program counter, ROM and RAM into anything up to a small CPU, and watch every wire show its value as the clock ticks. Starts on Tiny8, an 8-bit CPU running Fibonacci from its ROM.',
+    icon: 'memory',
+    uses: ['MFlow', 'MFlowHandle', 'MFlowControls', 'MFlowMinimap', 'MSwitch', 'MSegmentedButton', 'MSelect', 'MMenu', 'MSideSheet', 'useToast'],
+    component: () => import('./circuits/CircuitsExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`
