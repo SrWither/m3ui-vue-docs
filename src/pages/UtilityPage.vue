@@ -5,6 +5,7 @@ import { iconMap } from '@/nav/sections'
 const components = [
   { name: 'MScheme', description: 'Paints its content with its own color scheme, from a seed color or an image\'s dominant color.' },
   { name: 'MFileUpload', description: 'Drag-and-drop file upload zone with previews and progress tracking.' },
+  { name: 'MImageCropper', description: 'Crop a picture to a frame you drag and resize, at an aspect or free, square or round; rotate, flip and export.' },
   { name: 'MDragDropList', description: 'Reorder a list of items via native HTML5 drag-and-drop.' },
   { name: 'MSwipeToDismiss', description: 'Swipe content left or right to dismiss it, uncovering actions behind.' },
   { name: 'MTransition', description: 'Material 3 navigation transitions: shared axis and fade through.' },
