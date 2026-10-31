@@ -70,16 +70,16 @@ function canMerge(ids: (string | number)[]) {
   const open = ids.filter((id) => ['seated', 'bill'].includes(f.serviceOf(id).status) && (f.serviceOf(id).guests ?? 0) > 0)
   return open.length > 1 ? "Two open bills can't be joined: close one first" : true
 }
-watch(selection, (sel) => {
-  if (!joining.value || sel.length < 2) return
-  joining.value = false
-  const m = plan.value?.merge(sel)
-  if (m) toast.success(`Joined ${m.label}`)
-  selection.value = [sel[0]!]
-})
+// Joining: pick as many tables as you like, then join them all (canMerge still has the last word)
 function startJoin() {
   joining.value = true
-  toast.info('Pick the table to join')
+}
+function join() {
+  const m = plan.value?.merge(selection.value)
+  if (!m) return
+  toast.success(`Joined ${m.label}`)
+  joining.value = false
+  selection.value = [m.tables[0]!]
 }
 function split() {
   if (picked.value !== undefined) plan.value?.split(picked.value)
@@ -118,9 +118,11 @@ const legend = computed(() => (Object.keys(STATUSES) as (keyof typeof STATUSES)[
           />
           <MButton v-if="!wide" variant="tonal" size="sm" icon="tune" @click="inspectorOpen = true">Settings</MButton>
         </div>
-        <div v-if="joining" class="flex items-center gap-2 rounded-lg bg-primary-container px-3 py-2 text-body-medium text-on-primary-container">
-          Pick the table to join with {{ f.room.value.tables.find((t) => t.id === selection[0])?.label }}
-          <MButton variant="text" size="xs" class="ml-auto" @click="joining = false">Cancel</MButton>
+        <div v-if="joining" class="flex flex-wrap items-center gap-2 rounded-lg bg-primary-container px-3 py-2 text-body-medium text-on-primary-container">
+          Pick the tables to join ({{ selection.length }} picked)
+          <span class="flex-1" />
+          <MButton variant="text" size="xs" @click="joining = false; selection = []">Cancel</MButton>
+          <MButton size="xs" icon="join" :disabled="selection.length < 2" @click="join">Join {{ selection.length > 1 ? selection.length : '' }} tables</MButton>
         </div>
         <MFloorPlan
           ref="plan"

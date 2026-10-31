@@ -23,8 +23,8 @@ floor/
   happening at each one (status, party, since when, the bill) lives in a map by table id. In service the plan gets
   the tables with `status` and a `badge` added (minutes seated, or the bill once it's asked for), and `statuses`
   maps each status to a color role and an icon.
-- **Service**: `selectable="single"` picks a table and opens its panel. Joining switches to `"multiple"` and calls
-  the plan's `merge()` once a second table is picked; `canMerge` refuses two open bills (`merge-refused` shows why).
+- **Service**: `selectable="single"` picks a table and opens its panel. Joining switches to `"multiple"`: pick as many
+  tables as you like and Join calls the plan's `merge()` with them; `canMerge` refuses two open bills (`merge-refused` shows why).
   The `#overlay` slot puts each server's initials beside their tables, in plan units (`toPx`). The waitlist
   suggests the smallest free table or joined group that fits each party, in either room. Minutes tick every 30 s.
 - **Layout**: `editable`; `MFloorPlanToolbar` (move / wall / zone, table presets including a stool, the decor kinds

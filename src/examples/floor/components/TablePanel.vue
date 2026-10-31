@@ -86,8 +86,8 @@ const split = () => emit('split')
     </template>
 
     <div class="flex flex-wrap gap-2 border-t border-outline-variant pt-3">
-      <MButton v-if="!merged" variant="outlined" icon="join" @click="emit('join')">Join with another table</MButton>
-      <MButton v-else variant="outlined" icon="call_split" @click="split">Split {{ label }}</MButton>
+      <MButton variant="outlined" icon="join" @click="emit('join')">Join tables</MButton>
+      <MButton v-if="merged" variant="outlined" icon="call_split" @click="split">Split {{ label }}</MButton>
     </div>
   </div>
 </template>
