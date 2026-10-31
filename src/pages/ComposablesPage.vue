@@ -60,6 +60,7 @@ const groups = [
     items: [
       { name: 'useFlow', description: "The enclosing MFlow's state and controls: view, selection, editing, layout, undo, from inside it." },
       { name: 'useDrawing', description: "The enclosing MDrawCanvas' tool, color, size, layers, history and export, for a toolbar or panel of your own." },
+      { name: 'useFloorPlan', description: "The enclosing MFloorPlan's state and actions: add, update, remove, duplicate, merge, undo, for floor plan controls of your own." },
       { name: 'useGantt', description: "The enclosing MGantt's (or MResourceTimeline's, with useResourceTimeline) state and controls: zoom, scroll, editing, scheduling, undo." },
     ],
   },

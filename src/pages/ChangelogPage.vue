@@ -19,9 +19,12 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'Floor plan components: MFloorPlanToolbar and MFloorPlanInspector to arrange a room (add tables from your presets and decor of any kind, edit what is picked, with slots for fields of your own), and useFloorPlan for controls of your own',
+        'MFloorPlan: undo and redo, zones resized by any corner, decor resized and turned, tables turned by a handle, wall corners added and removed, Delete and Ctrl+D; decor kinds of your own and slots to draw decor, zones, merges and anything over the plan; pick tables in service and merge them, with a rule to refuse (two open bills); colors you can restyle',
         'MDrawCanvas backgroundImageBox: place a photo to trace on an endless canvas, at its size; fitting the view takes it in',
       ],
       fixed: [
+        'The FloorArea, FloorWall and FloorDecor types are exported',
         'MDrawCanvas and MFloorPlan take your own position, background and corners (absolute inset-0 used to lose to their defaults)',
         'MPdfViewer: the picked color in the annotation toolbar no longer looks jagged in Firefox',
       ],

@@ -35,6 +35,7 @@ const movedPages: RouteRecordRaw[] = [
 
 // MMap's page lived in Advanced, with all the map components on it (until 1.1.0)
 movedPages.push({ path: '/components/advanced/mmap', redirect: '/components/map/mmap' })
+movedPages.push({ path: '/components/utility/mfloorplan', redirect: '/components/floorplan/mfloorplan' })
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -150,6 +151,11 @@ const router = createRouter({
       path: '/components/gantt',
       component: () => import('./pages/GanttPage.vue'),
       meta: { title: 'Gantt components' },
+    },
+    {
+      path: '/components/floorplan',
+      component: () => import('./pages/FloorPlanPage.vue'),
+      meta: { title: 'Floor plan components' },
     },
     {
       path: '/components/draw',

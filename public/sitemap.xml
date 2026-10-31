@@ -613,10 +613,6 @@
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
-    <loc>https://m3ui.dev/components/utility/mfloorplan</loc>
-    <lastmod>2026-10-31</lastmod>
-  </url>
-  <url>
     <loc>https://m3ui.dev/components/utility/mhotkeys</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
@@ -849,6 +845,22 @@
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/floorplan</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/floorplan/mfloorplan</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/floorplan/mfloorplaninspector</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/floorplan/mfloorplantoolbar</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/composables</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
@@ -886,6 +898,10 @@
   </url>
   <url>
     <loc>https://m3ui.dev/composables/usefireworks</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usefloorplan</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
@@ -1082,6 +1098,14 @@
   </url>
   <url>
     <loc>https://m3ui.dev/examples/circuits</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/examples/sketchbook</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/examples/floor</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
 </urlset>

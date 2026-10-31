@@ -43,6 +43,7 @@ const SECTIONS = {
   flow: 'FlowPage.vue',
   gantt: 'GanttPage.vue',
   draw: 'DrawPage.vue',
+  floorplan: 'FloorPlanPage.vue',
 }
 
 const DEFAULT_DESCRIPTION =

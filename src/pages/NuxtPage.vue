@@ -230,6 +230,7 @@ const options: PropDef[] = [
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFlow</code> &rarr; <code class="font-mono text-primary">useM3Flow</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFlowNode</code> &rarr; <code class="font-mono text-primary">useM3FlowNode</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useGantt</code> &rarr; <code class="font-mono text-primary">useM3Gantt</code></li>
+      <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useFloorPlan</code> &rarr; <code class="font-mono text-primary">useM3FloorPlan</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useDrawing</code> &rarr; <code class="font-mono text-primary">useM3Drawing</code></li>
       <li class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5"><code class="font-mono text-on-surface-variant">useResourceTimeline</code> &rarr; <code class="font-mono text-primary">useM3ResourceTimeline</code></li>
     </ul>
