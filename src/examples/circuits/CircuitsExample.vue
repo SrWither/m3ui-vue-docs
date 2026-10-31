@@ -15,6 +15,7 @@ import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowSelec
 import { useCircuit } from './useCircuit'
 import { presets } from './presets'
 import { geometry } from './geometry'
+import { partByKind } from './parts'
 import { handleIndex, pinsOf, type PartNode } from './sim'
 import PartView from './components/PartView.vue'
 import Wire from './components/Wire.vue'
@@ -29,7 +30,6 @@ const wide = computed(() => widthClass.value !== 'compact' && widthClass.value !
 
 const flow = ref<InstanceType<typeof MFlow>>()
 const canvas = ref<HTMLElement>()
-const palette = ref<InstanceType<typeof Palette>>()
 const topBar = ref<InstanceType<typeof TopBar>>()
 const selection = ref<FlowSelection>({ nodes: [], edges: [] })
 const selectedNode = computed(() => (selection.value.nodes.length === 1 ? c.nodes.value.find((n) => n.id === selection.value.nodes[0]) : undefined))
@@ -90,33 +90,73 @@ function pick(kind: string) {
   paletteOpen.value = false
   edited()
 }
-// A part pressed in the palette becomes a real one as soon as the pointer is over the canvas, and MFlow drags it
-let grabbed: { kind: string; id: number } | null = null
+// A part pressed in the palette: a ghost follows the pointer until it's over the canvas, where the part becomes a
+// real one that MFlow drags on (startDrag)
+const ghost = ref<{ kind: string; x: number; y: number } | null>(null)
+let grabbed: { kind: string; id: number; x: number; y: number } | null = null
 function onGrab(kind: string, e: PointerEvent) {
   if (c.inspecting.value) return
-  grabbed = { kind, id: e.pointerId }
+  grabbed = { kind, id: e.pointerId, x: e.clientX, y: e.clientY }
   window.addEventListener('pointermove', onGrabMove)
   window.addEventListener('pointerup', endGrab)
   window.addEventListener('pointercancel', endGrab)
+  if (e.pointerType !== 'touch') return
+  // A finger grabbed it (short press or sideways drag): the ghost shows at once and the sheet gets out of the way
+  ghost.value = { kind, x: e.clientX, y: e.clientY }
+  paletteOpen.value = false
+  blockTouch(e)
+}
+// The finger's moves mustn't scroll the palette or the page until it's lifted (also while MFlow drags the part).
+// Touchmoves go to where the touch began, even after the sheet closed and took that button away, so they're
+// cancelled there as well as on window
+let touchBlock: { id: number; targets: EventTarget[] } | null = null
+const preventTouch = (e: Event) => e.cancelable && e.preventDefault()
+function blockTouch(e: PointerEvent) {
+  unblockTouch()
+  touchBlock = { id: e.pointerId, targets: [e.target!, window] }
+  for (const t of touchBlock.targets) t.addEventListener('touchmove', preventTouch, { passive: false })
+  window.addEventListener('pointerup', onTouchEnd)
+  window.addEventListener('pointercancel', onTouchEnd)
+}
+function onTouchEnd(e: PointerEvent) {
+  if (touchBlock && e.pointerId === touchBlock.id) unblockTouch()
+}
+function unblockTouch() {
+  for (const t of touchBlock?.targets ?? []) t.removeEventListener('touchmove', preventTouch)
+  touchBlock = null
+  window.removeEventListener('pointerup', onTouchEnd)
+  window.removeEventListener('pointercancel', onTouchEnd)
 }
 function onGrabMove(e: PointerEvent) {
   if (!grabbed || e.pointerId !== grabbed.id || !canvas.value) return
+  if (!ghost.value && Math.hypot(e.clientX - grabbed.x, e.clientY - grabbed.y) < 6) return
+  document.body.style.userSelect = 'none'
   const r = canvas.value.getBoundingClientRect()
-  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return
-  const n = centered(grabbed.kind, flow.value!.screenToFlow({ x: e.clientX, y: e.clientY }))
-  flow.value!.addNodes(n)
-  selection.value = { nodes: [n.id], edges: [] }
-  palette.value?.suppressClick()
-  endGrab()
-  edited()
-  flow.value!.startDrag(n.id, e)
+  if (e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom) {
+    const n = centered(grabbed.kind, flow.value!.screenToFlow({ x: e.clientX, y: e.clientY }))
+    flow.value!.addNodes(n)
+    selection.value = { nodes: [n.id], edges: [] }
+    endGrab()
+    edited()
+    flow.value!.startDrag(n.id, e)
+    return
+  }
+  ghost.value = { kind: grabbed.kind, x: e.clientX, y: e.clientY }
 }
 function endGrab() {
   grabbed = null
+  ghost.value = null
+  document.body.style.userSelect = ''
   window.removeEventListener('pointermove', onGrabMove)
   window.removeEventListener('pointerup', endGrab)
   window.removeEventListener('pointercancel', endGrab)
 }
+const ghostDef = computed(() => {
+  const k = ghost.value?.kind
+  if (!k) return null
+  if (k.startsWith('sub:')) return { icon: 'developer_board', label: c.circuits.value.find((x) => x.id === k.slice(4))?.name ?? 'Subcircuit' }
+  return partByKind.get(k) ?? null
+})
 // Ctrl+S saves, Ctrl+O opens (Cmd on a Mac), wherever the focus is
 function onKey(e: KeyboardEvent) {
   if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return
@@ -133,6 +173,7 @@ window.addEventListener('keydown', onKey)
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKey)
   endGrab()
+  unblockTouch()
   c.playing.value = false
 })
 
@@ -167,7 +208,7 @@ async function open(file: File) {
     <TopBar ref="topBar" :wide="wide" :can-inspect="!!(selectedNode || selectedEdge)" @save="save" @open="open" @palette="paletteOpen = true" @inspect="inspectorOpen = true" />
     <div class="flex min-h-0 flex-1">
       <aside v-if="wide" class="mb-2 ml-2 w-64 shrink-0 overflow-y-auto rounded-2xl bg-surface">
-        <Palette ref="palette" @pick="pick" @grab="onGrab" />
+        <Palette @pick="pick" @grab="onGrab" />
       </aside>
 
       <main ref="canvas" class="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-surface" :class="wide && 'mx-2 mb-2 rounded-2xl'">
@@ -234,9 +275,19 @@ async function open(file: File) {
       </aside>
     </div>
 
+    <!-- The part being dragged in, until it's over the canvas -->
+    <div
+      v-if="ghost && ghostDef"
+      class="pointer-events-none fixed z-50 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-lg bg-surface-container-high px-3 py-2 shadow-elevation-3"
+      :style="{ left: `${ghost.x}px`, top: `${ghost.y}px` }"
+    >
+      <MIcon :name="ghostDef.icon" :size="18" class="text-primary" />
+      <span class="text-title-small">{{ ghostDef.label }}</span>
+    </div>
+
     <template v-if="!wide">
       <MSideSheet v-model="paletteOpen" title="Parts">
-        <Palette @pick="pick" @opened="paletteOpen = false" />
+        <Palette @pick="pick" @grab="onGrab" @opened="paletteOpen = false" />
       </MSideSheet>
       <MSideSheet v-model="inspectorOpen" title="Settings">
         <Inspector v-if="selectedNode || selectedEdge" :node="selectedNode" :edge="selectedEdge" @remove="removeSelected" />

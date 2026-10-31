@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /*
  * The project's circuits (open one, add, rename, delete), then every kind of part by category, the other circuits
- * last as subcircuits. A click (or a tap) adds one in the middle of the view; pressing one with a mouse or a pen
- * emits `grab`, so the page can drag it straight onto the canvas.
+ * last as subcircuits. A click (or a tap) adds one in the middle of the view; pressing one with a mouse or a pen,
+ * or with a finger a short press or a sideways drag, emits `grab` so the page can drag it straight onto the canvas.
  */
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
 import { MIcon, MIconButton, MMenu, MMenuItem, MTooltip, useToast } from '@m3ui-vue/m3ui-vue'
 import { categories, parts } from '../parts'
 import { useCircuit } from '../useCircuit'
@@ -43,17 +43,54 @@ function remove(id: string) {
   if (users.length) return toast.error(`It's placed in ${users.map((u) => u.name).join(', ')}: remove it from there first`)
   if (!c.deleteCircuit(id)) toast.error('A project keeps at least one circuit')
 }
-// A press that became a drag onto the canvas doesn't also add a part with its click (the page says so)
-let suppress = false
-defineExpose({ suppressClick: () => (suppress = true) })
+// Pressing a part with a mouse or a pen grabs it at once; a finger grabs it with a short press or a sideways drag
+// (an up/down swipe still scrolls the list). A press that became a drag doesn't also add a part with its click.
+const LONG_PRESS = 200
+let start: { id: number; x: number; y: number; touch: boolean; kind: string } | null = null
+let moved = false
+let timer: ReturnType<typeof setTimeout> | undefined
+function track(e: PointerEvent) {
+  if (!start || e.pointerId !== start.id) return
+  const dx = e.clientX - start.x
+  const dy = e.clientY - start.y
+  if (Math.hypot(dx, dy) <= (start.touch ? 8 : 6)) return
+  if (start.touch && timer) {
+    if (Math.abs(dx) > Math.abs(dy)) grab(start.kind, e)
+    else release()
+  } else moved = true
+}
+function release() {
+  clearTimeout(timer)
+  timer = undefined
+  window.removeEventListener('pointermove', track)
+  window.removeEventListener('pointerup', release)
+  window.removeEventListener('pointercancel', release)
+  start = null
+}
 function down(e: PointerEvent, kind: string) {
-  suppress = false
-  if (e.button === 0 && e.pointerType !== 'touch') emit('grab', kind, e)
+  release()
+  moved = false
+  if (e.button !== 0) return
+  const touch = e.pointerType === 'touch'
+  start = { id: e.pointerId, x: e.clientX, y: e.clientY, touch, kind }
+  window.addEventListener('pointermove', track)
+  window.addEventListener('pointerup', release)
+  window.addEventListener('pointercancel', release)
+  if (!touch) return emit('grab', kind, e)
+  timer = setTimeout(() => grab(kind, e), LONG_PRESS)
+}
+function grab(kind: string, e: PointerEvent) {
+  clearTimeout(timer)
+  timer = undefined
+  moved = true
+  navigator.vibrate?.(10)
+  emit('grab', kind, e)
 }
 function click(kind: string) {
-  if (!suppress) emit('pick', kind)
-  suppress = false
+  if (!moved) emit('pick', kind)
+  moved = false
 }
+onBeforeUnmount(release)
 </script>
 
 <template>
@@ -97,7 +134,7 @@ function click(kind: string) {
         <MTooltip v-for="p in items(cat.id)" :key="p.kind" :text="p.description" placement="right" :delay="600" class="min-w-0">
         <button
           type="button"
-          class="flex w-full min-w-0 cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-body-medium transition-colors outline-none select-none hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
+          class="flex w-full min-w-0 cursor-grab touch-pan-y [-webkit-touch-callout:none] items-center gap-2 rounded-md px-2 py-1.5 text-left text-body-medium transition-colors outline-none select-none hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
           @pointerdown="down($event, p.kind)"
           @click="click(p.kind)"
         >
