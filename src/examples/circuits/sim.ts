@@ -120,11 +120,15 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
   }
 }
 
+/**
+ * The simulation, compiled: every part an index, every output a slot in one array of signals, each input a list of
+ * the slots driving it, each slot the parts it feeds. The hot loop (settle) runs on those integers and reuses its
+ * buffers, so a clock tick allocates only the signals the parts return. Ids and the state Map stay for the UI.
+ */
 export class Simulator {
   parts = new Map<string, Compiled>()
-  values = new Map<string, Sig>()
+  /** Each part's own state (flip-flops, memories, devices), by id; the UI reads it */
   state = new Map<string, any>()
-  fanout = new Map<string, Set<string>>()
   /** Pins of the circuit's own nodes (subcircuits and tunnels too), for the wires between them */
   topPins = new Map<string, { inputs: Pin[]; outputs: Pin[] }>()
   virtualOut = new Map<string, string[]>()
@@ -134,63 +138,121 @@ export class Simulator {
   /** Rounds the last settle took (the circuit's depth, roughly) */
   rounds = 0
 
+  // ── Compiled form ──
+  private ids: string[] = []
+  private index = new Map<string, number>()
+  private defs: PartDef[] = []
+  private params: Params[] = []
+  private states: any[] = []
+  /** Per part, per input: the slots driving it */
+  private drivers: number[][][] = []
+  /** Per part, per input: its mask */
+  private masks: number[][] = []
+  /** Per part: its first output slot */
+  private outBase: number[] = []
+  /** Per slot: its signal, and the parts it feeds */
+  private vals: Sig[] = []
+  private feeds: number[][] = []
+  private slotOf = new Map<string, number>()
+  private clocks: number[] = []
+  /** Per part: the array its eval gets, reused */
+  private inBuf: Sig[][] = []
+  private mark = new Uint8Array(0)
+
   build(nodes: PartNode[], edges: FlowEdge[]) {
     const before = this.parts
+    const oldVals = new Map([...this.slotOf].map(([k, i]) => [k, this.vals[i]!]))
     const flat = flatten(nodes, edges)
     this.parts = new Map()
-    this.fanout = new Map()
     this.virtualOut = flat.virtualOut
     this.virtualIn = flat.virtualIn
     this.topPins = new Map(nodes.filter((n) => partByKind.has(n.data?.kind ?? '')).map((n) => [n.id, pinsOf(n.data!)]))
+    this.ids = []
+    this.index = new Map()
+    this.defs = []
+    this.params = []
+    this.states = []
+    this.drivers = []
+    this.masks = []
+    this.outBase = []
+    this.vals = []
+    this.slotOf = new Map()
+    this.clocks = []
+    this.inBuf = []
     for (const { id, def, params } of flat.parts) {
       const pins = def.pins(params)
       const sig = `${def.kind}|${JSON.stringify(params)}`
+      const p = this.ids.length
       this.parts.set(id, { def, params, pins, drivers: pins.inputs.map(() => []), sig })
       if (before.get(id)?.sig !== sig || !this.state.has(id)) this.state.set(id, def.init?.(params) ?? {})
-      pins.outputs.forEach((p, i) => {
+      this.ids.push(id)
+      this.index.set(id, p)
+      this.defs.push(def)
+      this.params.push(params)
+      this.states.push(this.state.get(id))
+      this.drivers.push(pins.inputs.map(() => []))
+      this.masks.push(pins.inputs.map((pin) => mask(pin.width)))
+      this.inBuf.push(pins.inputs.map((pin) => Z(mask(pin.width))))
+      this.outBase.push(this.vals.length)
+      if (def.kind === 'clock') this.clocks.push(p)
+      pins.outputs.forEach((pin, i) => {
         const k = outKey(id, i)
-        const v = this.values.get(k)
-        if (!v || v.m !== mask(p.width)) this.values.set(k, X(mask(p.width)))
+        const old = oldVals.get(k)
+        this.slotOf.set(k, this.vals.length)
+        this.vals.push(old && old.m === mask(pin.width) ? old : X(mask(pin.width)))
       })
     }
     for (const id of this.state.keys()) if (!this.parts.has(id)) this.state.delete(id)
-    for (const k of this.values.keys()) {
-      const cut = k.lastIndexOf(':')
-      if (!this.parts.get(k.slice(0, cut))?.pins.outputs[Number(k.slice(cut + 1))]) this.values.delete(k)
-    }
+    this.feeds = this.vals.map(() => [])
     for (const { id, i, drivers } of flat.conns) {
-      const dst = this.parts.get(id)
-      if (!dst?.pins.inputs[i]) continue
+      const p = this.index.get(id)
+      if (p === undefined || i >= this.drivers[p]!.length) continue
       for (const k of drivers) {
-        if (!this.values.has(k)) continue
-        dst.drivers[i]!.push(k)
-        if (!this.fanout.has(k)) this.fanout.set(k, new Set())
-        this.fanout.get(k)!.add(id)
+        const slot = this.slotOf.get(k)
+        if (slot === undefined) continue
+        this.drivers[p]![i]!.push(slot)
+        this.parts.get(id)!.drivers[i]!.push(k)
+        if (!this.feeds[slot]!.includes(p)) this.feeds[slot]!.push(p)
       }
     }
-    this.settle([...this.parts.keys()])
+    this.mark = new Uint8Array(this.ids.length)
+    this.settleIdx(this.ids.map((_, i) => i))
   }
 
+  /** What reaches input `i` of part `p` */
+  private input(p: number, i: number): Sig {
+    const ds = this.drivers[p]![i]!
+    const m = this.masks[p]![i]!
+    if (ds.length === 1) {
+      const s = this.vals[ds[0]!]!
+      return s.m === m ? s : X(m)
+    }
+    if (!ds.length) {
+      const z = this.inBuf[p]![i]!
+      return z.k === 0 && z.e === 0 && z.m === m ? z : Z(m)
+    }
+    return resolve(ds.map((d) => (this.vals[d]!.m === m ? this.vals[d]! : X(m))), m)
+  }
   private merged(keys: string[] | undefined, width: number): Sig {
     const m = mask(width)
-    const ds = (keys ?? []).map((k) => this.values.get(k)).filter((s): s is Sig => !!s).map((s) => (s.m === m ? s : X(m)))
+    const ds = (keys ?? []).map((k) => this.vals[this.slotOf.get(k) ?? -1]).filter((s): s is Sig => !!s).map((s) => (s.m === m ? s : X(m)))
     return ds.length ? resolve(ds, m) : Z(m)
   }
 
   /** The signals arriving at a part's inputs (or at a subcircuit's or a tunnel's) */
   inputsOf(id: string): Sig[] {
-    const c = this.parts.get(id)
-    if (!c) {
+    const p = this.index.get(id)
+    if (p === undefined) {
       const pins = this.topPins.get(id)
       const v = this.virtualIn.get(id)
       return pins ? pins.inputs.map((pin, i) => this.merged(v?.[i], pin.width)) : []
     }
-    return c.pins.inputs.map((pin, i) => this.merged(c.drivers[i], pin.width))
+    return this.masks[p]!.map((_, i) => this.input(p, i))
   }
   output(id: string, i: number): Sig | undefined {
     const k = outKey(id, i)
-    const v = this.values.get(k)
-    if (v) return v
+    const slot = this.slotOf.get(k)
+    if (slot !== undefined) return this.vals[slot]
     const pin = this.topPins.get(id)?.outputs[i]
     return pin && this.virtualOut.has(k) ? this.merged(this.virtualOut.get(k), pin.width) : undefined
   }
@@ -208,25 +270,55 @@ export class Simulator {
   }
 
   settle(start: Iterable<string>) {
-    let dirty = new Set(start)
+    const list: number[] = []
+    for (const id of start) {
+      const p = this.index.get(id)
+      if (p !== undefined) list.push(p)
+    }
+    this.settleIdx(list)
+  }
+  // Reused between settles
+  private chSlot: number[] = []
+  private chSig: Sig[] = []
+  private settleIdx(start: number[]) {
+    const mark = this.mark
+    let dirty: number[] = []
+    for (const p of start) if (!mark[p]) {
+      mark[p] = 1
+      dirty.push(p)
+    }
     let rounds = 0
-    while (dirty.size && rounds < ROUND_LIMIT) {
-      const changes: [string, Sig][] = []
-      for (const id of dirty) {
-        const c = this.parts.get(id)
-        if (!c) continue
-        const outs = c.def.eval({ in: this.inputsOf(id), state: this.state.get(id), p: c.params })
-        outs.forEach((s, i) => changes.push([outKey(id, i), s]))
+    const chSlot = this.chSlot
+    const chSig = this.chSig
+    while (dirty.length && rounds < ROUND_LIMIT) {
+      let n = 0
+      for (const p of dirty) {
+        mark[p] = 0
+        const buf = this.inBuf[p]!
+        for (let i = 0; i < buf.length; i++) buf[i] = this.input(p, i)
+        const outs = this.defs[p]!.eval({ in: buf, state: this.states[p], p: this.params[p]! })
+        const base = this.outBase[p]!
+        for (let o = 0; o < outs.length; o++) {
+          chSlot[n] = base + o
+          chSig[n++] = outs[o]!
+        }
       }
-      dirty = new Set()
-      for (const [k, s] of changes) {
-        if (same(this.values.get(k)!, s)) continue
-        this.values.set(k, s)
-        for (const t of this.fanout.get(k) ?? []) dirty.add(t)
+      const next: number[] = []
+      for (let c = 0; c < n; c++) {
+        const slot = chSlot[c]!
+        const s = chSig[c]!
+        if (same(this.vals[slot]!, s)) continue
+        this.vals[slot] = s
+        for (const t of this.feeds[slot]!) if (!mark[t]) {
+          mark[t] = 1
+          next.push(t)
+        }
       }
+      dirty = next
       rounds++
     }
-    this.oscillating = dirty.size > 0
+    for (const p of dirty) mark[p] = 0
+    this.oscillating = dirty.length > 0
     this.rounds = rounds
   }
 
@@ -239,23 +331,26 @@ export class Simulator {
   }
   /** Half a clock period: every clock flips */
   tick() {
-    const clocks: string[] = []
-    for (const [id, c] of this.parts) {
-      if (c.def.kind !== 'clock') continue
-      const st = this.state.get(id)
-      st.value ^= 1
-      clocks.push(id)
-    }
-    this.settle(clocks)
+    for (const p of this.clocks) this.states[p].value ^= 1
+    this.settleIdx(this.clocks)
   }
   /** Every part back to how it starts: registers cleared, memories reloaded, clocks low */
   reset() {
-    for (const [id, c] of this.parts) {
-      const keep = c.def.kind === 'switch' || c.def.kind === 'pin' ? this.state.get(id) : null
-      this.state.set(id, keep ?? c.def.init?.(c.params) ?? {})
-    }
-    for (const [k, s] of this.values) this.values.set(k, X(s.m))
-    this.settle([...this.parts.keys()])
+    this.ids.forEach((id, p) => {
+      const def = this.defs[p]!
+      const keep = def.kind === 'switch' || def.kind === 'pin' ? this.state.get(id) : null
+      const st = keep ?? def.init?.(this.params[p]!) ?? {}
+      this.state.set(id, st)
+      this.states[p] = st
+    })
+    this.vals = this.vals.map((s) => X(s.m))
+    this.settleIdx(this.ids.map((_, i) => i))
+  }
+  /** Forgets every state and signal (before building another circuit) */
+  clear() {
+    this.state.clear()
+    this.slotOf = new Map()
+    this.vals = []
   }
   /** The parts' user-facing state, to save with the circuit */
   snapshot() {
@@ -271,7 +366,7 @@ export class Simulator {
       const st = this.state.get(id)
       if (st) Object.assign(st, s)
     }
-    this.settle([...this.parts.keys()])
+    this.settleIdx(this.ids.map((_, i) => i))
   }
 }
 

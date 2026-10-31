@@ -122,8 +122,7 @@ function show(id: string) {
   currentId.value = id
   nodes.value = def.nodes
   edges.value = def.edges
-  sim.state.clear()
-  sim.values.clear()
+  sim.clear()
   sim.build(nodes.value, edges.value)
   if (def.state) sim.restore(def.state)
   changed()

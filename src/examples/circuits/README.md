@@ -41,6 +41,10 @@ circuits/
   before the round, then commits their outputs. So every flip-flop, register, counter, program counter and RAM sees a
   clock edge with its inputs as they were just before it, and a loop that never settles is caught as an
   oscillation. The clock runs on `requestAnimationFrame`, several ticks per frame at high speeds.
+- **Compiled**: the netlist is compiled into integers: every part an index, every output a slot in one array of
+  signals, each input the slots driving it, each slot the parts it feeds. The propagation loop runs on those, marking
+  dirty parts in a byte array and reusing its buffers; ids and the state Map stay only for the UI. That made the Tiny8
+  CPU about 2.5× faster (some 117 kHz in Chrome at Max).
 - **Parts**: switches, buttons, input and output pins, constants, a clock; LEDs, probes (signed or not), hex and
   7-segment displays; AND, OR, NAND, NOR, XOR, XNOR (2–8 inputs, 1–32 bits), NOT, buffer, tri-state; multiplexer,
   demultiplexer, decoder, priority encoder, bit selector; adder, subtractor, comparator, a 16-operation ALU with Z/N/C/V
