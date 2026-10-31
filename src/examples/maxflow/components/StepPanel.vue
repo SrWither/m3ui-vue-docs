@@ -84,7 +84,7 @@ const atEnd = computed(() => n.index.value >= n.frames.value.length - 1)
         <MButton variant="text" icon="delete" color="error" class="self-start" @click="emit('remove')">Delete edge</MButton>
       </template>
       <ul v-else class="flex list-disc flex-col gap-1 pl-5 text-body-medium text-on-surface-variant">
-        <li>Double click the canvas to add a vertex there.</li>
+        <li>Double click the canvas to add a vertex there; drag a loose vertex onto an edge to put it in between.</li>
         <li>Drag from a vertex's right edge onto another to add an edge, or into empty space to add a vertex already connected.</li>
         <li>Click an edge to change its capacity, a vertex to rename it or make it the source or the sink.</li>
         <li>Delete removes what's selected; Ctrl+Z undoes.</li>

@@ -36,5 +36,6 @@ maxflow/
   Edits come back through `update:nodes`/`update:edges` and are stripped back to the network.
 - **Editing**: while not running, double click the canvas to add a vertex (`pane-dblclick`), drag from a vertex's
   rim onto another to add an edge, or into empty space to add a vertex already connected (`connect-end`); click an
-  edge to set its capacity, a vertex to rename it or make it the source or the sink. "Blank" starts from scratch. `isValidConnection` keeps edges out of the source and the
+  edge to set its capacity, a vertex to rename it or make it the source or the sink. Drag a vertex with no edges onto
+  an edge to splice it in between (both halves keep the capacity; MFlow's `insertOnEdge`). "Blank" starts from scratch. `isValidConnection` keeps edges out of the source and the
   sink. During a run the canvas is `locked` (it still pans and zooms).

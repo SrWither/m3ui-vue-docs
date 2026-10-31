@@ -142,7 +142,6 @@ const panel = { 'onVertex': patchVertex, 'onCapacity': setCapacity, 'onRemove': 
           :default-edge-options="{ data: { capacity: 5 } }"
           :is-valid-connection="isValidConnection"
           :edges-reconnectable="false"
-          :insert-on-edge="false"
           :zoom-on-double-click="false"
           fit-view
           label="Flow network"
