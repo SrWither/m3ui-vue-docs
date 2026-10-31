@@ -9,7 +9,7 @@ import { MButton, MChip, MIcon, MNumberField } from '@m3ui-vue/m3ui-vue'
 import { STATUSES, useFloor } from '../useFloor'
 
 const props = defineProps<{ id: string | number }>()
-const emit = defineEmits<{ join: []; close: [] }>()
+const emit = defineEmits<{ join: []; split: []; close: [] }>()
 const f = useFloor()
 const table = computed(() => f.room.value.tables.find((t) => t.id === props.id))
 const s = computed(() => f.serviceOf(props.id))
@@ -33,9 +33,8 @@ const fits = computed(() => f.waitlist.value.filter((p) => p.size <= seats.value
 function addToBill(amount: number) {
   f.setService(group.value[0]!, { ...f.serviceOf(group.value[0]!), total: (f.serviceOf(group.value[0]!).total ?? 0) + amount })
 }
-function split() {
-  f.patchRoom({ merges: f.room.value.merges.filter((m) => !m.tables.includes(props.id)) })
-}
+// Splitting goes through the plan (its split(), the page calls it)
+const split = () => emit('split')
 </script>
 
 <template>

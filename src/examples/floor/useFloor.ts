@@ -16,6 +16,18 @@ export const STATUSES: Record<Service['status'], FloorStatus> = {
   cleaning: { label: 'To clean', color: 'error', icon: 'cleaning_services' },
 }
 
+/** The servers a table can be assigned to (FloorTable.data.server) */
+export const SERVERS = [
+  { id: 'ana', name: 'Ana', color: '#8e24aa' },
+  { id: 'leo', name: 'Leo', color: '#00897b' },
+  { id: 'sol', name: 'Sol', color: '#f4511e' },
+]
+/** Decor kinds of this restaurant, next to the built-in ones */
+export const DECOR_KINDS = {
+  host: { label: 'Host stand', icon: 'person_pin', width: 70, height: 40, color: 'primary' },
+  tv: { label: 'TV', icon: 'tv', width: 90, height: 14, shape: 'bar' as const, color: '#263238' },
+}
+
 let n = 0
 export const newId = (p: string) => `${p}${Date.now().toString(36)}${(n++).toString(36)}`
 const t = (id: string, label: string, x: number, y: number, shape: FloorTable['shape'], seats: number, extra: Partial<FloorTable> = {}): FloorTable => ({ id, label, x, y, shape, seats, ...extra })
@@ -26,8 +38,8 @@ function sample(): { rooms: Room[]; service: Record<string, Service>; waitlist: 
     id: 'hall',
     name: 'Main hall',
     tables: [
-      t('h1', '1', 140, 150, 'round', 4), t('h2', '2', 300, 150, 'round', 4), t('h3', '3', 460, 150, 'round', 2),
-      t('h4', '4', 140, 340, 'square', 4), t('h5', '5', 260, 340, 'square', 4), t('h6', '6', 460, 340, 'rect', 6),
+      t('h1', '1', 140, 150, 'round', 4, { data: { server: 'ana' } }), t('h2', '2', 300, 150, 'round', 4, { data: { server: 'ana' } }), t('h3', '3', 460, 150, 'round', 2, { data: { server: 'leo' } }),
+      t('h4', '4', 140, 340, 'square', 4, { data: { server: 'leo' } }), t('h5', '5', 260, 340, 'square', 4, { data: { server: 'leo' } }), t('h6', '6', 460, 340, 'rect', 6, { data: { server: 'sol' } }),
       t('h7', '7', 160, 500, 'rect', 8), t('h8', '8', 420, 510, 'round', 6),
       t('bar', 'Bar', 820, 150, 'rect', 0, { width: 220, height: 50 }),
       t('b1', 'B1', 740, 230, 'round', 1, { width: 40 }), t('b2', 'B2', 820, 230, 'round', 1, { width: 40 }), t('b3', 'B3', 900, 230, 'round', 1, { width: 40 }),
@@ -38,6 +50,7 @@ function sample(): { rooms: Room[]; service: Record<string, Service>; waitlist: 
       { id: 'door', kind: 'door', x: 320, y: 590 }, { id: 'win1', kind: 'window', x: 200, y: 30 }, { id: 'win2', kind: 'window', x: 440, y: 30 },
       { id: 'p1', kind: 'plant', x: 620, y: 560 }, { id: 'reg', kind: 'register', x: 700, y: 400 }, { id: 'kit', kind: 'kitchen', x: 800, y: 470 },
       { id: 'wc', kind: 'restroom', x: 920, y: 520 }, { id: 'lbl', kind: 'label', x: 830, y: 380, label: 'Kitchen' },
+      { id: 'host', kind: 'host', x: 540, y: 560 }, { id: 'tv', kind: 'tv', x: 810, y: 40 },
     ],
     merges: [{ id: 'm1', tables: ['h4', 'h5'], label: '4 + 5' }],
   }
@@ -71,7 +84,7 @@ function sample(): { rooms: Room[]; service: Record<string, Service>; waitlist: 
   }
 }
 
-const KEY = 'm3-example-seated'
+const KEY = 'm3-example-seated-3'
 function read() {
   try {
     const raw = localStorage.getItem(KEY)
