@@ -25,7 +25,7 @@ const read = (p) => readFileSync(path.join(root, p), 'utf8')
 
 const sectionLabels = {
   buttons: 'Buttons', inputs: 'Inputs', feedback: 'Feedback', 'data-display': 'Data display', navigation: 'Navigation',
-  layout: 'Layout', overlays: 'Overlays', tables: 'Tables', utility: 'Utility', editors: 'Editors', advanced: 'Advanced', map: 'Map', media: 'Media', pdf: 'PDF', flow: 'Flow', gantt: 'Gantt',
+  layout: 'Layout', overlays: 'Overlays', tables: 'Tables', utility: 'Utility', editors: 'Editors', advanced: 'Advanced', map: 'Map', media: 'Media', pdf: 'PDF', flow: 'Flow', gantt: 'Gantt', draw: 'Drawing',
   composables: 'Composables', directives: 'Directives',
 }
 const nav = read('src/nav/sections.ts')

@@ -42,6 +42,7 @@ const SECTIONS = {
   pdf: 'PdfPage.vue',
   flow: 'FlowPage.vue',
   gantt: 'GanttPage.vue',
+  draw: 'DrawPage.vue',
 }
 
 const DEFAULT_DESCRIPTION =

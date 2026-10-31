@@ -152,6 +152,11 @@ const router = createRouter({
       meta: { title: 'Gantt components' },
     },
     {
+      path: '/components/draw',
+      component: () => import('./pages/DrawPage.vue'),
+      meta: { title: 'Drawing components' },
+    },
+    {
       path: '/examples',
       component: () => import('./pages/ExamplesPage.vue'),
       meta: { title: 'Examples' },
