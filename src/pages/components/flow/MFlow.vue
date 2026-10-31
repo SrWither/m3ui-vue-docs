@@ -219,6 +219,7 @@ const flowProps: PropDef[] = [
   { name: 'guides', type: 'boolean', default: 'true', description: 'Alignment guides (and snapping to them) while dragging one node' },
   { name: 'layout', type: "'tree' | 'layered' | FlowLayout | null", default: 'null', description: "Lays the nodes out whenever the graph's shape changes" },
   { name: 'layoutOptions', type: 'FlowLayoutOptions', description: '{ direction, gap, levelGap }' },
+  { name: 'nativeContextMenu', type: 'boolean', default: 'false', description: "Let the browser's context menu open on the canvas (right click, a phone's long press). Off, the *-contextmenu events still fire for a menu of your own; text fields in nodes keep theirs" },
   { name: 'edgeBranching', type: 'boolean', default: 'false', description: 'A drag that starts on an edge draws a new edge from the same source, a branch, as in a circuit editor (the preview leaves from where you grabbed it). A click still selects; with a finger only a selected edge branches, so a swipe across one still pans' },
   { name: 'insertOnEdge', type: 'boolean', default: 'true', description: 'A node with no connections dropped onto an edge splices into it (A → C becomes A → B → C); the edge lights up while it\'s over one, and without room the next nodes move along' },
   { name: 'dropIntoGroups', type: 'boolean', default: 'false', description: 'Nodes dropped on a group join it, and leave it when dropped outside' },

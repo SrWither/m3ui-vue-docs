@@ -20,8 +20,12 @@ const versions: Version[] = [
     changes: {
       added: [
         'Floor plan components: MFloorPlanToolbar and MFloorPlanInspector to arrange a room (add tables from your presets and decor of any kind, edit what is picked, with slots for fields of your own), and useFloorPlan for controls of your own',
+        'MFloorPlan: tables joined from across the room are drawn as their groups joined by a line, not one box over the tables in between; by touch, hold a table to add it to the selection',
         'MFloorPlan: undo and redo, zones resized by any corner, decor resized and turned, tables turned by a handle, wall corners added and removed, Delete and Ctrl+D; decor kinds of your own and slots to draw decor, zones, merges and anything over the plan; pick tables in service and merge them, with a rule to refuse (two open bills); colors you can restyle',
         'MDrawCanvas backgroundImageBox: place a photo to trace on an endless canvas, at its size; fitting the view takes it in',
+      ],
+      changed: [
+        'MFlow: the browser\'s context menu (and a phone\'s long-press menu) no longer opens on the canvas, where it got in the way of selecting; your own menu still can (nativeContextMenu brings the browser\'s back)',
       ],
       fixed: [
         'The FloorArea, FloorWall and FloorDecor types are exported',
