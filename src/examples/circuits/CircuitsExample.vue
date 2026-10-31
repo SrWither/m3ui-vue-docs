@@ -1,15 +1,16 @@
 <script setup lang="ts">
 /*
  * Circuits example (Bitloom): a digital logic simulator in the spirit of Logisim, built only with m3ui-vue on MFlow.
- * Wire gates, plexers, adders, flip-flops, registers, a program counter, ROM and RAM (with byte addressing) into
- * anything up to a small CPU, and watch it run: every wire shows what it carries, live, as the clock ticks.
+ * Wire gates, plexers, an ALU, flip-flops, registers, a program counter, ROM and RAM (up to 16 MiB, loaded from .bin /
+ * .hex files) into anything up to a CPU, build blocks once as subcircuits and place them many times, and watch it
+ * run: every wire shows what it carries, live, as the clock ticks.
  * - parts.ts / logic.ts  every kind of part and the 0/1/Z/X bus logic they compute with
  * - sim.ts               the netlist and the event-driven propagation (unit delay, oscillation guard)
  * - useCircuit.ts        the circuit, its simulation and the clock; presets.ts the circuits to start from (Tiny8 CPU…)
  * - components/          PartView (a part on the canvas), Wire (a wire by its value), Palette, Inspector, TopBar
  */
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
+import { MIcon, MIconButton, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowSelection } from '@m3ui-vue/m3ui-vue/flow'
 import { useCircuit } from './useCircuit'
 import { presets } from './presets'
@@ -35,6 +36,17 @@ const selectedEdge = computed(() => (!selectedNode.value && selection.value.edge
 const paletteOpen = ref(false)
 const inspectorOpen = ref(false)
 const description = computed(() => presets.find((p) => p.id === c.presetId.value)?.description)
+const main = computed(() => c.circuits.value[0])
+const inSub = computed(() => main.value && c.currentId.value !== main.value.id)
+const currentName = computed(() => c.circuits.value.find((x) => x.id === c.currentId.value)?.name)
+watch(c.currentId, () => {
+  selection.value = { nodes: [], edges: [] }
+  setTimeout(() => flow.value?.fitView(), 60)
+})
+// Double-click a subcircuit to open it
+function onNodeDblclick(n: PartNode) {
+  if (n.data?.kind === 'sub' && n.data.params.circuit) c.openCircuit(n.data.params.circuit)
+}
 
 watch(c.presetId, (id) => {
   selection.value = { nodes: [], edges: [] }
@@ -56,8 +68,9 @@ const edited = () => (c.presetId.value = '')
 
 // ── Adding parts ────────────────────────────────────────────────────────────────────────────────────────
 function centered(kind: string, at: { x: number; y: number }): PartNode {
-  const g = geometry({ kind, params: {} })
-  return c.makePart(kind, { x: at.x - g.w / 2, y: at.y - g.h / 2 })
+  const n = c.makePart(kind, at)
+  const g = geometry(n.data!)
+  return { ...n, position: { x: Math.round((at.x - g.w / 2) / 20) * 20, y: Math.round((at.y - g.h / 2) / 20) * 20 } }
 }
 let offset = 0
 function pick(kind: string) {
@@ -137,6 +150,7 @@ async function open(file: File) {
 
       <main ref="canvas" class="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-surface" :class="wide && 'mx-2 mb-2 rounded-2xl'">
         <MFlow
+          :key="c.currentId.value"
           ref="flow"
           v-model:nodes="c.nodes.value"
           v-model:edges="c.edges.value"
@@ -157,6 +171,7 @@ async function open(file: File) {
           @connect="edited"
           @delete="edited"
           @node-drag-stop="edited"
+          @node-dblclick="onNodeDblclick"
         >
           <template #node-part="{ node, data, selected }">
             <PartView :id="node.id" :data="data" :selected="selected" />
@@ -169,7 +184,11 @@ async function open(file: File) {
           <MFlowMinimap v-if="wide" />
         </MFlow>
 
-        <div v-if="description && !c.oscillating.value" class="pointer-events-none absolute top-3 left-3 max-w-md rounded-lg bg-surface-container-high/90 px-3 py-2 text-body-small text-on-surface-variant backdrop-blur-sm">
+        <div v-if="inSub && !c.oscillating.value" class="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-tertiary-container py-1 pr-3 pl-1 text-label-large text-on-tertiary-container">
+          <MIconButton icon="arrow_back" :label="`Back to ${main!.name}`" size="xs" @click="c.openCircuit(main!.id)" />
+          {{ main!.name }} <MIcon name="chevron_right" :size="16" /> {{ currentName }}
+        </div>
+        <div v-else-if="description && !c.oscillating.value" class="pointer-events-none absolute top-3 left-3 max-w-md rounded-lg bg-surface-container-high/90 px-3 py-2 text-body-small text-on-surface-variant backdrop-blur-sm">
           {{ description }}
         </div>
         <div v-if="c.oscillating.value" class="absolute top-3 left-3 flex max-w-md items-center gap-2 rounded-lg bg-error-container px-3 py-2 text-body-small text-on-error-container">
@@ -184,7 +203,7 @@ async function open(file: File) {
 
     <template v-if="!wide">
       <MSideSheet v-model="paletteOpen" title="Parts">
-        <Palette @pick="pick" />
+        <Palette @pick="pick" @opened="paletteOpen = false" />
       </MSideSheet>
       <MSideSheet v-model="inspectorOpen" title="Settings">
         <Inspector v-if="selectedNode || selectedEdge" :node="selectedNode" :edge="selectedEdge" @remove="removeSelected" />

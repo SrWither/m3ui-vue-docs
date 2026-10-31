@@ -13,6 +13,13 @@ export interface Preset {
   state?: Record<string, { value: number }>
   /** Clock speed it runs best at */
   hz?: number
+  /** The main circuit's id and name (else 'main', 'Main') */
+  mainId?: string
+  mainName?: string
+  /** More circuits of the project, which the main one (or each other) can place as subcircuits */
+  circuits?: { id: string; name: string; nodes: PartNode[]; edges: FlowEdge[]; state?: Record<string, { value: number }> }[]
+  /** The circuit shown first */
+  open?: string
 }
 
 function builder() {
@@ -324,6 +331,121 @@ function echo(): Preset {
   }
 }
 
+// A full adder as a circuit of its own, placed eight times: a ripple-carry adder for two 8-bit numbers
+function rippleAdder(): Preset {
+  const fa = builder()
+  fa.part('A', 'pin', 0, 0, { width: 1 }, 'A')
+  fa.part('B', 'pin', 0, 100, { width: 1 }, 'B')
+  fa.part('Cin', 'pin', 0, 200, { width: 1 }, 'Cin')
+  fa.part('x1', 'xor', 200, 20)
+  fa.part('x2', 'xor', 380, 40)
+  fa.part('g1', 'and', 200, 140)
+  fa.part('g2', 'and', 380, 160)
+  fa.part('o', 'or', 560, 160)
+  fa.part('S', 'outpin', 560, 40, { width: 1 }, 'S')
+  fa.part('Cout', 'outpin', 740, 180, { width: 1 }, 'Cout')
+  fa.wire('A', 0, 'x1', 0)
+  fa.wire('B', 0, 'x1', 1)
+  fa.wire('A', 0, 'g1', 0)
+  fa.wire('B', 0, 'g1', 1)
+  fa.wire('x1', 0, 'x2', 0)
+  fa.wire('Cin', 0, 'x2', 1)
+  fa.wire('x1', 0, 'g2', 0)
+  fa.wire('Cin', 0, 'g2', 1)
+  fa.wire('g1', 0, 'o', 0)
+  fa.wire('g2', 0, 'o', 1)
+  fa.wire('x2', 0, 'S', 0)
+  fa.wire('o', 0, 'Cout', 0)
+
+  const { nodes, edges, part, wire } = builder()
+  part('A', 'pin', 0, 0, { width: 8 }, 'A')
+  part('B', 'pin', 0, 200, { width: 8 }, 'B')
+  part('cin', 'switch', 0, 400, {}, 'Carry in')
+  part('sa', 'split', 260, 0, { width: 8, parts: 8 })
+  part('sb', 'split', 260, 260, { width: 8, parts: 8 })
+  part('m', 'merge', 760, 300, { width: 8, parts: 8 }, 'Sum')
+  part('tS', 'tunnel', 920, 380, { width: 8 }, 'sum')
+  part('tR', 'tunnel', 1080, 100, { width: 8 }, 'sum')
+  part('p', 'probe', 1220, 80, { width: 8 }, 'A + B')
+  part('cout', 'led', 1240, 200, { color: 'error' }, 'Carry out')
+  for (let i = 0; i < 8; i++) {
+    part(`fa${i}`, 'sub', 480, i * 120 - 40, { circuit: 'fa' }, `FA${i}`)
+    wire('sa', i, `fa${i}`, 0)
+    wire('sb', i, `fa${i}`, 1)
+    wire(i === 0 ? 'cin' : `fa${i - 1}`, i === 0 ? 0 : 1, `fa${i}`, 2)
+    wire(`fa${i}`, 0, 'm', i)
+  }
+  wire('A', 0, 'sa', 0)
+  wire('B', 0, 'sb', 0)
+  wire('m', 0, 'tS', 0)
+  wire('tR', 0, 'p', 0)
+  wire('fa7', 1, 'cout', 0)
+  return {
+    id: 'ripple',
+    name: '8-bit adder (subcircuits)',
+    description: 'A full adder built once, as its own circuit (see the Circuits list), placed eight times with the carry rippling through. A tunnel named "sum" carries the result without a wire. Double-click an adder to open it.',
+    nodes,
+    edges,
+    state: { A: { value: 0x5a }, B: { value: 0x3c } },
+    circuits: [{ id: 'fa', name: 'Full adder', nodes: fa.nodes, edges: fa.edges }],
+  }
+}
+
+// Every ALU operation on two input pins, with its flags
+function aluDemo(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('A', 'pin', 0, 0, { width: 8 }, 'A')
+  part('B', 'pin', 0, 120, { width: 8 }, 'B')
+  part('op', 'pin', 0, 240, { width: 4 }, 'op')
+  part('cin', 'switch', 0, 340, {}, 'cin')
+  part('alu', 'alu', 260, 60, { width: 8 })
+  part('y', 'probe', 500, 40, { width: 8, signed: true }, 'Y')
+  ;['Z', 'N', 'C', 'V'].forEach((f, i) => {
+    part(f, 'led', 520, 140 + i * 60, { color: i === 3 ? 'error' : 'tertiary' }, f)
+    wire('alu', i + 1, f, 0)
+  })
+  wire('A', 0, 'alu', 0)
+  wire('B', 0, 'alu', 1)
+  wire('op', 0, 'alu', 2)
+  wire('cin', 0, 'alu', 3)
+  wire('alu', 0, 'y', 0)
+  return {
+    id: 'alu',
+    name: 'ALU',
+    description: 'Pick an operation with op: 0 add, 1 subtract, 2 AND, 3 OR, 4 XOR, 5 NOT, 6–10 shifts and rotations, 11 +1, 12 −1, 13 B, 14 multiply, 15 compare. The LEDs are the zero, negative, carry and overflow flags.',
+    nodes,
+    edges,
+    state: { A: { value: 100 }, B: { value: 50 } },
+  }
+}
+
+// A 64 KiB ROM holding a message, read out by a 16-bit counter onto the terminal
+function message(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  const text = 'Hello from a 64 KiB ROM!\nLoad your own .bin or .hex into it\nfrom its settings.\n'
+  part('clk', 'clock', 0, 0)
+  part('n', 'counter', 160, 0, { width: 16 }, 'Address')
+  part('rom', 'rom', 380, 0, { select: 16, width: 7, contents: [...text].map((ch) => ch.charCodeAt(0)) }, 'Message')
+  part('z', 'const', 380, 180, { width: 7, value: 0 })
+  part('cmp', 'comparator', 600, 120, { width: 7 }, 'char ≠ 0')
+  part('tty', 'tty', 820, 0, { cols: 40, rows: 6 })
+  wire('clk', 0, 'n', 1)
+  wire('n', 0, 'rom', 0)
+  wire('rom', 0, 'cmp', 1)
+  wire('z', 0, 'cmp', 0)
+  wire('rom', 0, 'tty', 0)
+  wire('cmp', 0, 'tty', 1)
+  wire('clk', 0, 'tty', 2)
+  return {
+    id: 'message',
+    name: 'Message ROM (64 KiB)',
+    description: 'A counter walks a ROM with 16 address bits and sends every character that isn\'t 0 to the terminal. Press play; open the ROM\'s settings to page through it or load a file.',
+    nodes,
+    edges,
+    hz: 50,
+  }
+}
+
 const blank = (): Preset => ({ id: 'blank', name: 'Blank', description: 'An empty canvas: add parts from the palette and wire their pins.', nodes: [], edges: [] })
 
 export const presets: Preset[] = [
@@ -344,6 +466,9 @@ export const presets: Preset[] = [
     Object.assign(Array(16).fill(0), { 15: 1 }),
   ),
   adder4(),
+  rippleAdder(),
+  aluDemo(),
+  message(),
   sketch(),
   pattern(),
   echo(),

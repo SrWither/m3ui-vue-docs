@@ -1,9 +1,12 @@
 // Every kind of part: its pins (which can depend on its parameters), how it computes its outputs from its inputs,
 // and the state it keeps (flip-flops, registers, memories, inputs the user flips). Pure, no Vue.
 import { all, and, isZ, known, mask, not, on, or, rose, X, xor, Z, type Sig } from './logic'
-import { devices, type ColorMode } from './devices'
+import { bitsFor, devices, type ColorMode } from './devices'
+import { cellsOf } from './memory'
+import { getCircuit, interfaceOf } from './library'
 
-export type Category = 'io' | 'gates' | 'plexers' | 'arithmetic' | 'memory' | 'wiring'
+export type Category = 'io' | 'gates' | 'plexers' | 'arithmetic' | 'memory' | 'wiring' | 'circuits'
+export type ShiftMode = 'shl' | 'shr' | 'sar' | 'rol' | 'ror'
 
 export interface Params {
   /** Bits per pin */
@@ -18,8 +21,10 @@ export interface Params {
   value?: number
   /** LED color role */
   color?: 'primary' | 'tertiary' | 'error' | 'secondary'
-  /** ROM/RAM contents (RAM: what it starts with) */
+  /** ROM/RAM contents written inline (presets); turned into an image when the circuit loads */
   contents?: number[]
+  /** ROM/RAM: the id of the image holding its words (RAM: what it starts with), see memory.ts */
+  image?: string
   /** RAM: every address a word, or a byte (with a `size` input: byte, half, word) */
   addressing?: 'word' | 'byte'
   /** Screen: size in pixels; terminal: size in characters */
@@ -35,6 +40,14 @@ export interface Params {
   serial?: boolean
   /** ROM: show the Tiny8 mnemonic next to each word */
   asm?: boolean
+  /** Subcircuit: the circuit it places */
+  circuit?: string
+  /** Bit extender: the output width; bit selector: the group it picks */
+  to?: number
+  /** Bit extender: copies the sign bit (else fills with 0s); probe: shows decimal as signed */
+  signed?: boolean
+  /** Shifter: which way */
+  shift?: ShiftMode
 }
 
 export interface Pin { name: string; width: number }
@@ -91,6 +104,9 @@ function gate(kind: string, label: string, icon: string, shape: PartDef['gate'],
   }
 }
 
+// The ALU ops that read B
+const USES_B = new Set([0, 1, 2, 3, 4, 13, 14, 15])
+
 const TINY8 = ['OUT', 'LDA', 'ADD', 'SUB', 'STA', 'LDI', 'JMP', 'JZ']
 export const disassemble = (word: number) => `${TINY8[(word >> 4) & 7]} ${word & 15}`
 
@@ -109,7 +125,7 @@ export const parts: PartDef[] = [
     eval: ({ state }) => [all(state.value, 1)],
   },
   {
-    kind: 'pin', label: 'Input pin', icon: 'input', category: 'io', description: 'Several bits, each flipped with a click',
+    kind: 'pin', label: 'Input pin', icon: 'input', category: 'io', description: 'Several bits, each flipped with a click; in a circuit used as a subcircuit, one of its inputs (named by its label)',
     params: { width: 4 }, edit: ['width'], pins: (p) => ({ inputs: [], outputs: [{ name: 'out', width: w(p) }] }),
     init: () => ({ value: 0 }),
     eval: ({ state, p }) => [all(state.value & mask(w(p)), w(p))],
@@ -131,8 +147,13 @@ export const parts: PartDef[] = [
     eval: () => [],
   },
   {
-    kind: 'probe', label: 'Probe', icon: 'data_object', category: 'io', description: 'Shows a value in binary, hex and decimal',
-    params: { width: 8 }, edit: ['width'], pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }], outputs: [] }),
+    kind: 'probe', label: 'Probe', icon: 'data_object', category: 'io', description: 'Shows a value in binary, hex and decimal (signed or not)',
+    params: { width: 8, signed: false }, edit: ['width', 'signed'], pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }], outputs: [] }),
+    eval: () => [],
+  },
+  {
+    kind: 'outpin', label: 'Output pin', icon: 'output', category: 'io', description: 'Shows its value; in a circuit used as a subcircuit, it becomes one of its outputs (named by its label)',
+    params: { width: 1 }, edit: ['width'], pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }], outputs: [] }),
     eval: () => [],
   },
   {
@@ -207,6 +228,31 @@ export const parts: PartDef[] = [
     },
   },
 
+  {
+    kind: 'prienc', label: 'Priority encoder', icon: 'low_priority', category: 'plexers', description: 'The number of the highest input that is 1; valid is 0 when none is',
+    params: { select: 2 }, edit: ['select'],
+    pins: (p) => ({ inputs: range(2 ** (p.select ?? 2), (i) => ({ name: `${i}`, width: 1 })), outputs: [{ name: 'out', width: p.select ?? 2 }, { name: 'valid', width: 1 }] }),
+    eval: ({ in: ins, p }) => {
+      for (let i = ins.length - 1; i >= 0; i--) {
+        if (on(ins[i]!)) return [all(i, p.select ?? 2), all(1, 1)]
+        if (!isZ(ins[i]!) && !known(ins[i]!)) return [X(mask(p.select ?? 2)), X(1)]
+      }
+      return [all(0, p.select ?? 2), all(0, 1)]
+    },
+  },
+  {
+    kind: 'bitsel', label: 'Bit selector', icon: 'filter_center_focus', category: 'plexers', description: 'Picks one group of bits out of a bus: group sel of the given size, low bits first',
+    params: { width: 8, to: 1 }, edit: ['width', 'to'],
+    pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }, { name: 'sel', width: bitsFor(w(p) / (p.to ?? 1)) }], outputs: [{ name: 'out', width: p.to ?? 1 }] }),
+    eval: ({ in: [a, sel], p }) => {
+      const to = p.to ?? 1
+      const m = mask(to)
+      if (!known(sel!) || sel!.v >= w(p) / to) return [X(m)]
+      const part = (x: number) => (Math.floor(x / 2 ** (sel!.v * to)) & m) >>> 0
+      return [{ m, v: part(a!.v), k: part(a!.k), e: part(a!.e) }]
+    },
+  },
+
   // ── Arithmetic ──────────────────────────────────────────────────────────────────────────────────────────
   {
     kind: 'adder', label: 'Adder', icon: 'add', category: 'arithmetic', description: 'A + B + carry in, with a carry out',
@@ -237,6 +283,105 @@ export const parts: PartDef[] = [
     eval: ({ in: [a, b] }) => {
       if (!known(a!) || !known(b!)) return [X(1), X(1), X(1)]
       return [all(+(a!.v < b!.v), 1), all(+(a!.v === b!.v), 1), all(+(a!.v > b!.v), 1)]
+    },
+  },
+
+  {
+    kind: 'alu', label: 'ALU', icon: 'calculate', category: 'arithmetic',
+    description: 'The operation op picks, on A and B, with zero, negative, carry and overflow flags. Ops: 0 A+B+cin, 1 A−B−cin, 2 AND, 3 OR, 4 XOR, 5 NOT A, 6 A<<1, 7 A>>1, 8 A>>1 signed, 9 rotate left, 10 rotate right, 11 A+1, 12 A−1, 13 B, 14 A×B (low half), 15 A−B flags only (Y = A)',
+    params: { width: 8 }, edit: ['width'],
+    pins: (p) => ({
+      inputs: [{ name: 'A', width: w(p) }, { name: 'B', width: w(p) }, { name: 'op', width: 4 }, { name: 'cin', width: 1 }],
+      outputs: [{ name: 'Y', width: w(p) }, { name: 'Z', width: 1 }, { name: 'N', width: 1 }, { name: 'C', width: 1 }, { name: 'V', width: 1 }],
+    }),
+    eval: ({ in: [a, b, op, cin], p }) => {
+      const n = w(p)
+      const m = mask(n)
+      const top = 2 ** (n - 1)
+      if (!known(op!) || !known(a!) || (USES_B.has(op!.v) && !known(b!)) || (!isZ(cin!) && !known(cin!)))
+        return [X(m), X(1), X(1), X(1), X(1)]
+      const A = a!.v
+      const B = b!.v
+      const ci = isZ(cin!) ? 0 : cin!.v
+      const sign = (x: number) => (x >= top ? 1 : 0)
+      let y = 0
+      let c = 0
+      let v = 0
+      switch (op!.v) {
+        case 0: { const s = A + B + ci; y = s % (m + 1); c = +(s > m); v = +(sign(A) === sign(B) && sign(y) !== sign(A)); break }
+        case 1: case 15: { const d = A - B - ci; y = ((d % (m + 1)) + m + 1) % (m + 1); c = +(d < 0); v = +(sign(A) !== sign(B) && sign(y) !== sign(A)); break }
+        case 2: y = (A & B) >>> 0; break
+        case 3: y = (A | B) >>> 0; break
+        case 4: y = (A ^ B) >>> 0; break
+        case 5: y = (~A & m) >>> 0; break
+        case 6: y = (A * 2) % (m + 1); c = sign(A); break
+        case 7: y = Math.floor(A / 2); c = A & 1; break
+        case 8: y = Math.floor(A / 2) + (A & top); c = A & 1; break
+        case 9: y = ((A * 2) % (m + 1)) + sign(A); c = sign(A); break
+        case 10: y = Math.floor(A / 2) + (A & 1) * top; c = A & 1; break
+        case 11: y = (A + 1) % (m + 1); c = +(A === m); v = +(A === top - 1); break
+        case 12: y = (A + m) % (m + 1); c = +(A === 0); v = +(A === top); break
+        case 13: y = B; break
+        case 14: { const prod = BigInt(A) * BigInt(B); y = Number(prod & BigInt(m)); c = +(prod > BigInt(m)); break }
+      }
+      const res = op!.v === 15 ? A : y
+      return [all(res, n), all(+(y === 0), 1), all(sign(y), 1), all(c, 1), all(v, 1)]
+    },
+  },
+  {
+    kind: 'multiplier', label: 'Multiplier', icon: 'close', category: 'arithmetic', description: 'A × B (unsigned): the low half and the high half of the product',
+    params: { width: 8 }, edit: ['width'],
+    pins: (p) => ({ inputs: [{ name: 'A', width: w(p) }, { name: 'B', width: w(p) }], outputs: [{ name: 'lo', width: w(p) }, { name: 'hi', width: w(p) }] }),
+    eval: ({ in: [a, b], p }) => {
+      const m = mask(w(p))
+      if (!known(a!) || !known(b!)) return [X(m), X(m)]
+      const prod = BigInt(a!.v) * BigInt(b!.v)
+      return [all(Number(prod & BigInt(m)), w(p)), all(Number(prod >> BigInt(w(p))), w(p))]
+    },
+  },
+  {
+    kind: 'divider', label: 'Divider', icon: 'percent', category: 'arithmetic', description: 'A ÷ B (unsigned): quotient and remainder. Dividing by 0 gives all ones and A',
+    params: { width: 8 }, edit: ['width'],
+    pins: (p) => ({ inputs: [{ name: 'A', width: w(p) }, { name: 'B', width: w(p) }], outputs: [{ name: 'Q', width: w(p) }, { name: 'R', width: w(p) }] }),
+    eval: ({ in: [a, b], p }) => {
+      const m = mask(w(p))
+      if (!known(a!) || !known(b!)) return [X(m), X(m)]
+      if (!b!.v) return [all(m, w(p)), a!]
+      return [all(Math.floor(a!.v / b!.v), w(p)), all(a!.v % b!.v, w(p))]
+    },
+  },
+  {
+    kind: 'negator', label: 'Negator', icon: 'exposure_neg_1', category: 'arithmetic', description: 'Two\'s complement: −A',
+    params: { width: 8 }, edit: ['width'],
+    pins: (p) => ({ inputs: [{ name: 'A', width: w(p) }], outputs: [{ name: '−A', width: w(p) }] }),
+    eval: ({ in: [a], p }) => {
+      const m = mask(w(p))
+      return [known(a!) ? all((m + 1 - a!.v) % (m + 1), w(p)) : X(m)]
+    },
+  },
+  {
+    kind: 'shifter', label: 'Shifter', icon: 'keyboard_double_arrow_left', category: 'arithmetic', description: 'Shifts or rotates the input by dist bits: left, right, right keeping the sign, or rotating',
+    params: { width: 8, shift: 'shl' }, edit: ['width', 'shift'],
+    pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }, { name: 'dist', width: bitsFor(w(p)) }], outputs: [{ name: 'out', width: w(p) }] }),
+    eval: ({ in: [a, d], p }) => {
+      const n = w(p)
+      const m = mask(n)
+      if (!known(a!) || !known(d!)) return [X(m)]
+      const k = d!.v
+      const A = BigInt(a!.v)
+      const M = BigInt(m)
+      const K = BigInt(Math.min(k, n))
+      const r = BigInt(k % n)
+      const N = BigInt(n)
+      let y: bigint
+      switch (p.shift ?? 'shl') {
+        case 'shr': y = A >> K; break
+        case 'sar': { const neg = a!.v >= 2 ** (n - 1); y = neg ? ((A | ~M) >> K) & M : A >> K; break }
+        case 'rol': y = ((A << r) | (A >> ((N - r) % N))) & M; break
+        case 'ror': y = ((A >> r) | (A << ((N - r) % N))) & M; break
+        default: y = (A << K) & M
+      }
+      return [all(Number(y & M), n)]
     },
   },
 
@@ -314,15 +459,16 @@ export const parts: PartDef[] = [
     },
   },
   {
-    kind: 'rom', label: 'ROM', icon: 'sd_card', category: 'memory', description: 'Words you write beforehand, read by address',
-    params: { select: 4, width: 8, contents: [] }, edit: ['select', 'width', 'contents'],
+    kind: 'rom', label: 'ROM', icon: 'sd_card', category: 'memory', description: 'Words you write beforehand (or load from a .bin / .hex file), read by address',
+    params: { select: 4, width: 8 }, edit: ['select', 'width', 'contents'],
     pins: (p) => ({ inputs: [{ name: 'A', width: p.select ?? 4 }], outputs: [{ name: 'D', width: w(p) }] }),
-    eval: ({ in: [a], p }) => [known(a!) ? all((p.contents?.[a!.v] ?? 0) & mask(w(p)), w(p)) : X(mask(w(p)))],
+    init: (p) => ({ cells: cellsOf(p.image, 2 ** (p.select ?? 4), w(p)) }),
+    eval: ({ in: [a], state, p }) => [known(a!) ? all(state.cells[a!.v] ?? 0, w(p)) : X(mask(w(p)))],
   },
   {
     kind: 'ram', label: 'RAM', icon: 'memory_alt', category: 'memory',
     description: 'Read by address; writes D on the rising edge while we is 1. Byte addressing: every address is a byte and size picks how many to read or write (little-endian)',
-    params: { select: 4, width: 8, contents: [], addressing: 'word' }, edit: ['addressing', 'select', 'width', 'contents'],
+    params: { select: 4, width: 8, addressing: 'word' }, edit: ['addressing', 'select', 'width', 'contents'],
     pins: (p) => ({
       inputs: [
         { name: 'A', width: p.select ?? 4 },
@@ -333,14 +479,15 @@ export const parts: PartDef[] = [
       ],
       outputs: [{ name: 'Q', width: w(p) }],
     }),
-    init: (p) => ({ mem: Array.from({ length: 2 ** (p.select ?? 4) }, (_, i) => p.contents?.[i] ?? 0) }),
+    // A copy of its image: what it starts with after every reset
+    init: (p) => ({ mem: cellsOf(p.image, 2 ** (p.select ?? 4), p.addressing === 'byte' ? 8 : w(p)).slice() }),
     eval: ({ in: [a, d, we, clk, size], state, p }) => {
       const m = mask(w(p))
-      const mem: number[] = state.mem
+      const mem = state.mem as Uint32Array
       const edge = rose(state, clk!)
       if (p.addressing !== 'byte') {
         if (edge && on(we!) && known(a!) && known(d!)) mem[a!.v] = d!.v
-        return [known(a!) ? all((mem[a!.v] ?? 0) & m, w(p)) : X(m)]
+        return [known(a!) ? all(mem[a!.v] ?? 0, w(p)) : X(m)]
       }
       // Byte addressing: size 0 = 1 byte, 1 = 2 bytes, 2 or 3 = 4 bytes, never wider than the data bus
       const maxBytes = Math.max(1, Math.floor(w(p) / 8))
@@ -355,6 +502,43 @@ export const parts: PartDef[] = [
       let v = 0
       for (let i = 0; i < bytes; i++) v += (mem[(a!.v + i) % n] ?? 0) * 2 ** (8 * i)
       return [all(v, w(p))]
+    },
+  },
+  {
+    kind: 'shiftreg', label: 'Shift register', icon: 'low_priority', category: 'memory',
+    description: 'On the rising edge while enabled: shifts left, D coming in at bit 0 and the top bit going out; load 1 takes P instead',
+    params: { width: 8 }, edit: ['width'],
+    pins: (p) => ({
+      inputs: [{ name: 'D', width: 1 }, { name: 'P', width: w(p) }, { name: 'load', width: 1 }, { name: 'en', width: 1 }, { name: 'clk', width: 1 }, { name: 'clr', width: 1 }],
+      outputs: [{ name: 'Q', width: w(p) }, { name: 'out', width: 1 }],
+    }),
+    init: () => ({ q: 0 }),
+    eval: ({ in: [d, par, load, en, clk, clr], state, p }) => {
+      const m = mask(w(p))
+      if (rose(state, clk!) && on(en!, true)) {
+        if (on(load!)) { if (known(par!)) state.q = par!.v }
+        else state.q = ((state.q * 2) & m) + (on(d!) ? 1 : 0)
+      }
+      if (on(clr!)) state.q = 0
+      return [all(state.q, w(p)), all(Math.floor(state.q / 2 ** (w(p) - 1)) & 1, 1)]
+    },
+  },
+  {
+    kind: 'random', label: 'Random', icon: 'casino', category: 'memory', description: 'A new pseudo-random value on every rising edge while enabled (a xorshift generator; clr restarts it)',
+    params: { width: 8 }, edit: ['width'],
+    pins: (p) => ({ inputs: [{ name: 'en', width: 1 }, { name: 'clk', width: 1 }, { name: 'clr', width: 1 }], outputs: [{ name: 'Q', width: w(p) }] }),
+    init: () => ({ s: 0x2545f491, q: 0 }),
+    eval: ({ in: [en, clk, clr], state, p }) => {
+      if (rose(state, clk!) && on(en!, true)) {
+        let x = state.s
+        x ^= x << 13
+        x ^= x >>> 17
+        x ^= x << 5
+        state.s = x >>> 0
+        state.q = (state.s & mask(w(p))) >>> 0
+      }
+      if (on(clr!)) Object.assign(state, { s: 0x2545f491, q: 0 })
+      return [all(state.q, w(p))]
     },
   },
 
@@ -398,6 +582,40 @@ export const parts: PartDef[] = [
       return [out]
     },
   },
+  {
+    kind: 'extender', label: 'Bit extender', icon: 'width_wide', category: 'wiring', description: 'Makes a bus wider (filling with 0s, or copying the sign bit) or narrower (keeping the low bits)',
+    params: { width: 8, to: 16, signed: false }, edit: ['width', 'to', 'signed'],
+    pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }], outputs: [{ name: 'out', width: p.to ?? 16 }] }),
+    eval: ({ in: [a], p }) => {
+      const to = p.to ?? 16
+      const n = w(p)
+      const m = mask(to)
+      if (to <= n) {
+        const cut = (x: number) => (x & m) >>> 0
+        return [{ m, v: cut(a!.v), k: cut(a!.k), e: cut(a!.e) }]
+      }
+      const high = (m - mask(n)) >>> 0
+      const top = 2 ** (n - 1)
+      // The new high bits: 0s, or copies of the top bit (unknown when it is)
+      if (!p.signed) return [{ m, v: a!.v, k: (a!.k + high) >>> 0, e: a!.e }]
+      if (a!.k & top) return [{ m, v: (a!.v + (a!.v & top ? high : 0)) >>> 0, k: (a!.k + high) >>> 0, e: a!.e }]
+      return [{ m, v: a!.v, k: a!.k, e: (a!.e + high) >>> 0 }]
+    },
+  },
+  {
+    kind: 'tunnel', label: 'Tunnel', icon: 'sell', category: 'wiring', description: 'Connects without a wire: every tunnel with the same label (in the same circuit) carries what drives any of them',
+    params: { width: 1 }, edit: ['width'],
+    pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }], outputs: [{ name: 'out', width: w(p) }] }),
+    // Never evaluated: the netlist joins tunnels (sim.ts)
+    eval: () => [],
+  },
+  {
+    kind: 'sub', label: 'Subcircuit', icon: 'developer_board', category: 'circuits', description: 'Another circuit of this project as a part: its input pins are the inputs, its output pins the outputs. Double-click it to open it',
+    params: {},
+    pins: (p) => interfaceOf(getCircuit(p.circuit)),
+    // Never evaluated: the netlist puts its parts in its place (sim.ts)
+    eval: () => [],
+  },
 ]
 
 export const partByKind = new Map(parts.map((p) => [p.kind, p]))
@@ -408,4 +626,5 @@ export const categories: { id: Category; label: string }[] = [
   { id: 'arithmetic', label: 'Arithmetic' },
   { id: 'memory', label: 'Memory' },
   { id: 'wiring', label: 'Wiring' },
+  { id: 'circuits', label: 'Subcircuits' },
 ]

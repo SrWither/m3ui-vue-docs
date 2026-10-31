@@ -15,6 +15,7 @@ const IO: Record<string, { w: number; h: number }> = {
   led: { w: 40, h: 40 },
   probe: { w: 132, h: 60 },
   hex: { w: 60, h: 80 },
+  tunnel: { w: 100, h: 40 },
 }
 /** Room for the pin labels left of a screen or terminal */
 export const SIDE = 52
@@ -22,7 +23,8 @@ export const CHAR_W = 7.25
 export const LINE_H = 16
 /** A screen's px per pixel: as set, or as big as fits 256px (at most 8) */
 export const screenPixel = (p: Params) => p.pixel || Math.max(1, Math.min(8, Math.floor(256 / Math.max(p.cols ?? 32, p.rows ?? 32))))
-const STATEFUL = new Set(['register', 'counter', 'pc', 'dff', 'tff', 'jkff', 'ram', 'rom'])
+const STATEFUL = new Set(['register', 'counter', 'pc', 'dff', 'tff', 'jkff', 'ram', 'rom', 'shiftreg', 'random'])
+const NARROW = new Set(['mux', 'demux', 'decoder', 'split', 'merge', 'prienc', 'bitsel', 'extender', 'negator'])
 
 export function geometry(data: PartData): Geometry {
   const def = partByKind.get(data.kind)! as PartDef
@@ -41,6 +43,11 @@ export function geometry(data: PartData): Geometry {
     const w = Math.max(76, Math.min(bits, 8) * 18 + 24)
     const h = 40 + Math.ceil(bits / 8) * 22
     return { look: 'io', w, h, inY: [], outY: [h / 2] }
+  }
+  if (data.kind === 'outpin') {
+    const bits = p.width ?? 1
+    const w = Math.max(76, Math.min(bits, 8) * 12 + 40)
+    return { look: 'io', w, h: 40 + (bits > 1 ? 20 : 0), inY: [20], outY: [] }
   }
   if (data.kind === 'joypad') {
     const h = 88
@@ -64,6 +71,6 @@ export function geometry(data: PartData): Geometry {
   const top = 44
   const rows = Math.max(nIn, nOut, 1)
   const h = top + (rows - 1) * PITCH + (STATEFUL.has(data.kind) ? 40 : 20)
-  const w = data.kind === 'ram' || data.kind === 'rom' ? 160 : data.kind === 'mux' || data.kind === 'demux' || data.kind === 'decoder' || data.kind === 'split' || data.kind === 'merge' ? 112 : 132
+  const w = data.kind === 'ram' || data.kind === 'rom' || data.kind === 'sub' ? 160 : NARROW.has(data.kind) ? 112 : 132
   return { look: 'box', w, h, inY: Array.from({ length: nIn }, (_, i) => top + i * PITCH), outY: Array.from({ length: nOut }, (_, i) => top + i * PITCH) }
 }

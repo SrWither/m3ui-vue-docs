@@ -3,11 +3,13 @@
  * The selected part's settings (label, width, inputs, select bits, addressing, color, value), a ROM's or RAM's
  * words as an editable hex grid (a RAM shows and edits what it holds right now), or what the selected wire carries.
  */
-import { computed } from 'vue'
-import { MButton, MIcon, MNumberField, MSegmentedButton, MSelect, MSwitch, MTextField } from '@m3ui-vue/m3ui-vue'
+import { computed, ref, watch } from 'vue'
+import { MButton, MIcon, MIconButton, MMenu, MMenuItem, MNumberField, MSegmentedButton, MSelect, MSwitch, MTextField, useToast } from '@m3ui-vue/m3ui-vue'
 import { colorModes, type ColorMode } from '../devices'
+import { cellsOf, maxAddressBits, parseMemoryFile, setCells, toBinary, toLogisim, type Cells } from '../memory'
+import { getCircuit } from '../library'
 import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
-import { disassemble, partByKind, type Params } from '../parts'
+import { disassemble, partByKind, type Params, type ShiftMode } from '../parts'
 import { format } from '../logic'
 import { useCircuit } from '../useCircuit'
 import type { PartNode } from '../sim'
@@ -15,6 +17,7 @@ import type { PartNode } from '../sim'
 const props = defineProps<{ node?: PartNode; edge?: FlowEdge }>()
 const emit = defineEmits<{ remove: [] }>()
 const c = useCircuit()
+const toast = useToast()
 
 const def = computed(() => (props.node ? partByKind.get(props.node.data!.kind)! : undefined))
 const params = computed<Params>(() => ({ ...def.value?.params, ...props.node?.data?.params }))
@@ -40,24 +43,64 @@ const partOptions = computed(() => {
   const n = params.value.width ?? 8
   return Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0 && d > 1).map((d) => ({ value: d, label: `${d} × ${n / d} bit${n / d > 1 ? 's' : ''}` }))
 })
+const isMem = computed(() => props.node?.data?.kind === 'ram' || props.node?.data?.kind === 'rom')
+// As many words as fit 16 MiB (8-bit words: 24 address bits)
+const count = (n: number) => (n >= 20 ? `${2 ** (n - 20)} Mi` : n >= 10 ? `${2 ** (n - 10)} Ki` : String(2 ** n))
 const selectOptions = computed(() => {
-  const mem = props.node?.data?.kind === 'ram' || props.node?.data?.kind === 'rom'
-  return Array.from({ length: mem ? 8 : 4 }, (_, i) => i + 1).map((n) => ({ value: n, label: mem ? `${n} bits · ${2 ** n} ${byteMode.value ? 'bytes' : 'words'}` : `${n} bit${n > 1 ? 's' : ''} · ${2 ** n} ways` }))
+  const most = isMem.value ? maxAddressBits(byteMode.value ? 8 : params.value.width ?? 8) : 4
+  return Array.from({ length: most }, (_, i) => i + 1).map((n) => ({ value: n, label: isMem.value ? `${n} bits · ${count(n)} ${byteMode.value ? 'bytes' : 'words'}` : `${n} bit${n > 1 ? 's' : ''} · ${2 ** n} ways` }))
 })
+function setMemWidth(n: number) {
+  // A wider word may not fit as many
+  const most = maxAddressBits(byteMode.value ? 8 : n)
+  patch({ width: n, ...((params.value.select ?? 4) > most && { select: most }) })
+}
+const toOptions = computed(() => {
+  if (props.node?.data?.kind === 'bitsel') {
+    const n = params.value.width ?? 8
+    return Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0 && d < n).map((d) => ({ value: d, label: `${d} bit${d > 1 ? 's' : ''} · ${n / d} groups` }))
+  }
+  return [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 24, 32].map((n) => ({ value: n, label: `${n} bit${n > 1 ? 's' : ''}` }))
+})
+const SHIFTS: { value: ShiftMode; label: string }[] = [
+  { value: 'shl', label: 'Left (0s in)' },
+  { value: 'shr', label: 'Right (0s in)' },
+  { value: 'sar', label: 'Right, keeping the sign' },
+  { value: 'rol', label: 'Rotate left' },
+  { value: 'ror', label: 'Rotate right' },
+]
+const subName = computed(() => (props.node?.data?.kind === 'sub' ? getCircuit(params.value.circuit)?.name ?? 'Missing circuit' : ''))
 function setAddressing(a: 'word' | 'byte') {
   const w = params.value.width ?? 8
   patch({ addressing: a, ...(a === 'byte' && ![8, 16, 32].includes(w) && { width: w > 16 ? 32 : w > 8 ? 16 : 8 }) })
 }
 
 // ── Memory words ────────────────────────────────────────────────────────────────────────────────────────
+// Shown a page at a time (a memory can hold millions), following the address input unless you go elsewhere
 const isRam = computed(() => props.node?.data?.kind === 'ram')
 const size = computed(() => 2 ** (params.value.select ?? 4))
 const cellWidth = computed(() => (byteMode.value ? 8 : params.value.width ?? 8))
 const digits = computed(() => Math.ceil(cellWidth.value / 4))
-const words = computed<number[]>(() => {
+const addrDigits = computed(() => Math.max(2, Math.ceil((params.value.select ?? 4) / 4)))
+/** The words the memory starts with (its image) */
+const image = (): Cells => cellsOf(params.value.image, size.value, cellWidth.value)
+/** What it holds now: a RAM's live words, a ROM's image */
+const live = (): Cells => (isRam.value ? (c.sim.state.get(props.node!.id)?.mem as Cells | undefined) : undefined) ?? image()
+const perRow = computed(() => (params.value.asm ? 1 : digits.value <= 2 ? 8 : digits.value <= 4 ? 4 : 2))
+const ROWS = 32
+const perPage = computed(() => perRow.value * ROWS)
+const pages = computed(() => Math.max(1, Math.ceil(size.value / perPage.value)))
+const page = ref(0)
+const follow = ref(true)
+const rows = computed(() => {
   c.version.value
-  const live = isRam.value ? (c.sim.state.get(props.node!.id)?.mem as number[] | undefined) : undefined
-  return Array.from({ length: size.value }, (_, i) => live?.[i] ?? params.value.contents?.[i] ?? 0)
+  if (!isMem.value) return []
+  const cells = live()
+  const first = page.value * perPage.value
+  return Array.from({ length: Math.min(ROWS, Math.ceil((size.value - first) / perRow.value)) }, (_, r) => {
+    const at = first + r * perRow.value
+    return { at, words: Array.from({ length: Math.min(perRow.value, size.value - at) }, (_, j) => cells[at + j] ?? 0) }
+  })
 })
 // Where the address input points right now
 const current = computed(() => {
@@ -65,19 +108,54 @@ const current = computed(() => {
   const a = props.node ? c.sim.inputsOf(props.node.id)[0] : undefined
   return a && a.k === a.m ? a.v : -1
 })
+watch([current, follow, perPage], () => {
+  if (follow.value && current.value >= 0) page.value = Math.floor(current.value / perPage.value)
+}, { immediate: true })
+function goPage(n: number) {
+  follow.value = false
+  page.value = Math.min(pages.value - 1, Math.max(0, n))
+}
+function goTo(text: string) {
+  const v = parseInt(text.replace(/^0x/i, ''), 16)
+  if (!Number.isNaN(v)) goPage(Math.floor(v / perPage.value))
+}
+const hex = (v: number, d: number) => v.toString(16).toUpperCase().padStart(d, '0')
 function setWord(i: number, text: string) {
   const v = parseInt(text, 16)
   if (Number.isNaN(v)) return
   const value = (v & (2 ** cellWidth.value - 1)) >>> 0
-  const contents = [...words.value]
-  contents[i] = value
-  // A RAM's edit changes what it holds now and what it starts with after a reset
-  if (isRam.value) c.poke(props.node!.id, (st) => (st.mem[i] = value))
-  patch({ contents })
+  // An edit changes what it holds now and what it starts with after a reset
+  image()[i] = value
+  c.poke(props.node!.id, (st) => { if (st.mem) st.mem[i] = value })
 }
 function clearWords() {
-  if (isRam.value) c.poke(props.node!.id, (st) => st.mem.fill(0))
-  patch({ contents: [] })
+  image().fill(0)
+  c.poke(props.node!.id, (st) => st.mem?.fill(0))
+}
+
+// ── Memory files ────────────────────────────────────────────────────────────────────────────────────────
+const fileInput = ref<HTMLInputElement>()
+async function loadFile(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  ;(e.target as HTMLInputElement).value = ''
+  if (!file) return
+  const { words, format: kind } = parseMemoryFile(new Uint8Array(await file.arrayBuffer()), cellWidth.value)
+  const cells = setCells(params.value.image!, words, size.value, cellWidth.value)
+  c.poke(props.node!.id, (st) => st.mem?.set(cells))
+  follow.value = false
+  page.value = 0
+  const unit = byteMode.value ? 'bytes' : 'words'
+  if (words.length > size.value) toast.warning(`${file.name} (${kind}) has ${words.length} ${unit}: only the first ${size.value} fit. Give the memory more address bits.`)
+  else toast.success(`Loaded ${words.length} ${unit} from ${file.name} (${kind})`)
+}
+function download(kind: 'bin' | 'logisim') {
+  const cells = live()
+  const blob = kind === 'bin' ? new Blob([toBinary(cells)], { type: 'application/octet-stream' }) : new Blob([toLogisim(cells)], { type: 'text/plain' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `${props.node!.data!.label || props.node!.data!.kind}.${kind === 'bin' ? 'bin' : 'txt'}`
+  a.click()
+  URL.revokeObjectURL(a.href)
 }
 
 const wire = computed(() => {
@@ -111,7 +189,16 @@ const wire = computed(() => {
         @update:model-value="setAddressing($event as 'word' | 'byte')"
       />
       <MSelect v-if="has('select')" :model-value="params.select" :options="selectOptions" :label="isRam || node.data!.kind === 'rom' ? 'Address' : 'Select'" variant="outlined" @update:model-value="patch({ select: $event as number })" />
-      <MSelect v-if="has('width')" :model-value="params.width" :options="widthOptions" :label="isRam || node.data!.kind === 'rom' ? 'Data width' : 'Width'" variant="outlined" @update:model-value="setWidth($event as number)" />
+      <MSelect v-if="has('width')" :model-value="params.width" :options="widthOptions" :label="isMem ? 'Data width' : node.data!.kind === 'extender' ? 'Width in' : 'Width'" variant="outlined" @update:model-value="isMem ? setMemWidth($event as number) : setWidth($event as number)" />
+      <MSelect v-if="has('to')" :model-value="params.to" :options="toOptions" :label="node.data!.kind === 'bitsel' ? 'Group' : 'Width out'" variant="outlined" @update:model-value="patch({ to: $event as number })" />
+      <MSelect v-if="has('shift')" :model-value="params.shift" :options="SHIFTS" label="Shift" variant="outlined" @update:model-value="patch({ shift: $event as ShiftMode })" />
+      <MSwitch v-if="has('signed')" :model-value="!!params.signed" :icon="false" :label="node.data!.kind === 'probe' ? 'Signed (two\'s complement)' : 'Copy the sign bit'" @update:model-value="patch({ signed: $event })" />
+      <template v-if="node.data!.kind === 'sub'">
+        <p class="text-body-medium">Places <b>{{ subName }}</b>. Its input pins are this part's inputs and its output pins the outputs, top to bottom; their labels name them.</p>
+        <MButton variant="tonal" icon="open_in_new" @click="c.openCircuit(params.circuit!)">Open {{ subName }}</MButton>
+      </template>
+      <p v-if="node.data!.kind === 'tunnel'" class="text-body-small text-on-surface-variant">The label is the tunnel's name: every tunnel with the same name in this circuit is the same wire. Drive one of them, read from the others.</p>
+      <p v-if="node.data!.kind === 'pin' || node.data!.kind === 'outpin'" class="text-body-small text-on-surface-variant">When this circuit is placed in another one as a subcircuit, this pin becomes one of its {{ node.data!.kind === 'pin' ? 'inputs' : 'outputs' }}, named by its label.</p>
       <MSelect
         v-if="has('inputs')"
         :model-value="params.inputs"
@@ -163,30 +250,52 @@ const wire = computed(() => {
       </p>
 
       <section v-if="has('contents')">
-        <div class="mb-2 flex items-center">
+        <div class="mb-1 flex items-center gap-1">
           <h3 class="flex-1 text-title-small">{{ isRam ? 'Contents (live)' : 'Contents' }}</h3>
-          <MButton variant="text" size="xs" icon="clear_all" @click="clearWords">Clear</MButton>
+          <MButton variant="text" size="xs" icon="upload_file" @click="fileInput?.click()">Load</MButton>
+          <MMenu align="right">
+            <template #trigger><MIconButton icon="more_vert" label="More" size="xs" /></template>
+            <MMenuItem icon="download" @click="download('bin')">Download as .bin</MMenuItem>
+            <MMenuItem icon="description" @click="download('logisim')">Download for Logisim (v2.0 raw)</MMenuItem>
+            <MMenuItem icon="clear_all" @click="clearWords">Clear</MMenuItem>
+          </MMenu>
+          <input ref="fileInput" type="file" class="hidden" @change="loadFile" />
         </div>
-        <div class="max-h-80 overflow-y-auto rounded-md border border-outline-variant p-1 font-mono text-label-medium">
-          <div
-            v-for="(word, i) in words"
-            :key="i"
-            class="flex items-center gap-2 rounded-xs px-1"
-            :class="i === current && 'bg-secondary-container text-on-secondary-container'"
-          >
-            <span class="w-7 text-right text-on-surface-variant">{{ i.toString(16).toUpperCase().padStart(2, '0') }}</span>
-            <input
-              :value="word.toString(16).toUpperCase().padStart(digits, '0')"
-              :maxlength="digits"
-              spellcheck="false"
-              class="w-[calc(var(--d)*1ch+12px)] rounded-xs bg-transparent px-1 py-0.5 uppercase outline-none focus:bg-surface-container-highest focus:ring-1 focus:ring-primary"
-              :style="{ '--d': digits }"
-              :aria-label="`Word ${i}`"
-              @change="setWord(i, ($event.target as HTMLInputElement).value)"
-            />
-            <span v-if="params.asm" class="text-on-surface-variant">{{ disassemble(word) }}</span>
+        <div v-if="pages > 1" class="mb-1 flex items-center gap-1">
+          <MIconButton icon="chevron_left" label="Previous page" size="xs" :disabled="page === 0" @click="goPage(page - 1)" />
+          <span class="font-mono text-label-medium text-on-surface-variant">{{ hex(page * perPage, addrDigits) }}</span>
+          <MIconButton icon="chevron_right" label="Next page" size="xs" :disabled="page >= pages - 1" @click="goPage(page + 1)" />
+          <input
+            placeholder="Go to…"
+            spellcheck="false"
+            aria-label="Go to address (hex)"
+            class="h-7 w-20 min-w-0 rounded-xs bg-surface-container-highest px-2 font-mono text-label-medium uppercase outline-none focus:ring-1 focus:ring-primary"
+            @change="goTo(($event.target as HTMLInputElement).value)"
+          />
+          <span class="flex-1" />
+          <MIconButton icon="my_location" label="Follow the address" size="xs" :variant="follow ? 'tonal' : 'standard'" @click="follow = !follow" />
+        </div>
+        <div class="max-h-96 overflow-y-auto rounded-md border border-outline-variant p-1 font-mono text-label-medium">
+          <div v-for="row in rows" :key="row.at" class="flex items-center gap-1 px-1">
+            <span class="mr-1 text-right text-on-surface-variant" :style="{ width: `${addrDigits}ch` }">{{ hex(row.at, addrDigits) }}</span>
+            <template v-for="(word, j) in row.words" :key="row.at + j">
+              <input
+                :value="hex(word, digits)"
+                :maxlength="digits"
+                spellcheck="false"
+                class="w-[calc(var(--d)*1ch+8px)] rounded-xs bg-transparent px-0.5 py-0.5 text-center uppercase outline-none focus:bg-surface-container-highest focus:ring-1 focus:ring-primary"
+                :class="row.at + j === current && 'bg-secondary-container text-on-secondary-container'"
+                :style="{ '--d': digits }"
+                :aria-label="`Word ${hex(row.at + j, addrDigits)}`"
+                @change="setWord(row.at + j, ($event.target as HTMLInputElement).value)"
+              />
+              <span v-if="params.asm" class="text-on-surface-variant">{{ disassemble(word) }}</span>
+            </template>
           </div>
         </div>
+        <p class="mt-2 text-body-small text-on-surface-variant">
+          Load a raw binary (.bin, .rom; an .nes file without its header), Intel HEX or hex words (Logisim's v2.0 raw too). {{ byteMode ? 'Bytes' : 'Bytes are packed into words little-endian' }}.
+        </p>
         <p v-if="params.asm" class="mt-2 text-body-small text-on-surface-variant">
           Tiny8: high nibble the opcode, low nibble its operand <i>a</i>. 0 OUT · 1 LDA a · 2 ADD a · 3 SUB a · 4 STA a · 5 LDI a · 6 JMP a · 7 JZ a.
         </p>

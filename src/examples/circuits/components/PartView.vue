@@ -8,6 +8,7 @@ import { computed } from 'vue'
 import { MIcon, MSwitch } from '@m3ui-vue/m3ui-vue'
 import { MFlowHandle } from '@m3ui-vue/m3ui-vue/flow'
 import { partByKind, disassemble } from '../parts'
+import { getCircuit } from '../library'
 import { format, known, mask, widthOf, type Sig } from '../logic'
 import { geometry } from '../geometry'
 import DeviceView from './DeviceView.vue'
@@ -93,14 +94,16 @@ const stored = computed(() => {
   if (k === 'rom') {
     const a = ins.value[0]
     if (!a || !known(a)) return 'address X'
-    const word = params.value.contents?.[a.v] ?? 0
-    return `[${a.v}] = ${format(out0.value!)}${params.value.asm ? ` · ${disassemble(word)}` : ''}`
+    const o = out0.value!
+    return `[${a.v}] = ${format(o)}${params.value.asm && known(o) ? ` · ${disassemble(o.v)}` : ''}`
   }
-  if (['register', 'counter', 'pc'].includes(k)) return format(out0.value!)
+  if (['register', 'counter', 'pc', 'shiftreg', 'random'].includes(k)) return format(out0.value!)
   if (['dff', 'tff', 'jkff'].includes(k)) return `Q = ${st.q ?? 0}`
   return ''
 })
-const title = computed(() => props.data.label || def.value.label)
+const title = computed(() => props.data.label || (props.data.kind === 'sub' ? getCircuit(params.value.circuit)?.name ?? 'Missing circuit' : def.value.label))
+// A probe's value as signed decimal
+const signedDec = (s: Sig) => (s.v >= 2 ** (widthOf(s) - 1) ? s.v - 2 ** widthOf(s) : s.v)
 const bits = computed(() => params.value.width ?? 1)
 const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
 </script>
@@ -112,7 +115,7 @@ const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
   >
     <!-- A label of your own over gates and I/O -->
     <div
-      v-if="data.label && g.look !== 'box'"
+      v-if="data.label && g.look !== 'box' && data.kind !== 'tunnel'"
       class="pointer-events-none absolute bottom-full left-1/2 mb-0.5 -translate-x-1/2 text-label-small whitespace-nowrap text-on-surface-variant"
     >{{ data.label }}</div>
 
@@ -139,7 +142,7 @@ const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
       class="absolute inset-0 rounded-md border bg-surface-container-low transition-[border-color,box-shadow] duration-200"
       :class="selected ? 'border-primary ring-1 ring-primary' : 'border-outline-variant'"
     >
-      <div class="flex h-8 items-center gap-1.5 border-b border-outline-variant px-2">
+      <div class="flex h-8 items-center gap-1.5 border-b border-outline-variant px-2" :class="data.kind === 'sub' && 'bg-tertiary-container/60 text-on-tertiary-container rounded-t-md'">
         <MIcon :name="def.icon" :size="16" class="text-primary" />
         <span class="truncate text-label-large">{{ title }}</span>
       </div>
@@ -221,7 +224,7 @@ const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
         :class="isOne(ins[0]) ? LED[params.color ?? 'primary'] : ins[0] && ins[0].e ? 'bg-error-container' : 'bg-surface-container-highest'"
       />
       <div v-else-if="data.kind === 'probe'" class="flex w-full flex-col items-stretch px-2 font-mono">
-        <span class="truncate text-center text-title-medium" :class="tone(ins[0])">{{ format(ins[0]!, widthOf(ins[0]!) > 1 ? 'hex' : 'bin') }}<span v-if="widthOf(ins[0]!) > 1 && known(ins[0]!)" class="text-label-medium text-on-surface-variant"> = {{ format(ins[0]!, 'dec') }}</span></span>
+        <span class="truncate text-center text-title-medium" :class="tone(ins[0])">{{ format(ins[0]!, widthOf(ins[0]!) > 1 ? 'hex' : 'bin') }}<span v-if="widthOf(ins[0]!) > 1 && known(ins[0]!)" class="text-label-medium text-on-surface-variant"> = {{ params.signed ? signedDec(ins[0]!) : format(ins[0]!, 'dec') }}</span></span>
         <span class="truncate text-center text-[10px] text-on-surface-variant">{{ format(ins[0]!, 'bin') }}</span>
       </div>
       <svg v-else-if="data.kind === 'hex' || data.kind === 'seg7'" width="40" height="64" viewBox="0 0 40 64" :class="data.kind === 'seg7' && 'ml-6'">
@@ -233,6 +236,17 @@ const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
           :class="segments[i] === null ? 'fill-error/25' : segments[i] ? 'fill-primary' : 'fill-on-surface/8'"
         />
       </svg>
+      <div v-else-if="data.kind === 'outpin'" class="ml-3 flex flex-col items-center font-mono">
+        <span v-if="bits === 1" class="flex size-6 items-center justify-center rounded-full text-label-large" :class="isOne(ins[0]) ? 'bg-primary text-on-primary' : 'bg-surface-container-highest'">{{ format(ins[0]!) }}</span>
+        <template v-else>
+          <span class="text-title-small" :class="tone(ins[0])">0x{{ format(ins[0]!) }}</span>
+          <span class="text-[10px] text-on-surface-variant">{{ format(ins[0]!, 'bin') }}</span>
+        </template>
+      </div>
+      <div v-else-if="data.kind === 'tunnel'" class="flex min-w-0 items-center gap-1 px-4">
+        <MIcon name="sell" :size="14" class="shrink-0 text-tertiary" />
+        <span class="truncate font-mono text-label-large" :class="tone(out0)">{{ data.label || '…' }}</span>
+      </div>
       <DeviceView v-else-if="data.kind === 'joypad'" :id="id" :data="data" />
       <template v-if="data.kind === 'seg7' || (data.kind === 'joypad' && params.serial)">
         <span

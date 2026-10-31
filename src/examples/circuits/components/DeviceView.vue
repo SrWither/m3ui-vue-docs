@@ -27,7 +27,7 @@ function paint(force = false) {
   st.dirty = false
   const { cols = 32, rows = 32 } = params.value
   if (st.front.length !== cols * rows) return
-  cv.getContext('2d')!.putImageData(new ImageData(new Uint8ClampedArray(st.front.buffer, st.front.byteOffset, cols * rows * 4), cols, rows), 0, 0)
+  cv.getContext('2d')!.putImageData(new ImageData(new Uint8ClampedArray(st.front.buffer as ArrayBuffer, st.front.byteOffset, cols * rows * 4), cols, rows), 0, 0)
 }
 if (props.data.kind === 'screen') {
   watch(c.version, () => paint())

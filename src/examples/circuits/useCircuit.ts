@@ -6,10 +6,19 @@ import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
 import { presets, type Preset } from './presets'
 import { pinsOf, Simulator, type PartData, type PartNode } from './sim'
 import { partByKind } from './parts'
+import { contains, setCircuitResolver, type CircuitDef } from './library'
+import { cloneImage, decodeImage, encodeImage, hasImage, newImageId, setCells } from './memory'
 
+// The circuit on the canvas: what MFlow edits
 const nodes = shallowRef<PartNode[]>([])
 const edges = shallowRef<FlowEdge[]>([])
 const presetId = ref('cpu')
+// Every circuit of the project; the one open keeps its nodes and edges in the refs above while it's open
+const circuits = shallowRef<(CircuitDef & { state?: Record<string, { value: number }> })[]>([])
+const currentId = ref('main')
+const getCircuit = (id: string) => (id === currentId.value ? { id, name: current()?.name ?? '', nodes: nodes.value, edges: edges.value } : circuits.value.find((x) => x.id === id))
+setCircuitResolver(getCircuit)
+const current = () => circuits.value.find((x) => x.id === currentId.value)
 const sim = new Simulator()
 const version = ref(0)
 const playing = ref(false)
@@ -23,9 +32,52 @@ const structure = computed(() =>
   JSON.stringify([nodes.value.map((n) => [n.id, n.data]), edges.value.map((e) => [e.source, e.sourceHandle, e.target, e.targetHandle])]),
 )
 watch(structure, () => {
+  ownImages()
   sim.build(nodes.value, edges.value)
   changed()
 })
+
+// ROMs and RAMs name their image; a copied one gets its own copy of the image (else both would share it)
+const imageOwner = new Map<string, string>()
+function ownImages() {
+  let patched = false
+  const next = nodes.value.map((n) => {
+    const k = n.data?.kind
+    if (k !== 'rom' && k !== 'ram') return n
+    const key = `${currentId.value}/${n.id}`
+    const img = n.data!.params.image
+    if (!img) {
+      patched = true
+      const id = newImageId()
+      imageOwner.set(id, key)
+      return { ...n, data: { ...n.data!, params: { ...n.data!.params, image: id } } }
+    }
+    const owner = imageOwner.get(img)
+    if (!owner) imageOwner.set(img, key)
+    else if (owner !== key && nodes.value.some((m) => `${currentId.value}/${m.id}` === owner && m.data?.params.image === img)) {
+      patched = true
+      const id = newImageId()
+      cloneImage(img, id)
+      imageOwner.set(id, key)
+      return { ...n, data: { ...n.data!, params: { ...n.data!.params, image: id } } }
+    }
+    return n
+  })
+  if (patched) nodes.value = next
+}
+/** Inline `contents` (presets, old files) into images */
+function withImages(list: PartNode[]): PartNode[] {
+  return list.map((n) => {
+    const p = n.data?.params
+    if (!p || (n.data!.kind !== 'rom' && n.data!.kind !== 'ram') || (p.image && hasImage(p.image))) return n
+    const id = p.image ?? newImageId()
+    const def = partByKind.get(n.data!.kind)!
+    const q = { ...def.params, ...p }
+    setCells(id, p.contents ?? [], 2 ** (q.select ?? 4), q.addressing === 'byte' ? 8 : (q.width ?? 8))
+    const { contents: _, ...rest } = p
+    return { ...n, data: { ...n.data!, params: { ...rest, image: id } } }
+  })
+}
 
 // Wires leaving the same output carry the same value: only the first one shows it
 const labelled = computed(() => {
@@ -50,14 +102,65 @@ function load(p: Preset) {
   presetId.value = p.id
   ticks.value = 0
   if (p.hz) hz.value = p.hz
-  nodes.value = p.nodes.map((n) => ({ ...n, data: { ...n.data!, params: { ...n.data!.params } } }))
-  edges.value = p.edges.map((e) => ({ ...e, type: 'wire', pathType: 'smoothstep', markerEnd: 'none' }))
+  const prep = (c: { nodes: PartNode[]; edges: FlowEdge[] }) => ({
+    nodes: withImages(c.nodes.map((n) => ({ ...n, type: 'part', data: { ...n.data!, params: { ...n.data!.params } } }))),
+    edges: c.edges.map((e) => ({ ...e, type: 'wire', pathType: 'smoothstep' as const, markerEnd: 'none' as const })),
+  })
+  const mainId = p.mainId ?? 'main'
+  const main = { id: mainId, name: p.mainName ?? 'Main', ...prep(p), state: p.state }
+  circuits.value = [main, ...(p.circuits ?? []).map((c) => ({ ...c, ...prep(c) }))]
+  imageOwner.clear()
+  show(p.open ?? mainId)
+}
+/** Puts a circuit on the canvas, simulated on its own (its input pins are yours to flip) */
+function show(id: string) {
+  const def = circuits.value.find((x) => x.id === id)!
+  currentId.value = id
+  nodes.value = def.nodes
+  edges.value = def.edges
   sim.state.clear()
   sim.values.clear()
   sim.build(nodes.value, edges.value)
-  if (p.state) sim.restore(p.state)
+  if (def.state) sim.restore(def.state)
   changed()
 }
+/** What's on the canvas back into the project */
+function stash() {
+  circuits.value = circuits.value.map((x) => (x.id === currentId.value ? { ...x, nodes: nodes.value, edges: edges.value, state: sim.snapshot() } : x))
+}
+function openCircuit(id: string) {
+  if (id === currentId.value || !circuits.value.some((x) => x.id === id)) return
+  playing.value = false
+  stash()
+  show(id)
+}
+let made = 0
+function addCircuit(name: string) {
+  stash()
+  const id = `c${Date.now().toString(36)}${made++}`
+  circuits.value = [...circuits.value, { id, name, nodes: [], edges: [] }]
+  presetId.value = ''
+  playing.value = false
+  show(id)
+  return id
+}
+function renameCircuit(id: string, name: string) {
+  circuits.value = circuits.value.map((x) => (x.id === id ? { ...x, name } : x))
+}
+/** The circuits that place `id` as a subcircuit */
+function usersOf(id: string) {
+  stash()
+  return circuits.value.filter((x) => x.id !== id && x.nodes.some((n) => n.data?.kind === 'sub' && n.data.params.circuit === id))
+}
+function deleteCircuit(id: string) {
+  if (circuits.value.length < 2 || usersOf(id).length) return false
+  const rest = circuits.value.filter((x) => x.id !== id)
+  circuits.value = rest
+  if (id === currentId.value) show(rest[0]!.id)
+  return true
+}
+/** Circuits that can go inside the open one (not itself, nor one that already holds it) */
+const placeable = computed(() => circuits.value.filter((x) => x.id !== currentId.value && !contains(x.id, currentId.value)))
 load(presets[0]!)
 
 // ── The clock ───────────────────────────────────────────────────────────────────────────────────────────
@@ -130,12 +233,15 @@ function poke(id: string, change: (state: any) => void) {
 
 // ── Editing ─────────────────────────────────────────────────────────────────────────────────────────────
 let added = 0
+/** A new part; `sub:<circuit>` places that circuit as a subcircuit */
 function makePart(kind: string, at: { x: number; y: number }): PartNode {
+  const circuit = kind.startsWith('sub:') ? kind.slice(4) : undefined
+  const k = circuit ? 'sub' : kind
   return {
-    id: `${kind}${Date.now().toString(36)}${added++}`,
+    id: `${k}${Date.now().toString(36)}${added++}`,
     type: 'part',
     position: { x: Math.round(at.x / 20) * 20, y: Math.round(at.y / 20) * 20 },
-    data: { kind, params: { ...partByKind.get(kind)!.params } },
+    data: { kind: k, params: { ...partByKind.get(k)!.params, ...(circuit && { circuit }) }, ...(k === 'tunnel' && { label: 'net' }) },
   }
 }
 /** Changes a part's label or parameters; wires to pins that no longer exist go */
@@ -153,24 +259,52 @@ function patchPart(id: string, patch: { label?: string; params?: Partial<PartDat
 }
 
 // ── Saving ──────────────────────────────────────────────────────────────────────────────────────────────
-interface Saved { format: 'bitloom'; version: 1; nodes: PartNode[]; edges: FlowEdge[]; state: Record<string, { value: number }> }
+// Version 2: every circuit of the project, and the memories' images (base64, trailing zeros left out)
+interface SavedCircuit { id: string; name: string; nodes: PartNode[]; edges: FlowEdge[]; state?: Record<string, { value: number }> }
+interface Saved {
+  format: 'bitloom'
+  version: 1 | 2
+  nodes?: PartNode[]
+  edges?: FlowEdge[]
+  state?: Record<string, { value: number }>
+  circuits?: SavedCircuit[]
+  open?: string
+  images?: Record<string, { n: number; bytes: number; data: string }>
+}
+const slim = (c: SavedCircuit): SavedCircuit => ({
+  id: c.id,
+  name: c.name,
+  nodes: c.nodes.map(({ id, type, position, data }) => ({ id, type, position, data })),
+  edges: c.edges.map(({ id, source, sourceHandle, target, targetHandle }) => ({ id, source, sourceHandle, target, targetHandle })),
+  state: c.state,
+})
 function toJSON(): string {
-  const saved: Saved = {
-    format: 'bitloom',
-    version: 1,
-    nodes: nodes.value.map(({ id, type, position, data }) => ({ id, type, position, data })),
-    edges: edges.value.map(({ id, source, sourceHandle, target, targetHandle }) => ({ id, source, sourceHandle, target, targetHandle })),
-    state: sim.snapshot(),
+  stash()
+  const images: Saved['images'] = {}
+  for (const c of circuits.value) for (const n of c.nodes) {
+    const img = n.data?.params.image
+    if (img && !images[img]) {
+      const e = encodeImage(img)
+      if (e) images[img] = e
+    }
   }
+  const saved: Saved = { format: 'bitloom', version: 2, circuits: circuits.value.map(slim), open: currentId.value, images }
   return JSON.stringify(saved, null, 2)
 }
 function fromJSON(text: string) {
   const s = JSON.parse(text) as Saved
-  if (s.format !== 'bitloom' || !Array.isArray(s.nodes) || !Array.isArray(s.edges)) throw new Error('Not a Bitloom circuit')
-  if (s.nodes.some((n) => !partByKind.has(n.data?.kind))) throw new Error('Unknown part in the file')
-  load({ id: '', name: '', description: '', nodes: s.nodes.map((n) => ({ ...n, type: 'part' })), edges: s.edges, state: s.state })
+  if (s.format !== 'bitloom') throw new Error('Not a Bitloom circuit')
+  const list: SavedCircuit[] = s.circuits ?? [{ id: 'main', name: 'Main', nodes: s.nodes ?? [], edges: s.edges ?? [], state: s.state }]
+  if (!list.length || list.some((c) => !Array.isArray(c.nodes) || !Array.isArray(c.edges))) throw new Error('Not a Bitloom circuit')
+  if (list.some((c) => c.nodes.some((n) => !partByKind.has(n.data?.kind ?? '')))) throw new Error('Unknown part in the file')
+  for (const [id, img] of Object.entries(s.images ?? {})) decodeImage(id, img)
+  const [main, ...rest] = list
+  load({
+    id: '', name: '', description: '', mainId: main!.id, mainName: main!.name, nodes: main!.nodes, edges: main!.edges, state: main!.state,
+    circuits: rest, open: s.open && list.some((c) => c.id === s.open) ? s.open : undefined,
+  })
 }
 
 export function useCircuit() {
-  return { nodes, edges, labelled, presetId, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
+  return { nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
 }
