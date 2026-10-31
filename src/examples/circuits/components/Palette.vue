@@ -5,7 +5,7 @@
  * emits `grab`, so the page can drag it straight onto the canvas.
  */
 import { computed, nextTick, ref } from 'vue'
-import { MIcon, MIconButton, MMenu, MMenuItem, useToast } from '@m3ui-vue/m3ui-vue'
+import { MIcon, MIconButton, MMenu, MMenuItem, MTooltip, useToast } from '@m3ui-vue/m3ui-vue'
 import { categories, parts } from '../parts'
 import { useCircuit } from '../useCircuit'
 
@@ -94,18 +94,17 @@ function click(kind: string) {
     <section v-for="cat in shown" :key="cat.id">
       <h3 class="px-2 pb-1 text-label-large text-on-surface-variant">{{ cat.label }}</h3>
       <div class="grid grid-cols-2 gap-1">
+        <MTooltip v-for="p in items(cat.id)" :key="p.kind" :text="p.description" placement="right" :delay="600" class="min-w-0">
         <button
-          v-for="p in items(cat.id)"
-          :key="p.kind"
           type="button"
-          :title="p.description"
-          class="flex cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-body-medium transition-colors outline-none select-none hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
+          class="flex w-full min-w-0 cursor-grab items-center gap-2 rounded-md px-2 py-1.5 text-left text-body-medium transition-colors outline-none select-none hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
           @pointerdown="down($event, p.kind)"
           @click="click(p.kind)"
         >
           <MIcon :name="p.icon" :size="18" class="shrink-0 text-primary" />
           <span class="truncate">{{ p.label }}</span>
         </button>
+        </MTooltip>
       </div>
     </section>
   </div>

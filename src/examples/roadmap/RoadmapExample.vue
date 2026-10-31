@@ -8,7 +8,7 @@
  * - useProject.ts              the tasks, the people, the view's switches
  */
 import { computed, ref } from 'vue'
-import { MAvatar, MButton, MIcon, MIconButton, MProgressBar, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
+import { MAvatar, MButton, MIcon, MIconButton, MProgressBar, MSideSheet, MTooltip, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import {
   MGantt,
   MGanttControls,
@@ -191,7 +191,7 @@ async function load(file: File) {
             </template>
           </MGanttControls>
           <template #cell-owner="{ task }">
-            <MAvatar v-if="task.data?.owner" :name="personById.get(task.data.owner)?.name" :size="24" :title="personById.get(task.data.owner)?.name" />
+            <MTooltip v-if="task.data?.owner" :text="personById.get(task.data.owner)?.name ?? ''"><MAvatar :name="personById.get(task.data.owner)?.name" :size="24" /></MTooltip>
           </template>
           <template #tooltip="{ task, slack }">
             <div class="text-title-small">{{ task.name }}</div>
