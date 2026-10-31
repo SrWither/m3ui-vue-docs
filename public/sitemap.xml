@@ -613,6 +613,10 @@
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/utility/mfloorplan</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/components/utility/mhotkeys</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
@@ -829,6 +833,22 @@
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
+    <loc>https://m3ui.dev/components/draw</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/draw/mdrawcanvas</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/draw/mdrawlayers</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/components/draw/mdrawtoolbar</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
     <loc>https://m3ui.dev/composables</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
@@ -854,6 +874,10 @@
   </url>
   <url>
     <loc>https://m3ui.dev/composables/usedevice</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://m3ui.dev/composables/usedrawing</loc>
     <lastmod>2026-10-31</lastmod>
   </url>
   <url>
