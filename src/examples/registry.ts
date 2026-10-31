@@ -162,6 +162,15 @@ export const examples: ExampleApp[] = [
     uses: ['MFlow', 'layoutTree', 'MFlowControls', 'MFlowMinimap', 'MAvatar', 'MChip', 'MSegmentedButton', 'MSearchField', 'MSideSheet', 'MList', 'useToast'],
     component: () => import('./org/OrgExample.vue'),
   },
+  {
+    id: 'maxflow',
+    title: 'Max Flow',
+    description:
+      'Maximum flow, step by step: build a network or pick one, then watch Edmonds–Karp or Dinic solve it. Every augmenting path lights up as flow is pushed (backwards when it cancels flow), Dinic shows each phase\'s levels, and the end marks a minimum cut. Step back and forth, or play it.',
+    icon: 'valve',
+    uses: ['MFlow', 'MFlowHandle', 'MFlowControls', 'MAnimatedNumber', 'MSegmentedButton', 'MSelect', 'MNumberField', 'MSlider', 'MProgressBar', 'MSideSheet'],
+    component: () => import('./maxflow/MaxflowExample.vue'),
+  },
 ]
 
 export const exampleSource = (id: string) => `${SOURCE_BASE}/${id}`

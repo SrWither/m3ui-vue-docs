@@ -169,6 +169,24 @@ import { examples, exampleSource } from '@/examples/registry'
             <span v-for="(x, i) in [6, 38, 70]" :key="x" class="absolute top-[46%] flex h-[18%] w-[24%] items-center gap-[6%] rounded-md border border-outline-variant bg-surface px-[2%] transition-transform duration-300" :class="i === 1 && 'group-hover:-translate-y-0.5'" :style="{ left: `${x}%` }"><span class="aspect-square h-[60%] rounded-full" :class="['bg-tertiary', 'bg-secondary', 'bg-error'][i]" /><span class="h-[14%] flex-1 rounded-full bg-on-surface/15" /></span>
             <span v-for="x in [28, 52]" :key="x" class="absolute top-[76%] flex h-[16%] w-[20%] items-center gap-[6%] rounded-md border border-outline-variant bg-surface px-[2%]" :style="{ left: `${x}%` }"><span class="aspect-square h-[55%] rounded-full bg-secondary/60" /><span class="h-[14%] flex-1 rounded-full bg-on-surface/15" /></span>
           </div>
+          <div v-else-if="e.id === 'maxflow'" class="absolute inset-[12%] overflow-hidden rounded-2xl bg-surface shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
+            <!-- A small network: source, two middle vertices, sink; one path lit up, the cut dashed -->
+            <svg viewBox="0 0 100 60" class="absolute inset-0 size-full">
+              <g stroke-width="1.6" stroke-linecap="round">
+                <line x1="18" y1="30" x2="46" y2="14" class="stroke-primary" stroke-dasharray="3 2" />
+                <line x1="18" y1="30" x2="46" y2="46" class="stroke-outline" />
+                <line x1="54" y1="14" x2="82" y2="30" class="stroke-primary" stroke-dasharray="3 2" />
+                <line x1="54" y1="46" x2="82" y2="30" class="stroke-tertiary" />
+                <line x1="50" y1="18" x2="50" y2="42" class="stroke-outline" />
+              </g>
+              <circle cx="14" cy="30" r="6" class="fill-tertiary-container" />
+              <circle cx="50" cy="12" r="6" class="fill-secondary-container transition-transform duration-300 group-hover:-translate-y-0.5" />
+              <circle cx="50" cy="48" r="6" class="fill-surface-container-highest" />
+              <circle cx="86" cy="30" r="6" class="fill-primary-container" />
+              <rect x="27" y="17" width="10" height="5" rx="2.5" class="fill-primary-container" />
+              <rect x="63" y="17" width="10" height="5" rx="2.5" class="fill-primary-container" />
+            </svg>
+          </div>
           <div v-else-if="e.id === 'recipes'" class="absolute inset-[12%] flex items-center justify-center gap-[4%] rounded-2xl bg-surface p-[5%] shadow-elevation-2 transition-transform duration-300 group-hover:-translate-y-1">
             <span v-for="(d, i) in [{ s: 'Cookie9Sided', c: '#c8432b', b: '#ffdad3' }, { s: 'Clover4Leaf', c: '#e5b92c', b: '#ffefc2' }, { s: 'Sunny', c: '#3b4ca0', b: '#dee0ff' }] as const" :key="i" class="relative flex aspect-[3/4] flex-1 flex-col items-center gap-[8%] rounded-xl p-[6%]" :style="{ background: d.b }">
               <MShape :shape="d.s" class="aspect-square w-full transition-transform duration-500 group-hover:rotate-12" :fill="d.c" />
