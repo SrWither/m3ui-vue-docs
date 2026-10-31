@@ -19,7 +19,7 @@ const decor = ref<FloorDecor[]>([{ id: 'p', kind: 'plant', x: 700, y: 400 }])
 
 const props: PropDef[] = [
   { name: 'plan', type: 'MFloorPlan ref | FloorPlanContext', default: '—', description: "The plan, when the toolbar isn't inside its #overlay slot" },
-  { name: 'tables', type: 'FloorTablePreset[]', default: 'round 2, round 4, square 4, long 6', description: 'What Add a table offers: { name?, shape, seats, width, height… }' },
+  { name: 'tables', type: 'FloorTablePreset[]', default: 'round 2, round 4, square 4, long 6', description: 'What Add a table offers: { name?, shape, seats, width, height… }; [] hides it (tables created through your API)' },
   { name: 'decor', type: 'string[]', default: 'every kind', description: 'Decor kinds offered (yours from decorKinds included)' },
   { name: 'tools', type: 'boolean', default: 'true', description: 'Move / wall / zone' },
   { name: 'history', type: 'boolean', default: 'true', description: 'Undo and redo' },

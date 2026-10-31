@@ -15,6 +15,16 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.2',
+    date: '2026-10-31',
+    changes: {
+      added: [
+        'MFloorPlan dragMerged: a merged table moves with its whole merge; rotatable to hide the rotate handle',
+        'MFloorPlanToolbar: an empty tables list hides Add a table, for apps that create tables through their API',
+      ],
+    },
+  },
+  {
     version: '1.3.1',
     date: '2026-10-31',
     changes: {

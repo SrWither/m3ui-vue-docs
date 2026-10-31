@@ -103,6 +103,8 @@ const props: PropDef[] = [
   { name: 'v-model:picked', type: 'FloorPick', default: 'null', description: 'Editing: the zone, wall (and its corner) or decor picked ({ kind, id, vertex? }), for an inspector of your own' },
   { name: 'selectable', type: "'none' | 'single' | 'multiple'", default: "'none'", description: 'Outside editing, what a click on a table selects (multiple toggles; then merge() joins them)' },
   { name: 'canMerge', type: '(ids) => boolean | string', default: '—', description: 'Refuses a merge with false or a reason (merge-refused carries it)' },
+  { name: 'dragMerged', type: 'boolean', default: 'false', description: 'Dragging or nudging a merged table moves its whole merge with it' },
+  { name: 'rotatable', type: 'boolean', default: 'true', description: 'The handle that turns the picked table or decor (off when your app keeps no angles)' },
   { name: 'decorKinds', type: 'Record<string, FloorDecorKind>', default: '—', description: "Decor kinds of yours ({ label, icon, width, height, shape: 'box' | 'round' | 'bar' | 'text', color }), or the built-in ones restyled" },
   { name: 'v-model:areas', type: 'FloorArea[]', default: '[]', description: 'Zones behind the tables (hall, terrace, VIP): { id, label?, x, y, width, height, color? }. Editing: drag to move, any corner to resize' },
   { name: 'v-model:walls', type: 'FloorWall[]', default: '[]', description: 'Walls through their points ({ id, points, thickness? }). Editing: drag a wall or, once picked, a corner; double-click adds a corner, Delete removes the picked one' },
