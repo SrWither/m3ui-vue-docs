@@ -6,6 +6,7 @@ import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
 import { presets, type Preset } from './presets'
 import { pinsOf, Simulator, type PartData, type PartNode } from './sim'
 import { partByKind } from './parts'
+import { setMuted } from './audio'
 import { contains, setCircuitResolver, type CircuitDef } from './library'
 import { cloneImage, decodeImage, encodeImage, hasImage, newImageId, setCells } from './memory'
 
@@ -26,6 +27,9 @@ const playing = ref(false)
 const hz = ref(2)
 const ticks = ref(0)
 const oscillating = ref(false)
+/** Sound off (the sound parts keep simulating) */
+const muted = ref(false)
+watch(muted, (m) => setMuted(m))
 
 // Only what changes the netlist rebuilds it: moving a part doesn't
 const structure = computed(() =>
@@ -306,5 +310,5 @@ function fromJSON(text: string) {
 }
 
 export function useCircuit() {
-  return { nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
+  return { muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
 }

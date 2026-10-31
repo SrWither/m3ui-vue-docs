@@ -208,7 +208,27 @@ const wire = computed(() => {
         @update:model-value="patch({ inputs: $event as number })"
       />
       <MSelect v-if="has('parts')" :model-value="params.parts" :options="partOptions" label="Parts" variant="outlined" @update:model-value="patch({ parts: $event as number })" />
-      <MNumberField v-if="has('value')" :model-value="params.value ?? 0" label="Value" variant="outlined" :min="0" :max="2 ** (params.width ?? 1) - 1" @update:model-value="patch({ value: $event ?? 0 })" />
+      <MNumberField v-if="has('freq')" :model-value="params.freq ?? 880" label="Pitch (Hz)" variant="outlined" :min="20" :max="20000" @update:model-value="patch({ freq: $event ?? 880 })" />
+      <MSegmentedButton
+        v-if="has('pitch')"
+        :model-value="params.pitch ?? 'note'"
+        :options="[{ value: 'note', label: 'MIDI note' }, { value: 'hz', label: 'Hz (16 bits)' }]"
+        @update:model-value="patch({ pitch: $event as 'note' | 'hz' })"
+      />
+      <p v-if="has('pitch')" class="text-body-small text-on-surface-variant">
+        vol 0–15 (unconnected: 15) · wave 0 square, 1 triangle, 2 sawtooth, 3 noise · duty 0 12.5%, 1 25%, 2 50% (unconnected), 3 75% · gate unconnected: sounds while the pitch isn't 0.
+        {{ params.pitch === 'hz' ? '' : 'Note 60 is middle C, 69 is A 440 Hz.' }} Several synthesizers play together.
+      </p>
+      <MSelect
+        v-if="has('rate')"
+        :model-value="params.rate ?? 8000"
+        :options="[4000, 8000, 11025, 16000, 22050, 44100].map((n) => ({ value: n, label: `${n} samples per second` }))"
+        label="Sample rate"
+        variant="outlined"
+        @update:model-value="patch({ rate: $event as number })"
+      />
+      <MNumberField v-if="has('value') && node.data!.kind === 'piano'" :model-value="params.value ?? 60" label="Lowest key (MIDI note)" variant="outlined" :min="0" :max="103" @update:model-value="patch({ value: $event ?? 60 })" />
+      <MNumberField v-else-if="has('value')" :model-value="params.value ?? 0" label="Value" variant="outlined" :min="0" :max="2 ** (params.width ?? 1) - 1" @update:model-value="patch({ value: $event ?? 0 })" />
       <MSegmentedButton
         v-if="has('color')"
         :model-value="params.color ?? 'primary'"

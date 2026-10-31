@@ -14,6 +14,7 @@ circuits/
 ├── devices.ts            screen, joypad, keyboard and terminal
 ├── sim.ts                the netlist (subcircuits and tunnels flattened away) and the event-driven propagation
 ├── library.ts            the project's circuits as parts: a circuit's input/output pins become a subcircuit's pins
+├── audio.ts              Web Audio: one context, a voice per buzzer/synthesizer (pulse waves with NES duties, noise), PCM streams
 ├── memory.ts             ROM/RAM images (up to 16 MiB, outside the nodes) and .bin / Intel HEX / Logisim files
 ├── geometry.ts           each part's size and where its pins sit, on a 20px pitch
 ├── useCircuit.ts         the circuit, its simulation, the clock, editing, saving and opening JSON
@@ -21,6 +22,7 @@ circuits/
 │                         adder of full-adder subcircuits, the ALU, a 64 KiB message ROM, counters, an SR latch…
 └── components/
     ├── PartView.vue      a part on the canvas: gate shapes, boxes with named pins, live inputs and displays
+    ├── SoundView.vue     a sound part's voice (applied once per frame) and the piano's keys
     ├── DeviceView.vue    a screen's canvas, a terminal's text, a keyboard's field, a joypad's buttons
     ├── Wire.vue          a wire, colored by what it carries
     ├── Palette.vue       the project's circuits, then the parts by category: click to add, or drag onto the canvas
@@ -68,8 +70,18 @@ circuits/
   vsync input), a **joypad** (eight buttons as a byte, or a NES-style shift register: strobe, clk → data; click it and
   play with the keyboard), a **keyboard** (a queue of ASCII keys, read one per clock edge) and a **terminal**. The
   screen paints its pixels into a canvas at most once per frame, only when they changed.
+- **Sound** (`audio.ts`): a **buzzer** (beeps while its input is 1), a **synthesizer** (a voice like the NES APU's:
+  a MIDI note or Hz, 4-bit volume, square with 12.5/25/50/75% duty, triangle, sawtooth or noise, a gate; several play
+  together), a **PCM speaker** (8-bit samples taken on clock edges, played at 4–44.1 kHz) and a **piano** (two octaves;
+  note + gate out, playable from the computer's keyboard). The parts' eval stays pure: it writes the sound it wants into
+  its state and SoundView applies it once per frame. The bar's speaker button mutes everything.
 - **Saving**: the whole project (every circuit, switch values, memory images) as one JSON file; version-1 files still open.
 - **The clock** goes from 0.5 Hz to 10 MHz, or Max. Each frame runs what's due for at most 12 ms so the page stays
   responsive; when a circuit can't keep up, the bar shows the frequency it really reaches.
 - **Branching wires**: drag from any wire to another pin to wire the same output there (MFlow's `edgeBranching`).
+- **Sound** (`audio.ts`): a **buzzer** (beeps while its input is 1), a **synthesizer** (a voice like the NES APU's:
+  a MIDI note or Hz, 4-bit volume, square with 12.5/25/50/75% duty, triangle, sawtooth or noise, a gate; several play
+  together), a **PCM speaker** (8-bit samples taken on clock edges, played at 4–44.1 kHz) and a **piano** (two octaves;
+  note + gate out, playable from the computer's keyboard). The parts' eval stays pure: it writes the sound it wants into
+  its state and SoundView applies it once per frame. The bar's speaker button mutes everything.
 - **Saving**: the circuit and its switches' positions as JSON, from the folder menu.

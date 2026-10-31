@@ -1,11 +1,11 @@
 // Every kind of part: its pins (which can depend on its parameters), how it computes its outputs from its inputs,
 // and the state it keeps (flip-flops, registers, memories, inputs the user flips). Pure, no Vue.
 import { all, and, isZ, known, mask, not, on, or, rose, X, xor, Z, type Sig } from './logic'
-import { bitsFor, devices, type ColorMode } from './devices'
+import { bitsFor, devices, sounds, type ColorMode } from './devices'
 import { cellsOf } from './memory'
 import { getCircuit, interfaceOf } from './library'
 
-export type Category = 'io' | 'gates' | 'plexers' | 'arithmetic' | 'memory' | 'wiring' | 'circuits'
+export type Category = 'io' | 'sound' | 'gates' | 'plexers' | 'arithmetic' | 'memory' | 'wiring' | 'circuits'
 export type ShiftMode = 'shl' | 'shr' | 'sar' | 'rol' | 'ror'
 
 export interface Params {
@@ -48,6 +48,12 @@ export interface Params {
   signed?: boolean
   /** Shifter: which way */
   shift?: ShiftMode
+  /** Synthesizer: the pitch input as a MIDI note (7 bits) or in Hz (16 bits) */
+  pitch?: 'note' | 'hz'
+  /** Buzzer: its pitch in Hz */
+  freq?: number
+  /** PCM speaker: samples per second */
+  rate?: number
 }
 
 export interface Pin { name: string; width: number }
@@ -167,6 +173,7 @@ export const parts: PartDef[] = [
     eval: () => [],
   },
   ...devices,
+  ...sounds,
 
   // ── Gates ───────────────────────────────────────────────────────────────────────────────────────────────
   gate('and', 'AND', 'join_inner', 'and', and, false, '1 when every input is 1'),
@@ -621,6 +628,7 @@ export const parts: PartDef[] = [
 export const partByKind = new Map(parts.map((p) => [p.kind, p]))
 export const categories: { id: Category; label: string }[] = [
   { id: 'io', label: 'Input / output' },
+  { id: 'sound', label: 'Sound' },
   { id: 'gates', label: 'Gates' },
   { id: 'plexers', label: 'Plexers' },
   { id: 'arithmetic', label: 'Arithmetic' },

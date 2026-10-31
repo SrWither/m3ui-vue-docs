@@ -446,6 +446,77 @@ function message(): Preset {
   }
 }
 
+// Ode to Joy on two voices: a counter steps through a melody ROM and a bass ROM, each driving a synthesizer
+// (the melody's gate is the clock, so its notes are short), and a piano with its own voice to play along
+function musicBox(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  const phrase = [76, 76, 77, 79, 79, 77, 76, 74, 72, 72, 74, 76]
+  const melody = [...phrase, 76, 74, 74, 0, ...phrase, 74, 72, 72, 0]
+  const bass = [48, 48, 48, 48, 43, 43, 43, 43, 48, 48, 48, 48, 43, 43, 43, 0, 48, 48, 48, 48, 43, 43, 43, 43, 48, 48, 43, 43, 43, 48, 48, 0]
+  part('clk', 'clock', 0, 0)
+  part('n', 'counter', 160, 0, { width: 5 }, 'Step')
+  part('mel', 'rom', 380, 0, { select: 5, width: 7, contents: melody }, 'Melody')
+  part('bas', 'rom', 380, 200, { select: 5, width: 7, contents: bass }, 'Bass')
+  part('duty', 'const', 380, 400, { width: 2, value: 1 })
+  part('tri', 'const', 380, 480, { width: 2, value: 1 })
+  part('bvol', 'const', 380, 560, { width: 4, value: 12 })
+  part('s1', 'synth', 640, 0, {}, 'Lead (square 25%)')
+  part('s2', 'synth', 640, 200, {}, 'Bass (triangle)')
+  part('kb', 'piano', 0, 420, { value: 60 }, 'Play along')
+  part('saw', 'const', 140, 560, { width: 2, value: 2 })
+  part('s3', 'synth', 380, 660, {}, 'Piano (sawtooth)')
+  part('hn', 'probe', 640, 420, { width: 7 }, 'Lead note')
+  wire('clk', 0, 'n', 1)
+  wire('n', 0, 'mel', 0)
+  wire('n', 0, 'bas', 0)
+  wire('mel', 0, 's1', 0)
+  wire('duty', 0, 's1', 3)
+  wire('clk', 0, 's1', 4)
+  wire('bas', 0, 's2', 0)
+  wire('bvol', 0, 's2', 1)
+  wire('tri', 0, 's2', 2)
+  wire('kb', 0, 's3', 0)
+  wire('saw', 0, 's3', 2)
+  wire('kb', 1, 's3', 4)
+  wire('mel', 0, 'hn', 0)
+  return {
+    id: 'music',
+    name: 'Music box (sound)',
+    description: 'Press play (with the sound on): a counter walks two ROMs of MIDI notes into two synthesizers, a square lead and a triangle bass. Click the piano and play along with the keyboard (Z S X D C…, Q 2 W 3 E…).',
+    nodes,
+    edges,
+    hz: 4,
+  }
+}
+
+// Digital audio: a 5-bit counter as the top bits of an 8-bit sawtooth, sampled 8000 times a second
+function pcmTone(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  part('clk', 'clock', 0, 0)
+  part('n', 'counter', 160, 0, { width: 5 }, 'Phase')
+  part('on', 'switch', 380, 200, {}, 'Sound')
+  part('spk', 'pcm', 600, 0, { rate: 8000 }, 'Speaker')
+  // Phase × 8: widened to 8 bits and shifted left by 3
+  part('x', 'shifter', 160, 300, { width: 8, shift: 'shl' })
+  part('e', 'extender', 0, 300, { width: 5, to: 8 })
+  part('d', 'const', 0, 420, { width: 3, value: 3 })
+  wire('clk', 0, 'n', 1)
+  wire('n', 0, 'e', 0)
+  wire('e', 0, 'x', 0)
+  wire('d', 0, 'x', 1)
+  wire('x', 0, 'spk', 0)
+  wire('on', 0, 'spk', 1)
+  wire('clk', 0, 'spk', 2)
+  return {
+    id: 'pcm',
+    name: 'PCM sawtooth (sound)',
+    description: 'Digital audio: a 5-bit counter, widened and shifted left by 3, is an 8-bit sample rising 250 times a second, played by the PCM speaker at 8000 samples per second. Press play and turn on Sound.',
+    nodes,
+    edges,
+    hz: 8000,
+  }
+}
+
 const blank = (): Preset => ({ id: 'blank', name: 'Blank', description: 'An empty canvas: add parts from the palette and wire their pins.', nodes: [], edges: [] })
 
 export const presets: Preset[] = [
@@ -469,6 +540,8 @@ export const presets: Preset[] = [
   rippleAdder(),
   aluDemo(),
   message(),
+  musicBox(),
+  pcmTone(),
   sketch(),
   pattern(),
   echo(),

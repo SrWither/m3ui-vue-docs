@@ -12,6 +12,7 @@ import { getCircuit } from '../library'
 import { format, known, mask, widthOf, type Sig } from '../logic'
 import { geometry } from '../geometry'
 import DeviceView from './DeviceView.vue'
+import SoundView from './SoundView.vue'
 import { useCircuit } from '../useCircuit'
 import type { PartData } from '../sim'
 
@@ -164,6 +165,7 @@ const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
         :class="tone(out0)"
       >{{ stored }}</div>
       <DeviceView v-if="data.kind === 'screen' || data.kind === 'tty' || data.kind === 'keyboard'" :id="id" :data="data" />
+      <SoundView v-else-if="data.kind === 'synth' || data.kind === 'pcm'" :id="id" :data="data" />
     </div>
 
     <!-- I/O -->
@@ -248,7 +250,9 @@ const pinValue = computed(() => (state.value.value ?? 0) & mask(bits.value))
         <span class="truncate font-mono text-label-large" :class="tone(out0)">{{ data.label || '…' }}</span>
       </div>
       <DeviceView v-else-if="data.kind === 'joypad'" :id="id" :data="data" />
-      <template v-if="data.kind === 'seg7' || (data.kind === 'joypad' && params.serial)">
+      <SoundView v-else-if="data.kind === 'buzzer'" :id="id" :data="data" />
+      <div v-else-if="data.kind === 'piano'" class="mr-10"><SoundView :id="id" :data="data" /></div>
+      <template v-if="data.kind === 'seg7' || data.kind === 'piano' || (data.kind === 'joypad' && params.serial)">
         <span
           v-for="(pin, i) in pins.inputs"
           :key="i"

@@ -1,8 +1,9 @@
 // Devices: a pixel screen, a game pad, a keyboard and a text terminal, enough I/O for games, a console, or a
 // machine like the NES (its PPU writes pixels, its CPU reads the pads through a shift register). Pure, no Vue:
 // they keep their pixels and text in their state, and PartView draws them from there.
-import { all, known, mask, on, rose, type Sig } from './logic'
+import { all, isZ, known, mask, on, rose, type Sig } from './logic'
 import type { PartDef } from './parts'
+import { DUTIES, midiToHz, WAVES, type Tone } from './audio'
 
 export type ColorMode = 'mono' | 'rgb3' | 'rgb332' | 'nes' | 'rgb12' | 'rgb24'
 export const colorModes: { value: ColorMode; bits: number; label: string }[] = [
@@ -164,4 +165,74 @@ const tty: PartDef = {
   },
 }
 
+// ── Sound ─────────────────────────────────────────────────────────────────────────────────────────────────
+// Each keeps the sound it wants in `state.tone` (or samples in `state.queue`); SoundView plays it
+
+const buzzer: PartDef = {
+  kind: 'buzzer', label: 'Buzzer', icon: 'notifications_active', category: 'sound',
+  description: 'Beeps while its input is 1, at a fixed pitch',
+  params: { freq: 880 }, edit: ['freq'],
+  pins: () => ({ inputs: [{ name: 'in', width: 1 }], outputs: [] }),
+  init: () => ({ tone: null }),
+  eval: ({ in: [a], state, p }) => {
+    state.tone = { on: on(a!), hz: p.freq ?? 880, volume: 0.5, wave: 'square', duty: 0.5 } satisfies Tone
+    return []
+  },
+}
+
+const synth: PartDef = {
+  kind: 'synth', label: 'Synthesizer', icon: 'graphic_eq', category: 'sound',
+  description: 'A voice like the NES sound chip\'s: a pitch (a MIDI note, or Hz), a 4-bit volume, the wave (square, triangle, sawtooth, noise) and the square\'s duty (12.5, 25, 50, 75%). Sounds while gate is 1 (unconnected: while the pitch isn\'t 0)',
+  params: { pitch: 'note' }, edit: ['pitch'],
+  pins: (p) => ({
+    inputs: [
+      { name: p.pitch === 'hz' ? 'hz' : 'note', width: p.pitch === 'hz' ? 16 : 7 },
+      { name: 'vol', width: 4 },
+      { name: 'wave', width: 2 },
+      { name: 'duty', width: 2 },
+      { name: 'gate', width: 1 },
+    ],
+    outputs: [],
+  }),
+  init: () => ({ tone: null }),
+  eval: ({ in: [pitch, vol, wave, duty, gate], state, p }) => {
+    const v = known(pitch!) ? pitch!.v : 0
+    const level = isZ(vol!) ? 15 : known(vol!) ? vol!.v : 0
+    state.tone = {
+      on: (isZ(gate!) ? v > 0 : on(gate!)) && known(pitch!) && v > 0,
+      hz: p.pitch === 'hz' ? v : midiToHz(v),
+      volume: (level / 15) * 0.6,
+      wave: WAVES[known(wave!) ? wave!.v : 0]!,
+      duty: DUTIES[isZ(duty!) ? 2 : known(duty!) ? duty!.v : 2]!,
+    } satisfies Tone
+    return []
+  },
+}
+
+const pcm: PartDef = {
+  kind: 'pcm', label: 'PCM speaker', icon: 'speaker', category: 'sound',
+  description: 'Digital audio: on each rising clk while we is 1 it takes an 8-bit sample (128 is silence) and plays them at the sample rate. Run the clock at least that fast (Max)',
+  params: { rate: 8000 }, edit: ['rate'],
+  pins: () => ({ inputs: [{ name: 'sample', width: 8 }, { name: 'we', width: 1 }, { name: 'clk', width: 1 }], outputs: [] }),
+  init: () => ({ queue: [] as number[], level: 0 }),
+  eval: ({ in: [sample, we, clk], state, p }) => {
+    if (rose(state, clk!) && on(we!, true) && known(sample!)) {
+      const q = state.queue as number[]
+      if (q.length < (p.rate ?? 8000)) q.push((sample!.v - 128) / 128)
+      state.level = Math.abs(sample!.v - 128) / 128
+    }
+    return []
+  },
+}
+
+const piano: PartDef = {
+  kind: 'piano', label: 'Piano', icon: 'piano', category: 'sound',
+  description: 'Two octaves of keys: note is the MIDI number of the key held (60 is middle C) and gate is 1 while one is. Click it, then play with the keyboard too (Z S X D C V… and Q 2 W 3 E…)',
+  params: { value: 60 }, edit: ['value'],
+  pins: () => ({ inputs: [], outputs: [{ name: 'note', width: 7 }, { name: 'gate', width: 1 }] }),
+  init: () => ({ note: 0, gate: 0 }),
+  eval: ({ state }) => [all(state.note, 7), all(state.gate, 1)],
+}
+
 export const devices: PartDef[] = [screen, joypad, keyboard, tty]
+export const sounds: PartDef[] = [buzzer, synth, pcm, piano]

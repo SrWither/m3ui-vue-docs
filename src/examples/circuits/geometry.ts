@@ -16,6 +16,8 @@ const IO: Record<string, { w: number; h: number }> = {
   probe: { w: 132, h: 60 },
   hex: { w: 60, h: 80 },
   tunnel: { w: 100, h: 40 },
+  buzzer: { w: 60, h: 40 },
+  piano: { w: 248, h: 80 },
 }
 /** Room for the pin labels left of a screen or terminal */
 export const SIDE = 52
@@ -23,7 +25,7 @@ export const CHAR_W = 7.25
 export const LINE_H = 16
 /** A screen's px per pixel: as set, or as big as fits 256px (at most 8) */
 export const screenPixel = (p: Params) => p.pixel || Math.max(1, Math.min(8, Math.floor(256 / Math.max(p.cols ?? 32, p.rows ?? 32))))
-const STATEFUL = new Set(['register', 'counter', 'pc', 'dff', 'tff', 'jkff', 'ram', 'rom', 'shiftreg', 'random'])
+const STATEFUL = new Set(['register', 'counter', 'pc', 'dff', 'tff', 'jkff', 'ram', 'rom', 'shiftreg', 'random', 'synth', 'pcm'])
 const NARROW = new Set(['mux', 'demux', 'decoder', 'split', 'merge', 'prienc', 'bitsel', 'extender', 'negator'])
 
 export function geometry(data: PartData): Geometry {

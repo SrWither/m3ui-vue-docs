@@ -19,7 +19,7 @@ const preset = computed({
   get: () => c.presetId.value,
   set: (id: string) => c.load(presets.find((p) => p.id === id)!),
 })
-const speeds = [0.5, 1, 2, 5, 10, 20, 50, 250, 1e3, 5e3, 2e4, 1e5, 1e6, 1e7, Infinity]
+const speeds = [0.5, 1, 2, 4, 5, 10, 20, 50, 250, 1e3, 5e3, 8e3, 2e4, 1e5, 1e6, 1e7, Infinity]
 const hzLabel = (hz: number) => (hz === Infinity ? 'Max' : hz >= 1e6 ? `${+(hz / 1e6).toFixed(2)} MHz` : hz >= 1e3 ? `${+(hz / 1e3).toFixed(1)} kHz` : `${+hz.toFixed(hz < 10 ? 1 : 0)} Hz`)
 // Below what was asked: the circuit can't keep up (shown while it runs, after its first second)
 const behind = computed(() => c.playing.value && c.actualHz.value > 0 && (c.hz.value === Infinity || c.actualHz.value < c.hz.value * 0.9))
@@ -65,6 +65,7 @@ function picked(e: Event) {
       <MMenuItem icon="upload_file" @click="fileInput?.click()">Open a JSON circuit…</MMenuItem>
     </MMenu>
     <input ref="fileInput" type="file" accept=".json,application/json" class="hidden" @change="picked" />
+    <MTooltip :text="c.muted.value ? 'Sound off' : 'Sound on'" placement="bottom"><MIconButton :icon="c.muted.value ? 'volume_off' : 'volume_up'" :label="c.muted.value ? 'Turn the sound on' : 'Turn the sound off'" @click="c.muted.value = !c.muted.value" /></MTooltip>
     <MTooltip :text="`Theme: ${theme}`" placement="bottom"><MIconButton :icon="themeIcon" :label="`Theme: ${theme}`" @click="cycle" /></MTooltip>
     <MTooltip text="Back to the docs" placement="bottom"><MIconButton icon="menu_book" label="Back to the docs" @click="router.push('/examples')" /></MTooltip>
     <MTooltip text="View source on GitHub" placement="bottom"><MIconButton icon="code" label="View source on GitHub" @click="openSource" /></MTooltip>
