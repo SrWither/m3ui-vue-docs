@@ -180,7 +180,7 @@ const flowEvents: EventDef[] = [
   { name: 'node-drag-start / node-drag', payload: '(nodes, event)', description: 'While dragging' },
   { name: 'node-drag-stop', payload: '{ nodes, intersecting, event }', description: 'Dropped; intersecting are the nodes under the dragged one' },
   { name: 'edge-click / edge-dblclick / edge-contextmenu', payload: '(edge, event)', description: 'On an edge' },
-  { name: 'pane-click / pane-contextmenu', payload: '(position, event)', description: 'On the background, with the flow position' },
+  { name: 'pane-click / pane-dblclick / pane-contextmenu', payload: '(position, event)', description: 'On the background, with the flow position (turn zoomOnDoubleClick off to use the double click, e.g. to add a node there)' },
   { name: 'delete', payload: '{ nodes, edges }', description: 'Deleted by the keyboard or remove()' },
   { name: 'init', payload: 'FlowContext', description: 'Measured, laid out and fitted' },
 ]
@@ -198,7 +198,7 @@ const types: TypeDef[] = [
     name: 'FlowNode',
     fields: [
       { name: 'id', type: 'string', description: 'Unique id' },
-      { name: 'type', type: 'string', description: "'default', 'input' (source only), 'output' (target only), 'group', or a #node-<type> slot" },
+      { name: 'type', type: 'string', description: "'default', 'input' (source only), 'output' (target only), 'circle' (a round vertex: data.label, color, badge, ring, size; its edges run center to center in any direction), 'group', or a #node-<type> slot" },
       { name: 'position', type: '{ x, y }', description: 'Top left corner; relative to the parent with parentId' },
       { name: 'data', type: 'any', description: 'Yours; the default node shows label, subtitle and icon' },
       { name: 'width / height', type: 'number', description: 'A fixed size; otherwise measured (a group wraps its children)' },
@@ -214,7 +214,9 @@ const types: TypeDef[] = [
       { name: 'sourceHandle / targetHandle', type: 'string | null', description: "Handle ids, when a node has several" },
       { name: 'type', type: 'string', description: "'bezier' (default), 'smoothstep', 'step', 'straight', or an #edge-<type> slot" },
       { name: 'label', type: 'string', description: 'A chip on the middle' },
-      { name: 'animated', type: 'boolean', description: 'Dashes flowing toward the target' },
+      { name: 'animated', type: "boolean | 'reverse'", description: 'Dashes flowing toward the target (reverse: toward the source)' },
+      { name: 'color / width / dashed', type: 'string / number / boolean', description: 'Restyle the line without a slot: an M3 role (primary, tertiary, error, outline…) or any CSS color, a width in px, still dashes. Changes animate' },
+      { name: 'labelTone', type: "'primary' | 'secondary' | 'tertiary' | 'error' | 'neutral'", description: "The label chip's color" },
       { name: 'markerEnd / markerStart', type: "'arrow' | 'arrow-closed' | 'none'", description: "Arrowheads (end defaults to 'arrow-closed')" },
       { name: 'data, hidden, selectable, deletable, reconnectable, class', type: '…', description: 'Per edge' },
     ],
