@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.3',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'MFloorPlanInspector: width and height (and name and seats) stack in a narrow inspector instead of cutting their numbers',
+      ],
+    },
+  },
+  {
     version: '1.3.2',
     date: '2026-10-31',
     changes: {
