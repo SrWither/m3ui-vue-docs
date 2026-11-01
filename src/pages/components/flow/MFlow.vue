@@ -279,6 +279,7 @@ const types: TypeDef[] = [
       { name: 'width / height', type: 'number', description: 'A fixed size; otherwise measured (a group wraps its children)' },
       { name: 'parentId / extent', type: "string / 'parent'", description: 'The group it moves with; extent keeps it inside' },
       { name: 'sourcePosition / targetPosition', type: "'top' | 'right' | 'bottom' | 'left'", description: "The default node's handle sides" },
+      { name: 'gridOffset', type: '{ x, y }', description: "With snapToGrid, what lands on the grid is its position plus this (default its corner): half its size puts its middle on the grid, e.g. a junction dot whose edges run along the grid lines" },
       { name: 'hidden, draggable, selectable, connectable, deletable, insertable, class', type: '…', description: 'Per node (insertable: false keeps it from splicing into an edge)' },
     ],
   },

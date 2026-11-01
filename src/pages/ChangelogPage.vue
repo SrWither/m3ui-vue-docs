@@ -23,6 +23,7 @@ const versions: Version[] = [
         'MFlow edgeBranching \'junction\' and the branch event: a branch leaves from the point you grabbed, to split the edge at a junction of your own, as in Logisim',
         'MFlowHandle position \'auto\': each edge leaves on the side facing its other end (an edge can pin it with sourcePosition / targetPosition)',
         'useFlow change() for several edits as one undo step, and getEdgeAt() for the edge under a point',
+        'FlowNode gridOffset: snap a node by its middle (or any point) instead of its corner',
       ],
       changed: [
         'MFlow: a tap on a handle selects its node',
