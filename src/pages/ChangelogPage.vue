@@ -15,6 +15,37 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.6',
+    date: '2026-11-01',
+    changes: {
+      added: [
+        'MFloorPlan zoomable: Ctrl + wheel or a pinch zooms, the wheel or two fingers pan, with zoom buttons and v-model:zoom',
+        'MFloorPlan backgroundImage: a scanned floor plan under the plan, to trace over',
+        'MFloorPlan: a mouse drag on empty floor selects the tables it touches',
+        'MFloorPlan transferable: in service, carry a table onto another to move its party (transfer event, canTransfer)',
+        'MFloorPlan: resize the selected table by its corner (resizable), stepping by grid squares, subgrid steps or freely (resizeSnap)',
+        'MFloorPlan: zones of any shape (polygon tool, double-click an edge for a corner); walls and zones join corners nearby',
+        'MFloorPlan overlap: tables on top of each other are outlined while editing (prevent undoes the move)',
+        'MFloorPlan seatNumbers and activeSeats, with seat-click',
+        'MFloorPlan measure: lengths in meters (or your unit) while editing',
+        'MFloorPlan toSVG() / toPNG(): the plan as a picture',
+        'MFloorPlan cellSize and tableOrigin: tables kept as a column and a row, or by their corner',
+        'MFloorPlan subgrid: walls, zones and decor also stop halfway between the points; arrows move what\'s picked; rotatable takes a list',
+        'Doors flip to the other side (FloorDecor.flip)',
+      ],
+      changed: [
+        'MFloorPlan: doors are drawn with their leaf and swing and windows with their pane, cutting the wall',
+        'MFloorPlan: a decor item\'s corner handle keeps the opposite corner in place',
+      ],
+      fixed: [
+        'MFloorPlan: resizing a turned door or window follows its own axes',
+        'MFloorPlan: grid dots sit on the points things snap to',
+        'MFloorPlan: duplicates near the edge stay inside the plan',
+        'MFloorPlan: tables no longer slide when the plan zooms',
+      ],
+    },
+  },
+  {
     version: '1.3.5',
     date: '2026-11-01',
     changes: {
