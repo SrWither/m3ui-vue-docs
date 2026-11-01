@@ -45,6 +45,34 @@ const layout = ref<FloorTable[]>(tables.value.map(({ status: _, badge: __, ...t 
 const selection = ref<(string | number)[]>([])
 const grid = ref(true)
 
+// ── A plan of cells: snapping and picking, to play with ──────────────────────────────────────────────────
+const cellPlan = ref<InstanceType<typeof MFloorPlan>>()
+const cellSize = ref(60)
+const cellSnap = ref<'point' | 'cell'>('cell')
+const cellPick = ref<'none' | 'multiple'>('multiple')
+const cellDots = ref(true)
+const cellSelection = ref<(string | number)[]>([])
+const cellMerges = ref<FloorMerge[]>([])
+const cellWalls = ref<FloorWall[]>([{ id: 'w', points: [[0, 240], [240, 240], [240, 360]], thickness: 6 }])
+// Tables start in the middle of the cells of a 60 grid; change the grid or the snap and drag them to see where they land
+const cellTables = ref<FloorTable[]>([
+  { id: 'A', label: 'A', x: 90, y: 90, shape: 'square', seats: 0, width: 48, height: 48 },
+  { id: 'B', label: 'B', x: 210, y: 90, shape: 'square', seats: 0, width: 48, height: 48 },
+  { id: 'C', label: 'C', x: 390, y: 150, shape: 'square', seats: 0, width: 48, height: 48 },
+  { id: 'D', label: 'D', x: 510, y: 270, shape: 'round', seats: 0, width: 48, height: 48 },
+])
+function mergeCells() {
+  const m = cellPlan.value?.merge(cellSelection.value)
+  if (m) cellSelection.value = []
+}
+const cellCode = computed(() => `<MFloorPlan
+  v-model:tables="tables"
+  v-model:selection="selection"
+  v-model:merges="merges"
+  editable
+  :grid="${cellSize.value}"${cellSnap.value === 'cell' ? '\n  table-snap="cell"' : ''}${cellPick.value === 'multiple' ? '\n  selectable="multiple"' : ''}${cellDots.value ? '' : '\n  :show-grid="false"'}
+/>`)
+
 // The whole room: zones, walls and decor
 const room = ref<FloorTable[]>([
   { id: 1, label: '1', x: 160, y: 170, shape: 'round', seats: 4, status: 'occupied' },
@@ -115,6 +143,7 @@ const props: PropDef[] = [
   { name: 'width / height', type: 'number', default: '1000 / 600', description: "The plan's size in plan units; it scales to the component's width" },
   { name: 'grid', type: 'number', default: '10', description: 'Snapping step in plan units (0: none)' },
   { name: 'showGrid', type: 'boolean', default: 'true', description: 'Dots on the grid while editing' },
+  { name: 'tableSnap', type: "'point' | 'cell'", default: "'point'", description: "Where a table's middle snaps: a grid point, or with 'cell' the middle of a grid square, so tables sit in the squares between the points and step a square at a time while walls, zones and decor snap to the points (a plan of cells)" },
   { name: 'chairs', type: 'boolean', default: 'true', description: 'Draw chairs from seats' },
   { name: 'label', type: 'string', default: 'locale', description: 'Accessible name' },
 ]
@@ -194,6 +223,49 @@ const statuses = {
       <div class="flex flex-col gap-3 p-4 sm:p-6">
         <MSwitch v-model="grid" label="Snap to a 20-unit grid" :icon="false" />
         <MFloorPlan v-model:tables="layout" v-model:selection="selection" editable :grid="grid ? 20 : 0" @move="toast.info(`Moved ${$event.map((m) => `#${m.id}`).join(', ')}`)" />
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="A Plan of Cells"
+      description="Play with how tables snap and how they're picked while editing. tableSnap cell puts a table's middle in the middle of a grid square (the wall still snaps to the points), so tables step a square at a time; point puts it on a point. selectable multiple keeps a click toggling tables in and out of the selection while editing, and a drag moves the table pressed on its own: tap a few, bring them together, then Merge."
+      flush
+      :code="cellCode"
+    >
+      <div class="flex flex-col gap-3 p-4 sm:p-6">
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-label-large text-on-surface-variant">Grid</span>
+            <MSegmentedButton v-model="cellSize" :options="[{ value: 30, label: '30' }, { value: 60, label: '60' }, { value: 120, label: '120' }]" />
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-label-large text-on-surface-variant">tableSnap</span>
+            <MSegmentedButton v-model="cellSnap" :options="[{ value: 'point', label: 'point' }, { value: 'cell', label: 'cell' }]" />
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-label-large text-on-surface-variant">selectable</span>
+            <MSegmentedButton v-model="cellPick" :options="[{ value: 'none', label: 'none' }, { value: 'multiple', label: 'multiple' }]" @update:model-value="cellSelection = []" />
+          </div>
+          <MSwitch v-model="cellDots" label="Grid dots" :icon="false" />
+          <MButton variant="tonal" size="sm" icon="link" :disabled="cellSelection.length < 2" @click="mergeCells">Merge {{ cellSelection.length || '' }}</MButton>
+        </div>
+        <MFloorPlan
+          ref="cellPlan"
+          v-model:tables="cellTables"
+          v-model:selection="cellSelection"
+          v-model:merges="cellMerges"
+          v-model:walls="cellWalls"
+          :width="600"
+          :height="360"
+          editable
+          :grid="cellSize"
+          :table-snap="cellSnap"
+          :selectable="cellPick"
+          :show-grid="cellDots"
+          :rotatable="false"
+          label="A plan of cells"
+          class="border border-outline-variant"
+        />
       </div>
     </ComponentDemo>
 

@@ -20,6 +20,7 @@ const versions: Version[] = [
     changes: {
       added: [
         'MFloorPlan: editable with selectable multiple, a click toggles tables in the selection and a drag moves the table pressed on its own (to arrange the tables being merged)',
+        'MFloorPlan tableSnap cell: tables sit in the middle of the grid squares and step a square at a time',
       ],
     },
   },
