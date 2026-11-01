@@ -31,6 +31,19 @@ const edges = ref<FlowEdge[]>([
 
 const newEdges = ref<'solid' | 'animated'>('solid')
 
+// ── Edges you lay out ───────────────────────────────────────────────────────────────────────────────────
+const routeNodes = ref<FlowNode[]>([
+  { id: 'sensor', type: 'input', position: { x: 0, y: 0 }, data: { label: 'Sensor', icon: 'sensors' } },
+  { id: 'filter', position: { x: 300, y: 140 }, data: { label: 'Filter', icon: 'filter_alt' } },
+  { id: 'store', type: 'output', position: { x: 600, y: 0 }, data: { label: 'Store', icon: 'database' } },
+  { id: 'alert', type: 'output', position: { x: 600, y: 240 }, data: { label: 'Alert', icon: 'notifications' } },
+])
+const routeEdges = ref<FlowEdge[]>([
+  { id: 'r1', source: 'sensor', target: 'filter', type: 'smoothstep' },
+  { id: 'r2', source: 'filter', target: 'store', type: 'smoothstep' },
+  { id: 'r3', source: 'filter', target: 'alert', type: 'step', route: [560] },
+])
+
 // ── Events ──────────────────────────────────────────────────────────────────────────────────────────────
 const eventNodes = ref<FlowNode[]>([
   { id: 'cart', type: 'input', position: { x: 0, y: 60 }, data: { label: 'Cart', icon: 'shopping_cart' } },
@@ -208,6 +221,7 @@ const flowProps: PropDef[] = [
   { name: 'selectionOnDrag', type: 'boolean', default: 'false', description: 'Dragging the background draws a selection box (Shift + drag always does)' },
   { name: 'nodesDraggable / nodesConnectable / elementsSelectable', type: 'boolean', default: 'true', description: 'Switch those interactions off' },
   { name: 'edgesReconnectable', type: 'boolean', default: 'true', description: "Edges can be pulled off a connected input, or by a selected edge's ends, and dropped on another handle (or on nothing, to disconnect)" },
+  { name: 'edgesReroutable', type: 'boolean', default: 'false', description: "A selected smoothstep or step edge shows a grip on each segment: drag one sideways to lay the edge out (kept in edge.route), or the leg at either end to add a jog. The route stays square as nodes move, comes along when both ends move together, and goes when an end is reconnected" },
   { name: 'defaultEdgeOptions', type: 'Partial<FlowEdge>', description: 'Merged into edges made by connecting (type, animated, markerEnd…)' },
   { name: 'autoConnect', type: 'boolean', default: 'true', description: 'Adds the edge when a connection is made; off, only connect fires' },
   { name: 'isValidConnection', type: '(c: FlowConnection) => boolean', description: 'Whether a connection may be made (duplicates and loops on one node never are)' },
@@ -220,7 +234,7 @@ const flowProps: PropDef[] = [
   { name: 'layout', type: "'tree' | 'layered' | FlowLayout | null", default: 'null', description: "Lays the nodes out whenever the graph's shape changes" },
   { name: 'layoutOptions', type: 'FlowLayoutOptions', description: '{ direction, gap, levelGap }' },
   { name: 'nativeContextMenu', type: 'boolean', default: 'false', description: "Let the browser's context menu open on the canvas (right click, a phone's long press). Off, the *-contextmenu events still fire for a menu of your own; text fields in nodes keep theirs" },
-  { name: 'edgeBranching', type: 'boolean', default: 'false', description: 'A drag that starts on an edge draws a new edge from the same source, a branch, as in a circuit editor (the preview leaves from where you grabbed it). A click still selects; with a finger only a selected edge branches, so a swipe across one still pans' },
+  { name: 'edgeBranching', type: "boolean | 'junction'", default: 'false', description: "A drag that starts on an edge draws a new edge from the same source, a branch, as in a circuit editor (the preview leaves from where you grabbed it). A click still selects; with a finger only a selected edge branches, so a swipe across one still pans. 'junction': nothing is added, branch fires with the point on the edge where it was grabbed, and you split the edge there with a junction node of your own (a node with position='auto' handles), as Logisim does" },
   { name: 'insertOnEdge', type: 'boolean', default: 'true', description: 'A node with no connections dropped onto an edge splices into it (A → C becomes A → B → C); the edge lights up while it\'s over one, and without room the next nodes move along' },
   { name: 'dropIntoGroups', type: 'boolean', default: 'false', description: 'Nodes dropped on a group join it, and leave it when dropped outside' },
   { name: 'animate', type: 'boolean', default: 'true', description: 'Positions spring to their new place when changed from outside' },
@@ -234,6 +248,8 @@ const flowEvents: EventDef[] = [
   { name: 'connect-start', payload: '{ nodeId, handleId, type }', description: 'A connection drag started' },
   { name: 'connect-end', payload: '{ connection, position, from }', description: 'It ended: connection is null when dropped on nothing, position is where (to add a node there)' },
   { name: 'reconnect', payload: '{ edge, connection }', description: "An edge's end moved to another handle" },
+  { name: 'branch', payload: '{ edge, connection, position, direction, end, routes? }', description: "A branch was dragged off an edge (edgeBranching) and dropped: connection is null when dropped on nothing; position is the point on the edge where it was grabbed (on the grid along the edge with snapToGrid), direction the way the edge runs there, end where it was dropped, and routes (for an edge with its own route) the routes that keep each half's shape. With 'junction' that's all that happens: split the edge at a node whose handles are position='auto', the first half with targetPosition opposite to direction and the second with sourcePosition: direction, so it runs on straight through" },
+  { name: 'reroute', payload: '(edge)', description: 'A segment was dragged (edgesReroutable): the edge with its new route' },
   { name: 'insert', payload: '{ node, edge, connections }', description: 'A lone node was dropped onto an edge and spliced in (with autoConnect the edge becomes the two connections, keeping its look)' },
   { name: 'node-click / node-dblclick / node-contextmenu', payload: '(node, event)', description: 'On a node' },
   { name: 'node-drag-start / node-drag', payload: '(nodes, event)', description: 'While dragging' },
@@ -278,7 +294,9 @@ const types: TypeDef[] = [
       { name: 'color / width / dashed', type: 'string / number / boolean', description: 'Restyle the line without a slot: an M3 role (primary, tertiary, error, outline…) or any CSS color, a width in px, still dashes. Changes animate' },
       { name: 'labelTone', type: "'primary' | 'secondary' | 'tertiary' | 'error' | 'neutral'", description: "The label chip's color" },
       { name: 'markerEnd / markerStart', type: "'arrow' | 'arrow-closed' | 'none'", description: "Arrowheads (end defaults to 'arrow-closed')" },
-      { name: 'data, hidden, selectable, deletable, reconnectable, class', type: '…', description: 'Per edge' },
+      { name: 'route', type: 'number[]', description: "A smoothstep or step edge's own route: where its segments after the first run, alternately x and y, starting with where the leg leaving the source ends. Written by dragging segments (edgesReroutable); remove it to route automatically again. routePoints / pointsToRoute / getRoutedPath turn it into corners and a path for slots of your own" },
+      { name: 'sourcePosition / targetPosition', type: "'top' | 'right' | 'bottom' | 'left'", description: "The side it leaves or arrives by at a handle with position='auto' (default the side facing its other end): keeps an edge split at a junction running straight through" },
+      { name: 'data, hidden, selectable, deletable, reconnectable, reroutable, class', type: '…', description: 'Per edge' },
     ],
   },
 ]
@@ -343,6 +361,19 @@ const edges = ref<FlowEdge[]>([
         <MFlow v-model:nodes="nodes" v-model:edges="edges" :default-edge-options="{ animated: newEdges === 'animated' }" fit-view class="h-[420px] rounded-xl border border-outline-variant">
           <MFlowControls history />
           <MFlowMinimap />
+        </MFlow>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Edges You Lay Out"
+      description="With edgesReroutable, click a smoothstep or step edge and drag the grips on its segments: sideways moves a segment, the leg at either end gets a jog. The route lives in edge.route (Filter → Alert starts with one), stays square when you move a node, and one Ctrl+Z undoes a drag."
+      flush
+      :code="`<MFlow v-model:nodes=&quot;nodes&quot; v-model:edges=&quot;edges&quot; edges-reroutable :default-edge-options=&quot;{ type: 'smoothstep' }&quot; fit-view />`"
+    >
+      <div class="p-4 sm:p-6">
+        <MFlow v-model:nodes="routeNodes" v-model:edges="routeEdges" edges-reroutable :default-edge-options="{ type: 'smoothstep' }" fit-view class="h-[360px] rounded-xl border border-outline-variant">
+          <MFlowControls history />
         </MFlow>
       </div>
     </ComponentDemo>

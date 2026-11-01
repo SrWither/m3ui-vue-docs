@@ -15,6 +15,24 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.4',
+    date: '2026-11-01',
+    changes: {
+      added: [
+        'MFlow edgesReroutable: drag the grips on a selected step edge\'s segments to lay it out (kept in edge.route, square as nodes move)',
+        'MFlow edgeBranching \'junction\' and the branch event: a branch leaves from the point you grabbed, to split the edge at a junction of your own, as in Logisim',
+        'MFlowHandle position \'auto\': each edge leaves on the side facing its other end (an edge can pin it with sourcePosition / targetPosition)',
+        'useFlow change() for several edits as one undo step, and getEdgeAt() for the edge under a point',
+      ],
+      changed: [
+        'MFlow: a tap on a handle selects its node',
+      ],
+      fixed: [
+        'MFlow: a pinch that starts on a node no longer selects it',
+      ],
+    },
+  },
+  {
     version: '1.3.3',
     date: '2026-11-01',
     changes: {

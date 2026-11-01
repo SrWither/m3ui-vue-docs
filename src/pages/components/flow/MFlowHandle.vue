@@ -26,9 +26,9 @@ const isValidConnection = (c: FlowConnection) => kindOf(c.source, c.sourceHandle
 
 const props: PropDef[] = [
   { name: 'type', type: "'source' | 'target'", default: "'source'", description: 'Source: edges leave from it. Target: edges arrive' },
-  { name: 'position', type: "'top' | 'right' | 'bottom' | 'left'", description: "The side it sits centered on, and the way edges leave it; default from MFlow's direction" },
+  { name: 'position', type: "'top' | 'right' | 'bottom' | 'left' | 'auto'", description: "The side it sits centered on, and the way edges leave it; default from MFlow's direction. 'auto' sits in the node's middle (or where you place it) and each edge leaves or arrives on the side facing its other end: a junction dot, a hub" },
   { name: 'id', type: 'string', description: 'Needed when a node has several of a type; edges name it in sourceHandle / targetHandle' },
-  { name: 'connectable', type: 'boolean', default: 'true', description: 'Off, it only anchors edges (and is drawn invisible)' },
+  { name: 'connectable', type: 'boolean', default: 'true', description: "Off, it only anchors edges (and is drawn invisible), and a drag on it moves its node: turn it off while a handle-covered node is selected (a junction dot) to let it be moved. A tap on a connectable handle selects its node, a drag from it connects" },
 ]
 </script>
 
