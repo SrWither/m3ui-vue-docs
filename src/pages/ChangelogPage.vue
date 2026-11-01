@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.5',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'MFloorPlan: editable with selectable multiple, a click toggles tables in the selection and a drag moves the table pressed on its own (to arrange the tables being merged)',
+      ],
+    },
+  },
+  {
     version: '1.3.4',
     date: '2026-11-01',
     changes: {
