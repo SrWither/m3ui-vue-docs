@@ -17,8 +17,8 @@ const IO: Record<string, { w: number; h: number }> = {
   probe: { w: 132, h: 60 },
   hex: { w: 60, h: 80 },
   tunnel: { w: 100, h: 40 },
-  // Its dot in the middle, on the grid (the part's corner snaps to it), with room around to grab it
-  point: { w: 40, h: 40 },
+  // Just its dot, whose middle sits on the grid (the node's gridOffset), so points can sit a step apart
+  point: { w: 20, h: 20 },
   buzzer: { w: 60, h: 40 },
   piano: { w: 248, h: 80 },
 }

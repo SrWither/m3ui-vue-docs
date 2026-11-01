@@ -6,7 +6,7 @@
  */
 import { computed } from 'vue'
 import { MIcon, MSwitch } from '@m3ui-vue/m3ui-vue'
-import { MFlowHandle } from '@m3ui-vue/m3ui-vue/flow'
+import { MFlowHandle, useFlow, useFlowNode } from '@m3ui-vue/m3ui-vue/flow'
 import { partByKind, disassemble } from '../parts'
 import { getCircuit } from '../library'
 import { format, known, mask, widthOf, type Sig } from '../logic'
@@ -44,7 +44,16 @@ const pointTone = computed(() => {
   return s.v ? 'bg-primary' : 'bg-outline-variant'
 })
 // A wire point's pins both sit at its dot; other parts' pins on their side, moved along it
-const movable = computed(() => props.data.kind === 'point' && props.selected)
+// A wire point moves when it or one of its wires is selected; with nothing of it selected, a drag extends it
+const flowNode = useFlowNode()
+const flow = flowNode ? useFlow() : null
+const movable = computed(() => {
+  if (props.data.kind !== 'point') return false
+  if (props.selected) return true
+  const id = flowNode?.id
+  const picked = flow?.selection.value.edges ?? []
+  return !!id && picked.length > 0 && c.edges.value.some((e) => picked.includes(e.id) && (e.source === id || e.target === id))
+})
 const handleStyle = (p: { x: number; y: number; side: string }) =>
   props.data.kind === 'point'
     ? {}

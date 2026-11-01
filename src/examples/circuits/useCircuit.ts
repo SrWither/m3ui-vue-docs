@@ -12,6 +12,9 @@ import { applyOp, type PokeOp } from './ops'
 import { contains, setCircuitResolver, type CircuitDef } from './library'
 import { cloneImage, decodeImage, encodeImage, hasImage, newImageId, setCells } from './memory'
 
+/** A wire point snaps by its middle (its dot) */
+const pointGrid = (kind: string) => (kind === 'point' ? { gridOffset: { x: 10, y: 10 } } : {})
+
 // The circuit on the canvas: what MFlow edits
 const nodes = shallowRef<PartNode[]>([])
 const edges = shallowRef<FlowEdge[]>([])
@@ -190,7 +193,7 @@ function load(p: Preset) {
   ticks.value = 0
   if (p.hz) hz.value = p.hz
   const prep = (c: { nodes: PartNode[]; edges: FlowEdge[] }) => ({
-    nodes: withImages(c.nodes.map((n) => ({ ...n, type: 'part', data: { ...n.data!, params: { ...n.data!.params } } }))),
+    nodes: withImages(c.nodes.map((n) => ({ ...n, type: 'part', ...pointGrid(n.data!.kind), data: { ...n.data!, params: { ...n.data!.params } } }))),
     edges: c.edges.map((e) => ({ ...e, type: 'wire', pathType: 'smoothstep' as const, markerEnd: 'none' as const })),
   })
   const mainId = p.mainId ?? 'main'
@@ -423,6 +426,7 @@ function makePart(kind: string, at: { x: number; y: number }): PartNode {
     id: `${k}${Date.now().toString(36)}${added++}`,
     type: 'part',
     position: { x: Math.round(at.x / 20) * 20, y: Math.round(at.y / 20) * 20 },
+    ...pointGrid(k),
     data: { kind: k, params: { ...partByKind.get(k)!.params, ...(circuit && { circuit }) }, ...(k === 'tunnel' && { label: 'net' }) },
   }
 }

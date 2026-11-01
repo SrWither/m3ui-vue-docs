@@ -243,7 +243,7 @@ function onConnectEnd({ connection, position, from }: { connection: FlowConnecti
 const wireId = () => `w${Date.now().toString(36)}${made++}`
 function wirePoint(at: FlowXY, width: number): PartNode {
   const base = c.makePart('point', at)
-  return { ...base, position: { x: at.x - 20, y: at.y - 20 }, data: { ...base.data!, params: { ...base.data!.params, width } } }
+  return { ...base, position: { x: at.x - 10, y: at.y - 10 }, data: { ...base.data!, params: { ...base.data!.params, width } } }
 }
 const OPPOSITE = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' } as const
 const look = { type: 'wire', pathType: 'smoothstep' as const, markerEnd: 'none' as const }
@@ -323,9 +323,11 @@ function onDragStop({ nodes: dragged }: { nodes: PartNode[] }) {
     edges: [...c.edges.value.map((e) => (e.id === wire.id ? before : e)), after],
   })
 }
+// Dropped on a part (a wire point only counts by its dot, so a wire can end a step from one)
 const overPart = (p: FlowXY) => c.nodes.value.some((n) => {
   const g = placed(n.data!)
-  return p.x > n.position.x - 8 && p.x < n.position.x + g.w + 8 && p.y > n.position.y - 8 && p.y < n.position.y + g.h + 8
+  const m = n.data?.kind === 'point' ? 0 : 8
+  return p.x > n.position.x - m && p.x < n.position.x + g.w + m && p.y > n.position.y - m && p.y < n.position.y + g.h + m
 })
 
 // ── Hovering a wire shows what it carries, without selecting it ─────────────────────────────────────────

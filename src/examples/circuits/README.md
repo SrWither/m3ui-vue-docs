@@ -105,8 +105,9 @@ circuits/
   end gets a jog. The route is saved with the wire, stays square when parts move, and goes when a part it touches turns.
   The inspector's Route it automatically drops it.
 - **Loose ends and junctions**: a wire dropped on nothing leaves a wire point there (a dot, like Logisim's loose wire
-  ends), to wire on from later; select it and drag it to move it (its wires follow), unselected a drag from it draws
-  a wire on. Dropped on another wire point, the two join (one point with both's wires); dropped on a wire, it splits
+  ends), to wire on from later; select it (or one of its wires) and drag it to move it (its wires follow); with
+  nothing of it selected, a drag from it draws a wire on. Its middle snaps to the grid (MFlow's `gridOffset`), so
+  wires can end a step apart. Dropped on another wire point, the two join (one point with both's wires); dropped on a wire, it splits
   the wire there (MFlow's `getEdgeAt`), joining it. Dragging off a wire branches it as Logisim does: the wire splits where you grabbed it at
   a wire point (MFlow's `edgeBranching="junction"` and its `branch` event), and the branch leaves from there, to the
   pin you drop it on or to a loose end. A wire point's pins are MFlowHandles at `position="auto"`, so each wire leaves
