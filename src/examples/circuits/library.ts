@@ -4,7 +4,9 @@
 import type { FlowEdge, FlowNode } from '@m3ui-vue/m3ui-vue/flow'
 import type { Params, Pin } from './parts'
 
-export interface PartData { kind: string; label?: string; params: Params }
+/** Where a part's outputs point, as in Logisim (east: inputs on the left, outputs on the right) */
+export type Facing = 'east' | 'south' | 'west' | 'north'
+export interface PartData { kind: string; label?: string; params: Params; facing?: Facing }
 export type PartNode = FlowNode<PartData>
 export interface CircuitDef { id: string; name: string; nodes: PartNode[]; edges: FlowEdge[] }
 

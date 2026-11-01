@@ -18,7 +18,7 @@ circuits/
 ├── library.ts            the project's circuits as parts: a circuit's input/output pins become a subcircuit's pins
 ├── audio.ts              Web Audio: one context, a voice per buzzer/synthesizer (pulse waves with NES duties, noise), PCM streams
 ├── memory.ts             ROM/RAM images (up to 16 MiB, outside the nodes) and .bin / Intel HEX / Logisim files
-├── geometry.ts           each part's size and where its pins sit, on a 20px pitch
+├── geometry.ts           each part's size and where its pins sit, on a 20px pitch, as turned (facing)
 ├── useCircuit.ts         the circuit, its simulation, the clock, editing, saving and opening JSON
 ├── presets.ts            circuits to start from: the Tiny8 CPU (two programs), a 4-bit adder made of gates, an 8-bit
 │                         adder of full-adder subcircuits, the ALU, a 64 KiB message ROM, counters, an SR latch…
@@ -28,7 +28,8 @@ circuits/
     ├── DeviceView.vue    a screen's canvas, a terminal's text, a keyboard's field, a joypad's buttons
     ├── Wire.vue          a wire, colored by what it carries
     ├── Palette.vue       the project's circuits, then the parts by category: click to add, or drag onto the canvas
-    ├── Inspector.vue     the selection's settings; a ROM's or RAM's words as a hex grid
+    ├── Inspector.vue     the selection's settings (and turning a part); a ROM's or RAM's words as a hex grid
+    ├── WatchPanel.vue    watched wires as a timing diagram
     └── TopBar.vue        circuit, clock controls and speed, save/open, theme, docs and source
 ```
 
@@ -95,7 +96,24 @@ circuits/
   **Ctrl+O** opens one.
 - **The clock** goes from 0.5 Hz to 10 MHz, or Max. Each frame runs what's due for at most 12 ms so the page stays
   responsive; when a circuit can't keep up, the bar shows the frequency it really reaches.
-- **Branching wires**: drag from any wire to another pin to wire the same output there (MFlow's `edgeBranching`).
+- **Turning parts**: R turns the selection a quarter clockwise, Shift+R back (or the inspector's buttons); a part's
+  `facing` (east, south, west, north, as in Logisim) is kept in its data, outside the netlist, so turning one doesn't
+  rebuild the simulation. Gates turn whole; boxes keep their text upright (south and north stand their pins on the top
+  and bottom edges, west swaps sides); I/O parts move their pin to the side they face. Screens, keyboards, the joypad,
+  the piano and other parts with a face of their own don't turn.
+- **Laying wires out**: click a wire and drag the grips on its segments (MFlow's `edgesReroutable`); the leg at either
+  end gets a jog. The route is saved with the wire, stays square when parts move, and goes when a part it touches turns.
+  The inspector's Route it automatically drops it.
+- **Loose ends and junctions**: a wire dropped on nothing leaves a wire point there (a dot, like Logisim's loose wire
+  ends), to wire on from later; select it and drag it to move it (its wires follow), unselected a drag from it draws
+  a wire on. Dropped on another wire point, the two join (one point with both's wires); dropped on a wire, it splits
+  the wire there (MFlow's `getEdgeAt`), joining it. Dragging off a wire branches it as Logisim does: the wire splits where you grabbed it at
+  a wire point (MFlow's `edgeBranching="junction"` and its `branch` event), and the branch leaves from there, to the
+  pin you drop it on or to a loose end. A wire point's pins are MFlowHandles at `position="auto"`, so each wire leaves
+  it on the side that faces where it goes. In the netlist it's an alias like a tunnel, so it costs no delay.
+- **Debugging wires**: hover a wire to see what it carries (width, hex, decimal, binary, from where to where); select
+  it and Watch over time to add it to a timing diagram under the canvas, one sample per half period (per Worker slice at
+  fast clocks), like Logisim Evolution's chronogram.
 - **Sound** (`audio.ts`): a **buzzer** (beeps while its input is 1), a **synthesizer** (a voice like the NES APU's:
   a MIDI note or Hz, 4-bit volume, square with 12.5/25/50/75% duty, triangle, sawtooth or noise, a gate; several play
   together), a **PCM speaker** (8-bit samples taken on clock edges, played at 4–44.1 kHz) and a **piano** (two octaves;

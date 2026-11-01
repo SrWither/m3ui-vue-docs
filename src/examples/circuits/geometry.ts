@@ -1,6 +1,7 @@
 // Where a part's pins sit and how big it is, on a 20px pitch so wires line up.
 import { partByKind, type PartDef, type Params } from './parts'
-import type { PartData } from './sim'
+import type { FlowPosition } from '@m3ui-vue/m3ui-vue/flow'
+import type { Facing, PartData } from './library'
 
 export const PITCH = 20
 export type Look = 'gate' | 'box' | 'io'
@@ -16,6 +17,8 @@ const IO: Record<string, { w: number; h: number }> = {
   probe: { w: 132, h: 60 },
   hex: { w: 60, h: 80 },
   tunnel: { w: 100, h: 40 },
+  // Its dot in the middle, on the grid (the part's corner snaps to it), with room around to grab it
+  point: { w: 40, h: 40 },
   buzzer: { w: 60, h: 40 },
   piano: { w: 248, h: 80 },
 }
@@ -75,4 +78,60 @@ export function geometry(data: PartData): Geometry {
   const h = top + (rows - 1) * PITCH + (STATEFUL.has(data.kind) ? 40 : 20)
   const w = data.kind === 'ram' || data.kind === 'rom' || data.kind === 'sub' ? 160 : NARROW.has(data.kind) ? 112 : 132
   return { look: 'box', w, h, inY: Array.from({ length: nIn }, (_, i) => top + i * PITCH), outY: Array.from({ length: nOut }, (_, i) => top + i * PITCH) }
+}
+
+// ── Turning a part ──────────────────────────────────────────────────────────────────────────────────────
+// Gates turn whole, like Logisim's (the shape rotates). Boxes keep their text upright: turned to south or north
+// they stand their pins on the top and bottom edges, in order from the left; turned to west they swap sides. I/O
+// parts keep their face and move their pin to the middle of the side it points to. Devices with a face of their
+// own (screens, keyboards, joypads, the piano…) don't turn.
+export const FACINGS: Facing[] = ['east', 'south', 'west', 'north']
+const FIXED = new Set(['point', 'screen', 'tty', 'keyboard', 'joypad', 'seg7', 'piano', 'synth', 'pcm'])
+export const canTurn = (data: PartData) => !FIXED.has(data.kind)
+/** The next facing a quarter turn clockwise (or back) */
+export const turned = (f: Facing | undefined, back = false) => FACINGS[(FACINGS.indexOf(f ?? 'east') + (back ? 3 : 1)) % 4]!
+
+export interface PinAt { x: number; y: number; side: FlowPosition | 'auto' }
+export interface Placed extends Geometry { facing: Facing; ins: PinAt[]; outs: PinAt[] }
+
+/** A part's geometry as turned: its size on the canvas and where each pin sits, on which side */
+export function placed(data: PartData): Placed {
+  const g = geometry(data)
+  const facing = canTurn(data) ? data.facing ?? 'east' : 'east'
+  // A wire point: both pins at its dot, every wire on the side that faces where it goes (MFlowHandle's 'auto')
+  if (data.kind === 'point') return { ...g, facing: 'east', ins: [{ x: g.w / 2, y: g.h / 2, side: 'auto' }], outs: [{ x: g.w / 2, y: g.h / 2, side: 'auto' }] }
+  const east: Placed = { ...g, facing: 'east', ins: g.inY.map((y) => ({ x: 0, y, side: 'left' })), outs: g.outY.map((y) => ({ x: g.w, y, side: 'right' })) }
+  if (facing === 'east') return east
+  const { w, h } = g
+  if (g.look === 'gate') {
+    // Rotated whole about its corner, then moved back in place
+    const map = (p: PinAt): PinAt => {
+      const side = (s: FlowPosition): FlowPosition => {
+        const order: FlowPosition[] = ['top', 'right', 'bottom', 'left']
+        return order[(order.indexOf(s) + FACINGS.indexOf(facing)) % 4]!
+      }
+      if (facing === 'south') return { x: h - p.y, y: p.x, side: side(p.side as FlowPosition) }
+      if (facing === 'west') return { x: w - p.x, y: h - p.y, side: side(p.side as FlowPosition) }
+      return { x: p.y, y: w - p.x, side: side(p.side as FlowPosition) }
+    }
+    const vertical = facing !== 'west'
+    return { ...g, facing, w: vertical ? h : w, h: vertical ? w : h, ins: east.ins.map(map), outs: east.outs.map(map) }
+  }
+  if (facing === 'west') return { ...g, facing, ins: g.inY.map((y) => ({ x: w, y, side: 'right' })), outs: g.outY.map((y) => ({ x: 0, y, side: 'left' })) }
+  const inSide: FlowPosition = facing === 'south' ? 'top' : 'bottom'
+  const outSide: FlowPosition = facing === 'south' ? 'bottom' : 'top'
+  if (g.look === 'io') {
+    const mid = Math.round(w / 2 / 10) * 10
+    const row = (n: number, y: number, side: FlowPosition) => Array.from({ length: n }, (_, i) => ({ x: n === 1 ? mid : mid + (i - (n - 1) / 2) * PITCH, y, side }))
+    return { ...g, facing, ins: row(g.inY.length, facing === 'south' ? 0 : h, inSide), outs: row(g.outY.length, facing === 'south' ? h : 0, outSide) }
+  }
+  // A box standing up: its pins along the top and bottom, the title across the middle
+  const n = Math.max(g.inY.length, g.outY.length, 1)
+  const W = Math.max(120, (n + 1) * PITCH)
+  const H = STATEFUL.has(data.kind) ? 140 : 120
+  const row = (count: number, y: number, side: FlowPosition) => {
+    const start = Math.round((W - (count - 1) * PITCH) / 2 / PITCH) * PITCH
+    return Array.from({ length: count }, (_, i) => ({ x: start + i * PITCH, y, side }))
+  }
+  return { ...g, facing, w: W, h: H, ins: row(g.inY.length, facing === 'south' ? 0 : H, inSide), outs: row(g.outY.length, facing === 'south' ? H : 0, outSide) }
 }

@@ -59,15 +59,18 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
         expand(sub.nodes, sub.edges, `${prefix}${n.id}/`, true, [...stack, sub.id])
         continue
       }
-      if (def.kind === 'tunnel' || (nested && (def.kind === 'pin' || def.kind === 'outpin'))) continue
+      if (def.kind === 'tunnel' || def.kind === 'point' || (nested && (def.kind === 'pin' || def.kind === 'outpin'))) continue
       parts.push({ id: prefix + n.id, def, params })
     }
     const tunnel = (n: PartNode) => `@${prefix}#${n.data!.label ?? ''}`
+    // A wire point: a tunnel of its own (a loose end, or a corner to wire on from)
+    const point = (n: PartNode) => `@${prefix}~${n.id}`
     // What an output of a node really is
     const source = (n: PartNode, o: number): string[] => {
       switch (kindOf(n)) {
         case 'sub': { const op = ios.get(n.id)?.outputs[o]; return op ? [`@${prefix}${n.id}/${op.id}`] : [] }
         case 'tunnel': return [tunnel(n)]
+        case 'point': return [point(n)]
         case 'pin': if (nested) return [`@${prefix}${n.id}`]
       }
       return [outKey(prefix + n.id, o)]
@@ -85,6 +88,7 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
         const k = prefix + dst.id
         virtualIn.set(k, Object.assign(virtualIn.get(k) ?? [], { [i]: [...(virtualIn.get(k)?.[i] ?? []), ...ds] }))
       } else if (kind === 'tunnel') addAlias(tunnel(dst), ds)
+      else if (kind === 'point') addAlias(point(dst), ds)
       else if (nested && kind === 'outpin') addAlias(`@${prefix}${dst.id}`, ds)
       else conns.push({ id: prefix + dst.id, i, drivers: ds })
     }
@@ -94,7 +98,7 @@ function flatten(nodes: PartNode[], edges: FlowEdge[]) {
       const def = partByKind.get(k)
       if (!def) continue
       pinsAt.set(prefix + n.id, def.pins({ ...def.params, ...n.data!.params }))
-      if (k === 'tunnel') {
+      if (k === 'tunnel' || k === 'point') {
         virtualOut.set(outKey(prefix + n.id, 0), source(n, 0))
         virtualIn.set(prefix + n.id, [source(n, 0)])
       }

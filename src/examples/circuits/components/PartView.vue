@@ -10,7 +10,7 @@ import { MFlowHandle } from '@m3ui-vue/m3ui-vue/flow'
 import { partByKind, disassemble } from '../parts'
 import { getCircuit } from '../library'
 import { format, known, mask, widthOf, type Sig } from '../logic'
-import { geometry } from '../geometry'
+import { geometry, placed } from '../geometry'
 import DeviceView from './DeviceView.vue'
 import SoundView from './SoundView.vue'
 import { useCircuit } from '../useCircuit'
@@ -22,6 +22,33 @@ const def = computed(() => partByKind.get(props.data.kind)!)
 const params = computed(() => ({ ...def.value.params, ...props.data.params }))
 const pins = computed(() => def.value.pins(params.value))
 const g = computed(() => geometry(props.data))
+/** As turned (data.facing): its size on the canvas and where its pins sit */
+const at = computed(() => placed(props.data))
+const vertical = computed(() => at.value.facing === 'south' || at.value.facing === 'north')
+const west = computed(() => at.value.facing === 'west')
+// A gate turns whole: its shape, drawn facing east, rotated about its corner and moved back in place
+const turn = computed(() => {
+  const { w, h } = g.value
+  switch (at.value.facing) {
+    case 'south': return `translate(${h} 0) rotate(90)`
+    case 'west': return `translate(${w} ${h}) rotate(180)`
+    case 'north': return `translate(0 ${w}) rotate(270)`
+    default: return undefined
+  }
+})
+const pointTone = computed(() => {
+  const s = out0.value
+  if (!s || (!s.k && !s.e)) return 'bg-secondary'
+  if (s.e && !known(s)) return 'bg-error'
+  if (widthOf(s) > 1) return 'bg-tertiary'
+  return s.v ? 'bg-primary' : 'bg-outline-variant'
+})
+// A wire point's pins both sit at its dot; other parts' pins on their side, moved along it
+const movable = computed(() => props.data.kind === 'point' && props.selected)
+const handleStyle = (p: { x: number; y: number; side: string }) =>
+  props.data.kind === 'point'
+    ? {}
+    : p.side === 'top' || p.side === 'bottom' ? { left: `${p.x}px` } : { top: `${p.y}px` }
 
 // Signals, redrawn when the simulation moved (c.version)
 const ins = computed<Sig[]>(() => (c.version.value, c.sim.inputsOf(props.id)))
@@ -113,7 +140,7 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
 <template>
   <div
     class="relative text-on-surface"
-    :style="{ width: `${g.w}px`, height: `${g.h}px` }"
+    :style="{ width: `${at.w}px`, height: `${at.h}px` }"
   >
     <!-- A label of your own over gates and I/O -->
     <div
@@ -122,7 +149,7 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
     >{{ data.label }}</div>
 
     <!-- Gate -->
-    <svg v-if="g.look === 'gate'" :width="g.w" :height="g.h" class="absolute inset-0 overflow-visible">
+    <svg v-if="g.look === 'gate'" :width="at.w" :height="at.h" class="absolute inset-0 overflow-visible"><g :transform="turn">
       <line v-for="(y, i) in g.inY" :key="i" x1="0" :y1="y" x2="20" :y2="y" class="stroke-outline" stroke-width="2" />
       <line :x1="body.x1" :y1="g.outY[0]" :x2="g.w" :y2="g.outY[0]" class="stroke-outline" stroke-width="2" />
       <path
@@ -136,7 +163,34 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
       <circle v-if="def.inverted" :cx="body.x1 + 4" :cy="g.outY[0]" r="4" stroke-width="2" class="fill-surface" :class="selected ? 'stroke-primary' : 'stroke-on-surface-variant'" />
       <text v-if="bits > 1" :x="g.w / 2 - 6" :y="g.h - 8" text-anchor="middle" class="fill-on-surface-variant text-[9px]">{{ bits }}b</text>
       <text v-if="data.kind === 'tristate'" x="16" :y="g.inY[1]! + 3" class="fill-on-surface-variant text-[9px]">en</text>
-    </svg>
+    </g></svg>
+
+    <!-- A box stood up (south or north): pins along the top and bottom, names written down them, the title across -->
+    <div
+      v-else-if="g.look === 'box' && vertical"
+      class="absolute inset-0 rounded-md border bg-surface-container-low transition-[border-color,box-shadow] duration-200"
+      :class="[selected ? 'border-primary ring-1 ring-primary' : 'border-outline-variant', data.kind === 'sub' && 'bg-tertiary-container/40']"
+    >
+      <div
+        v-for="(pin, i) in pins.inputs"
+        :key="`i${i}`"
+        class="pointer-events-none absolute max-h-9 -translate-x-1/2 overflow-hidden text-label-small leading-none text-on-surface-variant [writing-mode:vertical-rl]"
+        :style="{ left: `${at.ins[i]!.x}px`, [at.facing === 'south' ? 'top' : 'bottom']: '5px' }"
+      >{{ pin.name }}</div>
+      <div
+        v-for="(pin, i) in pins.outputs"
+        :key="`o${i}`"
+        class="pointer-events-none absolute max-h-9 -translate-x-1/2 overflow-hidden text-label-small leading-none text-on-surface-variant [writing-mode:vertical-rl]"
+        :style="{ left: `${at.outs[i]!.x}px`, [at.facing === 'south' ? 'bottom' : 'top']: '5px' }"
+      >{{ pin.name }}</div>
+      <div class="absolute inset-x-1.5 top-1/2 flex -translate-y-1/2 flex-col items-stretch gap-1">
+        <div class="flex min-w-0 items-center justify-center gap-1.5" :class="data.kind === 'sub' && 'text-on-tertiary-container'">
+          <MIcon :name="def.icon" :size="16" class="shrink-0 text-primary" />
+          <span class="truncate text-label-large">{{ title }}</span>
+        </div>
+        <div v-if="stored" class="truncate rounded-sm bg-surface-container-highest px-1.5 py-0.5 text-center font-mono text-label-medium" :class="tone(out0)">{{ stored }}</div>
+      </div>
+    </div>
 
     <!-- Box -->
     <div
@@ -151,13 +205,15 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
       <div
         v-for="(pin, i) in pins.inputs"
         :key="`i${i}`"
-        class="pointer-events-none absolute left-2 -translate-y-1/2 text-label-small text-on-surface-variant"
+        class="pointer-events-none absolute -translate-y-1/2 text-label-small text-on-surface-variant"
+        :class="west ? 'right-2' : 'left-2'"
         :style="{ top: `${g.inY[i]}px` }"
       >{{ pin.name }}<span v-if="pin.width > 1" class="opacity-60">[{{ pin.width }}]</span></div>
       <div
         v-for="(pin, i) in pins.outputs"
         :key="`o${i}`"
-        class="pointer-events-none absolute right-2 -translate-y-1/2 text-label-small text-on-surface-variant"
+        class="pointer-events-none absolute -translate-y-1/2 text-label-small text-on-surface-variant"
+        :class="west ? 'left-2' : 'right-2'"
         :style="{ top: `${g.outY[i]}px` }"
       >{{ pin.name }}<span v-if="pin.width > 1" class="opacity-60">[{{ pin.width }}]</span></div>
       <div
@@ -168,6 +224,13 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
       <DeviceView v-if="data.kind === 'screen' || data.kind === 'tty' || data.kind === 'keyboard'" :id="id" :data="data" />
       <SoundView v-else-if="data.kind === 'synth' || data.kind === 'pcm'" :id="id" :data="data" />
     </div>
+
+    <!-- A wire point: a dot colored like the wire it ends -->
+    <span
+      v-else-if="data.kind === 'point'"
+      class="absolute top-1/2 left-1/2 size-2.5 -translate-1/2 rounded-full transition-[background-color,box-shadow] duration-100"
+      :class="[pointTone, selected && 'ring-2 ring-primary ring-offset-2 ring-offset-surface']"
+    />
 
     <!-- I/O -->
     <div
@@ -269,7 +332,9 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
       </template>
     </div>
 
-    <MFlowHandle v-for="(y, i) in g.inY" :id="`i${i}`" :key="`i${i}`" type="target" position="left" :style="{ top: `${y}px` }" />
-    <MFlowHandle v-for="(y, i) in g.outY" :id="`o${i}`" :key="`o${i}`" type="source" position="right" :style="{ top: `${y}px` }" />
+    <!-- Keyed by the facing so a turned part's handles are measured again -->
+    <!-- A selected wire point is moved by its dot, so its pins step aside; unselected, a drag from it extends it -->
+    <MFlowHandle v-for="(p, i) in at.ins" :id="`i${i}`" :key="`i${i}${at.facing}`" type="target" :position="p.side" :style="handleStyle(p)" :connectable="!movable" />
+    <MFlowHandle v-for="(p, i) in at.outs" :id="`o${i}`" :key="`o${i}${at.facing}`" type="source" :position="p.side" :style="handleStyle(p)" :connectable="!movable" />
   </div>
 </template>

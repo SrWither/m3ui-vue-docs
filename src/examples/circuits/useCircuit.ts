@@ -4,6 +4,7 @@
 import { computed, ref, shallowRef, watch } from 'vue'
 import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
 import { presets, type Preset } from './presets'
+import { X, type Sig } from './logic'
 import { pinsOf, Simulator, type PartData, type PartNode } from './sim'
 import { partByKind } from './parts'
 import { setMuted } from './audio'
@@ -69,7 +70,8 @@ watch(muted, (m) => setMuted(m))
 
 // Only what changes the netlist rebuilds it: moving a part doesn't
 const structure = computed(() =>
-  JSON.stringify([nodes.value.map((n) => [n.id, n.data]), edges.value.map((e) => [e.source, e.sourceHandle, e.target, e.targetHandle])]),
+  // (turning a part doesn't either: its facing is left out)
+  JSON.stringify([nodes.value.map((n) => [n.id, n.data && { ...n.data, facing: undefined }]), edges.value.map((e) => [e.source, e.sourceHandle, e.target, e.targetHandle])]),
 )
 watch(structure, async () => {
   // Looking inside an instance shows its circuit's nodes, but the simulation stays the whole circuit's
@@ -135,6 +137,44 @@ const labelled = computed(() => {
     seen.add(k)
   }
   return ids
+})
+
+// ── Watched wires: a timing diagram of what they carried, one sample per half period ──────────────────────
+// Kept outside Vue (a ring of samples per wire); `version` redraws the panel with the rest
+export const TRACE_LEN = 96
+const watches = shallowRef<string[]>([])
+const traces = new Map<string, Sig[]>()
+function watchWire(id: string, on = !watches.value.includes(id)) {
+  if (on === watches.value.includes(id)) return
+  watches.value = on ? [...watches.value, id] : watches.value.filter((x) => x !== id)
+  if (on) traces.set(id, [])
+  else traces.delete(id)
+}
+function clearTraces() {
+  for (const id of watches.value) traces.set(id, [])
+  version.value++
+}
+/** One sample of every watched wire */
+function sample() {
+  if (!watches.value.length) return
+  for (const id of watches.value) {
+    const e = edges.value.find((x) => x.id === id)
+    const t = traces.get(id)
+    if (!e || !t) continue
+    t.push(sim.edgeSignal(e, prefix.value) ?? X(1))
+    if (t.length > TRACE_LEN) t.splice(0, t.length - TRACE_LEN)
+  }
+}
+const traceOf = (id: string) => traces.get(id) ?? []
+// Another circuit (or a level of an instance) on the canvas: its wires aren't these
+watch([currentId, prefix], () => {
+  watches.value = []
+  traces.clear()
+})
+// A watched wire deleted goes from the panel
+watch(edges, (list) => {
+  const ids = new Set(list.map((e) => e.id))
+  if (watches.value.some((id) => !ids.has(id))) watches.value = watches.value.filter((id) => ids.has(id))
 })
 
 function changed() {
@@ -231,6 +271,7 @@ function loop(t: number) {
   let done = 0
   while (done < Math.floor(owed) && !sim.oscillating) {
     sim.tick()
+    sample()
     done++
     if ((done & 63) === 0 && performance.now() - start > FRAME_BUDGET) break
   }
@@ -274,6 +315,8 @@ function startTurbo() {
       if (mine && 'level' in mine && st.queue) st.queue = [...mine.queue, ...st.queue]
     }
     sim.importState(m)
+    // At these speeds a sample per slice, not per tick
+    sample()
     ticks.value += m.ticks
     windowTicks += m.ticks
     const now = performance.now()
@@ -343,6 +386,7 @@ watch([playing, hz], async () => {
 function step() {
   if (worker) return
   sim.tick()
+  sample()
   ticks.value++
   changed()
 }
@@ -355,6 +399,7 @@ function reset() {
   const turbo = !!worker
   stopTurbo(false)
   sim.reset()
+  for (const id of watches.value) traces.set(id, [])
   if (turbo && wantTurbo()) startTurbo()
   ticks.value = 0
   changed()
@@ -412,7 +457,8 @@ const slim = (c: SavedCircuit): SavedCircuit => ({
   id: c.id,
   name: c.name,
   nodes: c.nodes.map(({ id, type, position, data }) => ({ id, type, position, data })),
-  edges: c.edges.map(({ id, source, sourceHandle, target, targetHandle }) => ({ id, source, sourceHandle, target, targetHandle })),
+  edges: c.edges.map(({ id, source, sourceHandle, target, targetHandle, route, sourcePosition, targetPosition }) =>
+    ({ id, source, sourceHandle, target, targetHandle, ...(route && { route }), ...(sourcePosition && { sourcePosition }), ...(targetPosition && { targetPosition }) })),
   state: c.state,
 })
 function toJSON(): string {
@@ -443,5 +489,5 @@ function fromJSON(text: string) {
 }
 
 export function useCircuit() {
-  return { inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
+  return { watches, watchWire, traceOf, clearTraces, inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
 }

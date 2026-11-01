@@ -619,6 +619,13 @@ export const parts: PartDef[] = [
     eval: () => [],
   },
   {
+    kind: 'point', label: 'Wire point', icon: 'fiber_manual_record', category: 'wiring', description: 'A loose end of a wire: drop a wire on nothing to leave one, then wire on from it',
+    params: { width: 1 }, edit: ['width'],
+    pins: (p) => ({ inputs: [{ name: 'in', width: w(p) }], outputs: [{ name: 'out', width: w(p) }] }),
+    // Never evaluated: the netlist joins it to what drives it, like a tunnel (sim.ts)
+    eval: () => [],
+  },
+  {
     kind: 'sub', label: 'Subcircuit', icon: 'developer_board', category: 'circuits', description: 'Another circuit of this project as a part: its input pins are the inputs, its output pins the outputs. Double-click it to open it',
     params: {},
     pins: (p) => interfaceOf(getCircuit(p.circuit)),

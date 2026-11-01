@@ -12,10 +12,11 @@ import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
 import { disassemble, partByKind, type Params, type ShiftMode } from '../parts'
 import { format } from '../logic'
 import { useCircuit } from '../useCircuit'
+import { canTurn } from '../geometry'
 import type { PartNode } from '../sim'
 
 const props = defineProps<{ node?: PartNode; edge?: FlowEdge }>()
-const emit = defineEmits<{ remove: [] }>()
+const emit = defineEmits<{ remove: []; rotate: [back: boolean]; straighten: [id: string] }>()
 const c = useCircuit()
 const toast = useToast()
 
@@ -182,6 +183,11 @@ const wire = computed(() => {
         </div>
       </div>
       <MTextField :model-value="node.data!.label ?? ''" label="Label" variant="outlined" @update:model-value="c.patchPart(node.id, { label: String($event) })" />
+      <div v-if="canTurn(node.data!) && !c.inspecting.value" class="flex items-center gap-2">
+        <span class="flex-1 text-body-medium">Facing <b class="capitalize">{{ node.data!.facing ?? 'east' }}</b></span>
+        <MIconButton icon="rotate_left" label="Turn left (Shift+R)" variant="tonal" size="sm" @click="emit('rotate', true)" />
+        <MIconButton icon="rotate_right" label="Turn right (R)" variant="tonal" size="sm" @click="emit('rotate', false)" />
+      </div>
       <MSegmentedButton
         v-if="has('addressing')"
         :model-value="params.addressing ?? 'word'"
@@ -197,6 +203,7 @@ const wire = computed(() => {
         <p class="text-body-medium">Places <b>{{ subName }}</b>. Its input pins are this part's inputs and its output pins the outputs, top to bottom; their labels name them.</p>
         <MButton variant="tonal" icon="open_in_new" @click="c.openCircuit(params.circuit!)">Open {{ subName }}</MButton>
       </template>
+      <p v-if="node.data!.kind === 'point'" class="text-body-small text-on-surface-variant">A loose end or a junction of wires. While it's selected, drag it to move it (its wires follow); unselected, a drag from it draws a wire on from there.</p>
       <p v-if="node.data!.kind === 'tunnel'" class="text-body-small text-on-surface-variant">The label is the tunnel's name: every tunnel with the same name in this circuit is the same wire. Drive one of them, read from the others.</p>
       <p v-if="node.data!.kind === 'pin' || node.data!.kind === 'outpin'" class="text-body-small text-on-surface-variant">When this circuit is placed in another one as a subcircuit, this pin becomes one of its {{ node.data!.kind === 'pin' ? 'inputs' : 'outputs' }}, named by its label.</p>
       <MSelect
@@ -334,6 +341,13 @@ const wire = computed(() => {
         <span class="text-on-surface-variant">bin</span><span class="break-all">{{ format(wire.s, 'bin') }}</span>
       </div>
       <p v-else class="text-body-medium text-error">The ends don't match: {{ wire.from }} bits out, {{ wire.to }} bits in.</p>
+      <p class="text-body-small text-on-surface-variant">Drag the grips on its segments to lay it out; drag a leg at either end to add a jog.</p>
+      <MButton
+        :variant="c.watches.value.includes(edge.id) ? 'filled' : 'tonal'"
+        icon="timeline"
+        @click="c.watchWire(edge.id)"
+      >{{ c.watches.value.includes(edge.id) ? 'Watching it' : 'Watch over time' }}</MButton>
+      <MButton v-if="edge.route" variant="tonal" icon="route" @click="emit('straighten', edge.id)">Route it automatically</MButton>
       <MButton variant="tonal" color="error" icon="delete" @click="emit('remove')">Delete wire</MButton>
     </template>
   </div>

@@ -11,10 +11,10 @@
  */
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { MButton, MIcon, MIconButton, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
-import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowSelection } from '@m3ui-vue/m3ui-vue/flow'
+import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowEdge, type FlowPosition, type FlowSelection, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import { useCircuit } from './useCircuit'
 import { presets } from './presets'
-import { geometry } from './geometry'
+import { canTurn, placed, turned } from './geometry'
 import { partByKind } from './parts'
 import { handleIndex, pinsOf, type PartNode } from './sim'
 import PartView from './components/PartView.vue'
@@ -22,6 +22,8 @@ import Wire from './components/Wire.vue'
 import Palette from './components/Palette.vue'
 import Inspector from './components/Inspector.vue'
 import TopBar from './components/TopBar.vue'
+import WatchPanel from './components/WatchPanel.vue'
+import { format, known, widthOf } from './logic'
 
 const c = useCircuit()
 const toast = useToast()
@@ -54,9 +56,12 @@ watch(c.prefix, () => {
   setTimeout(() => flow.value?.fitView(), 60)
 })
 
+// A preset loaded: nothing selected, the whole circuit in view. (An edit clears presetId too, and mustn't drop the
+// selection it just made, e.g. a part added from the palette)
 watch(c.presetId, (id) => {
+  if (!id) return
   selection.value = { nodes: [], edges: [] }
-  if (id) setTimeout(() => flow.value?.fitView(), 60)
+  setTimeout(() => flow.value?.fitView(), 60)
 })
 watch(c.oscillating, (o) => { if (o) toast.error('Oscillation: the circuit never settles, so the clock stopped') })
 
@@ -75,7 +80,7 @@ const edited = () => (c.presetId.value = '')
 // ── Adding parts ────────────────────────────────────────────────────────────────────────────────────────
 function centered(kind: string, at: { x: number; y: number }): PartNode {
   const n = c.makePart(kind, at)
-  const g = geometry(n.data!)
+  const g = placed(n.data!)
   return { ...n, position: { x: Math.round((at.x - g.w / 2) / 20) * 20, y: Math.round((at.y - g.h / 2) / 20) * 20 } }
 }
 let offset = 0
@@ -159,6 +164,12 @@ const ghostDef = computed(() => {
 })
 // Ctrl+S saves, Ctrl+O opens (Cmd on a Mac), wherever the focus is
 function onKey(e: KeyboardEvent) {
+  const typing = (e.target as HTMLElement | null)?.closest?.('input, textarea, select, [contenteditable]')
+  if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'r' && selection.value.nodes.length) {
+    e.preventDefault()
+    rotate(e.shiftKey)
+    return
+  }
   if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return
   const k = e.key.toLowerCase()
   if (k === 's') {
@@ -176,6 +187,174 @@ onBeforeUnmount(() => {
   unblockTouch()
   c.playing.value = false
 })
+
+// ── Turning parts (R, Shift+R back, or the inspector) ───────────────────────────────────────────────────
+// About their middle, snapped to the grid. Wires to them lose their own route, which was laid out for the old sides
+function rotate(back = false, ids = selection.value.nodes) {
+  if (c.inspecting.value) return
+  const turn = new Set(ids.filter((id) => {
+    const n = c.nodes.value.find((x) => x.id === id)
+    return n?.data && canTurn(n.data)
+  }))
+  if (!turn.size || !flow.value) return
+  flow.value.change({
+    nodes: c.nodes.value.map((n) => {
+      if (!turn.has(n.id)) return n
+      const before = placed(n.data!)
+      const data = { ...n.data!, facing: turned(n.data!.facing, back) }
+      const after = placed(data)
+      const snap = (v: number) => Math.round(v / 20) * 20
+      return { ...n, data, position: { x: snap(n.position.x + (before.w - after.w) / 2), y: snap(n.position.y + (before.h - after.h) / 2) } }
+    }),
+    edges: c.edges.value.map((e) => (e.route && (turn.has(e.source) || turn.has(e.target)) ? unrouted(e) : e)),
+  })
+  edited()
+}
+const unrouted = ({ route: _, ...e }: FlowEdge): FlowEdge => e
+function straighten(id: string) {
+  flow.value?.updateEdge(id, unrouted)
+  edited()
+}
+
+// ── A wire dropped on nothing leaves a loose end there (a wire point), to wire on from later ────────────
+let made = 0
+function onConnectEnd({ connection, position, from }: { connection: FlowConnection | null; position: FlowXY; from: { nodeId: string; handleId: string | null; type: 'source' | 'target' } }) {
+  if (connection || c.inspecting.value || !flow.value) return
+  // On a part (a pin it can't join, or where it started): nothing
+  if (overPart(position)) return
+  const n = c.nodes.value.find((x) => x.id === from.nodeId)
+  if (!n) return
+  const pins = pinsOf(n.data!)
+  const pin = (from.type === 'source' ? pins.outputs : pins.inputs)[handleIndex(from.handleId)]
+  if (!pin) return
+  const x = Math.round(position.x / 20) * 20
+  const y = Math.round(position.y / 20) * 20
+  const point = wirePoint({ x, y }, pin.width)
+  const ends = from.type === 'source'
+    ? { source: from.nodeId, sourceHandle: from.handleId, target: point.id, targetHandle: 'i0' }
+    : { source: point.id, sourceHandle: 'o0', target: from.nodeId, targetHandle: from.handleId }
+  const wire: FlowEdge = { id: wireId(), type: 'wire', pathType: 'smoothstep', markerEnd: 'none', ...ends }
+  flow.value.change({ nodes: [...c.nodes.value, point], edges: [...c.edges.value, wire] })
+  edited()
+}
+
+// ── Branching off a wire, as in Logisim: the wire splits where it was grabbed, at a wire point (a junction), and
+// the branch leaves from there (to the pin it was dropped on, or to a loose end) ──────────────────────────────────
+const wireId = () => `w${Date.now().toString(36)}${made++}`
+function wirePoint(at: FlowXY, width: number): PartNode {
+  const base = c.makePart('point', at)
+  return { ...base, position: { x: at.x - 20, y: at.y - 20 }, data: { ...base.data!, params: { ...base.data!.params, width } } }
+}
+const OPPOSITE = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' } as const
+const look = { type: 'wire', pathType: 'smoothstep' as const, markerEnd: 'none' as const }
+/**
+ * A wire cut in two at a wire point. It runs on straight through it, as it did (its way in and out pinned, and its own
+ * route kept on each side); the half up to it keeps the wire's id, and a watch on it
+ */
+function splitWire(wire: FlowEdge, point: string, direction: FlowPosition, routes?: { before: number[]; after: number[] }) {
+  const before: FlowEdge = { ...unrouted(wire), target: point, targetHandle: 'i0', targetPosition: OPPOSITE[direction], ...(routes && { route: routes.before }) }
+  const after: FlowEdge = {
+    ...look, id: wireId(), source: point, sourceHandle: 'o0', sourcePosition: direction, target: wire.target, targetHandle: wire.targetHandle,
+    ...(wire.targetPosition && { targetPosition: wire.targetPosition }), ...(routes && { route: routes.after }),
+  }
+  return { before, after }
+}
+function onBranch({ edge, connection, position, direction, end, routes }: { edge: FlowEdge; connection: FlowConnection | null; position: FlowXY; direction: FlowPosition; end: FlowXY; routes?: { before: number[]; after: number[] } }) {
+  if (c.inspecting.value || !flow.value) return
+  const wire = c.edges.value.find((e) => e.id === edge.id)
+  const src = c.nodes.value.find((n) => n.id === edge.source)
+  if (!wire || !src) return
+  // Dropped on a part, but not on a pin it can join: nothing
+  if (!connection && overPart(end)) return
+  const width = pinsOf(src.data!).outputs[handleIndex(edge.sourceHandle)]?.width ?? 1
+  const junction = wirePoint(position, width)
+  const { before, after } = splitWire(wire, junction.id, direction, routes)
+  const nodes = [...c.nodes.value, junction]
+  const added: FlowEdge[] = [after]
+  if (connection) added.push({ ...look, id: wireId(), source: junction.id, sourceHandle: 'o0', target: connection.target, targetHandle: connection.targetHandle })
+  else {
+    const loose = wirePoint({ x: Math.round(end.x / 20) * 20, y: Math.round(end.y / 20) * 20 }, width)
+    nodes.push(loose)
+    added.push({ ...look, id: wireId(), source: junction.id, sourceHandle: 'o0', target: loose.id, targetHandle: 'i0' })
+  }
+  flow.value.change({ nodes, edges: [...c.edges.value.map((e) => (e.id === wire.id ? before : e)), ...added] })
+  edited()
+}
+// ── A wire point dropped on another one joins it; dropped on a wire, it splits the wire there ──────────────
+const pointWidth = (n: PartNode) => n.data!.params.width ?? 1
+const centerOf = (n: PartNode) => {
+  const g = placed(n.data!)
+  return { x: n.position.x + g.w / 2, y: n.position.y + g.h / 2 }
+}
+function onDragStop({ nodes: dragged }: { nodes: PartNode[] }) {
+  edited()
+  if (dragged.length !== 1 || dragged[0]!.data?.kind !== 'point' || !flow.value) return
+  const d = c.nodes.value.find((n) => n.id === dragged[0]!.id)
+  if (!d) return
+  const at = centerOf(d)
+  const other = c.nodes.value.find((n) => n.id !== d.id && n.data?.kind === 'point' && Math.hypot(centerOf(n).x - at.x, centerOf(n).y - at.y) < 6)
+  if (other) {
+    if (pointWidth(other) !== pointWidth(d)) return toast.error(`Can't join a ${pointWidth(d)}-bit wire to a ${pointWidth(other)}-bit one`)
+    // Its wires move over to the other point (one between the two goes, as does a second copy of the same wire)
+    const seen = new Set<string>()
+    const edges = c.edges.value
+      .map((e) => (e.source === d.id ? { ...e, source: other.id } : e.target === d.id ? { ...e, target: other.id } : e))
+      .filter((e) => {
+        const k = `${e.source}:${e.sourceHandle}>${e.target}:${e.targetHandle}`
+        if (e.source === e.target || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    flow.value.change({ nodes: c.nodes.value.filter((n) => n.id !== d.id), edges })
+    selection.value = { nodes: [other.id], edges: [] }
+    return
+  }
+  const hit = flow.value.getEdgeAt(at, { radius: 14, ignore: (e) => e.source === d.id || e.target === d.id })
+  if (!hit) return
+  const wire = c.edges.value.find((e) => e.id === hit.edge.id)
+  const src = wire && c.nodes.value.find((n) => n.id === wire.source)
+  if (!wire || !src) return
+  const width = pinsOf(src.data!).outputs[handleIndex(wire.sourceHandle)]?.width ?? 1
+  if (width !== pointWidth(d)) return toast.error(`Can't join a ${pointWidth(d)}-bit wire to a ${width}-bit one`)
+  const { before, after } = splitWire(wire, d.id, hit.direction, hit.routes)
+  const g = placed(d.data!)
+  flow.value.change({
+    nodes: c.nodes.value.map((n) => (n.id === d.id ? { ...n, position: { x: hit.position.x - g.w / 2, y: hit.position.y - g.h / 2 } } : n)),
+    edges: [...c.edges.value.map((e) => (e.id === wire.id ? before : e)), after],
+  })
+}
+const overPart = (p: FlowXY) => c.nodes.value.some((n) => {
+  const g = placed(n.data!)
+  return p.x > n.position.x - 8 && p.x < n.position.x + g.w + 8 && p.y > n.position.y - 8 && p.y < n.position.y + g.h + 8
+})
+
+// ── Hovering a wire shows what it carries, without selecting it ─────────────────────────────────────────
+const hover = ref<{ id: string; x: number; y: number } | null>(null)
+function onCanvasMove(e: PointerEvent) {
+  if (e.pointerType === 'touch' || e.buttons) return (hover.value = null)
+  const el = (e.target as Element | null)?.closest?.('[data-flow-edge]') as HTMLElement | null
+  const r = canvas.value!.getBoundingClientRect()
+  hover.value = el ? { id: el.dataset.flowEdge!, x: e.clientX - r.left, y: e.clientY - r.top } : null
+}
+const hovered = computed(() => {
+  c.version.value
+  const h = hover.value
+  const e = h && c.edges.value.find((x) => x.id === h.id)
+  if (!h || !e) return null
+  const s = c.sim.edgeSignal(e, c.prefix.value)
+  const name = (id: string) => {
+    const n = c.nodes.value.find((x) => x.id === id)
+    return n?.data?.label || partByKind.get(n?.data?.kind ?? '')?.label || id
+  }
+  const route = `${name(e.source)} → ${name(e.target)}`
+  if (!s) return { ...h, route, value: 'widths differ', tone: 'text-error' }
+  const bits = widthOf(s)
+  const value = !known(s) ? format(s) : bits > 1 ? `0x${format(s)} · ${format(s, 'dec')} · ${format(s, 'bin')}` : format(s)
+  return { ...h, route, value: `${bits} bit${bits > 1 ? 's' : ''}: ${value}`, tone: known(s) ? '' : 'text-error' }
+})
+function selectWire(id: string) {
+  selection.value = { nodes: [], edges: [id] }
+}
 
 function removeSelected() {
   flow.value?.remove({ nodes: selectedNode.value ? [selectedNode.value.id] : [], edges: selectedEdge.value ? [selectedEdge.value.id] : [] })
@@ -211,7 +390,8 @@ async function open(file: File) {
         <Palette @pick="pick" @grab="onGrab" />
       </aside>
 
-      <main ref="canvas" class="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-surface" :class="wide && 'mx-2 mb-2 rounded-2xl'">
+      <main ref="canvas" class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-surface" :class="wide && 'mx-2 mb-2 rounded-2xl'" @pointermove="onCanvasMove" @pointerleave="hover = null">
+        <div class="relative min-h-0 flex-1">
         <MFlow
           :key="c.currentId.value + c.prefix.value"
           :locked="!!c.inspecting.value"
@@ -220,10 +400,11 @@ async function open(file: File) {
           v-model:edges="c.edges.value"
           v-model:selection="selection"
           :default-edge-options="{ type: 'wire', pathType: 'smoothstep', markerEnd: 'none' }"
-          edge-branching
+          edge-branching="junction"
           :is-valid-connection="isValidConnection"
           :zoom-on-double-click="false"
           :insert-on-edge="false"
+          edges-reroutable
           :min-zoom="0.15"
           background="dots"
           :grid-size="20"
@@ -233,8 +414,11 @@ async function open(file: File) {
           label="Circuit"
           class="absolute inset-0"
           @connect="edited"
+          @connect-end="onConnectEnd"
+          @branch="onBranch"
+          @reroute="edited"
           @delete="edited"
-          @node-drag-stop="edited"
+          @node-drag-stop="onDragStop"
           @node-dblclick="onNodeDblclick"
         >
           <template #node-part="{ node, data, selected }">
@@ -268,10 +452,21 @@ async function open(file: File) {
         <div v-if="c.oscillating.value" class="absolute top-3 left-3 flex max-w-md items-center gap-2 rounded-lg bg-error-container px-3 py-2 text-body-small text-on-error-container">
           Oscillation: a loop keeps flipping without settling. Break the loop, or press reset.
         </div>
+        </div>
+        <WatchPanel v-if="c.watches.value.length" @select="selectWire" />
+        <!-- What the wire under the mouse carries -->
+        <div
+          v-if="hovered"
+          class="pointer-events-none absolute z-20 max-w-xs rounded-md bg-inverse-surface px-2 py-1 text-inverse-on-surface shadow-elevation-2"
+          :style="{ left: `${hovered.x + 14}px`, top: `${hovered.y + 14}px` }"
+        >
+          <div class="text-label-small opacity-80">{{ hovered.route }}</div>
+          <div class="font-mono text-label-medium break-all" :class="hovered.tone && 'text-error-container'">{{ hovered.value }}</div>
+        </div>
       </main>
 
       <aside v-if="wide && (selectedNode || selectedEdge)" class="mr-2 mb-2 w-80 shrink-0 overflow-y-auto rounded-2xl bg-surface">
-        <Inspector :key="selectedNode?.id ?? selectedEdge?.id" :node="selectedNode" :edge="selectedEdge" @remove="removeSelected" />
+        <Inspector :key="selectedNode?.id ?? selectedEdge?.id" :node="selectedNode" :edge="selectedEdge" @remove="removeSelected" @rotate="(back) => rotate(back, [selectedNode!.id])" @straighten="straighten" />
       </aside>
     </div>
 
@@ -290,7 +485,7 @@ async function open(file: File) {
         <Palette @pick="pick" @grab="onGrab" @opened="paletteOpen = false" />
       </MSideSheet>
       <MSideSheet v-model="inspectorOpen" title="Settings">
-        <Inspector v-if="selectedNode || selectedEdge" :node="selectedNode" :edge="selectedEdge" @remove="removeSelected" />
+        <Inspector v-if="selectedNode || selectedEdge" :node="selectedNode" :edge="selectedEdge" @remove="removeSelected" @rotate="(back) => rotate(back, [selectedNode!.id])" @straighten="straighten" />
       </MSideSheet>
     </template>
   </div>
