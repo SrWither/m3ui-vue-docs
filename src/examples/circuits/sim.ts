@@ -4,7 +4,7 @@
 // keeps changing after ROUND_LIMIT rounds is oscillating. Pure, no Vue.
 import type { FlowEdge } from '@m3ui-vue/m3ui-vue/flow'
 import { mask, resolve, same, widthOf, X, Z, type Sig } from './logic'
-import { partByKind, type Params, type PartDef, type Pin } from './parts'
+import { clockAt, partByKind, type Params, type PartDef, type Pin } from './parts'
 import { getCircuit, interfaceNodes, type PartData, type PartNode } from './library'
 import { applyOp, type PokeOp } from './ops'
 
@@ -382,11 +382,21 @@ export class Simulator {
       if (st.queue && 'level' in st) st.queue = []
     }
   }
-  /** Half a clock period: every clock flips */
+  /** One tick (half a period at the bar's frequency): each clock moves on, flipping when its high or low time is up */
   tick() {
-    for (const p of this.clocks) this.states[p].value ^= 1
-    this.settleIdx(this.clocks)
+    const changed = this.clockBuf
+    changed.length = 0
+    for (const p of this.clocks) {
+      const st = this.states[p]
+      st.t = (st.t ?? 0) + 1
+      const v = clockAt(this.params[p]!, st.t)
+      if (v === st.value) continue
+      st.value = v
+      changed.push(p)
+    }
+    if (changed.length) this.settleIdx(changed)
   }
+  private clockBuf: number[] = []
   /** Every part back to how it starts: registers cleared, memories reloaded, clocks low */
   reset() {
     this.ids.forEach((id, p) => {

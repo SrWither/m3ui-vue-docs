@@ -101,5 +101,24 @@ export function rose(state: { clk?: Sig }, clk: Sig) {
   state.clk = clk
   return !!before && known(before) && before.v === 0 && known(clk) && clk.v === 1
 }
+/** What makes a flip-flop, register or counter take its input, as Logisim's Trigger: an edge, or a level (latches) */
+export type Trigger = 'rising' | 'falling' | 'high' | 'low'
+/** Whether the clock triggers now: an edge since the last call, or the level held. Remembers the clock like `rose` */
+export function triggered(state: { clk?: Sig }, clk: Sig, t: Trigger = 'rising') {
+  const before = state.clk
+  state.clk = clk
+  const now = known(clk) ? clk.v : -1
+  switch (t) {
+    case 'high': return now === 1
+    case 'low': return now === 0
+    case 'falling': return !!before && known(before) && before.v === 1 && now === 0
+    default: return !!before && known(before) && before.v === 0 && now === 1
+  }
+}
+/** A value of `width` bits read as two's complement */
+export const signedOf = (v: number, width: number) => (v >= 2 ** (width - 1) ? v - 2 ** width : v)
+/** A signal from its fields, shared when it's fully known */
+export const sig = (m: number, v: number, k: number, e: number): Sig => (k === m && !e ? knownSig(m, v) : { m, v, k, e })
+
 /** An input that's 1 (an unconnected one counts as `unconnected`: on for an enable, off for a clear) */
 export const on = (s: Sig, unconnected = false) => (isZ(s) ? unconnected : known(s) && s.v !== 0)

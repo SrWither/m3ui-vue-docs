@@ -48,11 +48,17 @@ circuits/
   signals, each input the slots driving it, each slot the parts it feeds. The propagation loop runs on those, marking
   dirty parts in a byte array and reusing its buffers; ids and the state Map stay only for the UI. That made the Tiny8
   CPU about 2.5× faster (some 117 kHz in Chrome at Max).
-- **Parts**: switches, buttons, input and output pins, constants, a clock; LEDs, probes (signed or not), hex and
-  7-segment displays; AND, OR, NAND, NOR, XOR, XNOR (2–8 inputs, 1–32 bits), NOT, buffer, tri-state; multiplexer,
-  demultiplexer, decoder, priority encoder, bit selector; adder, subtractor, comparator, a 16-operation ALU with Z/N/C/V
-  flags, multiplier, divider, negator, shifter (logical, arithmetic, rotate); D, T and JK flip-flops, register, counter,
-  program counter, shift register, random generator, ROM, RAM; splitter, merger, bit extender, tunnel.
+- **Parts**: switches, buttons, input and output pins, constants, a clock (ticks high, ticks low and a phase, for
+  multiphase clocks); LEDs, probes (signed or not, in bin, oct, dec or hex), hex and 7-segment displays; AND, OR, NAND,
+  NOR, XOR, XNOR (2–8 inputs, 1–32 bits, any input negated with a bubble; XOR as odd parity or exactly one), NOT,
+  buffer, tri-state; multiplexer, demultiplexer and decoder (drawn as Logisim's trapezoids, select from the bottom, an
+  optional enable from the top, unpicked outputs 0 or floating), priority encoder, bit selector; adder, subtractor,
+  comparator, multiplier and divider (unsigned or two's complement), a 16-operation ALU with Z/N/C/V flags, negator,
+  shifter (logical, arithmetic, rotate), bit adder (counts the 1s), bit finder (lowest or highest 1 or 0); D, T and JK
+  flip-flops (with clear and preset), register, counter (a maximum, wrap, stay or load past it, optional load and
+  up/down), program counter, shift register, random generator, each triggered on either edge (the D flip-flop and the
+  register also at a level, as latches), ROM, RAM; splitter and merger (parts of any widths, like 1, 4, 5, 8, or
+  bit by bit as Logisim's), bit extender, pull resistor (floating bits to 0 or 1), tunnel, and text notes.
 - **Subcircuits**: a project holds several circuits (the list at the top of the palette). Any circuit can be placed in
   another as a part: its input pins become the part's inputs and its output pins its outputs, top to bottom, named by
   their labels. The simulator flattens them into one netlist (ids `instance/inner`, nested as deep as it goes), and
@@ -64,8 +70,11 @@ circuits/
   (`params.image`), saved as base64. The inspector pages through them, following the address input, and loads raw
   binaries (.bin, .rom, .nes without its header), Intel HEX or hex words (Logisim's `v2.0 raw` too), and downloads them
   as .bin or for Logisim.
-- **RAM with byte addressing**: in byte mode every address is a byte and a `size` input picks how many bytes a read or
-  write moves (0 one, 1 two, 2 four, little-endian), like a CPU's load/store byte, half and word.
+- **RAM and ROM with byte addressing**: in byte mode every address is a byte and a `size` input picks how many bytes
+  a read or write moves (0 one, 1 two, 2 four, little-endian), like a CPU's load/store byte, half and word; or, as in
+  Logisim Evolution, one enable per byte (`be0`…), so a write can change any of the word's bytes alone. The word can
+  come out as one bus or as a pin per byte (`Q0`…, the RAM's `D0`… too), and an optional `oe` input lets go of the
+  output (Z) so a memory can share a bus.
 - **Tiny8** is an 8-bit accumulator CPU made from those parts: a program counter addresses a ROM, the instruction
   splits into an opcode (high nibble) and an operand `a` (low nibble), a decoder drives the RAM's write enable,
   the output register and the jumps, and a multiplexer picks the accumulator's next value from the RAM, the adder,

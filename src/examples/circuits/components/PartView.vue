@@ -99,6 +99,44 @@ const body = computed(() => {
   }
 })
 
+// A plexer's trapezoid, facing east: wide on the side of its many pins, the narrow side's corners `slant` in
+const trapezoid = computed(() => {
+  const { w, h, slant = 12, wide } = g.value
+  const l = 16
+  const r = w - 16
+  const t = 4
+  const b = h - 4
+  const pts = wide === 'left'
+    ? [[l, t], [r, t + slant], [r, b - slant], [l, b]]
+    : [[l, t + slant], [r, t], [r, b], [l, b - slant]]
+  // Where the bottom and top edges cross the middle (sel and en come in there)
+  return { d: `M${pts.map((q) => q.join(' ')).join(' L')} Z`, bottom: b - slant / 2, top: t + slant / 2 }
+})
+/** Text inside a turned part stays upright: turned back about its own anchor */
+const DEG = { east: 0, south: 90, west: 180, north: 270 } as const
+const upright = (x: number, y: number) => (DEG[at.value.facing] ? `rotate(${-DEG[at.value.facing]} ${x} ${y})` : undefined)
+/** Turned upright again after half a turn, text runs the other way from its point: its anchor swaps to stay inside */
+const anchor = (a: 'start' | 'end' | 'middle') => (at.value.facing === 'west' && a !== 'middle' ? (a === 'start' ? 'end' : 'start') : a)
+/** The many-pins side's numbers (a mux's inputs, a demux's or decoder's outputs) */
+const plexLabels = computed(() => {
+  const pins = g.value.pins
+  if (!pins) return []
+  const left = g.value.wide === 'left'
+  const list = left ? pins.ins.filter((q) => q.side === 'left') : pins.outs
+  return list.map((q, i) => ({ x: left ? 21 : g.value.w - 21, y: q.y, text: String(i), anchor: left ? 'start' : 'end' }))
+})
+const negated = (i: number) => !!((params.value.negate ?? 0) & (1 << i))
+
+// ── Probe ──
+const probeText = (s: Sig) => {
+  const r = params.value.radix ?? 'auto'
+  if (r === 'auto') return format(s, widthOf(s) > 1 ? 'hex' : 'bin')
+  if (!known(s)) return format(s, r === 'oct' ? 'hex' : r)
+  if (r === 'oct') return s.v.toString(8)
+  if (r === 'dec') return String(params.value.signed ? signedDec(s) : s.v)
+  return format(s, r)
+}
+
 // ── Displays ────────────────────────────────────────────────────────────────────────────────────────────
 // Segments a–g per hex digit
 const DIGITS = [0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71]
@@ -153,13 +191,16 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
   >
     <!-- A label of your own over gates and I/O -->
     <div
-      v-if="data.label && g.look !== 'box' && data.kind !== 'tunnel'"
+      v-if="data.label && g.look !== 'box' && data.kind !== 'tunnel' && data.kind !== 'text'"
       class="pointer-events-none absolute bottom-full left-1/2 mb-0.5 -translate-x-1/2 text-label-small whitespace-nowrap text-on-surface-variant"
     >{{ data.label }}</div>
 
     <!-- Gate -->
     <svg v-if="g.look === 'gate'" :width="at.w" :height="at.h" class="absolute inset-0 overflow-visible"><g :transform="turn">
-      <line v-for="(y, i) in g.inY" :key="i" x1="0" :y1="y" x2="20" :y2="y" class="stroke-outline" stroke-width="2" />
+      <template v-for="(y, i) in g.inY" :key="i">
+        <line x1="0" :y1="y" :x2="negated(i) ? 6 : 20" :y2="y" class="stroke-outline" stroke-width="2" />
+        <circle v-if="negated(i)" cx="10" :cy="y" r="4" stroke-width="2" class="fill-surface" :class="selected ? 'stroke-primary' : 'stroke-on-surface-variant'" />
+      </template>
       <line :x1="body.x1" :y1="g.outY[0]" :x2="g.w" :y2="g.outY[0]" class="stroke-outline" stroke-width="2" />
       <path
         :d="body.d"
@@ -173,6 +214,40 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
       <text v-if="bits > 1" :x="g.w / 2 - 6" :y="g.h - 8" text-anchor="middle" class="fill-on-surface-variant text-[9px]">{{ bits }}b</text>
       <text v-if="data.kind === 'tristate'" x="16" :y="g.inY[1]! + 3" class="fill-on-surface-variant text-[9px]">en</text>
     </g></svg>
+
+    <!-- Plexer: a trapezoid, sel from the bottom, en from the top, turned whole like a gate -->
+    <svg v-else-if="g.look === 'plexer'" :width="at.w" :height="at.h" class="absolute inset-0 overflow-visible"><g :transform="turn">
+      <line v-for="(q, i) in g.pins!.ins.filter((q) => q.side === 'left')" :key="`l${i}`" x1="0" :y1="q.y" x2="18" :y2="q.y" class="stroke-outline" stroke-width="2" />
+      <line v-for="(q, i) in g.pins!.outs" :key="`r${i}`" :x1="g.w - 18" :y1="q.y" :x2="g.w" :y2="q.y" class="stroke-outline" stroke-width="2" />
+      <line x1="40" :y1="trapezoid.bottom" x2="40" :y2="g.h" class="stroke-outline" stroke-width="2" />
+      <line v-if="params.enable" x1="40" y1="0" x2="40" :y2="trapezoid.top" class="stroke-outline" stroke-width="2" />
+      <path
+        :d="trapezoid.d"
+        stroke-width="2"
+        stroke-linejoin="round"
+        class="fill-surface-container-high transition-[stroke] duration-200"
+        :class="selected ? 'stroke-primary' : 'stroke-on-surface-variant'"
+      />
+      <text
+        v-for="l in plexLabels"
+        :key="l.y"
+        :x="l.x"
+        :y="l.y"
+        :text-anchor="anchor(l.anchor as 'start' | 'end')"
+        dominant-baseline="central"
+        :transform="upright(l.x, l.y)"
+        class="fill-on-surface-variant font-mono text-[10px]"
+      >{{ l.text }}</text>
+      <text x="40" :y="g.h / 2" text-anchor="middle" dominant-baseline="central" :transform="upright(40, g.h / 2)" class="fill-on-surface-variant text-[9px] font-medium tracking-wide">{{ data.kind === 'mux' ? 'MUX' : data.kind === 'demux' ? 'DMX' : 'DEC' }}</text>
+      <text v-if="params.enable" x="44" :y="trapezoid.top + 7" :text-anchor="anchor('start')" dominant-baseline="central" :transform="upright(44, trapezoid.top + 7)" class="fill-on-surface-variant text-[8px]">en</text>
+    </g></svg>
+
+    <!-- A note: its label, nothing else -->
+    <div
+      v-else-if="data.kind === 'text'"
+      class="absolute inset-0 flex items-center justify-center rounded-md px-2 text-center text-body-medium whitespace-pre text-on-surface"
+      :class="selected ? 'ring-1 ring-primary' : 'ring-1 ring-transparent hover:ring-outline-variant'"
+    ><span :class="!data.label && 'italic text-on-surface-variant'">{{ data.label || 'Text' }}</span></div>
 
     <!-- A box stood up (south or north): pins along the top and bottom, names written down them, the title across -->
     <div
@@ -299,7 +374,7 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
         :class="isOne(ins[0]) ? LED[params.color ?? 'primary'] : ins[0] && ins[0].e ? 'bg-error-container' : 'bg-surface-container-highest'"
       />
       <div v-else-if="data.kind === 'probe'" class="flex w-full flex-col items-stretch px-2 font-mono">
-        <span class="truncate text-center text-title-medium" :class="tone(ins[0])">{{ format(ins[0]!, widthOf(ins[0]!) > 1 ? 'hex' : 'bin') }}<span v-if="widthOf(ins[0]!) > 1 && known(ins[0]!)" class="text-label-medium text-on-surface-variant"> = {{ params.signed ? signedDec(ins[0]!) : format(ins[0]!, 'dec') }}</span></span>
+        <span class="truncate text-center text-title-medium" :class="tone(ins[0])">{{ probeText(ins[0]!) }}<span v-if="widthOf(ins[0]!) > 1 && known(ins[0]!) && (params.radix ?? 'auto') !== 'dec'" class="text-label-medium text-on-surface-variant"> = {{ params.signed ? signedDec(ins[0]!) : format(ins[0]!, 'dec') }}</span></span>
         <span class="truncate text-center text-[10px] text-on-surface-variant">{{ format(ins[0]!, 'bin') }}</span>
       </div>
       <svg v-else-if="data.kind === 'hex' || data.kind === 'seg7'" width="40" height="64" viewBox="0 0 40 64" :class="data.kind === 'seg7' && 'ml-6'">
@@ -317,6 +392,9 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
           <span class="text-title-small" :class="tone(ins[0])">0x{{ format(ins[0]!) }}</span>
           <span class="text-[10px] text-on-surface-variant">{{ format(ins[0]!, 'bin') }}</span>
         </template>
+      </div>
+      <div v-else-if="data.kind === 'pull'" class="flex items-center gap-0.5 font-mono text-label-large" :class="tone(out0)">
+        <MIcon :name="params.pull ? 'vertical_align_top' : 'vertical_align_bottom'" :size="16" class="text-on-surface-variant" />{{ params.pull ? 1 : 0 }}
       </div>
       <div v-else-if="data.kind === 'tunnel'" class="flex min-w-0 items-center gap-1 px-4">
         <MIcon name="sell" :size="14" class="shrink-0 text-tertiary" />

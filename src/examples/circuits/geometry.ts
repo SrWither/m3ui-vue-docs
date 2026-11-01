@@ -4,9 +4,20 @@ import type { FlowPosition } from '@m3ui-vue/m3ui-vue/flow'
 import type { Facing, PartData } from './library'
 
 export const PITCH = 20
-export type Look = 'gate' | 'box' | 'io'
+export type Look = 'gate' | 'plexer' | 'box' | 'io'
 
-export interface Geometry { look: Look; w: number; h: number; inY: number[]; outY: number[] }
+export interface Geometry {
+  look: Look
+  w: number
+  h: number
+  inY: number[]
+  outY: number[]
+  /** Pins anywhere on the outline (plexers: sel on the bottom), facing east; else inY/outY on the left and right */
+  pins?: { ins: PinAt[]; outs: PinAt[] }
+  /** A plexer's trapezoid: the wide side (where the many pins are) and how far the narrow side's corners come in */
+  wide?: 'left' | 'right'
+  slant?: number
+}
 
 const IO: Record<string, { w: number; h: number }> = {
   switch: { w: 76, h: 40 },
@@ -20,6 +31,7 @@ const IO: Record<string, { w: number; h: number }> = {
   // Just its dot, whose middle sits on the grid (the node's gridOffset), so points can sit a step apart
   point: { w: 20, h: 20 },
   buzzer: { w: 60, h: 40 },
+  pull: { w: 60, h: 40 },
   piano: { w: 248, h: 80 },
 }
 /** Room for the pin labels left of a screen or terminal */
@@ -29,7 +41,8 @@ export const LINE_H = 16
 /** A screen's px per pixel: as set, or as big as fits 256px (at most 8) */
 export const screenPixel = (p: Params) => p.pixel || Math.max(1, Math.min(8, Math.floor(256 / Math.max(p.cols ?? 32, p.rows ?? 32))))
 const STATEFUL = new Set(['register', 'counter', 'pc', 'dff', 'tff', 'jkff', 'ram', 'rom', 'shiftreg', 'random', 'synth', 'pcm'])
-const NARROW = new Set(['mux', 'demux', 'decoder', 'split', 'merge', 'prienc', 'bitsel', 'extender', 'negator'])
+const NARROW = new Set(['split', 'merge', 'prienc', 'bitsel', 'extender', 'negator', 'bitadder', 'bitfinder'])
+const PLEXERS = new Set(['mux', 'demux', 'decoder'])
 
 export function geometry(data: PartData): Geometry {
   const def = partByKind.get(data.kind)! as PartDef
@@ -42,6 +55,11 @@ export function geometry(data: PartData): Geometry {
   if (def.gate) {
     const h = Math.max(40, (nIn + 1) * PITCH)
     return { look: 'gate', w: def.inverted ? 88 : 80, h, inY: spread(nIn, PITCH, h), outY: [Math.round(h / 2 / 10) * 10] }
+  }
+  if (PLEXERS.has(data.kind)) return plexer(data.kind, p, nIn, nOut)
+  if (data.kind === 'text') {
+    const lines = (data.label || 'Text').split('\n')
+    return { look: 'io', w: Math.max(40, Math.ceil(Math.max(...lines.map((l) => l.length)) * 8.5 / PITCH) * PITCH + PITCH), h: Math.max(1, lines.length) * PITCH + PITCH, inY: [], outY: [] }
   }
   if (data.kind === 'pin') {
     const bits = p.width ?? 1
@@ -80,13 +98,33 @@ export function geometry(data: PartData): Geometry {
   return { look: 'box', w, h, inY: Array.from({ length: nIn }, (_, i) => top + i * PITCH), outY: Array.from({ length: nOut }, (_, i) => top + i * PITCH) }
 }
 
+/**
+ * A multiplexer, demultiplexer or decoder as Logisim draws it: a trapezoid, wide on the side of its many pins, the
+ * select coming in from the bottom and the enable (when it has one) from the top
+ */
+function plexer(kind: string, p: Params, nIn: number, nOut: number): Geometry {
+  const many = kind === 'mux' ? nIn - 1 - (p.enable ? 1 : 0) : nOut
+  const h = (many + 1) * PITCH
+  const w = 80
+  const mid = Math.round(h / 2 / 10) * 10
+  const side = (n: number, x: number, s: FlowPosition): PinAt[] => Array.from({ length: n }, (_, i) => ({ x, y: (i + 1) * PITCH, side: s }))
+  const sel: PinAt = { x: 40, y: h, side: 'bottom' }
+  const en: PinAt[] = p.enable ? [{ x: 40, y: 0, side: 'top' }] : []
+  const ins = kind === 'mux' ? [...side(many, 0, 'left'), sel, ...en] : kind === 'demux' ? [{ x: 0, y: mid, side: 'left' as const }, sel, ...en] : [sel, ...en]
+  const outs = kind === 'mux' ? [{ x: w, y: mid, side: 'right' as const }] : side(many, w, 'right')
+  return {
+    look: 'plexer', w, h, inY: ins.map((q) => q.y), outY: outs.map((q) => q.y),
+    pins: { ins, outs }, wide: kind === 'mux' ? 'left' : 'right', slant: Math.min(PITCH, Math.max(8, h / 5)),
+  }
+}
+
 // ── Turning a part ──────────────────────────────────────────────────────────────────────────────────────
 // Gates turn whole, like Logisim's (the shape rotates). Boxes keep their text upright: turned to south or north
 // they stand their pins on the top and bottom edges, in order from the left; turned to west they swap sides. I/O
 // parts keep their face and move their pin to the middle of the side it points to. Devices with a face of their
 // own (screens, keyboards, joypads, the piano…) don't turn.
 export const FACINGS: Facing[] = ['east', 'south', 'west', 'north']
-const FIXED = new Set(['point', 'screen', 'tty', 'keyboard', 'joypad', 'seg7', 'piano', 'synth', 'pcm'])
+const FIXED = new Set(['point', 'text', 'screen', 'tty', 'keyboard', 'joypad', 'seg7', 'piano', 'synth', 'pcm'])
 export const canTurn = (data: PartData) => !FIXED.has(data.kind)
 /** The next facing a quarter turn clockwise (or back) */
 export const turned = (f: Facing | undefined, back = false) => FACINGS[(FACINGS.indexOf(f ?? 'east') + (back ? 3 : 1)) % 4]!
@@ -100,10 +138,12 @@ export function placed(data: PartData): Placed {
   const facing = canTurn(data) ? data.facing ?? 'east' : 'east'
   // A wire point: both pins at its dot, every wire on the side that faces where it goes (MFlowHandle's 'auto')
   if (data.kind === 'point') return { ...g, facing: 'east', ins: [{ x: g.w / 2, y: g.h / 2, side: 'auto' }], outs: [{ x: g.w / 2, y: g.h / 2, side: 'auto' }] }
-  const east: Placed = { ...g, facing: 'east', ins: g.inY.map((y) => ({ x: 0, y, side: 'left' })), outs: g.outY.map((y) => ({ x: g.w, y, side: 'right' })) }
+  const east: Placed = g.pins
+    ? { ...g, facing: 'east', ins: g.pins.ins, outs: g.pins.outs }
+    : { ...g, facing: 'east', ins: g.inY.map((y) => ({ x: 0, y, side: 'left' })), outs: g.outY.map((y) => ({ x: g.w, y, side: 'right' })) }
   if (facing === 'east') return east
   const { w, h } = g
-  if (g.look === 'gate') {
+  if (g.look === 'gate' || g.look === 'plexer') {
     // Rotated whole about its corner, then moved back in place
     const map = (p: PinAt): PinAt => {
       const side = (s: FlowPosition): FlowPosition => {
