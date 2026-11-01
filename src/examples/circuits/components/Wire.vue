@@ -34,6 +34,16 @@ const look = computed(() => {
 </script>
 
 <template>
+  <!-- Its own hit area, to know when the mouse is over it (the readout); a press still reaches MFlow's gestures -->
+  <path
+    :d="path"
+    fill="none"
+    stroke="transparent"
+    stroke-width="14"
+    style="pointer-events: stroke"
+    @pointerenter="c.hoveredWire.value = edge.id"
+    @pointerleave="c.hoveredWire.value === edge.id && (c.hoveredWire.value = null)"
+  />
   <path v-if="selected" :d="path" fill="none" stroke-width="10" stroke-linecap="round" class="stroke-primary/20" />
   <path
     :d="path"

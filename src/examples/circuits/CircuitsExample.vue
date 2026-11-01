@@ -398,12 +398,14 @@ const overPart = (p: FlowXY) => c.nodes.value.some((n) => {
 })
 
 // ── Hovering a wire shows what it carries, without selecting it ─────────────────────────────────────────
+// Which wire is under the mouse comes from the wire itself (Wire.vue, MFlow's #edge-wire slot); here only where the
+// pointer is, to place the readout
 const hover = ref<{ id: string; x: number; y: number } | null>(null)
 function onCanvasMove(e: PointerEvent) {
-  if (e.pointerType === 'touch' || e.buttons) return (hover.value = null)
-  const el = (e.target as Element | null)?.closest?.('[data-flow-edge]') as HTMLElement | null
+  const id = c.hoveredWire.value
+  if (e.pointerType === 'touch' || e.buttons || !id) return (hover.value = null)
   const r = canvas.value!.getBoundingClientRect()
-  hover.value = el ? { id: el.dataset.flowEdge!, x: e.clientX - r.left, y: e.clientY - r.top } : null
+  hover.value = { id, x: e.clientX - r.left, y: e.clientY - r.top }
 }
 const hovered = computed(() => {
   c.version.value

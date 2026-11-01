@@ -146,6 +146,8 @@ const labelled = computed(() => {
 // Kept outside Vue (a ring of samples per wire); `version` redraws the panel with the rest
 export const TRACE_LEN = 96
 const watches = shallowRef<string[]>([])
+/** The wire under the mouse (set by Wire.vue), for the readout beside the pointer */
+const hoveredWire = ref<string | null>(null)
 const traces = new Map<string, Sig[]>()
 function watchWire(id: string, on = !watches.value.includes(id)) {
   if (on === watches.value.includes(id)) return
@@ -493,5 +495,5 @@ function fromJSON(text: string) {
 }
 
 export function useCircuit() {
-  return { watches, watchWire, traceOf, clearTraces, inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
+  return { hoveredWire, watches, watchWire, traceOf, clearTraces, inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
 }
