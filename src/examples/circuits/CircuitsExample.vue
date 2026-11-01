@@ -286,9 +286,69 @@ const centerOf = (n: PartNode) => {
   const g = placed(n.data!)
   return { x: n.position.x + g.w / 2, y: n.position.y + g.h / 2 }
 }
+// ── A part's pin on a wire point joins them, as in Logisim ─────────────────────────────────────────────
+interface PinSpot { node: PartNode; input: boolean; i: number; x: number; y: number; width: number }
+function pinSpots(n: PartNode): PinSpot[] {
+  const g = placed(n.data!)
+  const pins = pinsOf(n.data!)
+  const at = (p: { x: number; y: number }) => ({ x: n.position.x + p.x, y: n.position.y + p.y })
+  return [
+    ...g.ins.map((p, i) => ({ node: n, input: true, i, ...at(p), width: pins.inputs[i]?.width ?? 1 })),
+    ...g.outs.map((p, i) => ({ node: n, input: false, i, ...at(p), width: pins.outputs[i]?.width ?? 1 })),
+  ]
+}
+const near = (a: FlowXY, b: FlowXY) => Math.hypot(a.x - b.x, a.y - b.y) < 6
+/**
+ * Joins a pin to a wire point at the same spot. A loose end (wires only into it, for an input pin; only out of it, for
+ * an output) goes and its wires run to the pin itself; a point with wires both ways stays, wired to the pin
+ */
+function joinPin(pin: PinSpot, point: PartNode, nodes: PartNode[], edges: FlowEdge[]) {
+  if (pin.width !== pointWidth(point)) {
+    toast.error(`Can't join a ${pointWidth(point)}-bit wire to a ${pin.width}-bit pin`)
+    return { nodes, edges }
+  }
+  const handle = `${pin.input ? 'i' : 'o'}${pin.i}`
+  const into = edges.filter((e) => e.target === point.id)
+  const outOf = edges.filter((e) => e.source === point.id)
+  if (pin.input ? !outOf.length : !into.length) {
+    const next = edges.map((e) => {
+      if (pin.input && e.target === point.id) {
+        const { targetPosition: _, route: __, ...rest } = e
+        return { ...rest, target: pin.node.id, targetHandle: handle }
+      }
+      if (!pin.input && e.source === point.id) {
+        const { sourcePosition: _, route: __, ...rest } = e
+        return { ...rest, source: pin.node.id, sourceHandle: handle }
+      }
+      return e
+    })
+    return { nodes: nodes.filter((n) => n.id !== point.id), edges: next }
+  }
+  const wire: FlowEdge = pin.input
+    ? { ...look, id: wireId(), source: point.id, sourceHandle: 'o0', target: pin.node.id, targetHandle: handle }
+    : { ...look, id: wireId(), source: pin.node.id, sourceHandle: handle, target: point.id, targetHandle: 'i0' }
+  const dup = edges.some((e) => e.source === wire.source && e.sourceHandle === wire.sourceHandle && e.target === wire.target && e.targetHandle === wire.targetHandle)
+  return { nodes, edges: dup ? edges : [...edges, wire] }
+}
+/** Parts dropped with a pin on a wire point: joined */
+function joinParts(ids: string[]) {
+  let nodes = c.nodes.value
+  let edges = c.edges.value
+  for (const id of ids) {
+    const n = nodes.find((x) => x.id === id)
+    if (!n || n.data?.kind === 'point') continue
+    for (const pin of pinSpots(n)) {
+      const point = nodes.find((x) => x.data?.kind === 'point' && near(centerOf(x), pin))
+      if (point) ({ nodes, edges } = joinPin(pin, point, nodes, edges))
+    }
+  }
+  if (nodes !== c.nodes.value || edges !== c.edges.value) flow.value!.change({ nodes, edges })
+}
+
 function onDragStop({ nodes: dragged }: { nodes: PartNode[] }) {
   edited()
-  if (dragged.length !== 1 || dragged[0]!.data?.kind !== 'point' || !flow.value) return
+  if (!flow.value) return
+  if (dragged.length !== 1 || dragged[0]!.data?.kind !== 'point') return joinParts(dragged.map((n) => n.id))
   const d = c.nodes.value.find((n) => n.id === dragged[0]!.id)
   if (!d) return
   const at = centerOf(d)
@@ -307,6 +367,13 @@ function onDragStop({ nodes: dragged }: { nodes: PartNode[] }) {
       })
     flow.value.change({ nodes: c.nodes.value.filter((n) => n.id !== d.id), edges })
     selection.value = { nodes: [other.id], edges: [] }
+    return
+  }
+  // On a part's pin: joined to it
+  const pin = c.nodes.value.filter((n) => n.data?.kind !== 'point').flatMap(pinSpots).find((p) => near(p, at))
+  if (pin) {
+    const { nodes, edges } = joinPin(pin, d, c.nodes.value, c.edges.value)
+    if (nodes !== c.nodes.value || edges !== c.edges.value) flow.value.change({ nodes, edges })
     return
   }
   const hit = flow.value.getEdgeAt(at, { radius: 14, ignore: (e) => e.source === d.id || e.target === d.id })

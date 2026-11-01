@@ -107,7 +107,8 @@ circuits/
 - **Loose ends and junctions**: a wire dropped on nothing leaves a wire point there (a dot, like Logisim's loose wire
   ends), to wire on from later; select it (or one of its wires) and drag it to move it (its wires follow); with
   nothing of it selected, a drag from it draws a wire on. Its middle snaps to the grid (MFlow's `gridOffset`), so
-  wires can end a step apart. Dropped on another wire point, the two join (one point with both's wires); dropped on a wire, it splits
+  wires can end a step apart. A part dropped with a pin on a wire point is joined to it, and so is a point dropped on a
+  pin: a loose end goes and its wire runs to the pin itself, a junction stays, wired to it. Dropped on another wire point, the two join (one point with both's wires); dropped on a wire, it splits
   the wire there (MFlow's `getEdgeAt`), joining it. Dragging off a wire branches it as Logisim does: the wire splits where you grabbed it at
   a wire point (MFlow's `edgeBranching="junction"` and its `branch` event), and the branch leaves from there, to the
   pin you drop it on or to a loose end. A wire point's pins are MFlowHandles at `position="auto"`, so each wire leaves

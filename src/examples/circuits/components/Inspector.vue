@@ -203,7 +203,7 @@ const wire = computed(() => {
         <p class="text-body-medium">Places <b>{{ subName }}</b>. Its input pins are this part's inputs and its output pins the outputs, top to bottom; their labels name them.</p>
         <MButton variant="tonal" icon="open_in_new" @click="c.openCircuit(params.circuit!)">Open {{ subName }}</MButton>
       </template>
-      <p v-if="node.data!.kind === 'point'" class="text-body-small text-on-surface-variant">A loose end or a junction of wires. While it or one of its wires is selected, drag it to move it (its wires follow); with nothing of it selected, a drag from it draws a wire on from there. Dropped on another point or on a wire, it joins it.</p>
+      <p v-if="node.data!.kind === 'point'" class="text-body-small text-on-surface-variant">A loose end or a junction of wires. While it or one of its wires is selected, drag it to move it (its wires follow); with nothing of it selected, a drag from it draws a wire on from there. Dropped on another point, a wire or a part's pin, it joins it; a part dropped with a pin on it joins too.</p>
       <p v-if="node.data!.kind === 'tunnel'" class="text-body-small text-on-surface-variant">The label is the tunnel's name: every tunnel with the same name in this circuit is the same wire. Drive one of them, read from the others.</p>
       <p v-if="node.data!.kind === 'pin' || node.data!.kind === 'outpin'" class="text-body-small text-on-surface-variant">When this circuit is placed in another one as a subcircuit, this pin becomes one of its {{ node.data!.kind === 'pin' ? 'inputs' : 'outputs' }}, named by its label.</p>
       <MSelect
