@@ -15,6 +15,25 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.7',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'MFloorPlan: dragging near the edge of a zoomed-in plan scrolls it, bringing what you drag along',
+        'MFloorPlan: undo while drawing takes back the last corner',
+      ],
+      changed: [
+        'MFloorPlan by touch: a finger places a wall\'s corner where it lifts, with the next side following it; tap the last corner to end the wall',
+        'MFloorPlan: corners land on the plan\'s edges and corners, and moved walls, zones and decor stop at the edges',
+        'MFloorPlan: walls are easier to pick with a finger',
+      ],
+      fixed: [
+        'MFloorPlan: dragging a wall\'s corner with a finger scrolled the page instead',
+        'MFloorPlan: zoomed in, one finger now draws walls and zones (two pan)',
+      ],
+    },
+  },
+  {
     version: '1.3.6',
     date: '2026-11-01',
     changes: {
