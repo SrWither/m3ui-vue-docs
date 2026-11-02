@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.3.7',
-    date: 'Unreleased',
+    date: '2026-11-01',
     changes: {
       added: [
         'MFloorPlan: dragging near the edge of a zoomed-in plan scrolls it, bringing what you drag along',
