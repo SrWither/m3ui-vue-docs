@@ -24,6 +24,7 @@ const api: PropDef[] = [
   { name: 'locked', type: 'Ref<boolean>', description: 'Writable: the lock' },
   { name: 'getNode(id) / getSize(id) / getAbsolutePosition(id)', type: 'function', description: "A node, its measured size, its corner in flow coordinates (parents added)" },
   { name: 'getIntersectingNodes(node | rect)', type: 'function', description: 'Nodes overlapping a node or a flow rectangle (to drop one node onto another)' },
+  { name: 'getEdgePath(id)', type: '(id: string) => string | null', description: "The SVG path (d, flow coordinates) an edge is drawn along right now, its own route and edgeSpacing included: to draw it elsewhere, e.g. an exported image" },
   { name: 'getEdgeAt(p, { radius?, ignore? })', type: '(p: FlowXY) => FlowEdgeHit | null', description: "The edge passing near a flow point (radius default 8): { edge, position, direction, routes? }, where on it the point falls (on the grid along it with snapToGrid), the way it runs there and, for an edge with its own route, the routes that keep each half's shape if split there. For dropping something onto an edge, e.g. a junction" },
   { name: 'screenToFlow(p) / flowToScreen(p)', type: 'function', description: 'Between page coordinates and flow coordinates (e.g. to drop a dragged palette item)' },
   { name: 'setViewport(v, opts?) / setCenter(x, y, opts?)', type: 'function', description: 'Move the view, animated by default' },
@@ -33,7 +34,8 @@ const api: PropDef[] = [
   { name: 'setSelection({ nodes?, edges? })', type: 'function', description: 'Select' },
   { name: "layout(fn?, options?)", type: '(\'tree\' | \'layered\' | FlowLayout) => Promise', description: 'Lay out now, animated and undoable' },
   { name: 'undo() / redo() / canUndo / canRedo', type: 'function / ComputedRef', description: 'History' },
-  { name: 'copy() / cut() / paste(at?)', type: 'function', description: 'The clipboard (shared by every MFlow on the page)' },
+  { name: 'copy() / cut() / paste(at?)', type: 'function', description: 'The clipboard (shared by every MFlow on the page). With snapToGrid, pasting at a point keeps the copies on the grid' },
+  { name: 'duplicate()', type: 'function', description: 'Copies of the selection (with the edges between them) a step away, selected; the clipboard stays as it was. Ctrl+D' },
   { name: 'startDrag(id, event)', type: '(id: string, e: PointerEvent) => void', description: 'Drags a node with a pointer that\'s already down: add a node from a palette outside the canvas, then hand it the event, and it follows the pointer (guides, splicing into an edge) until let go' },
 ]
 </script>

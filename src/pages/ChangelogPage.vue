@@ -15,6 +15,21 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.3.8',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'MFlow edgeSpacing: parallel wires from different sources no longer run on top of each other',
+        'MFlow: duplicate() and Ctrl+D; getEdgePath(id) to draw a wire elsewhere',
+        'Step paths take centerX / centerY for their middle run',
+      ],
+      fixed: [
+        'MFlow: a focused control inside a node (data-flow-nodrag) lost focus as soon as it was clicked',
+        'MFlow: pasting at the pointer put the parts off the grid',
+      ],
+    },
+  },
+  {
     version: '1.3.7',
     date: '2026-11-01',
     changes: {

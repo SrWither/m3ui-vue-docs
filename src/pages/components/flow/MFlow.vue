@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MButton, MConfirmDialog, MSegmentedButton, MTextField } from '@m3ui-vue/m3ui-vue'
+import { MButton, MConfirmDialog, MSegmentedButton, MSwitch, MTextField } from '@m3ui-vue/m3ui-vue'
 import { MFlow, MFlowControls, MFlowHandle, MFlowMinimap, parseDot, parseMermaid, toDot, toMermaid, type FlowConnection, type FlowEdge, type FlowNode, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -43,6 +43,22 @@ const routeEdges = ref<FlowEdge[]>([
   { id: 'r2', source: 'filter', target: 'store', type: 'smoothstep' },
   { id: 'r3', source: 'filter', target: 'alert', type: 'step', route: [560] },
 ])
+
+// ── Parallel edges kept apart (edgeSpacing) ──────────────────────────────────────────────────────────────
+// Two wires from different sources whose middle runs land on the same x: without spacing they read as one
+const spaceNodes = ref<FlowNode[]>([
+  { id: 'temp', type: 'input', position: { x: 0, y: 40 }, data: { label: 'Temperature', icon: 'thermostat' } },
+  { id: 'hum', type: 'input', position: { x: 0, y: 160 }, data: { label: 'Humidity', icon: 'humidity_percentage' } },
+  { id: 'heat', type: 'output', position: { x: 480, y: 280 }, data: { label: 'Heater', icon: 'heat' } },
+  { id: 'fan', type: 'output', position: { x: 480, y: -80 }, data: { label: 'Fan', icon: 'mode_fan' } },
+  { id: 'log', type: 'output', position: { x: 480, y: 100 }, data: { label: 'Log', icon: 'list_alt' } },
+])
+const spaceEdges = ref<FlowEdge[]>([
+  { id: 's1', source: 'temp', target: 'heat', type: 'smoothstep' },
+  { id: 's2', source: 'hum', target: 'fan', type: 'smoothstep' },
+  { id: 's3', source: 'temp', target: 'log', type: 'smoothstep' },
+])
+const keepApart = ref(true)
 
 // ── Events ──────────────────────────────────────────────────────────────────────────────────────────────
 const eventNodes = ref<FlowNode[]>([
@@ -238,6 +254,7 @@ const flowProps: PropDef[] = [
   { name: 'insertOnEdge', type: 'boolean', default: 'true', description: 'A node with no connections dropped onto an edge splices into it (A → C becomes A → B → C); the edge lights up while it\'s over one, and without room the next nodes move along' },
   { name: 'dropIntoGroups', type: 'boolean', default: 'false', description: 'Nodes dropped on a group join it, and leave it when dropped outside' },
   { name: 'animate', type: 'boolean', default: 'true', description: 'Positions spring to their new place when changed from outside' },
+  { name: 'edgeSpacing', type: 'number', default: '0', description: "smoothstep and step edges from different sources whose middle runs would lie on top of each other, running the same way, move apart by this many px, so two wires never read as one. Edges from the same output may share a run; edges with their own route stay put and the others keep off them. 0: off" },
   { name: 'getId', type: "(kind: 'node' | 'edge') => string", description: 'Ids for pasted nodes and new edges' },
   { name: 'label', type: 'string', description: "The canvas's accessible name" },
 ]
@@ -318,8 +335,8 @@ const types: TypeDef[] = [
       Drag the background to pan, Ctrl + wheel or pinch to zoom, Shift + drag to select several. Drag from a handle to
       another node to connect. To disconnect, click the edge and its ×, or drag a connected input (or a selected
       edge's end) away and drop it on nothing; dropped on another node, the edge moves there. Drop a node that isn't
-      connected onto an edge to put it in between. Delete removes the selection; Ctrl+Z / Ctrl+Shift+Z undo and redo; Ctrl+C, X, V and A
-      copy, cut, paste and select all; the arrows move the selected nodes. On touch (finger or stylus) the same works
+      connected onto an edge to put it in between. Delete removes the selection; Ctrl+Z / Ctrl+Shift+Z undo and redo; Ctrl+C, X, V, D and A
+      copy, cut, paste, duplicate and select all; the arrows move the selected nodes. On touch (finger or stylus) the same works
       with one finger, two to pinch, and a long press on the background for the selection box.
     </p>
 
@@ -376,6 +393,18 @@ const edges = ref<FlowEdge[]>([
         <MFlow v-model:nodes="routeNodes" v-model:edges="routeEdges" edges-reroutable :default-edge-options="{ type: 'smoothstep' }" fit-view class="h-[360px] rounded-xl border border-outline-variant">
           <MFlowControls history />
         </MFlow>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Parallel Edges Kept Apart"
+      description="edgeSpacing moves the middle run of a step edge off another edge's when both would run the same way on top of each other (Temperature → Heater and Humidity → Fan here), so two wires never read as one. Edges from the same source may still share a run (Temperature → Log). Turn it off to compare, and drag the nodes."
+      flush
+      :code="`<MFlow v-model:nodes=&quot;nodes&quot; v-model:edges=&quot;edges&quot; :edge-spacing=&quot;12&quot; fit-view />`"
+    >
+      <div class="flex flex-col gap-3 p-4 sm:p-6">
+        <label class="flex items-center gap-3 text-body-medium"><MSwitch v-model="keepApart" />Keep apart (edge-spacing 12)</label>
+        <MFlow v-model:nodes="spaceNodes" v-model:edges="spaceEdges" :edge-spacing="keepApart ? 12 : 0" fit-view class="h-[360px] rounded-xl border border-outline-variant" />
       </div>
     </ComponentDemo>
 
@@ -608,7 +637,8 @@ function beforeDelete({ nodes }) {
     <h3 class="mb-3 mt-6 text-title-large font-medium">Content inside nodes</h3>
     <p class="mb-4 text-body-medium text-on-surface-variant">
       Buttons, inputs, selects and links inside a node work as usual and never start a drag. For anything else that
-      shouldn't drag the node (a slider, a canvas), add <code>data-flow-nodrag</code>; for an area inside a node that
+      shouldn't drag the node (a slider, a canvas), add <code>data-flow-nodrag</code>: pressing it doesn't take the
+      focus to the canvas either, so content that focuses itself (a game pad, a piano taking the keys) keeps it; for an area inside a node that
       scrolls on its own, add <code>data-flow-nowheel</code> so the wheel scrolls it instead of moving the view.
       Panels in MFlow's default slot need neither.
     </p>
