@@ -22,10 +22,13 @@ const versions: Version[] = [
         'MFlow edgeSpacing: parallel wires from different sources no longer run on top of each other',
         'MFlow: duplicate() and Ctrl+D; getEdgePath(id) to draw a wire elsewhere',
         'Step paths take centerX / centerY for their middle run',
+        'MTour interactive: the page stays usable, with a ring that follows the target',
+        'MTour v-model:step (the page drives the steps), function targets or none, content / indicator / progress / actions slots',
       ],
       fixed: [
         'MFlow: a focused control inside a node (data-flow-nodrag) lost focus as soon as it was clicked',
         'MFlow: pasting at the pointer put the parts off the grid',
+        'MTour: a tour mounted already open wasn\'t positioned',
       ],
     },
   },
