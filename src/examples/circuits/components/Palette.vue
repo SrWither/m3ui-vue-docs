@@ -135,6 +135,7 @@ onBeforeUnmount(release)
         <button
           type="button"
           class="flex w-full min-w-0 cursor-grab touch-pan-y [-webkit-touch-callout:none] items-center gap-2 rounded-md px-2 py-1.5 text-left text-body-medium transition-colors outline-none select-none hover:bg-on-surface/8 focus-visible:ring-2 focus-visible:ring-secondary active:cursor-grabbing"
+          :data-part-kind="p.kind"
           @pointerdown="down($event, p.kind)"
           @click="click(p.kind)"
         >

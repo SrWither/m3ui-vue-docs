@@ -70,6 +70,16 @@ const oscillating = ref(false)
 /** Sound off (the sound parts keep simulating) */
 const muted = ref(false)
 watch(muted, (m) => setMuted(m))
+/** Current flowing along the wires, and pulses where a value changes (remembered per browser) */
+const wireFx = ref(true)
+try {
+  wireFx.value = localStorage.getItem('bitloom-wirefx') !== '0'
+} catch {}
+watch(wireFx, (on) => {
+  try {
+    localStorage.setItem('bitloom-wirefx', on ? '1' : '0')
+  } catch {}
+})
 
 // Only what changes the netlist rebuilds it: moving a part doesn't
 const structure = computed(() =>
@@ -452,6 +462,8 @@ interface SavedCircuit { id: string; name: string; nodes: PartNode[]; edges: Flo
 interface Saved {
   format: 'bitloom'
   version: 1 | 2
+  /** The preset it still is, unchanged */
+  preset?: string
   nodes?: PartNode[]
   edges?: FlowEdge[]
   state?: Record<string, { value: number }>
@@ -467,18 +479,19 @@ const slim = (c: SavedCircuit): SavedCircuit => ({
     ({ id, source, sourceHandle, target, targetHandle, ...(route && { route }), ...(sourcePosition && { sourcePosition }), ...(targetPosition && { targetPosition }) })),
   state: c.state,
 })
-function toJSON(): string {
-  stash()
+/** The project as a file. Doesn't stash the open circuit into the project (an autosave mustn't change what it saves) */
+function toJSON(pretty = true): string {
+  const all = circuits.value.map((x) => (x.id === currentId.value && !inspecting.value ? { ...x, nodes: nodes.value, edges: edges.value, state: sim.snapshot() } : x))
   const images: Saved['images'] = {}
-  for (const c of circuits.value) for (const n of c.nodes) {
+  for (const c of all) for (const n of c.nodes) {
     const img = n.data?.params.image
     if (img && !images[img]) {
       const e = encodeImage(img)
       if (e) images[img] = e
     }
   }
-  const saved: Saved = { format: 'bitloom', version: 2, circuits: circuits.value.map(slim), open: currentId.value, images }
-  return JSON.stringify(saved, null, 2)
+  const saved: Saved = { format: 'bitloom', version: 2, ...(presetId.value && { preset: presetId.value }), circuits: all.map(slim), open: currentId.value, images }
+  return pretty ? JSON.stringify(saved, null, 2) : JSON.stringify(saved)
 }
 function fromJSON(text: string) {
   const s = JSON.parse(text) as Saved
@@ -492,8 +505,57 @@ function fromJSON(text: string) {
     id: '', name: '', description: '', mainId: main!.id, mainName: main!.name, nodes: main!.nodes, edges: main!.edges, state: main!.state,
     circuits: rest, open: s.open && list.some((c) => c.id === s.open) ? s.open : undefined,
   })
+  if (s.preset && presets.some((p) => p.id === s.preset)) presetId.value = s.preset
+}
+
+// ── Autosave: the project in localStorage, a moment after each edit and when the page goes away ─────────
+const AUTOSAVE = 'bitloom-autosave'
+/** What was there when the page opened (null on a first visit), read before anything overwrites it */
+const restored = ref(false)
+function autosave() {
+  try {
+    localStorage.setItem(AUTOSAVE, toJSON(false))
+  } catch {
+    // Full (a big memory image) or blocked: the project just isn't kept
+  }
+}
+let saveTimer = 0
+watch([nodes, edges, circuits, currentId], () => {
+  clearTimeout(saveTimer)
+  saveTimer = window.setTimeout(autosave, 800)
+})
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', autosave)
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && autosave())
+}
+try {
+  const text = localStorage.getItem(AUTOSAVE)
+  if (text) {
+    fromJSON(text)
+    restored.value = true
+  }
+} catch {
+  // Unreadable (an older or broken save): the first preset, as on a first visit
+}
+
+// ── Sharing: the project in a link, deflated and base64url'd (no server) ────────────────────────────────
+const toB64 = (bytes: Uint8Array) => {
+  let bin = ''
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+const fromB64 = (s: string) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (ch) => ch.charCodeAt(0))
+async function pipe(bytes: Uint8Array, stream: CompressionStream | DecompressionStream) {
+  return new Uint8Array(await new Response(new Blob([bytes as BlobPart]).stream().pipeThrough(stream)).arrayBuffer())
+}
+/** The project packed for a link's `?c=` */
+async function shareCode() {
+  return toB64(await pipe(new TextEncoder().encode(toJSON(false)), new CompressionStream('deflate-raw')))
+}
+async function openShared(code: string) {
+  fromJSON(new TextDecoder().decode(await pipe(fromB64(code), new DecompressionStream('deflate-raw'))))
 }
 
 export function useCircuit() {
-  return { hoveredWire, watches, watchWire, traceOf, clearTraces, inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
+  return { wireFx, restored, shareCode, openShared, autosave, hoveredWire, watches, watchWire, traceOf, clearTraces, inspecting, prefix, inspect, uninspect, muted, nodes, edges, labelled, presetId, circuits, currentId, placeable, openCircuit, addCircuit, renameCircuit, deleteCircuit, usersOf, stash, sim, version, playing, hz, actualHz, ticks, oscillating, load, step, cycle, reset, poke, makePart, patchPart, toJSON, fromJSON, changed }
 }

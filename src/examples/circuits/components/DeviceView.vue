@@ -4,7 +4,7 @@
  * at most once per frame), a terminal's text, a keyboard's field and queue, a joypad's buttons. The joypad also
  * takes the keyboard while it has focus: arrows or WASD, X/K for A, Z/J for B, Shift for Select, Enter for Start.
  */
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { PAD_BUTTONS, type ScreenState, type TtyState } from '../devices'
 import { CHAR_W, LINE_H, SIDE, screenPixel } from '../geometry'
 import { partByKind } from '../parts'
@@ -53,12 +53,30 @@ function type(e: KeyboardEvent) {
 // ── Joypad ──────────────────────────────────────────────────────────────────────────────────────────────
 const buttons = computed(() => (state.value?.buttons as number | undefined) ?? 0)
 const bit = (name: (typeof PAD_BUTTONS)[number]) => 1 << PAD_BUTTONS.indexOf(name)
+// A click is shorter than a slow clock's period, and the circuit would never see it: a button stays down for at least
+// a full cycle (and MIN_PRESS ms)
+const MIN_PRESS = 120
+const pressedAt = new Map<number, number>()
+const releases = new Map<number, number>()
 function hold(name: (typeof PAD_BUTTONS)[number], down: boolean) {
   const b = bit(name)
-  const now = buttons.value
+  clearTimeout(releases.get(b))
+  releases.delete(b)
+  if (down) pressedAt.set(b, performance.now())
+  else if (pressedAt.has(b)) {
+    const left = Math.max(MIN_PRESS, 1000 / Math.max(c.hz.value, 1)) - (performance.now() - pressedAt.get(b)!)
+    if (left > 0) {
+      releases.set(b, window.setTimeout(() => hold(name, false), left))
+      return
+    }
+    pressedAt.delete(b)
+  }
+  // The state as it is now (a delayed release runs after other presses changed it)
+  const now = (c.sim.state.get(props.id)?.buttons as number | undefined) ?? 0
   const next = down ? now | b : now & ~b
   if (next !== now) c.poke(props.id, { set: { buttons: next } })
 }
+onBeforeUnmount(() => releases.forEach((t) => clearTimeout(t)))
 const KEYS: Record<string, (typeof PAD_BUTTONS)[number]> = {
   ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right',
   w: 'Up', s: 'Down', a: 'Left', d: 'Right',
@@ -73,7 +91,7 @@ function key(e: KeyboardEvent, down: boolean) {
   if (!e.repeat) hold(name, down)
 }
 function releaseAll() {
-  if (buttons.value) c.poke(props.id, { set: { buttons: 0 } })
+  for (const name of PAD_BUTTONS) if (buttons.value & bit(name)) hold(name, false)
 }
 const DPAD = [
   { name: 'Up', icon: 'arrow_drop_up', cls: 'col-start-2 row-start-1' },
@@ -133,7 +151,6 @@ const pressHandlers = (name: (typeof PAD_BUTTONS)[number]) => ({
   <div
     v-else-if="data.kind === 'joypad'"
     data-pad
-    data-flow-nodrag
     tabindex="0"
     class="flex size-full items-center justify-between gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary focus:ring-2 focus:ring-primary/60"
     :class="params.serial ? 'pr-12 pl-14' : 'pr-6 pl-3'"
@@ -141,6 +158,7 @@ const pressHandlers = (name: (typeof PAD_BUTTONS)[number]) => ({
     @keydown="key($event, true)"
     @keyup="key($event, false)"
     @blur="releaseAll"
+    @click="($event.currentTarget as HTMLElement).focus()"
   >
     <div class="grid size-[66px] shrink-0 grid-cols-3 grid-rows-3">
       <button

@@ -9,7 +9,8 @@
  * - useCircuit.ts        the circuit, its simulation and the clock; presets.ts the circuits to start from (Tiny8 CPU…)
  * - components/          PartView (a part on the canvas), Wire (a wire by its value), Palette, Inspector, TopBar
  */
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { MButton, MDialog, MIcon, MIconButton, MSideSheet, MTextField, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowEdge, type FlowPosition, type FlowSelection, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import { useCircuit } from './useCircuit'
@@ -21,7 +22,13 @@ import PartView from './components/PartView.vue'
 import Wire from './components/Wire.vue'
 import Palette from './components/Palette.vue'
 import Inspector from './components/Inspector.vue'
-import TopBar from './components/TopBar.vue'
+import TopBar, { type EditAction } from './components/TopBar.vue'
+import Gallery from './components/Gallery.vue'
+import Tutorial from './components/Tutorial.vue'
+import TruthTableDialog from './components/TruthTableDialog.vue'
+import { resolvedColors, schematicSVG } from './schematic'
+import { screenPixel, SIDE } from './geometry'
+import type { ScreenState } from './devices'
 import WatchPanel from './components/WatchPanel.vue'
 import { format, known, widthOf } from './logic'
 
@@ -473,11 +480,152 @@ async function open(file: File) {
     toast.error(`Couldn't open ${file.name}: ${(err as Error).message}`)
   }
 }
+
+// ── The gallery: on a first visit (nothing saved, no shared link), and from the bar ──────────────────────
+const route = useRoute()
+const router = useRouter()
+const galleryOpen = ref(!c.restored.value && !route.query.c)
+/** Something to go back to: a project restored, or the gallery closed once */
+const canContinue = ref(c.restored.value || !!route.query.c)
+watch(galleryOpen, (o) => {
+  if (!o) canContinue.value = true
+})
+function pickPreset(id: string) {
+  tutorialOn.value = false
+  c.load(presets.find((p) => p.id === id)!)
+}
+
+// ── A shared link (?c=…) opens its circuit, then the address goes back to plain ─────────────────────────
+onMounted(async () => {
+  const code = route.query.c
+  if (typeof code !== 'string' || !code) return
+  try {
+    await c.openShared(code)
+    lastName.value = ''
+    setTimeout(() => flow.value?.fitView(), 60)
+    toast.success('Opened a shared circuit')
+  } catch {
+    toast.error("Couldn't open the shared circuit: the link is incomplete or broken")
+  }
+  router.replace({ query: {} })
+})
+async function share() {
+  try {
+    const url = `${location.origin}${route.path}?c=${await c.shareCode()}`
+    if (url.length > 1_500_000) return toast.error('Too big for a link (large memories): save it as a file instead')
+    await navigator.clipboard.writeText(url)
+    toast.success(url.length > 8000 ? 'Link copied (a long one: big memories travel inside it)' : 'Link copied: anyone who opens it gets this circuit')
+  } catch {
+    toast.error("Couldn't copy the link")
+  }
+}
+
+// ── Export: the open circuit as a picture, colored by what its wires carry right now ────────────────────
+function screenPicture(n: PartNode) {
+  if (n.data?.kind !== 'screen') return undefined
+  const st = c.sim.state.get(c.prefix.value + n.id) as ScreenState | undefined
+  const p = { ...partByKind.get('screen')!.params, ...n.data.params }
+  const cols = p.cols ?? 32
+  const rows = p.rows ?? 32
+  if (!st || st.front.length !== cols * rows) return undefined
+  const cv = document.createElement('canvas')
+  cv.width = cols
+  cv.height = rows
+  cv.getContext('2d')!.putImageData(new ImageData(new Uint8ClampedArray(st.front.buffer as ArrayBuffer, st.front.byteOffset, cols * rows * 4), cols, rows), 0, 0)
+  const px = screenPixel(p)
+  return { href: cv.toDataURL(), x: SIDE, y: 40, w: cols * px, h: rows * px }
+}
+function partValue(n: PartNode) {
+  const id = c.prefix.value + n.id
+  const k = n.data?.kind
+  if (k === 'switch' || k === 'button' || k === 'clock') return String(c.sim.state.get(id)?.value ?? 0)
+  if (k === 'pin') return format(c.sim.output(id, 0) ?? { v: 0, k: 0, e: 0, m: 1 })
+  if (k === 'led' || k === 'probe' || k === 'outpin' || k === 'hex') {
+    const s = c.sim.inputsOf(id)[0]
+    return s ? format(s, k === 'probe' && n.data!.params.radix === 'dec' ? 'dec' : 'hex') : undefined
+  }
+  return undefined
+}
+async function exportImage(fmt: 'png' | 'svg') {
+  const { svg, width, height } = schematicSVG(
+    { nodes: c.nodes.value, edges: c.edges.value },
+    {
+      colors: resolvedColors(), detail: 'full', signal: (e) => c.sim.edgeSignal(e, c.prefix.value), value: partValue, picture: screenPicture,
+      // The wires as drawn on the canvas (kept apart where they'd run on top of each other)
+      path: (e) => flow.value?.getEdgePath(e.id) ?? undefined,
+    },
+  )
+  const name = lastName.value || 'circuit'
+  const download = (blob: Blob, file: string) => {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = file
+    a.click()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  if (fmt === 'svg') return download(blob, `${name}.svg`)
+  // Twice the size, for sharp text; at most 8192 px a side
+  const scale = Math.min(2, 8192 / Math.max(width, height))
+  const img = new Image()
+  img.src = URL.createObjectURL(blob)
+  try {
+    await img.decode()
+    const cv = document.createElement('canvas')
+    cv.width = Math.round(width * scale)
+    cv.height = Math.round(height * scale)
+    const ctx = cv.getContext('2d')!
+    ctx.imageSmoothingEnabled = false
+    ctx.drawImage(img, 0, 0, cv.width, cv.height)
+    cv.toBlob((png) => png && download(png, `${name}.png`), 'image/png')
+  } catch {
+    toast.error("Couldn't draw the picture")
+  } finally {
+    URL.revokeObjectURL(img.src)
+  }
+}
+
+// ── Truth table and tutorial ────────────────────────────────────────────────────────────────────────────
+const tableOpen = ref(false)
+const tutorialOn = ref(false)
+/** What the tutorial checks that happens off the canvas */
+const did = reactive(new Set<string>())
+watch(tableOpen, (o) => o && did.add('table'))
+function startTutorial() {
+  did.clear()
+  c.load(presets.find((p) => p.id === 'blank')!)
+  tutorialOn.value = true
+}
+
+// ── Edit menu: MFlow's own commands ─────────────────────────────────────────────────────────────────────
+function edit(action: EditAction) {
+  const f = flow.value
+  if (!f) return
+  if (c.inspecting.value && action !== 'copy' && action !== 'selectAll') return toast.info('Inside an instance: edit its circuit to change it')
+  if (action === 'selectAll') return (selection.value = { nodes: c.nodes.value.map((n) => n.id), edges: c.edges.value.map((e) => e.id) })
+  f[action]()
+  if (action !== 'copy') edited()
+}
 </script>
 
 <template>
   <div class="flex h-dvh flex-col overflow-hidden text-on-surface" :class="wide ? 'bg-surface-container' : 'bg-surface'">
-    <TopBar ref="topBar" :wide="wide" :can-inspect="!!(selectedNode || selectedEdge)" @save="save" @open="open" @palette="paletteOpen = true" @inspect="inspectorOpen = true" />
+    <TopBar
+      ref="topBar"
+      :wide="wide"
+      :can-inspect="!!(selectedNode || selectedEdge)"
+      @save="save"
+      @open="open"
+      @palette="paletteOpen = true"
+      @inspect="inspectorOpen = true"
+      @gallery="galleryOpen = true"
+      @table="tableOpen = true"
+      @tutorial="startTutorial"
+      @share="share"
+      @export="exportImage"
+      @edit="edit"
+    />
     <div class="flex min-h-0 flex-1">
       <aside v-if="wide" class="mb-2 ml-2 w-64 shrink-0 overflow-y-auto rounded-2xl bg-surface">
         <Palette @pick="pick" @grab="onGrab" />
@@ -498,6 +646,7 @@ async function open(file: File) {
           :zoom-on-double-click="false"
           :insert-on-edge="false"
           edges-reroutable
+          :edge-spacing="10"
           :min-zoom="0.15"
           background="dots"
           :grid-size="20"
@@ -539,7 +688,7 @@ async function open(file: File) {
           <MIconButton icon="arrow_back" :label="`Back to ${main!.name}`" size="xs" @click="c.openCircuit(main!.id)" />
           {{ main!.name }} <MIcon name="chevron_right" :size="16" /> {{ currentName }}
         </div>
-        <div v-else-if="description && !c.oscillating.value" class="pointer-events-none absolute top-3 left-3 max-w-md rounded-lg bg-surface-container-high/90 px-3 py-2 text-body-small text-on-surface-variant backdrop-blur-sm">
+        <div v-else-if="description && !tutorialOn && !c.oscillating.value" class="pointer-events-none absolute top-3 left-3 max-w-md rounded-lg bg-surface-container-high/90 px-3 py-2 text-body-small text-on-surface-variant backdrop-blur-sm">
           {{ description }}
         </div>
         <div v-if="c.oscillating.value" class="absolute top-3 left-3 flex max-w-md items-center gap-2 rounded-lg bg-error-container px-3 py-2 text-body-small text-on-error-container">
@@ -572,6 +721,10 @@ async function open(file: File) {
       <MIcon :name="ghostDef.icon" :size="18" class="text-primary" />
       <span class="text-title-small">{{ ghostDef.label }}</span>
     </div>
+
+    <Tutorial v-if="tutorialOn" :did="did" :hidden="galleryOpen || tableOpen || saveOpen || !!c.inspecting.value || c.oscillating.value" @close="tutorialOn = false" />
+    <Gallery v-model="galleryOpen" :can-continue="canContinue" @pick="pickPreset" @tutorial="startTutorial" />
+    <TruthTableDialog v-model="tableOpen" />
 
     <MDialog v-model="saveOpen" title="Save circuit" max-width="400px">
       <form id="circuit-save" @submit.prevent="download">

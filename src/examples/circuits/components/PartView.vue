@@ -11,6 +11,7 @@ import { partByKind, disassemble } from '../parts'
 import { getCircuit } from '../library'
 import { format, known, mask, widthOf, type Sig } from '../logic'
 import { geometry, placed } from '../geometry'
+import { gateBody, trapezoid as trapezoidOf, turnTransform } from '../shapes'
 import DeviceView from './DeviceView.vue'
 import SoundView from './SoundView.vue'
 import { useCircuit } from '../useCircuit'
@@ -27,15 +28,7 @@ const at = computed(() => placed(props.data))
 const vertical = computed(() => at.value.facing === 'south' || at.value.facing === 'north')
 const west = computed(() => at.value.facing === 'west')
 // A gate turns whole: its shape, drawn facing east, rotated about its corner and moved back in place
-const turn = computed(() => {
-  const { w, h } = g.value
-  switch (at.value.facing) {
-    case 'south': return `translate(${h} 0) rotate(90)`
-    case 'west': return `translate(${w} ${h}) rotate(180)`
-    case 'north': return `translate(0 ${w}) rotate(270)`
-    default: return undefined
-  }
-})
+const turn = computed(() => turnTransform(at.value.facing, g.value.w, g.value.h))
 const pointTone = computed(() => {
   const s = out0.value
   if (!s || (!s.k && !s.e)) return 'bg-secondary'
@@ -74,44 +67,9 @@ function press(on: boolean) {
   if ((state.value.value ?? 0) !== +on) setValue(+on)
 }
 
-// ── Gate bodies, in the part's own px ───────────────────────────────────────────────────────────────────
-const body = computed(() => {
-  const { w, h } = g.value
-  const x0 = 14
-  const bw = w - 28 - (def.value.inverted ? 8 : 0)
-  const x1 = x0 + bw
-  const t = 4
-  const b = h - 4
-  const mid = h / 2
-  switch (def.value.gate) {
-    case 'and':
-      return { d: `M${x0} ${t} H${x0 + bw / 2} A${bw / 2} ${(b - t) / 2} 0 0 1 ${x0 + bw / 2} ${b} H${x0} Z`, x1 }
-    case 'or':
-      return { d: `M${x0} ${t} Q${x0 + bw * 0.6} ${t} ${x1} ${mid} Q${x0 + bw * 0.6} ${b} ${x0} ${b} Q${x0 + bw * 0.3} ${mid} ${x0} ${t} Z`, x1 }
-    case 'xor':
-      return {
-        d: `M${x0 + 6} ${t} Q${x0 + bw * 0.6} ${t} ${x1} ${mid} Q${x0 + bw * 0.6} ${b} ${x0 + 6} ${b} Q${x0 + 6 + bw * 0.3} ${mid} ${x0 + 6} ${t} Z`,
-        extra: `M${x0} ${t} Q${x0 + bw * 0.3} ${mid} ${x0} ${b}`,
-        x1,
-      }
-    default:
-      return { d: `M${x0} ${t + 4} L${x1} ${mid} L${x0} ${b - 4} Z`, x1 }
-  }
-})
-
-// A plexer's trapezoid, facing east: wide on the side of its many pins, the narrow side's corners `slant` in
-const trapezoid = computed(() => {
-  const { w, h, slant = 12, wide } = g.value
-  const l = 16
-  const r = w - 16
-  const t = 4
-  const b = h - 4
-  const pts = wide === 'left'
-    ? [[l, t], [r, t + slant], [r, b - slant], [l, b]]
-    : [[l, t + slant], [r, t], [r, b], [l, b - slant]]
-  // Where the bottom and top edges cross the middle (sel and en come in there)
-  return { d: `M${pts.map((q) => q.join(' ')).join(' L')} Z`, bottom: b - slant / 2, top: t + slant / 2 }
-})
+// ── Gate bodies and plexers' trapezoids, in the part's own px (shapes.ts) ──────────────────────────────
+const body = computed(() => gateBody(def.value.gate, !!def.value.inverted, g.value.w, g.value.h))
+const trapezoid = computed(() => trapezoidOf(g.value))
 /** Text inside a turned part stays upright: turned back about its own anchor */
 const DEG = { east: 0, south: 90, west: 180, north: 270 } as const
 const upright = (x: number, y: number) => (DEG[at.value.facing] ? `rotate(${-DEG[at.value.facing]} ${x} ${y})` : undefined)
@@ -188,6 +146,7 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
   <div
     class="relative text-on-surface"
     :style="{ width: `${at.w}px`, height: `${at.h}px` }"
+    :data-part-id="id"
   >
     <!-- A label of your own over gates and I/O -->
     <div

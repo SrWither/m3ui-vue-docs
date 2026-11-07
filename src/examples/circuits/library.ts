@@ -37,3 +37,14 @@ export function contains(a: string, b: string, seen = new Set<string>()): boolea
   const c = getCircuit(a)
   return !!c?.nodes.some((n) => n.data?.kind === 'sub' && !!n.data.params.circuit && contains(n.data.params.circuit, b, seen))
 }
+
+/** Runs `fn` with `extra` circuits found too (a preset's own, not loaded): for drawing a project that isn't open */
+export function withCircuits<T>(extra: CircuitDef[], fn: () => T): T {
+  const before = resolver
+  resolver = (id) => extra.find((c) => c.id === id) ?? before(id)
+  try {
+    return fn()
+  } finally {
+    resolver = before
+  }
+}

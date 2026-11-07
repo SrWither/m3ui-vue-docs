@@ -308,6 +308,135 @@ function pattern(): Preset {
   }
 }
 
+// Squash: a ball bounces around a 32×32 screen and a paddle on the left wall, moved with the joypad, sends it back.
+// Each frame takes eight clock cycles, counted by `phase` and decoded: 0 clears the back buffer, 1 paints the ball,
+// 2–4 the paddle's three pixels, 5 shows the frame (vsync) and moves everything (it's every counter's clock)
+function squash(): Preset {
+  const { nodes, edges, part, wire } = builder()
+  const k = (id: string, x: number, y: number, width: number, value: number) => part(id, 'const', x, y, { width, value })
+  // The frame signal (phase 5) reaches every counter through tunnels rather than long wires
+  let frames = 0
+  const frame = (to: string, i: number, x: number, y: number) => {
+    const id = part(`frame${frames++}`, 'tunnel', x, y, { width: 1 }, 'frame')
+    wire(id, 0, to, i)
+  }
+  // The frame's phases
+  part('clk', 'clock', 0, 0)
+  part('phase', 'counter', 160, 0, { width: 3 }, 'Phase')
+  part('dec', 'decoder', 380, 0, { select: 3 })
+  wire('clk', 0, 'phase', 1)
+  wire('phase', 0, 'dec', 0)
+  // The paddle: Up and Down move it a pixel a frame, from row 0 to 29 (its top; it's 3 tall)
+  part('pad', 'joypad', 0, 260)
+  part('btn', 'split', 240, 260, { width: 8, parts: 8 }, 'Buttons')
+  part('move', 'or', 440, 340)
+  part('py', 'counter', 600, 300, { width: 5, max: 29, overflow: 'stay', updown: true }, 'Paddle y')
+  wire('pad', 0, 'btn', 0)
+  wire('btn', 4, 'move', 0)
+  wire('btn', 5, 'move', 1)
+  part('frameOut', 'tunnel', 520, 100, { width: 1 }, 'frame')
+  wire('dec', 5, 'frameOut', 0)
+  wire('move', 0, 'py', 0)
+  frame('py', 1, 440, 240)
+  wire('btn', 5, 'py', 3)
+  // The ball: a counter per axis, counting up while its T flip-flop's Q̅ is 1, turned around a step before each wall
+  // (so it touches the wall on the next frame and leaves it on the one after)
+  const axis = (a: 'x' | 'y', y0: number, high: number, low: number) => {
+    part(`b${a}`, 'counter', 600, y0, { width: 5, overflow: 'stay', updown: true }, `Ball ${a}`)
+    k(`${a}hi`, 800, y0 + 20, 5, high)
+    k(`${a}lo`, 800, y0 + 120, 5, low)
+    part(`${a}atHi`, 'comparator', 960, y0, { width: 5 })
+    part(`${a}atLo`, 'comparator', 960, y0 + 120, { width: 5 })
+    part(`${a}turnHi`, 'and', 1160, y0)
+    part(`${a}turnLo`, 'and', 1160, y0 + 100)
+    part(`${a}turn`, 'or', 1320, y0 + 40)
+    part(`${a}dir`, 'tff', 1480, y0, {}, `${a} direction`)
+    frame(`b${a}`, 1, 440, y0 + 20)
+    wire(`${a}dir`, 1, `b${a}`, 3)
+    wire(`b${a}`, 0, `${a}atHi`, 0)
+    wire(`${a}hi`, 0, `${a}atHi`, 1)
+    wire(`b${a}`, 0, `${a}atLo`, 0)
+    wire(`${a}lo`, 0, `${a}atLo`, 1)
+    wire(`${a}atHi`, 1, `${a}turnHi`, 0)
+    wire(`${a}dir`, 1, `${a}turnHi`, 1)
+    wire(`${a}atLo`, 1, `${a}turnLo`, 0)
+    wire(`${a}dir`, 0, `${a}turnLo`, 1)
+    wire(`${a}turnHi`, 0, `${a}turn`, 0)
+    wire(`${a}turnLo`, 0, `${a}turn`, 1)
+    wire(`${a}turn`, 0, `${a}dir`, 0)
+    frame(`${a}dir`, 1, 1340, y0 - 40)
+  }
+  axis('x', 520, 30, 2)
+  axis('y', 760, 30, 1)
+  // Bouncing off the left side: a hit if the ball is level with the paddle (0 ≤ y − paddle < 3), else a miss
+  part('dy', 'subtractor', 960, 1000, { width: 5 }, 'Ball − paddle')
+  k('three', 960, 1120, 5, 3)
+  part('level', 'comparator', 1160, 1000, { width: 5 })
+  part('noHit', 'not', 1320, 1100)
+  part('hit', 'and', 1480, 980)
+  part('miss', 'and', 1480, 1080)
+  part('hits', 'counter', 1640, 960, { width: 8 }, 'Hits')
+  part('misses', 'counter', 1640, 1100, { width: 8 }, 'Misses')
+  part('hitsOut', 'probe', 1860, 960, { width: 8, radix: 'dec' }, 'Hits')
+  part('missesOut', 'probe', 1860, 1100, { width: 8, radix: 'dec' }, 'Misses')
+  wire('by', 0, 'dy', 0)
+  wire('py', 0, 'dy', 1)
+  wire('dy', 0, 'level', 0)
+  wire('three', 0, 'level', 1)
+  wire('level', 0, 'noHit', 0)
+  wire('xturnLo', 0, 'hit', 0)
+  wire('level', 0, 'hit', 1)
+  wire('xturnLo', 0, 'miss', 0)
+  wire('noHit', 0, 'miss', 1)
+  wire('hit', 0, 'hits', 0)
+  frame('hits', 1, 1520, 900)
+  wire('miss', 0, 'misses', 0)
+  frame('misses', 1, 1520, 1180)
+  wire('hits', 0, 'hitsOut', 0)
+  wire('misses', 0, 'missesOut', 0)
+  // What phases 1–4 paint: the ball at (x, y), or the paddle's pixel (0, paddle + phase − 2)
+  part('ext', 'extender', 820, 0, { width: 3, to: 5 })
+  part('row', 'adder', 1000, 0, { width: 5 }, 'Paddle + phase')
+  k('minus2', 1000, 140, 5, 30)
+  part('prow', 'adder', 1180, 0, { width: 5 }, '− 2')
+  k('col0', 1180, 160, 5, 0)
+  k('ballColor', 1180, 240, 3, 6)
+  k('padColor', 1180, 320, 3, 3)
+  part('sx', 'mux', 1380, 0, { select: 1, width: 5 }, 'x')
+  part('sy', 'mux', 1380, 120, { select: 1, width: 5 }, 'y')
+  part('sc', 'mux', 1380, 240, { select: 1, width: 3 }, 'color')
+  part('paint', 'or', 1380, 340, { inputs: 4 })
+  part('scr', 'screen', 1640, 0, { cols: 32, rows: 32, mode: 'rgb3', buffered: true }, 'Squash')
+  wire('phase', 0, 'ext', 0)
+  wire('py', 0, 'row', 0)
+  wire('ext', 0, 'row', 1)
+  wire('row', 0, 'prow', 0)
+  wire('minus2', 0, 'prow', 1)
+  wire('col0', 0, 'sx', 0)
+  wire('bx', 0, 'sx', 1)
+  wire('prow', 0, 'sy', 0)
+  wire('by', 0, 'sy', 1)
+  wire('padColor', 0, 'sc', 0)
+  wire('ballColor', 0, 'sc', 1)
+  for (const m of ['sx', 'sy', 'sc']) wire('dec', 1, m, 2)
+  for (let i = 0; i < 4; i++) wire('dec', i + 1, 'paint', i)
+  wire('sx', 0, 'scr', 0)
+  wire('sy', 0, 'scr', 1)
+  wire('sc', 0, 'scr', 2)
+  wire('paint', 0, 'scr', 3)
+  wire('clk', 0, 'scr', 4)
+  wire('dec', 0, 'scr', 5)
+  wire('dec', 5, 'scr', 6)
+  return {
+    id: 'squash',
+    name: 'Squash (a game in gates)',
+    description: 'A game made only of counters, comparators and gates: press play, click the joypad and keep the ball in with Up and Down (or W and S). Eight clock cycles make a frame, drawn into a double-buffered screen.',
+    nodes,
+    edges,
+    hz: 100,
+  }
+}
+
 // Type into the keyboard: each clock edge moves one key from its queue to the terminal
 function echo(): Preset {
   const { nodes, edges, part, wire } = builder()
@@ -536,6 +665,7 @@ export const presets: Preset[] = [
     [0x59, 0x00, 0x3f, 0x75, 0x61, 0x00, 0x66, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     Object.assign(Array(16).fill(0), { 15: 1 }),
   ),
+  squash(),
   adder4(),
   rippleAdder(),
   aluDemo(),
