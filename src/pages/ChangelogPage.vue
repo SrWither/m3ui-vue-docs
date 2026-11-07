@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.3.8',
-    date: 'Unreleased',
+    date: '2026-11-07',
     changes: {
       added: [
         'MFlow edgeSpacing: parallel wires from different sources no longer run on top of each other',
