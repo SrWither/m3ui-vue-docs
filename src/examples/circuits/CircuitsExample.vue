@@ -9,8 +9,8 @@
  * - useCircuit.ts        the circuit, its simulation and the clock; presets.ts the circuits to start from (Tiny8 CPU…)
  * - components/          PartView (a part on the canvas), Wire (a wire by its value), Palette, Inspector, TopBar
  */
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { MButton, MIcon, MIconButton, MSideSheet, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { MButton, MDialog, MIcon, MIconButton, MSideSheet, MTextField, useToast, useWindowSizeClass } from '@m3ui-vue/m3ui-vue'
 import { MFlow, MFlowControls, MFlowMinimap, type FlowConnection, type FlowEdge, type FlowPosition, type FlowSelection, type FlowXY } from '@m3ui-vue/m3ui-vue/flow'
 import { useCircuit } from './useCircuit'
 import { presets } from './presets'
@@ -433,18 +433,40 @@ function removeSelected() {
 }
 
 // ── Saving ──────────────────────────────────────────────────────────────────────────────────────────────
+// Ctrl+S or the menu asks for the file's name first: the name it was opened or last saved as, else the preset's
+const saveOpen = ref(false)
+const saveName = ref('')
+const lastName = ref('')
+// A preset just loaded names the file, and keeps naming it once edited
+watch(c.presetId, (id) => id && (lastName.value = id === 'blank' ? '' : id), { immediate: true })
+const nameField = ref<InstanceType<typeof MTextField>>()
+const cleanName = (n: string) => n.trim().replace(/\.json$/i, '').replace(/[\\/:*?"<>|]+/g, '-')
 function save() {
+  saveName.value = lastName.value || 'circuit'
+  saveOpen.value = true
+  nextTick(() => {
+    nameField.value?.focus()
+    nameField.value?.select()
+  })
+}
+function download() {
+  const name = cleanName(saveName.value)
+  if (!name) return
   const url = URL.createObjectURL(new Blob([c.toJSON()], { type: 'application/json' }))
   const a = document.createElement('a')
   a.href = url
-  a.download = `${c.presetId.value && c.presetId.value !== 'blank' ? c.presetId.value : 'circuit'}.json`
+  a.download = `${name}.json`
   a.click()
   URL.revokeObjectURL(url)
+  lastName.value = name
+  saveOpen.value = false
+  toast.success(`Saved ${name}.json`)
 }
 async function open(file: File) {
   try {
     c.fromJSON(await file.text())
     c.presetId.value = ''
+    lastName.value = cleanName(file.name)
     setTimeout(() => flow.value?.fitView(), 60)
     toast.success(`Opened ${file.name}`)
   } catch (err) {
@@ -550,6 +572,16 @@ async function open(file: File) {
       <MIcon :name="ghostDef.icon" :size="18" class="text-primary" />
       <span class="text-title-small">{{ ghostDef.label }}</span>
     </div>
+
+    <MDialog v-model="saveOpen" title="Save circuit" max-width="400px">
+      <form id="circuit-save" @submit.prevent="download">
+        <MTextField ref="nameField" v-model="saveName" label="File name" variant="outlined" hint="Saved as .json to your downloads" :error="!cleanName(saveName)" />
+      </form>
+      <template #actions>
+        <MButton variant="text" @click="saveOpen = false">Cancel</MButton>
+        <MButton type="submit" form="circuit-save" :disabled="!cleanName(saveName)">Save</MButton>
+      </template>
+    </MDialog>
 
     <template v-if="!wide">
       <MSideSheet v-model="paletteOpen" title="Parts">

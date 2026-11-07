@@ -4,6 +4,19 @@ import type { FlowPosition } from '@m3ui-vue/m3ui-vue/flow'
 import type { Facing, PartData } from './library'
 
 export const PITCH = 20
+/** Where a box's first pin sits, below its title: on the grid, like every pin, so wires between parts run straight */
+const TOP = 40
+/** Rounded to the grid */
+const onGrid = (v: number) => Math.round(v / PITCH) * PITCH
+/**
+ * n pins a step apart with one in the middle of the other side (a gate's output, a mux's): with an even n that middle
+ * would fall between two grid lines, so the middle slot is left empty, as Logisim does
+ */
+function fanIn(n: number) {
+  if (n <= 1) return { h: 2 * PITCH, ys: [PITCH] }
+  if (n % 2) return { h: (n + 1) * PITCH, ys: Array.from({ length: n }, (_, i) => (i + 1) * PITCH) }
+  return { h: (n + 2) * PITCH, ys: Array.from({ length: n }, (_, i) => (i + 1 + (i >= n / 2 ? 1 : 0)) * PITCH) }
+}
 export type Look = 'gate' | 'plexer' | 'box' | 'io'
 
 export interface Geometry {
@@ -32,7 +45,7 @@ const IO: Record<string, { w: number; h: number }> = {
   point: { w: 20, h: 20 },
   buzzer: { w: 60, h: 40 },
   pull: { w: 60, h: 40 },
-  piano: { w: 248, h: 80 },
+  piano: { w: 248, h: 100 },
 }
 /** Room for the pin labels left of a screen or terminal */
 export const SIDE = 52
@@ -51,10 +64,10 @@ export function geometry(data: PartData): Geometry {
   const nIn = inputs.length
   const nOut = outputs.length
   const spread = (n: number, top: number, h: number) =>
-    n === 1 ? [Math.round(h / 2 / 10) * 10] : Array.from({ length: n }, (_, i) => top + i * PITCH)
+    n === 1 ? [onGrid(h / 2)] : Array.from({ length: n }, (_, i) => top + i * PITCH)
   if (def.gate) {
-    const h = Math.max(40, (nIn + 1) * PITCH)
-    return { look: 'gate', w: def.inverted ? 88 : 80, h, inY: spread(nIn, PITCH, h), outY: [Math.round(h / 2 / 10) * 10] }
+    const { h, ys } = fanIn(nIn)
+    return { look: 'gate', w: def.inverted ? 88 : 80, h, inY: ys, outY: [h / 2] }
   }
   if (PLEXERS.has(data.kind)) return plexer(data.kind, p, nIn, nOut)
   if (data.kind === 'text') {
@@ -65,7 +78,7 @@ export function geometry(data: PartData): Geometry {
     const bits = p.width ?? 1
     const w = Math.max(76, Math.min(bits, 8) * 18 + 24)
     const h = 40 + Math.ceil(bits / 8) * 22
-    return { look: 'io', w, h, inY: [], outY: [h / 2] }
+    return { look: 'io', w, h, inY: [], outY: [onGrid(h / 2)] }
   }
   if (data.kind === 'outpin') {
     const bits = p.width ?? 1
@@ -77,8 +90,8 @@ export function geometry(data: PartData): Geometry {
     return { look: 'io', w: p.serial ? 248 : 200, h, inY: spread(nIn, PITCH, h), outY: spread(nOut, PITCH, h) }
   }
   // Boxes with a device drawn beside their pin labels
-  const pinsH = 44 + (nIn - 1) * PITCH + 20
-  const inY = Array.from({ length: nIn }, (_, i) => 44 + i * PITCH)
+  const pinsH = TOP + (nIn - 1) * PITCH + 20
+  const inY = Array.from({ length: nIn }, (_, i) => TOP + i * PITCH)
   if (data.kind === 'screen') {
     const px = screenPixel(p)
     return { look: 'box', w: Math.max(160, SIDE + (p.cols ?? 32) * px + 12), h: Math.max(pinsH, 40 + (p.rows ?? 32) * px + 12), inY, outY: [] }
@@ -86,12 +99,13 @@ export function geometry(data: PartData): Geometry {
   if (data.kind === 'tty') {
     return { look: 'box', w: Math.ceil(SIDE + (p.cols ?? 32) * CHAR_W + 20), h: Math.max(pinsH, 40 + (p.rows ?? 8) * LINE_H + 16), inY, outY: [] }
   }
-  if (data.kind === 'keyboard') return { look: 'box', w: 180, h: 124, inY, outY: Array.from({ length: nOut }, (_, i) => 44 + i * PITCH) }
+  // Its field and queue go below the pins
+  if (data.kind === 'keyboard') return { look: 'box', w: 180, h: 140, inY, outY: Array.from({ length: nOut }, (_, i) => TOP + i * PITCH) }
   if (data.kind === 'seg7') return { look: 'io', w: 100, h: 160, inY: spread(7, PITCH, 160), outY: [] }
   const io = IO[data.kind]
   if (io) return { look: 'io', ...io, inY: spread(nIn, PITCH, io.h), outY: spread(nOut, PITCH, io.h) }
   // A box: a title, then the pins, then (for parts that store something) what's stored
-  const top = 44
+  const top = TOP
   const rows = Math.max(nIn, nOut, 1)
   const h = top + (rows - 1) * PITCH + (STATEFUL.has(data.kind) ? 40 : 20)
   const w = data.kind === 'ram' || data.kind === 'rom' || data.kind === 'sub' ? 160 : NARROW.has(data.kind) ? 112 : 132
@@ -104,10 +118,11 @@ export function geometry(data: PartData): Geometry {
  */
 function plexer(kind: string, p: Params, nIn: number, nOut: number): Geometry {
   const many = kind === 'mux' ? nIn - 1 - (p.enable ? 1 : 0) : nOut
-  const h = (many + 1) * PITCH
+  // A decoder has no pin in the middle of its other side, so its outputs needn't make room for one
+  const { h, ys } = kind === 'decoder' ? { h: (many + 1) * PITCH, ys: Array.from({ length: many }, (_, i) => (i + 1) * PITCH) } : fanIn(many)
   const w = 80
-  const mid = Math.round(h / 2 / 10) * 10
-  const side = (n: number, x: number, s: FlowPosition): PinAt[] => Array.from({ length: n }, (_, i) => ({ x, y: (i + 1) * PITCH, side: s }))
+  const mid = onGrid(h / 2)
+  const side = (n: number, x: number, s: FlowPosition): PinAt[] => ys.slice(0, n).map((y) => ({ x, y, side: s }))
   const sel: PinAt = { x: 40, y: h, side: 'bottom' }
   const en: PinAt[] = p.enable ? [{ x: 40, y: 0, side: 'top' }] : []
   const ins = kind === 'mux' ? [...side(many, 0, 'left'), sel, ...en] : kind === 'demux' ? [{ x: 0, y: mid, side: 'left' as const }, sel, ...en] : [sel, ...en]
@@ -161,7 +176,7 @@ export function placed(data: PartData): Placed {
   const inSide: FlowPosition = facing === 'south' ? 'top' : 'bottom'
   const outSide: FlowPosition = facing === 'south' ? 'bottom' : 'top'
   if (g.look === 'io') {
-    const mid = Math.round(w / 2 / 10) * 10
+    const mid = onGrid(w / 2)
     const row = (n: number, y: number, side: FlowPosition) => Array.from({ length: n }, (_, i) => ({ x: n === 1 ? mid : mid + (i - (n - 1) / 2) * PITCH, y, side }))
     return { ...g, facing, ins: row(g.inY.length, facing === 'south' ? 0 : h, inSide), outs: row(g.outY.length, facing === 'south' ? h : 0, outSide) }
   }

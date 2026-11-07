@@ -227,7 +227,7 @@ const pcm: PartDef = {
 
 const piano: PartDef = {
   kind: 'piano', label: 'Piano', icon: 'piano', category: 'sound',
-  description: 'Two octaves of keys: note is the MIDI number of the key held (60 is middle C) and gate is 1 while one is. Click it, then play with the keyboard too (Z S X D C V… and Q 2 W 3 E…)',
+  description: 'Two octaves of keys: note is the MIDI number of the key held (60 is middle C) and gate is 1 while one is. Click it, then play with the keyboard too (Z S X D C V… and Q 2 W 3 E…); the arrows under the keys, or - and +, change the octave',
   params: { value: 60 }, edit: ['value'],
   pins: () => ({ inputs: [], outputs: [{ name: 'note', width: 7 }, { name: 'gate', width: 1 }] }),
   init: () => ({ note: 0, gate: 0 }),

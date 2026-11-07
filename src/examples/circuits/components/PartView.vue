@@ -282,7 +282,7 @@ const pinValue = computed(() => (state.value.value ?? (out0.value && known(out0.
       class="absolute inset-0 rounded-md border bg-surface-container-low transition-[border-color,box-shadow] duration-200"
       :class="selected ? 'border-primary ring-1 ring-primary' : 'border-outline-variant'"
     >
-      <div class="flex h-8 items-center gap-1.5 border-b border-outline-variant px-2" :class="data.kind === 'sub' && 'bg-tertiary-container/60 text-on-tertiary-container rounded-t-md'">
+      <div class="flex h-7 items-center gap-1.5 border-b border-outline-variant px-2" :class="data.kind === 'sub' && 'bg-tertiary-container/60 text-on-tertiary-container rounded-t-md'">
         <MIcon :name="def.icon" :size="16" class="text-primary" />
         <span class="truncate text-label-large">{{ title }}</span>
       </div>

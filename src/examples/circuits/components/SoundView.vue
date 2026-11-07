@@ -3,7 +3,8 @@
  * The sound parts inside their PartView: a buzzer's and a synthesizer's voice follows what the part wants (its
  * `state.tone`, applied once per frame when the simulation moved), a PCM speaker streams the samples it collected,
  * and a piano draws its keys. The piano also takes the keyboard while it has focus, like a DAW: Z S X D C V G B H N J M
- * for the lower octave, Q 2 W 3 E R 5 T 6 Y 7 U for the upper one.
+ * for the lower octave, Q 2 W 3 E R 5 T 6 Y 7 U for the upper one; - and + (or ↓ ↑) shift it an octave, as do the
+ * arrows under the keys (its `value`, the lowest key, which the inspector sets to the semitone).
  */
 import { computed, onBeforeUnmount, watch } from 'vue'
 import { MIcon } from '@m3ui-vue/m3ui-vue'
@@ -52,6 +53,17 @@ const synthText = computed(() => {
 
 // ── Piano ───────────────────────────────────────────────────────────────────────────────────────────────
 const low = computed(() => params.value.value ?? 60)
+/** Its 24 keys stay within MIDI's 0–127 */
+const MAX_LOW = 127 - 23
+const range = computed(() => `${noteName(low.value)}–${noteName(low.value + 23)}`)
+function shift(octaves: number) {
+  const next = Math.min(MAX_LOW, Math.max(0, low.value + octaves * 12))
+  if (next === low.value) return
+  // A key held across the shift would never be let go
+  if (c.sim.state.get(props.id)?.gate) c.poke(props.id, { set: { gate: 0 } })
+  keyDown = ''
+  c.patchPart(props.id, { params: { value: next } })
+}
 const WHITE = [0, 2, 4, 5, 7, 9, 11]
 const BLACK = [1, 3, -1, 6, 8, 10, -1]
 const keys = computed(() => {
@@ -88,6 +100,13 @@ const KEYMAP = 'zsxdcvgbhnjmq2w3er5t6y7u'
 let keyDown = ''
 function key(e: KeyboardEvent, down: boolean) {
   const k = e.key.toLowerCase()
+  const octave = { '-': -1, '_': -1, arrowdown: -1, '+': 1, '=': 1, arrowup: 1 }[k]
+  if (octave && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (down) shift(octave)
+    return
+  }
   const i = KEYMAP.indexOf(k)
   if (i < 0 || e.ctrlKey || e.metaKey) return
   e.preventDefault()
@@ -118,40 +137,61 @@ const press = (note: number) => ({
 </script>
 
 <template>
-  <div
-    v-if="data.kind === 'piano'"
-    data-piano
-    data-flow-nodrag
-    tabindex="0"
-    class="relative h-[52px] w-[196px] rounded-xs outline-none focus:ring-2 focus:ring-primary/60"
-    aria-label="Piano: focus it to play with the keyboard"
-    @keydown="key($event, true)"
-    @keyup="key($event, false)"
-    @pointerleave="held >= 0 && play(null)"
-    @blur="held >= 0 && play(null)"
-  >
-    <button
-      v-for="k in keys.white"
-      :key="k.note"
-      type="button"
-      tabindex="-1"
-      class="absolute top-0 h-full w-[13px] rounded-b-xs border border-outline-variant transition-colors"
-      :class="held === k.note ? 'bg-primary' : 'bg-white'"
-      :style="{ left: `${k.x}px` }"
-      :aria-label="noteName(k.note)"
-      v-bind="press(k.note)"
-    />
-    <button
-      v-for="k in keys.black"
-      :key="k.note"
-      type="button"
-      tabindex="-1"
-      class="absolute top-0 h-[32px] w-[9px] rounded-b-xs transition-colors"
-      :class="held === k.note ? 'bg-primary' : 'bg-neutral-900'"
-      :style="{ left: `${k.x}px` }"
-      :aria-label="noteName(k.note)"
-      v-bind="press(k.note)"
-    />
+  <div v-if="data.kind === 'piano'" class="flex flex-col gap-1.5">
+    <div
+      data-piano
+      data-flow-nodrag
+      tabindex="0"
+      class="relative h-[52px] w-[196px] rounded-xs outline-none focus:ring-2 focus:ring-primary/60"
+      aria-label="Piano: focus it to play with the keyboard (- and + change the octave)"
+      @keydown="key($event, true)"
+      @keyup="key($event, false)"
+      @pointerleave="held >= 0 && play(null)"
+      @blur="held >= 0 && play(null)"
+    >
+      <button
+        v-for="k in keys.white"
+        :key="k.note"
+        type="button"
+        tabindex="-1"
+        class="absolute top-0 h-full w-[13px] rounded-b-xs border border-outline-variant transition-colors"
+        :class="held === k.note ? 'bg-primary' : 'bg-white'"
+        :style="{ left: `${k.x}px` }"
+        :aria-label="noteName(k.note)"
+        v-bind="press(k.note)"
+      />
+      <button
+        v-for="k in keys.black"
+        :key="k.note"
+        type="button"
+        tabindex="-1"
+        class="absolute top-0 h-[32px] w-[9px] rounded-b-xs transition-colors"
+        :class="held === k.note ? 'bg-primary' : 'bg-neutral-900'"
+        :style="{ left: `${k.x}px` }"
+        :aria-label="noteName(k.note)"
+        v-bind="press(k.note)"
+      />
+    </div>
+    <!-- The octave: a step down, the keys' range, a step up -->
+    <div data-flow-nodrag class="flex h-5 items-center justify-between">
+      <button
+        type="button"
+        class="grid size-5 place-items-center rounded-full text-on-surface-variant hover:bg-on-surface/8 active:bg-on-surface/12 disabled:opacity-38"
+        :disabled="low === 0"
+        aria-label="Octave down"
+        title="Octave down (-)"
+        @click="shift(-1)"
+      ><MIcon name="chevron_left" :size="16" /></button>
+      <span class="font-mono text-label-small text-on-surface-variant">{{ range }}</span>
+      <button
+        type="button"
+        class="grid size-5 place-items-center rounded-full text-on-surface-variant hover:bg-on-surface/8 active:bg-on-surface/12 disabled:opacity-38"
+        :disabled="low >= MAX_LOW"
+        aria-label="Octave up"
+        title="Octave up (+)"
+        @click="shift(1)"
+      ><MIcon name="chevron_right" :size="16" /></button>
+    </div>
   </div>
   <MIcon
     v-else-if="data.kind === 'buzzer'"
