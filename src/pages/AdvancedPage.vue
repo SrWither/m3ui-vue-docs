@@ -12,6 +12,14 @@ const components = [
   { name: 'MShader', description: 'A canvas container for hand-written GLSL/WGSL shaders.' },
   { name: 'MQRCode', description: 'Generates a scannable QR code as inline SVG.' },
   { name: 'MBarcode', description: 'Generates a barcode as inline SVG in several symbologies.' },
+  { name: 'MSeatMap', description: 'Seat picker for cinemas, theaters, buses and planes, drawn from rows of characters.' },
+  { name: 'MCandlestickChart', description: 'OHLC price chart in plain SVG with volume, moving averages, pan and zoom.' },
+  { name: 'MOrderBook', description: 'Live market depth: bids and asks with totals, depth bars, spread and flashes.' },
+  { name: 'MMortgageCalculator', description: 'Loan calculator with monthly payment, interest split and amortization schedule.' },
+  { name: 'MBodyMap', description: 'Front and back body silhouette with regions to mark, with severity levels.' },
+  { name: 'MOdontogram', description: 'Dental chart: 32 or 20 teeth, five surfaces each, FDI or Universal numbering.' },
+  { name: 'MVitalsChart', description: 'Vitals flowsheet: rows per vital sign with normal bands and a shared crosshair.' },
+  { name: 'MQuiz', description: 'Quiz with choice, true/false, ordering and typed questions, score and review.' },
 ]
 </script>
 

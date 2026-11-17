@@ -24,6 +24,11 @@ const components = [
   { name: 'MCarousel', description: 'The M3 carousel: multi-browse, uncontained, hero and full-screen layouts, with items that resize as you scroll.' },
   { name: 'MSimpleCarousel', description: 'A scroll-snap image carousel with fixed-width hero, multi-browse, and uncontained layouts.' },
   { name: 'MLightbox', description: 'Beta. A full-screen image viewer with swipe, zoom and drag to close, that finds your images by itself.' },
+  { name: 'MBeforeAfter', description: 'Two images or any two pieces of content split by a draggable handle.' },
+  { name: 'MOrderTicket', description: 'Kitchen ticket with an aging timer, modifiers and lines you tick off.' },
+  { name: 'MReceipt', description: 'Thermal-printer style receipt with discounts, taxes, change and print().' },
+  { name: 'MTicket', description: 'Boarding pass or event ticket with a perforated tear-off stub.' },
+  { name: 'MCertificate', description: 'Printable certificate or diploma with signatures and a seal, scaled to any width.' },
   { name: 'MChatBubble', description: 'A chat message bubble with sender, avatar, and read status.' },
   { name: 'MRelativeTime', description: 'A self-updating "5 minutes ago"-style relative timestamp.' },
 ]

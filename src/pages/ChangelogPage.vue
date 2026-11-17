@@ -15,6 +15,20 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.4.0',
+    date: '2026-11-17',
+    changes: {
+      added: [
+        'Food and retail: MPosKeypad (cash keypad with change), MOrderTicket (kitchen ticket with an aging timer), MProductConfigurator (variants and extras with a live price), MReceipt (thermal receipt with print())',
+        'Travel and events: MSeatMap (cinema, theater, bus or plane seats), MAvailabilityCalendar (stays with nightly prices), MTicket (boarding pass with a tear-off stub)',
+        'Finance: MCreditCardInput (card fields with a flipping preview, network detection and Luhn; helpers exported), MCandlestickChart (OHLC in plain SVG), MOrderBook (live market depth)',
+        'Real estate: MBeforeAfter (draggable image comparison), MMortgageCalculator (payment, interest and schedule; amortize() exported)',
+        'Health: MBodyMap (body regions with severity levels), MOdontogram (dental chart, FDI or Universal), MVitalsChart (vitals flowsheet with normal ranges)',
+        'Education: MQuiz (five question types, score and review), MCertificate (printable A4 certificate with signatures)',
+      ],
+    },
+  },
+  {
     version: '1.3.8',
     date: '2026-11-07',
     changes: {
