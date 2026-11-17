@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { MCertificate, MButton, MSegmentedButton, MSignaturePad, MTextField } from '@m3ui-vue/m3ui-vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { MCertificate, MButton, MSegmentedButton, MSelect, MSignaturePad, MTextField } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -8,10 +8,64 @@ import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
 
+// Everything on the certificate is editable in the demo
+const form = ref({
+  title: 'Certificate of completion',
+  presentedTo: 'This certifies that',
+  recipient: 'Ana Gómez',
+  description: 'has successfully completed the course Vue 3 Fundamentals, 24 hours',
+  issuer: 'M3 Academy',
+  date: new Date().toISOString().slice(0, 10),
+  code: 'M3A-2026-00428',
+  sign1Name: 'Leo Paz',
+  sign1Role: 'Course director',
+  sign2Name: 'Mía Ruiz',
+  sign2Role: 'Academic lead',
+})
 const variant = ref<'classic' | 'modern' | 'minimal'>('classic')
-const name = ref('Ana Gómez')
+const orientation = ref<'landscape' | 'portrait'>('landscape')
+const color = ref('primary')
+const seal = ref<string>('workspace_premium')
 const signature = ref<string | undefined>()
 const cert = ref<InstanceType<typeof MCertificate> | null>(null)
+
+const colorOptions = [
+  { value: 'primary', label: 'Primary' },
+  { value: 'secondary', label: 'Secondary' },
+  { value: 'tertiary', label: 'Tertiary' },
+  { value: 'error', label: 'Error' },
+  { value: '#8a6d1d', label: 'Gold (#8a6d1d)' },
+  { value: '#1f3a5f', label: 'Navy (#1f3a5f)' },
+]
+const sealOptions = [
+  { value: 'workspace_premium', label: 'Rosette' },
+  { value: 'emoji_events', label: 'Trophy' },
+  { value: 'school', label: 'Graduation cap' },
+  { value: 'verified', label: 'Verified' },
+  { value: 'none', label: 'No seal' },
+]
+
+const signatures = computed(() =>
+  [
+    { name: form.value.sign1Name, role: form.value.sign1Role || undefined, image: signature.value },
+    { name: form.value.sign2Name, role: form.value.sign2Role || undefined },
+  ].filter((s) => s.name.trim()),
+)
+
+// The pad's canvas has a fixed size in px: measure its column so it fills it
+const padBox = ref<HTMLElement | null>(null)
+const padWidth = ref(320)
+let ro: ResizeObserver | undefined
+onMounted(() => {
+  if (!padBox.value) return
+  padWidth.value = Math.floor(padBox.value.clientWidth) - 2
+  ro = new ResizeObserver(([e]) => {
+    const w = Math.floor(e!.contentRect.width) - 2 // the pad's border
+    if (w && w !== padWidth.value) padWidth.value = w
+  })
+  ro.observe(padBox.value)
+})
+onBeforeUnmount(() => ro?.disconnect())
 
 const props: PropDef[] = [
   { name: 'recipient', type: 'string', description: 'Required. Who receives it' },
@@ -46,16 +100,21 @@ const slots: SlotDef[] = [
     </p>
 
     <ComponentDemo
-      title="Course certificate"
-      description="Type a name, sign in the pad, and print. Switch the look between classic, modern and minimal."
+      title="Build your own"
+      description="Every text, the look, the color, the seal and the orientation can be changed here. Sign in the pad to put the signature over the first line, then print."
       :code="`<MCertificate
   ref=&quot;cert&quot;
-  :recipient=&quot;name&quot;
+  :title=&quot;title&quot;
+  :presented-to=&quot;presentedTo&quot;
+  :recipient=&quot;recipient&quot;
+  :description=&quot;description&quot;
+  :issuer=&quot;issuer&quot;
+  :date=&quot;date&quot;
+  :code=&quot;code&quot;
   :variant=&quot;variant&quot;
-  issuer=&quot;M3 Academy&quot;
-  description=&quot;has successfully completed the course Vue 3 Fundamentals, 24 hours&quot;
-  :date=&quot;new Date()&quot;
-  code=&quot;M3A-2026-00428&quot;
+  :orientation=&quot;orientation&quot;
+  :color=&quot;color&quot;
+  :seal=&quot;seal&quot;
   :signatures=&quot;[{ name: 'Leo Paz', role: 'Course director', image: signature }, { name: 'Mía Ruiz', role: 'Academic lead' }]&quot;
 />
 <MSignaturePad @end=&quot;(png) => (signature = png)&quot; />
@@ -68,23 +127,50 @@ const slots: SlotDef[] = [
             density="compact"
             :options="[{ value: 'classic', label: 'Classic' }, { value: 'modern', label: 'Modern' }, { value: 'minimal', label: 'Minimal' }]"
           />
+          <MSegmentedButton
+            v-model="orientation"
+            density="compact"
+            :options="[{ value: 'landscape', label: 'Landscape' }, { value: 'portrait', label: 'Portrait' }]"
+          />
           <MButton icon="print" variant="tonal" class="ms-auto" @click="cert?.print()">Print</MButton>
         </div>
-        <MCertificate
-          ref="cert"
-          :recipient="name || '—'"
-          :variant="variant"
-          issuer="M3 Academy"
-          description="has successfully completed the course Vue 3 Fundamentals, 24 hours"
-          :date="new Date()"
-          code="M3A-2026-00428"
-          :signatures="[{ name: 'Leo Paz', role: 'Course director', image: signature }, { name: 'Mía Ruiz', role: 'Academic lead' }]"
-        />
+
+        <div class="flex justify-center">
+          <MCertificate
+            ref="cert"
+            :class="orientation === 'portrait' ? 'max-w-md' : ''"
+            :title="form.title || undefined"
+            :presented-to="form.presentedTo || undefined"
+            :recipient="form.recipient || '—'"
+            :description="form.description || undefined"
+            :issuer="form.issuer || undefined"
+            :date="form.date ? new Date(form.date + 'T12:00') : undefined"
+            :code="form.code || undefined"
+            :variant="variant"
+            :orientation="orientation"
+            :color="color"
+            :seal="seal === 'none' ? false : seal"
+            :signatures="signatures"
+          />
+        </div>
+
         <div class="grid gap-4 sm:grid-cols-2">
-          <MTextField v-model="name" label="Recipient" />
-          <div class="flex flex-col gap-1">
-            <span class="text-label-large text-on-surface-variant">Director's signature</span>
-            <MSignaturePad :width="320" :height="120" background="#fffdf8" @end="(png) => (signature = png)" />
+          <MTextField v-model="form.title" label="Title" />
+          <MTextField v-model="form.presentedTo" label="Line before the name" />
+          <MTextField v-model="form.recipient" label="Recipient" />
+          <MTextField v-model="form.issuer" label="Issuer" />
+          <MTextField v-model="form.description" label="Description" multiline :rows="2" class="sm:col-span-2" />
+          <MTextField v-model="form.date" label="Date" type="date" />
+          <MTextField v-model="form.code" label="Certificate ID" />
+          <MSelect v-model="color" :options="colorOptions" label="Accent color" />
+          <MSelect v-model="seal" :options="sealOptions" label="Seal" />
+          <MTextField v-model="form.sign1Name" label="First signer" />
+          <MTextField v-model="form.sign1Role" label="First signer's role" />
+          <MTextField v-model="form.sign2Name" label="Second signer (empty to remove)" />
+          <MTextField v-model="form.sign2Role" label="Second signer's role" />
+          <div ref="padBox" class="flex flex-col gap-1 sm:col-span-2">
+            <span class="text-label-large text-on-surface-variant">First signer's signature</span>
+            <MSignaturePad :key="padWidth" :width="padWidth" :height="140" background="#fffdf8" @end="(png) => (signature = png)" />
           </div>
         </div>
       </div>
