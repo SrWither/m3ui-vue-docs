@@ -15,6 +15,14 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.4.1',
+    date: '2026-11-19',
+    changes: {
+      added: ['MCountdown: a countdown to a date with rolling digits, in boxes or inline, unit names in your language'],
+      fixed: ['MSelect and MAutocomplete: the clear button sets the value to null instead of undefined'],
+    },
+  },
+  {
     version: '1.4.0',
     date: '2026-11-17',
     changes: {

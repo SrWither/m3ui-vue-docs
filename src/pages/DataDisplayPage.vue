@@ -12,6 +12,7 @@ const components = [
   { name: 'MStatCard', description: 'A compact metric card with a trend indicator and loading skeleton.' },
   { name: 'MSparkline', description: 'A small line, area or bar trend chart for next to a number, with no chart library.' },
   { name: 'MAnimatedNumber', description: 'A number whose digits roll to their new value on a spring, formatted for your locale.' },
+  { name: 'MCountdown', description: 'A countdown to a date with rolling digits, in boxes or inline, with unit names in your language.' },
   { name: 'MTimeline', description: 'An event timeline, vertical or horizontal, with icon dots, dates and custom content.' },
   { name: 'MSkeleton', description: 'A loading placeholder shape with pulse or wave animation.' },
   { name: 'MEmptyState', description: 'A placeholder for empty views with optional action buttons.' },
