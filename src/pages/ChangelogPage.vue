@@ -15,6 +15,13 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.4.4',
+    date: '2026-11-21',
+    changes: {
+      fixed: ['MTabs: the indicator follows the tabs when they resize after mount (e.g. icons before their font loads) and no longer widens the scrollable row'],
+    },
+  },
+  {
     version: '1.4.3',
     date: '2026-11-21',
     changes: {
