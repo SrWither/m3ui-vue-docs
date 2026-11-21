@@ -11,6 +11,7 @@ const components = [
   { name: 'MProductConfigurator', description: 'Variant and extras picker with a live price: sizes, colors, sides, combos.' },
   { name: 'MAvailabilityCalendar', description: 'Booking calendar with nightly prices, booked nights and minimum stays.' },
   { name: 'MCreditCardInput', description: 'Card number, expiry and security code with network detection, validation and a flipping card preview.' },
+  { name: 'MPhoneInput', description: 'A phone number with a searchable country selector, formatted as typed and bound as E.164.' },
   { name: 'MPasswordMeter', description: 'A password strength bar that scores length and variety.' },
   { name: 'MSignaturePad', description: 'A canvas that captures pointer strokes for signature capture.' },
   { name: 'MSelect', description: 'Single-value dropdown select, docked or as a modal.' },

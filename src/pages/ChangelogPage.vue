@@ -18,7 +18,13 @@ const versions: Version[] = [
     version: '1.4.2',
     date: 'Unreleased',
     changes: {
-      added: ['MDatePicker, MDatePickerModal, MDateRangePicker and MDateRangePickerModal: the month title opens a grid of years to jump to (yearRange; years outside min/max disabled)'],
+      added: [
+        'MDatePicker, MDatePickerModal, MDateRangePicker and MDateRangePickerModal: the month title opens a grid of years to jump to (yearRange; years outside min/max disabled)',
+        'MCalendarHeatmap: activity per day as a grid of weeks, like a contributions graph',
+        'MMeterGroup: several values sharing one bar with a legend, like a phone\'s storage screen',
+        'MPhoneInput: phone numbers with a searchable country selector, formatted as typed and bound as E.164 (formatPhone exported)',
+        'MTypewriter: text that types itself out and cycles through phrases',
+      ],
     },
   },
   {
