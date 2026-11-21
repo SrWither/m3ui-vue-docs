@@ -11,7 +11,7 @@ const tabsProps: PropDef[] = [
   { name: 'tabs', type: '{ value, label, icon?, disabled? }[]', description: 'Tab definitions' },
   { name: 'variant', type: "'primary' | 'secondary'", default: "'primary'", description: 'Primary: short sliding underline shorter than the tab with a stretch animation. Secondary: full-width underline spanning the entire tab, text-only.' },
   { name: 'iconPosition', type: "'top' | 'leading'", default: "'top' (primary), 'leading' (secondary)", description: "Where a tab's icon goes: top, stacked above the label in a 64px tab (Compose's Tab), or leading, beside the label in a 48px tab (Compose's LeadingIconTab)" },
-  { name: 'scrollable', type: 'boolean', default: 'false', description: "M3's Fixed vs Scrollable TabRow: false (default) evenly distributes tabs with no scroll (use for 2-5 tabs), true keeps each tab at its natural width and scrolls horizontally on overflow (use for many tabs)" },
+  { name: 'scrollable', type: 'boolean', default: 'false', description: "M3's Fixed vs Scrollable TabRow: false (default) evenly distributes tabs with no scroll (use for 2-5 tabs), true keeps each tab at its natural width and scrolls horizontally on overflow, keeping the active tab in view (centered on mount and smoothly on every change; use for many tabs)" },
 ]
 
 const activeTab = ref<string | number>('home')

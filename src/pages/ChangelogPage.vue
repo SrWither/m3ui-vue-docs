@@ -15,6 +15,13 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.4.3',
+    date: '2026-11-21',
+    changes: {
+      fixed: ['MTabs (scrollable): the active tab scrolls into view on mount and whenever it changes, instead of staying hidden off to the side'],
+    },
+  },
+  {
     version: '1.4.2',
     date: '2026-11-21',
     changes: {
