@@ -17,6 +17,7 @@ const dateRangeProps: PropDef[] = [
   { name: 'placeholder', type: 'string', description: "Placeholder shown when no range is selected — falls back to label, then the current locale's string" },
   { name: 'min', type: 'string', description: 'Minimum date (YYYY-MM-DD)' },
   { name: 'max', type: 'string', description: 'Maximum date (YYYY-MM-DD)' },
+  { name: 'yearRange', type: '[number, number]', default: '[1900, 2100]', description: 'First and last year the year grid (opened from the month title) offers; years with no day inside min/max are disabled' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
   { name: 'error', type: 'boolean', description: 'Error state' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
@@ -50,7 +51,7 @@ const dateRangeTypes: TypeDef[] = [
 
     <ComponentDemo
       title="Date Range"
-      description="Select a start and end date."
+      description="Select a start and end date. Tap the month title to jump to another year."
       :code="`<template>
   <MDateRangePicker v-model=&quot;range&quot; label=&quot;Period&quot; />
 </template>`"

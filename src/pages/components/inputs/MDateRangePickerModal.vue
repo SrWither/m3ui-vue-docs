@@ -17,6 +17,7 @@ const dateRangePickerModalProps: PropDef[] = [
   { name: 'show', type: 'boolean', default: 'false', description: 'Controls dialog visibility (v-model:show)' },
   { name: 'min', type: 'string', description: 'Minimum selectable date (YYYY-MM-DD)' },
   { name: 'max', type: 'string', description: 'Maximum selectable date (YYYY-MM-DD)' },
+  { name: 'yearRange', type: '[number, number]', default: '[1900, 2100]', description: 'First and last year the year grid (opened from the month title) offers; years with no day inside min/max are disabled' },
   { name: 'locale', type: 'string', description: "Locale for month/day names. Falls back to the app's configured locale (createM3UI({ locale })) — same pattern as MRelativeTime" },
   { name: 'title', type: 'string', default: "'Select range'", description: 'Dialog title' },
 ]
@@ -37,7 +38,7 @@ const dateRangePickerModalEvents: EventDef[] = [
 
     <ComponentDemo
       title="Date Range Picker Modal"
-      description="Modal date range picker. Select start and end dates within a dialog with range highlighting."
+      description="Modal date range picker. Select start and end dates within a dialog with range highlighting. Tap the month title to jump to another year."
       :code="`<template>
   <MButton @click=&quot;show = true&quot;>Pick range</MButton>
   <MDateRangePickerModal v-model=&quot;range&quot; v-model:show=&quot;show&quot; />

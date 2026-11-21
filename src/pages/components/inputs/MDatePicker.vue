@@ -15,6 +15,7 @@ const datePickerProps: PropDef[] = [
   { name: 'placeholder', type: 'string', description: "Placeholder shown when no date is selected — falls back to label, then the current locale's string" },
   { name: 'min', type: 'string', description: 'Minimum selectable date (YYYY-MM-DD)' },
   { name: 'max', type: 'string', description: 'Maximum selectable date (YYYY-MM-DD)' },
+  { name: 'yearRange', type: '[number, number]', default: '[1900, 2100]', description: 'First and last year the year grid (opened from the month title) offers; years with no day inside min/max are disabled' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
   { name: 'error', type: 'boolean', description: 'Error state' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
@@ -48,7 +49,7 @@ const datePickerProps: PropDef[] = [
 
     <ComponentDemo
       title="Min/Max range"
-      description="Dates outside min/max are shown disabled in the calendar grid."
+      description="Dates outside min/max are shown disabled in the calendar grid, and so are the years outside them in the year grid the month title opens."
       :code="`<MDatePicker v-model=&quot;date&quot; label=&quot;Appointment&quot; min=&quot;2026-01-01&quot; max=&quot;2026-12-31&quot; />`"
     >
       <div class="w-full sm:w-80">
