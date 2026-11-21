@@ -24,7 +24,9 @@ const versions: Version[] = [
         'MMeterGroup: several values sharing one bar with a legend, like a phone\'s storage screen',
         'MPhoneInput: phone numbers with a searchable country selector, formatted as typed and bound as E.164 (formatPhone exported)',
         'MTypewriter: text that types itself out and cycles through phrases',
+        'MListItem: a #trailing slot on expandable items (its switch or button doesn\'t toggle the item) and an indent prop for the children',
       ],
+      fixed: ['MListItem: pressing a button or switch inside a clickable row no longer darkens and reshapes the whole row'],
     },
   },
   {

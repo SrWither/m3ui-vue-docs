@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MList, MListItem, MListSubheader, MListGroup, MCard } from '@m3ui-vue/m3ui-vue'
+import { MList, MListItem, MListSubheader, MListGroup, MCard, MSwitch, MIconButton } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
@@ -9,6 +9,8 @@ import ComponentPager from '@/components/ComponentPager.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { EventDef } from '@/components/EventsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
+
+const notify = ref(true)
 
 const listProps: PropDef[] = [
   { name: 'dense', type: 'boolean', default: 'false', description: 'Compact vertical padding on child items' },
@@ -51,6 +53,7 @@ const listItemProps: PropDef[] = [
   { name: 'to', type: 'string | object', description: 'Vue Router destination — renders the item as a router-link' },
   { name: 'expandable', type: 'boolean', default: 'false', description: 'Show an expand/collapse chevron revealing the #children slot' },
   { name: 'expanded', type: 'boolean', description: 'Control the expanded state (v-model:expanded) — otherwise managed internally' },
+  { name: 'indent', type: 'number | string', default: '32px', description: 'Indent of the expanded #children: px, or any CSS length. Narrow it on small screens' },
 ]
 
 const listItemEvents: EventDef[] = [
@@ -63,7 +66,7 @@ const listItemSlots: SlotDef[] = [
   { name: '#default', description: 'Custom content replacing the title/subtitle/description text block' },
   { name: '#overline', description: 'Custom overline content, replacing the overline prop' },
   { name: '#leading', description: 'Custom leading element, replacing the icon/avatar/image/icon-container' },
-  { name: '#trailing', description: 'Custom trailing element, replacing the icon/text/switch/checkbox' },
+  { name: '#trailing', description: 'Custom trailing element, replacing the icon/text/switch/checkbox. On an expandable item it sits before the expand icon, and its controls don\'t open or close the item. Pressing a control inside a row (here or in #leading) lights up only the control, not the row' },
   { name: '#children', description: 'Nested content revealed when expandable is set and the item is expanded' },
 ]
 
@@ -447,6 +450,50 @@ const cutout = ref(true)
             </MListItem>
             <MListItem title="Sent" icon="send" />
             <MListItem title="Trash" icon="delete" />
+          </MList>
+        </MCard>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Controls Inside Rows"
+      description="A switch or button in #trailing has its own state layer: pressing it doesn't press the row. On an expandable item the switch doesn't open or close it, and indent narrows the children's indent for small screens."
+      :code="`<template>
+  <MList>
+    <MListItem title=&quot;Wi-Fi&quot; icon=&quot;wifi&quot; clickable>
+      <template #trailing>
+        <MIconButton icon=&quot;settings&quot; label=&quot;Wi-Fi settings&quot; />
+      </template>
+    </MListItem>
+    <MListItem title=&quot;Notifications&quot; icon=&quot;notifications&quot; expandable :indent=&quot;12&quot;>
+      <template #trailing>
+        <MSwitch v-model=&quot;notify&quot; />
+      </template>
+      <template #children>
+        <MListItem title=&quot;Sounds&quot; icon=&quot;volume_up&quot; />
+        <MListItem title=&quot;Badges&quot; icon=&quot;circle_notifications&quot; />
+      </template>
+    </MListItem>
+  </MList>
+</template>`"
+    >
+      <div class="w-full max-w-sm">
+        <MCard variant="outlined" class="overflow-hidden">
+          <MList>
+            <MListItem title="Wi-Fi" subtitle="Home network" icon="wifi" clickable>
+              <template #trailing>
+                <MIconButton icon="settings" label="Wi-Fi settings" />
+              </template>
+            </MListItem>
+            <MListItem title="Notifications" icon="notifications" expandable :indent="12">
+              <template #trailing>
+                <MSwitch v-model="notify" />
+              </template>
+              <template #children>
+                <MListItem title="Sounds" icon="volume_up" clickable />
+                <MListItem title="Badges" icon="circle_notifications" clickable />
+              </template>
+            </MListItem>
           </MList>
         </MCard>
       </div>
