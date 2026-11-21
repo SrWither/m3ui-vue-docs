@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.4.2',
-    date: 'Unreleased',
+    date: '2026-11-21',
     changes: {
       added: [
         'MDatePicker, MDatePickerModal, MDateRangePicker and MDateRangePickerModal: the month title opens a grid of years to jump to (yearRange; years outside min/max disabled)',
