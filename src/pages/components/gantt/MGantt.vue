@@ -44,6 +44,15 @@ const columns: GanttColumn[] = [
   { key: 'progress', label: 'Done', width: 64, align: 'end' },
 ]
 
+// ── Read-only and narrow ────────────────────────────────────────────────────────────────────────────
+const roTasks = ref<GanttTask[]>(launchPlan())
+const listHidden = ref(false)
+const roColumns: GanttColumn[] = [
+  { key: 'name', label: 'Task' },
+  { key: 'start', label: 'Start', width: 96, hideBelow: 640 },
+  { key: 'progress', label: 'Done', width: 64, align: 'end', hideBelow: 640 },
+]
+
 // ── Hours ───────────────────────────────────────────────────────────────────────────────────────────────
 const dayTasks = ref<GanttTask[]>([
   { id: 'h1', name: 'Doors open', start: at(0, '08:00'), type: 'milestone' },
@@ -91,9 +100,10 @@ const props: PropDef[] = [
   { name: 'selection', type: 'string[]', description: 'Selected task ids (v-model:selection)' },
   { name: 'collapsed', type: 'string[]', description: 'Summaries whose tasks are hidden (v-model:collapsed)' },
   { name: 'columns', type: 'GanttColumn[]', default: 'name, start, duration', description: "The task list's columns: name, start, end, duration and progress are built in, anything else reads data[key]; [] hides the list" },
-  { name: 'gridWidth', type: 'number', default: '320', description: "The task list's width (v-model:grid-width; drag its edge)" },
-  { name: 'rowHeight', type: 'number', default: '40', description: 'Row height in px' },
-  { name: 'readonly', type: 'boolean', default: 'false', description: 'No dragging, resizing, linking, reordering, renaming or deleting' },
+  { name: 'gridWidth', type: 'number', default: '320', description: "The task list's width (v-model:grid-width; drag the divider, double-click it to come back to this width)" },
+  { name: 'gridCollapsed', type: 'boolean', default: 'false', description: 'Hides the task list so the timeline takes the whole width (v-model:grid-collapsed; MGanttControls has a button for it)' },
+  { name: 'rowHeight', type: 'number', default: '40', description: 'Row height in px; raise it (e.g. 48) for roomier touch targets' },
+  { name: 'readonly', type: 'boolean', default: 'false', description: 'No dragging, resizing, linking, reordering, renaming or deleting: dragging a bar with a mouse pans the chart instead' },
   { name: 'schedule', type: "'manual' | 'auto'", default: "'manual'", description: 'auto: the tasks that depend on a moved one follow it' },
   { name: 'calendar', type: 'GanttCalendar', description: '{ workingDays, holidays }: days off are shaded, and auto scheduling counts working days' },
   { name: 'criticalPath', type: 'boolean', default: 'false', description: 'Highlights the tasks and dependencies whose delay delays the end' },
@@ -107,7 +117,7 @@ const props: PropDef[] = [
   { name: 'beforeDelete', type: '(tasks) => boolean | Promise<boolean>', description: 'Asked before deleting' },
 ]
 const events: EventDef[] = [
-  { name: 'update:tasks / scale / selection / collapsed / gridWidth', payload: '…', description: 'v-model updates' },
+  { name: 'update:tasks / scale / selection / collapsed / gridWidth / gridCollapsed', payload: '…', description: 'v-model updates' },
   { name: 'task-click / task-dblclick / task-contextmenu', payload: '(task, event)', description: 'On a bar or a row (Enter on a row is a dblclick: open your editor there)' },
   { name: 'link', payload: '{ from, to, type }', description: 'A dependency was drawn' },
   { name: 'unlink', payload: '{ from, to }', description: 'A dependency was removed' },
@@ -118,10 +128,21 @@ const slots: SlotDef[] = [
   { name: 'default', scope: '{ gantt }', description: 'Above the chart: MGanttControls, filters of yours' },
   { name: 'bar', scope: '{ task, selected, critical }', description: "A bar's content instead of its label" },
   { name: 'cell-<key>', scope: '{ task, value }', description: 'A cell of that column' },
-  { name: 'tooltip', scope: '{ task, slack }', description: 'The card over a hovered or dragged bar' },
+  { name: 'tooltip', scope: '{ task, slack }', description: 'The card over a hovered, dragged or tapped bar' },
   { name: 'empty', description: 'Shown while there are no tasks' },
 ]
 const types: TypeDef[] = [
+  {
+    name: 'GanttColumn',
+    fields: [
+      { name: 'key', type: 'string', required: true, description: 'name, start, end, duration and progress are built in; anything else reads task.data[key] (or #cell-<key>)' },
+      { name: 'label', type: 'string', description: 'Its header' },
+      { name: 'width', type: 'number', description: 'px; the name column takes what is left when it has none' },
+      { name: 'align', type: "'start' | 'center' | 'end'", description: 'Its text' },
+      { name: 'format', type: '(task) => string', description: 'Text for a cell' },
+      { name: 'hideBelow', type: 'number', description: "Hidden while the chart (its own width, not the window's) is narrower than this, in px. The default start and duration columns hide below 600" },
+    ],
+  },
   {
     name: 'GanttTask',
     fields: [
@@ -163,7 +184,8 @@ const types: TypeDef[] = [
       Every edit is undoable. Not an M3 spec component. From <code>/gantt</code>, with no dependencies.
     </p>
     <p class="mb-8 text-body-medium text-on-surface-variant">
-      On touch, a short press on a bar picks it up (a swipe scrolls), and a pinch zooms. In the list:
+      Dragging the empty timeline with a mouse pans it. On touch, a short press on a bar picks it up (a swipe
+      scrolls), a tap shows its card, and a pinch zooms. In the list:
       arrows move and fold, Alt + ←/→ moves the task, Alt + Shift + ←/→ changes its end, Alt + ↑/↓ reorders it,
       Ctrl + ] / [ indents and outdents, F2 renames, Delete deletes.
     </p>
@@ -257,6 +279,40 @@ const { tasks: onPath, slack, finish } = criticalPath(scheduled)`"
           <template #bar="{ task }">
             <span class="truncate">{{ task.data?.owner ? `${task.data.owner} · ` : '' }}{{ task.name }}</span>
           </template>
+        </MGantt>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Read-only and Narrow Screens"
+      description="Readonly: dragging anywhere on the timeline (bars too) pans it, and a tap on a bar shows its card. The button at the start of the controls hides the list; Fit zooms to every task. Columns with hideBelow drop out on a narrow chart (resize the window or try it on a phone), and the names inside the bars stay in view as you scroll."
+      flush
+      :code="`<MGantt
+  :tasks=&quot;tasks&quot;
+  readonly
+  scale=&quot;month&quot;
+  :columns=&quot;columns&quot;
+  v-model:grid-collapsed=&quot;listHidden&quot;
+>
+  <MGanttControls :scales=&quot;['week', 'month', 'quarter']&quot; />
+</MGantt>`"
+      :script="`const listHidden = ref(window.innerWidth < 600) // start without the list on a phone
+const columns: GanttColumn[] = [
+  { key: 'name', label: 'Task' },
+  { key: 'start', label: 'Start', width: 96, hideBelow: 640 },
+  { key: 'progress', label: 'Done', width: 64, align: 'end', hideBelow: 640 },
+]`"
+    >
+      <div class="p-4 sm:p-6">
+        <MGantt
+          v-model:grid-collapsed="listHidden"
+          :tasks="roTasks"
+          readonly
+          scale="month"
+          :columns="roColumns"
+          class="h-[380px] border border-outline-variant"
+        >
+          <MGanttControls :scales="['week', 'month', 'quarter']" />
         </MGantt>
       </div>
     </ComponentDemo>

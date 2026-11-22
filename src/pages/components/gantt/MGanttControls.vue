@@ -20,7 +20,9 @@ function add() {
 
 const props: PropDef[] = [
   { name: 'scales', type: 'GanttScale[]', default: "['day', 'week', 'month', 'quarter']", description: 'The scales offered as a segmented button; [] hides it' },
+  { name: 'list', type: 'boolean', default: 'true', description: "Show / hide MGantt's task list (v-model:grid-collapsed)" },
   { name: 'zoom', type: 'boolean', default: 'true', description: 'Zoom out and in buttons' },
+  { name: 'fit', type: 'boolean', default: 'true', description: 'Fit: zooms and scrolls so every task fits the width' },
   { name: 'today', type: 'boolean', default: 'true', description: 'Scroll to today' },
   { name: 'fold', type: 'boolean', default: 'true', description: 'Expand all / collapse all, when anything folds' },
   { name: 'history', type: 'boolean', default: 'true', description: 'Undo and redo (not when readonly)' },
@@ -35,8 +37,9 @@ const slots: SlotDef[] = [
   <div>
     <h1 class="mb-2 text-headline-large font-medium">MGanttControls</h1>
     <p class="mb-8 text-body-large text-on-surface-variant">
-      A toolbar for an MGantt or an MResourceTimeline: the zoom as named scales, zoom in and out, today, fold and
-      unfold, undo and redo. Put it in their default slot. From <code>/gantt</code>.
+      A toolbar for an MGantt or an MResourceTimeline: show / hide the task list (MGantt), the zoom as named scales,
+      zoom in and out, fit everything, today, fold and unfold, undo and redo. Put it in their default slot. With a
+      finger its buttons are 48 px. From <code>/gantt</code>.
     </p>
 
     <ComponentDemo

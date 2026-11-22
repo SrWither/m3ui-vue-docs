@@ -23,6 +23,8 @@ const api: PropDef[] = [
   { name: 'criticalPath', type: 'ComputedRef<GanttCriticalPath>', description: '{ tasks, dependencies, slack, finish }, whether or not the chart highlights it' },
   { name: 'undo() / redo() / canUndo / canRedo', type: 'function / ComputedRef', description: 'History' },
   { name: 'dateAt(clientX)', type: 'string', description: 'The day under a page x (to drop something there)' },
+  { name: 'gridCollapsed / setGridCollapsed(collapsed)', type: 'ComputedRef<boolean> / function', description: 'Whether the task list is hidden, and hiding or showing it' },
+  { name: 'fit()', type: 'function', description: 'Zooms and scrolls so every task fits the width' },
 ]
 const timelineApi: PropDef[] = [
   { name: 'events / selection / conflicts', type: 'ComputedRef', description: 'Bookings, the selection, and the ids that overlap past their capacity' },

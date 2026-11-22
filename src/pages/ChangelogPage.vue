@@ -15,6 +15,25 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.5.0',
+    date: '2026-11-22',
+    changes: {
+      added: [
+        'MGantt: gridCollapsed (v-model) hides the task list, with a show / hide button in MGanttControls',
+        'MGantt: GanttColumn.hideBelow hides a column on a narrow chart',
+        'MGanttControls: Fit everything zooms and scrolls so every task or booking fits the width',
+        'MGantt: a tap on a bar shows its card (name, dates, duration, progress)',
+      ],
+      changed: [
+        'MGantt and MResourceTimeline: the list divider has a visible grip, a wider touch area, and a double click restores the width',
+        'MGantt on a narrow chart: the default columns show only the name, with a tighter indent',
+        'MGanttControls: 48px buttons with a finger',
+        'MGantt: names inside bars stay in view while scrolling; drag cursors hold during the gesture; month names abbreviate in narrow header cells',
+      ],
+      fixed: ['MGantt and MResourceTimeline: dragging with a mouse (readonly bars included) pans the chart instead of starting the browser\'s native drag or a text selection'],
+    },
+  },
+  {
     version: '1.4.4',
     date: '2026-11-21',
     changes: {
