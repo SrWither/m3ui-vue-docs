@@ -24,6 +24,12 @@ const styleName = ref<'liberty' | 'positron' | 'dark'>('liberty')
 const styleOptions = (['liberty', 'positron', 'dark'] as const).map((v) => ({ value: v, label: v }))
 const keepLayers = ref(true)
 
+const workerCode = `// main.ts (Vite)
+import { setMapWorker } from '@m3ui-vue/m3ui-vue/map'
+import mapWorker from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
+
+setMapWorker(mapWorker)`
+
 const insideMap = [
   ['MMapMarker', 'pins or your own content at a point, with popups'],
   ['MMapPopup', 'a popup anywhere'],
@@ -95,6 +101,7 @@ const mapProps: PropDef[] = [
   { name: 'bearing', type: 'number', description: 'Rotation in degrees (v-model).' },
   { name: 'pitch', type: 'number', description: 'Tilt in degrees (v-model).' },
   { name: 'persist', type: 'boolean | string', default: 'false', description: 'Remember the view in localStorage and start from it next time: true (key m3-map-view) or your own key.' },
+  { name: 'workerUrl', type: 'string', default: '—', description: 'URL of MapLibre\'s worker for this map, overriding setMapWorker(). maplibre-gl 6 needs one under a bundler.' },
   { name: 'navigation', type: 'boolean | MapControlPosition', default: 'true', description: 'Zoom and compass buttons, or the corner for them (true is top-right).' },
   { name: 'geolocate', type: 'boolean | MapControlPosition', default: 'false', description: 'A button that centers the map on the user and follows them.' },
   { name: 'fullscreen', type: 'boolean | MapControlPosition', default: 'false', description: 'A fullscreen button.' },
@@ -133,6 +140,13 @@ const mapSlots: SlotDef[] = [
             and import its CSS once: <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">import 'maplibre-gl/dist/maplibre-gl.css'</code>.
             Give the map a height. With server-side rendering it renders an empty box: MapLibre loads in the browser.
           </p>
+          <p class="mt-2 text-body-medium text-on-surface-variant">
+            maplibre-gl 6 runs its worker from a file of its own, and under a bundler the map stays blank until it's told
+            where that file is. Call <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">setMapWorker()</code>
+            once at startup (it doesn't load MapLibre early), or pass the <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">workerUrl</code> prop.
+            maplibre-gl 5 doesn't need it.
+          </p>
+          <MCodeEditor class="mt-3" :model-value="workerCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" />
         </div>
       </div>
     </MCard>

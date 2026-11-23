@@ -15,6 +15,17 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.6.0',
+    date: '2026-11-23',
+    changes: {
+      added: [
+        'Map: maplibre-gl 6 support (peer ^5 || ^6)',
+        'setMapWorker() and MMap\'s workerUrl prop give MapLibre its worker URL; with maplibre-gl 6 under a bundler a map stays blank without it',
+      ],
+      changed: ['Dependencies updated (Vue 3.5.46, Vite 8.3.8, vitest 5.1, tiptap 3.35, pdfjs-dist 6.5…)'],
+    },
+  },
+  {
     version: '1.5.1',
     date: '2026-11-22',
     changes: {
