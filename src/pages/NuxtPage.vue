@@ -129,6 +129,7 @@ const options: PropDef[] = [
   { name: 'cookies', type: 'boolean', default: 'true', description: 'Keep the theme, palette and contrast in cookies too, so the server renders with the user\'s choice.' },
   { name: 'viewportHints', type: 'boolean', default: 'false', description: 'Ask Chromium for the window\'s exact size with client hints (Accept-CH / Critical-CH), so the adaptive layouts render at it on a first visit too, at the cost of one repeated request on that visit. Without it a first visit renders at a size guessed from the device. Needs cookies.' },
   { name: 'themeScript', type: 'boolean', default: 'true', description: 'Inline themeInitScript() in <head>, so the saved theme is on the page before it paints.' },
+  { name: 'mapWorker', type: 'boolean', default: 'true', description: 'With maplibre-gl 6 installed, emit MapLibre\'s worker and hand it to MMap (setMapWorker()) in the browser; v6 runs its worker from a file of its own and maps stay blank without it. false to call setMapWorker() yourself. maplibre-gl 5 needs nothing. Module 0.5.0, library 1.6.0.' },
   { name: 'storagePrefix', type: 'string', description: "A prefix for the cookies and stored keys ('shop' → shop-m3-theme…), so apps on one domain under different paths keep their own theme and palette; the server reads the prefixed cookies. Needs @m3ui-vue/m3ui-vue 1.2.2 and @m3ui-vue/nuxt 0.4.0." },
 ]
 </script>
@@ -193,6 +194,10 @@ const options: PropDef[] = [
       <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MPdfViewer</code>…) are
       registered once that dependency is installed. The families of 1.3.0 that need nothing more (media players,
       MFlow, MGantt, the drawing canvas, MFloorPlan, MImageCropper) are registered like any other component.
+      With maplibre-gl 6, the module also sets up MapLibre's worker for
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">MMap</code> (the
+      <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">mapWorker</code> option), which a
+      plain Vite app does with <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">setMapWorker()</code>.
     </p>
     <MCodeEditor :model-value="usageCode" language="vue" :readonly="true" :line-numbers="false" min-height="50px" max-height="250px" class="mb-6" />
 
