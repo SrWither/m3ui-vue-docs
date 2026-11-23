@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.5.1',
+    date: '2026-11-22',
+    changes: {
+      fixed: [
+        'Form fields: long content in a narrow field no longer runs over the label, the border or the icons. Values stay on one line with an ellipsis (whole value on hover), labels stop before trailing buttons and the outlined corner. MSelect, MAutocomplete, MMultiSelect, MMultiAutocomplete, MTagInput, MTextField, MNumberField, MMaskField, MCreditCardInput, MDatePicker, MDateRangePicker, MTimePicker, MColorPicker, MSearchBar, MPinInput',
+      ],
+    },
+  },
+  {
     version: '1.5.0',
     date: '2026-11-22',
     changes: {

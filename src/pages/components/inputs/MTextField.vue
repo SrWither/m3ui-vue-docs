@@ -6,6 +6,7 @@ import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
 import ComponentPager from '@/components/ComponentPager.vue'
+import LongContentFields from '@/components/demos/LongContentFields.vue'
 import type { PropDef } from '@/components/PropsTable.vue'
 import type { EventDef } from '@/components/EventsTable.vue'
 import type { SlotDef } from '@/components/SlotsTable.vue'
@@ -195,6 +196,20 @@ function fetchResults(value: string) {
           </p>
         </div>
       </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Long content in a narrow field"
+      description="Every field at once, 200px or 360px wide, with a long value, label and placeholder. Values in a fixed-height field stay on one line and end in an ellipsis (hover shows the whole value); native inputs scroll; chips and multiline grow downward. Nothing runs over the label, the border or the icons, in either variant, disabled or in error."
+      :code='`<div style=&quot;width: 200px&quot;>
+  <MSelect v-model=&quot;status&quot; label=&quot;Estado de cumplimiento&quot; :options=&quot;options&quot; clearable />
+  <MTextField v-model=&quot;text&quot; label=&quot;Descripción&quot; leading-icon=&quot;description&quot; clearable />
+  <MMultiSelect v-model=&quot;statuses&quot; label=&quot;Estados&quot; :options=&quot;options&quot; clearable />
+  <MDateRangePicker v-model=&quot;range&quot; label=&quot;Período&quot; />
+  <!-- …and every other field -->
+</div>`'
+    >
+      <LongContentFields />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
