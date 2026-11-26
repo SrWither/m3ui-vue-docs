@@ -21,6 +21,8 @@ const components = [
   { name: 'MTagInput', description: 'Free-form tag entry — type and press Enter or comma.' },
   { name: 'MMentionField', description: 'A text field with @mentions and #tags, from your items or a search of yours.' },
   { name: 'MCronField', description: 'A cron expression editor with schedule controls, a sentence in the app\'s language and the next runs.' },
+  { name: 'MCountrySelect', description: 'Every country, named in the app\'s language with its flag; the v-model is the ISO code.' },
+  { name: 'MTimezoneSelect', description: 'Every IANA time zone by UTC offset and city; detect starts on the user\'s own.' },
   { name: 'MSearchField', description: 'A pill-shaped search input that filters a list or grid in place.' },
   { name: 'MCheckbox', description: 'Checkbox with checked, indeterminate, and disabled states.' },
   { name: 'MSwitch', description: 'A toggle switch with both M3 icon variants.' },

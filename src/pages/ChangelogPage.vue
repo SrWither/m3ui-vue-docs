@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MCountrySelect and MTimezoneSelect: every country (named in the app\'s language, with flags) and every IANA time zone (by UTC offset and city), searchable',
         'MCronField: a cron editor with schedule controls, a sentence in the app\'s language and the next runs; describeCron() and nextCronRuns() helpers',
         'MMentionField: a text field with @mentions and #tags at the caret, from your items or a search of yours; the picked ones, with ids, are a second v-model',
         'MFilterBuilder: visual filters (field · operator · value, all / any, nested groups) as a JSON v-model, with filterRows() to apply them to any table',
