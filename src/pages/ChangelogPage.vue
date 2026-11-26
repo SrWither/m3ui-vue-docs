@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.6.1',
+    date: 'Unreleased',
+    changes: {
+      fixed: [
+        'Field popups stay on their field instead of closing on scroll: they follow page and container scrolls, browser and pinch zoom, the on-screen keyboard and the field resizing, and close (dropping the field\'s focus) once the field is out of sight. MSelect, MMultiSelect, MAutocomplete, MMultiAutocomplete, MDatePicker, MDateRangePicker, MTimePicker, MColorPicker, MPhoneInput',
+      ],
+    },
+  },
+  {
     version: '1.6.0',
     date: '2026-11-23',
     changes: {
