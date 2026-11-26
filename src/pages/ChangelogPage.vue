@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '1.6.1',
     date: 'Unreleased',
     changes: {
+      added: [
+        'genericAdapter reads base: true + image (a base layer for MMapBaseLayers, with its thumbnail), children and listed: false from a layer\'s metadata, so base maps work with any style',
+      ],
       fixed: [
         'Field popups stay on their field instead of closing on scroll: they follow page and container scrolls, browser and pinch zoom, the on-screen keyboard and the field resizing, and close (dropping the field\'s focus) once the field is out of sight. MSelect, MMultiSelect, MAutocomplete, MMultiAutocomplete, MDatePicker, MDateRangePicker, MTimePicker, MColorPicker, MPhoneInput',
       ],

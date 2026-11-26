@@ -61,22 +61,34 @@ onLayer('click', 'parcels-fill', (e) => console.log(e.features?.[0]?.properties)
 const adapterCode = `import { MMap, MMapLayers, orvianAdapter, genericAdapter } from '@m3ui-vue/m3ui-vue/map'
 
 // The Orvian conventions (alias, group, identify, hover, isbaselayer…), with legends from MVT Server
-<MMap :map-style=&quot;'https://tiles.example/services/styles/public:city'&quot; :adapter=&quot;orvianAdapter()&quot;>
+<MMap :map-style="'https://tiles.example/services/styles/public:city'" :adapter="orvianAdapter()">
+
+// Any style: base, image, children, listed and title in each layer's metadata
+<MMap :map-style="style" :adapter="genericAdapter">
 
 // Or your own: the style in, a model of its layers out
 const myAdapter = (style) => ({
   title: style.name,
-  groups: [{ name: 'base', title: 'Base' }],
+  groups: [{ name: 'data', title: 'Data' }],
   layers: style.layers.map((l) => ({
     id: l.id,
     title: l.metadata?.label ?? l.id,
     group: l.metadata?.section,
-    listed: !l.id.startsWith('_'),
+    // A base map for MMapBaseLayers (with its thumbnail), kept out of MMapLayers' list
+    base: l.metadata?.basemap ? { image: l.metadata.thumb } : undefined,
+    listed: !l.metadata?.basemap && !l.id.startsWith('_'),
     children: [],
     identify: l.type === 'fill' ? { format: {}, exclude: [] } : false,
     hover: false,
   })),
 })`
+
+const genericKeys = [
+  ['title', 'The layer\'s name (its id by default)'],
+  ['base: true + image', 'A base layer for MMapBaseLayers, with its thumbnail (also base: { image }); kept out of MMapLayers\' list'],
+  ['children', 'Layer ids shown, hidden and faded along with it: a vector base map\'s many layers under one entry (they aren\'t listed)'],
+  ['listed: false', 'Leaves it out of MMapLayers\' list'],
+]
 
 const conventions = [
   ['alias', 'The layer\'s name in the list, the identify cards and the hover popup'],
@@ -91,6 +103,32 @@ const conventions = [
   ['legend', '{ show: false } for none, or { wmslegend: url }; by default MVT Server\'s /services/legends'],
   ['download', 'A link to its data in the list'],
 ]
+
+const baseMapsCode = `// Several base maps in one style: one raster layer each, MMapBaseLayers shows one at a time
+sources: {
+  osm: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors' },
+  sat: { type: 'raster', tiles: ['https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=YOUR_KEY'], tileSize: 512, attribution: '© MapTiler © OpenStreetMap contributors' },
+  own: { type: 'raster', tiles: ['https://tiles.example.com/ortho/{z}/{x}/{y}.webp'], tileSize: 256 },
+},
+
+// Google, only through the Map Tiles API: create a session with your key, then use its token in the tile URL
+const { session } = await fetch('https://tile.googleapis.com/v1/createSession?key=YOUR_KEY', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ mapType: 'satellite', language: 'en-US', region: 'US' }),
+}).then((r) => r.json())
+// tiles: [\`https://tile.googleapis.com/v1/2dtiles/{z}/{x}/{y}?session=\${session}&key=YOUR_KEY\`]
+
+// A made-up world (a game map, a floor plan): one picture placed near 0,0 with nothing around it
+const style = {
+  version: 8,
+  sources: { world: { type: 'image', url: '/maps/world.png', coordinates: [[-10, 10], [10, 10], [10, -10], [-10, -10]] } },
+  layers: [
+    { id: 'bg', type: 'background', paint: { 'background-color': '#1b1b1f' } },
+    { id: 'world', type: 'raster', source: 'world', metadata: { base: true, title: 'World', image: '/maps/world-thumb.png' } },
+  ],
+}
+// <MMap :map-style="style" :center="[0, 0]" :zoom="4" :options="{ maxBounds: [[-15, -15], [15, 15]], renderWorldCopies: false }" />
+// A big picture: cut it into tiles first (vips dzsave world.png tiles --layout google) and use a raster source`
 
 const mapProps: PropDef[] = [
   { name: 'mapStyle', type: 'string | StyleSpecification', description: 'The style: a style JSON URL (MVT Server, OpenFreeMap, MapTiler…) or a style object. Changing it reloads the style, keeping what was added at runtime (keepLayers). Required.' },
@@ -277,7 +315,40 @@ onReady((map) => {
         </tbody>
       </table>
     </div>
-    <MCodeEditor :model-value="adapterCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="420px" class="mb-10" />
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      What <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-primary">genericAdapter</code> reads from each layer's metadata, all optional:
+    </p>
+    <div class="mb-4 overflow-x-auto rounded-xl border border-outline-variant">
+      <table class="w-full text-left text-body-medium">
+        <tbody>
+          <tr v-for="[key, what] in genericKeys" :key="key" class="border-b border-outline-variant last:border-b-0">
+            <td class="whitespace-nowrap px-4 py-2 font-mono text-primary">{{ key }}</td>
+            <td class="px-4 py-2 text-on-surface-variant">{{ what }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <MCodeEditor :model-value="adapterCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="480px" class="mb-10" />
+
+    <h2 id="base-maps" class="mb-2 mt-10 scroll-mt-20 text-headline-small font-medium">Base maps</h2>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      MMap draws whatever the style points at; where the tiles come from, and under which terms, is up to you:
+    </p>
+    <ul class="mb-4 flex list-disc flex-col gap-1.5 pl-6 text-body-medium text-on-surface-variant">
+      <li><b class="text-on-surface">A complete vector style</b> (streets, labels, dark variants): a style URL as mapStyle, from <a href="https://openfreemap.org" class="text-primary underline">OpenFreeMap</a> (free, no key), MapTiler, Stadia Maps or your own server.</li>
+      <li><b class="text-on-surface">OpenStreetMap's raster tiles</b> (tile.openstreetmap.org): fine for a demo or a small app with the attribution, but its <a href="https://operations.osmfoundation.org/policies/tiles/" class="text-primary underline">usage policy</a> rules out heavy use; for a real app, a provider or your own tiles.</li>
+      <li><b class="text-on-surface">Satellite</b>: MapTiler Satellite (key), or Esri World Imagery (the demo on MMapBaseLayers' page; check Esri's terms before using it in production).</li>
+      <li><b class="text-on-surface">Google</b>: only through the <a href="https://developers.google.com/maps/documentation/tile/2d-tiles-overview" class="text-primary underline">Map Tiles API</a> (an API key, a session token, their attribution). Pulling tiles from mt1.google.com breaks their terms.</li>
+      <li><b class="text-on-surface">Your own</b>: <a href="https://github.com/mvt-proj/mvt-rs" class="text-primary underline">MVT Server</a>, tileserver-gl, or static tile folders on any web server (orthophotos, drone imagery).</li>
+      <li><b class="text-on-surface">A made-up world</b> (a game map, a campus, a floor plan): an image source near 0,0, with maxBounds and renderWorldCopies: false in options; a big picture cut into tiles first.</li>
+    </ul>
+    <p class="mb-3 text-body-medium text-on-surface-variant">
+      Two ways to switch: several base rasters in one style with
+      <RouterLink to="/components/map/mmapbaselayers" class="text-primary underline">MMapBaseLayers</RouterLink> (each
+      one a layer with base: true), or a different mapStyle per base map (a complete vector style each; layers added at
+      runtime come along, see keepLayers).
+    </p>
+    <MCodeEditor :model-value="baseMapsCode" language="typescript" :readonly="true" :line-numbers="false" min-height="50px" max-height="480px" class="mb-10" />
 
     <h2 class="mb-2 mt-10 text-headline-small font-medium">Build your own</h2>
     <p class="mb-3 text-body-medium text-on-surface-variant">
