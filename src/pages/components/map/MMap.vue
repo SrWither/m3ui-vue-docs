@@ -34,6 +34,7 @@ const insideMap = [
   ['MMapMarker', 'pins or your own content at a point, with popups'],
   ['MMapPopup', 'a popup anywhere'],
   ['MMapGeoJson', 'GeoJSON in the theme\'s colors'],
+  ['MMapCluster', 'many points grouped into count bubbles'],
   ['MMapControl', 'your own controls in a corner, including buttons that expand into panels'],
   ['MMapLayers', 'the style\'s layer list'],
   ['MMapBaseLayers', 'its base maps'],

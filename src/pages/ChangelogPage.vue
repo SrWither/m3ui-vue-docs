@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MMapCluster: many points grouped into M3 count bubbles that split as you zoom in; click or Enter zooms in, cluster-click gives the cluster\'s points, #cluster draws your own bubble',
         'genericAdapter reads base: true + image (a base layer for MMapBaseLayers, with its thumbnail), children and listed: false from a layer\'s metadata, so base maps work with any style',
       ],
       fixed: [
