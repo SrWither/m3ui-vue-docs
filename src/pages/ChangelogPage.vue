@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MCameraCapture and MQRScanner: take a photo with the camera (preview, shutter, front / back, retake; out as a Blob), and read QR codes and barcodes through an M3 viewfinder',
         'MCountrySelect and MTimezoneSelect: every country (named in the app\'s language, with flags) and every IANA time zone (by UTC offset and city), searchable',
         'MCronField: a cron editor with schedule controls, a sentence in the app\'s language and the next runs; describeCron() and nextCronRuns() helpers',
         'MMentionField: a text field with @mentions and #tags at the caret, from your items or a search of yours; the picked ones, with ids, are a second v-model',

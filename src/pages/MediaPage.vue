@@ -5,6 +5,8 @@ import { iconMap } from '@/nav/sections'
 const components = [
   { name: 'MVideoPlayer', description: 'Media3\'s Material 3 video player: subtitles, chapters, gestures, keys, full screen, picture in picture and HLS.' },
   { name: 'MAudioPlayer', description: 'An audio player: Media3\'s mini controller, or a full bar with shuffle, repeat, speed and volume.' },
+  { name: 'MCameraCapture', description: 'Takes a photo with the device\'s camera: preview, shutter, front / back, retake; out as a Blob.' },
+  { name: 'MQRScanner', description: 'Reads QR codes and barcodes with the camera through an M3 viewfinder (BarcodeDetector, or your own reader).' },
 ]
 </script>
 
