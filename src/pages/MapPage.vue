@@ -18,6 +18,7 @@ const components = [
   { name: 'MMapDraw', description: 'Draw and edit points, lines and polygons, as GeoJSON in a v-model.' },
   { name: 'MMapFilter', description: 'Filter a layer by the values of one property, as chips.' },
   { name: 'MMapSearch', description: 'A place search card, with Nominatim or your own geocoder.' },
+  { name: 'MAddressField', description: 'An address field with place search for any form; the picked place, with coordinates, is the v-model.' },
 ]
 </script>
 

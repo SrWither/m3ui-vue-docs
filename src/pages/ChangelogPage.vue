@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MAddressField: an address field for any form (no map needed) that looks places up and gives the picked place, with coordinates, as its v-model',
         'MMapDraw: draw and edit points, lines and polygons as a GeoJSON v-model (select, drag vertices, add from midpoints, delete), with its own control',
         'MMapCluster: many points grouped into M3 count bubbles that split as you zoom in; click or Enter zooms in, cluster-click gives the cluster\'s points, #cluster draws your own bubble',
         'genericAdapter reads base: true + image (a base layer for MMapBaseLayers, with its thumbnail), children and listed: false from a layer\'s metadata, so base maps work with any style',
