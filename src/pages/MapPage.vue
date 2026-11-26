@@ -15,6 +15,7 @@ const components = [
   { name: 'MMapFeatureInfo', description: 'Identify results as cards, anywhere.' },
   { name: 'MMapHover', description: 'A summary of the features under the pointer, with its own toggle.' },
   { name: 'MMapMeasure', description: 'Measure distances and areas, editable, with M3 labels.' },
+  { name: 'MMapDraw', description: 'Draw and edit points, lines and polygons, as GeoJSON in a v-model.' },
   { name: 'MMapFilter', description: 'Filter a layer by the values of one property, as chips.' },
   { name: 'MMapSearch', description: 'A place search card, with Nominatim or your own geocoder.' },
 ]

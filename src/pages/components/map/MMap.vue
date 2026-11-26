@@ -42,6 +42,7 @@ const insideMap = [
   ['MMapFeatureInfo', 'those results anywhere'],
   ['MMapHover', 'a summary under the pointer'],
   ['MMapMeasure', 'distances and areas'],
+  ['MMapDraw', 'draw and edit points, lines and polygons as GeoJSON'],
   ['MMapFilter', 'filter a layer by a property'],
   ['MMapSearch', 'search places'],
 ]
