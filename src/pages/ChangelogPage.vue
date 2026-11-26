@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MDiffViewer: side-by-side or unified diffs with word highlights and folded context; diffLines() and diffWords() exported',
         'MDashboardGrid: a widget grid people rearrange (drag to move, corner to resize, springs, touch and keyboard), the layout as a v-model',
         'MAudioRecorder: voice notes with a live waveform, playback and review; out as a Blob with duration and peaks',
         'MCollapse (a height animation to the exact size, inert while closed), and MExpansionPanel header slots (#leading, #title, #subtitle, #trailing), flush and expandable',

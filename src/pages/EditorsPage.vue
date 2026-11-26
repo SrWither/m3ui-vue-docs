@@ -4,6 +4,7 @@ import { iconMap } from '@/nav/sections'
 
 const components = [
   { name: 'MCodeEditor', description: 'A syntax-highlighted code editor built on CodeMirror 6.' },
+  { name: 'MDiffViewer', description: 'What changed between two texts: side by side or unified, word highlights, folded context.' },
   { name: 'MJsonEditor', description: 'A JSON-aware editor with live validation and format/minify shortcuts.' },
   { name: 'MJsonViewer', description: 'A read-only, expandable tree view for inspecting JSON data.' },
   { name: 'MMarkdown', description: 'Renders markdown source as styled HTML, with syntax-highlighted code blocks.' },
