@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.6.1',
-    date: 'Unreleased',
+    date: '2026-11-26',
     changes: {
       added: [
         'MNotificationCenter: an inbox grouped by day, with unread marks, a filter, mark all read and swipe to dismiss',
