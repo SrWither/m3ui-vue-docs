@@ -15,6 +15,17 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.6.2',
+    date: '2026-11-26',
+    changes: {
+      fixed: [
+        'MAudioRecorder: the waveform no longer runs over the timer in narrow spaces',
+        'MMapBaseLayers: thumbnails show the library\'s tooltip instead of the browser\'s',
+        'MMapMeasure: the area button has its own icon, distinct from MMapDraw\'s polygon',
+      ],
+    },
+  },
+  {
     version: '1.6.1',
     date: '2026-11-26',
     changes: {
