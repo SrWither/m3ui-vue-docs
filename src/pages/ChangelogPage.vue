@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MDashboardGrid: a widget grid people rearrange (drag to move, corner to resize, springs, touch and keyboard), the layout as a v-model',
         'MAudioRecorder: voice notes with a live waveform, playback and review; out as a Blob with duration and peaks',
         'MCollapse (a height animation to the exact size, inert while closed), and MExpansionPanel header slots (#leading, #title, #subtitle, #trailing), flush and expandable',
         'MCameraCapture and MQRScanner: take a photo with the camera (preview, shutter, front / back, retake; out as a Blob), and read QR codes and barcodes through an M3 viewfinder',

@@ -9,6 +9,7 @@ const components = [
   { name: 'MSplitter', description: 'Two resizable panels divided by a draggable handle.' },
   { name: 'MDragHandle', description: 'The Material 3 capsule users drag to resize or move things, like the divider between panes.' },
   { name: 'MMasonry', description: 'Pinterest-style column layout that fills shortest-column-first.' },
+  { name: 'MDashboardGrid', description: 'A widget grid people rearrange: drag to move, corner to resize, springs, touch and keyboard.' },
   { name: 'MText', description: 'Renders any of the 15 Material 3 typography variants.' },
   { name: 'MTitle', description: 'Semantic heading component in three sizes.' },
   { name: 'MSubtitle', description: 'Secondary heading text, muted color by default.' },
