@@ -19,6 +19,7 @@ const versions: Version[] = [
     date: 'Unreleased',
     changes: {
       added: [
+        'MNotificationCenter: an inbox grouped by day, with unread marks, a filter, mark all read and swipe to dismiss',
         'MDiffViewer: side-by-side or unified diffs with word highlights and folded context; diffLines() and diffWords() exported',
         'MDashboardGrid: a widget grid people rearrange (drag to move, corner to resize, springs, touch and keyboard), the layout as a v-model',
         'MAudioRecorder: voice notes with a live waveform, playback and review; out as a Blob with duration and peaks',
