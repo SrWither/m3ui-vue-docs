@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MExpansionPanel, MButton } from '@m3ui-vue/m3ui-vue'
+import { MExpansionPanel, MButton, MIcon, MListItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
+import ExpansionPanelWorkOrders from '@/components/demos/ExpansionPanelWorkOrders.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -17,20 +18,28 @@ const panel3 = ref(false)
 const uncontrolledDisabled = ref(true)
 
 const panelProps: PropDef[] = [
-  { name: 'title', type: 'string', description: 'Panel header text' },
+  { name: 'title', type: 'string', description: 'Panel header text (or the #title slot)' },
   { name: 'subtitle', type: 'string', description: 'Secondary text in the header, below the title' },
   { name: 'icon', type: 'string', description: 'Leading Material Symbol icon in the header' },
   { name: 'modelValue', type: 'boolean', description: 'Open/closed state (v-model). Omit it entirely to let the panel manage its own open state internally (uncontrolled).' },
-  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables toggling' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables toggling (dimmed)' },
+  { name: 'expandable', type: 'boolean', default: 'true', description: 'false: a plain header row with nothing to open (no chevron, not a button), not dimmed like disabled' },
+  { name: 'flush', type: 'boolean', default: 'false', description: 'The body with no padding, for edge-to-edge content such as a list' },
+  { name: 'unmountOnClose', type: 'boolean', default: 'false', description: 'Unmount the body while closed (MCollapse\'s)' },
   { name: 'variant', type: "'outlined' | 'filled' | 'elevated'", default: "'outlined'", description: 'Visual style of the panel container' },
 ]
 
 const panelEvents: EventDef[] = [
   { name: 'update:modelValue', payload: 'boolean', description: 'Emitted when the panel is toggled — only meaningful when modelValue is passed (controlled usage); powers v-model' },
+  { name: 'after-open / after-close', payload: '—', description: 'The open or close animation finished' },
 ]
 
 const panelSlots: SlotDef[] = [
   { name: '#default', description: 'Panel body content, revealed with a height animation when open' },
+  { name: '#leading', description: 'The header\'s start, instead of icon (a colored icon, an avatar)' },
+  { name: '#title', description: 'The title, instead of the title text (highlighted parts, a chip)' },
+  { name: '#subtitle', description: 'The line below the title, instead of the subtitle text' },
+  { name: '#trailing', description: 'Content before the chevron (a count, a status)' },
 ]
 </script>
 
@@ -168,6 +177,70 @@ const panelSlots: SlotDef[] = [
           </div>
         </MExpansionPanel>
       </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Custom headers, rows with nothing inside, and lists"
+      description="Header slots: a colored icon, a title with a highlighted part, a count before the chevron. The second row has nothing to open (expandable false): a plain row, not dimmed. The third opens onto an edge-to-edge list (flush)."
+      :code="`<MExpansionPanel>
+  <template #leading>
+    <span class=&quot;grid size-10 place-items-center rounded-full bg-tertiary-container text-on-tertiary-container&quot;><MIcon name=&quot;construction&quot; /></span>
+  </template>
+  <template #title>Obra <mark class=&quot;rounded bg-primary-container px-1 text-on-primary-container&quot;>Norte</mark></template>
+  <template #subtitle>3 tasks due this week</template>
+  <template #trailing><span class=&quot;rounded-full bg-error px-2 text-label-small text-on-error&quot;>3</span></template>
+  …
+</MExpansionPanel>
+<MExpansionPanel title=&quot;Obra Sur&quot; subtitle=&quot;No tasks yet&quot; icon=&quot;construction&quot; :expandable=&quot;false&quot; />
+<MExpansionPanel title=&quot;Team&quot; icon=&quot;group&quot; flush>
+  <MListItem v-for=&quot;p in people&quot; :key=&quot;p&quot; :title=&quot;p&quot; />
+</MExpansionPanel>`"
+    >
+      <div class="flex w-full max-w-xl flex-col gap-3">
+        <MExpansionPanel>
+          <template #leading>
+            <span class="grid size-10 shrink-0 place-items-center rounded-full bg-tertiary-container text-on-tertiary-container"><MIcon name="construction" :size="22" /></span>
+          </template>
+          <template #title>Obra <mark class="rounded bg-primary-container px-1 text-on-primary-container">Norte</mark></template>
+          <template #subtitle>3 tasks due this week</template>
+          <template #trailing><span class="rounded-full bg-error px-2 text-label-small text-on-error">3</span></template>
+          <p class="text-body-medium text-on-surface-variant">Pour the slab, check the scaffolding, order the windows.</p>
+        </MExpansionPanel>
+        <MExpansionPanel title="Obra Sur" subtitle="No tasks yet" icon="construction" :expandable="false" />
+        <MExpansionPanel title="Team" icon="group" flush>
+          <MListItem v-for="p in ['Ana López', 'Bruno Díaz', 'Carla Ruiz']" :key="p" :title="p" />
+        </MExpansionPanel>
+      </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="Everything custom: work orders"
+      description="Every header slot at once. Search filters the orders and highlights the match in each title (#title); the status is a colored icon (#leading); client, due date and tags sit below (#subtitle); a progress ring follows the ticked tasks (#trailing). Each opens onto an edge-to-edge checklist (flush), one at a time (v-model), and an order with no tasks is a plain row (expandable false). Colors are yours too: each status tints its panel through class or style (bg-error-container/35 border-l-4 border-l-error, or any color: Paused is #7c4dff with color-mix), theme roles follow the palette and dark mode, and every tag has a color of its own."
+      :code="`<MExpansionPanel
+  v-for=&quot;o in shown&quot;
+  :key=&quot;o.id&quot;
+  :model-value=&quot;open === o.id&quot;
+  :expandable=&quot;o.tasks.length > 0&quot;
+  :class=&quot;STATUS[o.status].panel&quot;
+  :style=&quot;STATUS[o.status].style&quot;
+  flush
+  @update:model-value=&quot;(v) => (open = v ? o.id : null)&quot;
+>
+  <template #leading>
+    <span class=&quot;grid size-10 place-items-center rounded-full&quot; :class=&quot;STATUS[o.status].bubble&quot;><MIcon :name=&quot;STATUS[o.status].icon&quot; /></span>
+  </template>
+  <template #title>
+    <template v-for=&quot;p in parts(o.name)&quot;><mark v-if=&quot;p.hit&quot;>{{ p.text }}</mark><template v-else>{{ p.text }}</template></template>
+  </template>
+  <template #subtitle>{{ o.client }} · {{ dueText(o) }} · <span v-for=&quot;t in o.tags&quot;>{{ t }}</span></template>
+  <template #trailing>
+    <MCircleProgressBar :value=&quot;progress(o)&quot; :size=&quot;36&quot; variant=&quot;circle&quot; :color=&quot;STATUS[o.status].ring&quot; />
+  </template>
+
+  <MListItem v-for=&quot;t in o.tasks&quot; :title=&quot;t.label&quot; trailing=&quot;checkbox&quot; v-model:trailing-value=&quot;t.done&quot; />
+</MExpansionPanel>`"
+    >
+      <ExpansionPanelWorkOrders />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>

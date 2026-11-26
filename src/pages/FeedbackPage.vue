@@ -14,6 +14,7 @@ const components = [
   { name: 'MLoadingIndicator', description: 'The M3 Expressive shape-morphing loading indicator.' },
   { name: 'MPullToRefresh', description: 'Wraps a scrollable container and fires a refresh event on pull.' },
   { name: 'MExpansionPanel', description: 'A collapsible section with a smooth height animation.' },
+  { name: 'MCollapse', description: 'Shows and hides its content with a height animation; inert while closed.' },
 ]
 </script>
 
