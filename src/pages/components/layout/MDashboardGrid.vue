@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { MButton, MCard, MDashboardGrid, MIcon, MSparkline, MSwitch } from '@m3ui-vue/m3ui-vue'
 import type { DashboardItem } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
+import DashboardHomeScreen from '@/components/demos/DashboardHomeScreen.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import EventsTable from '@/components/EventsTable.vue'
 import SlotsTable from '@/components/SlotsTable.vue'
@@ -95,6 +96,36 @@ watch(layout, (l) => localStorage.setItem('dashboard', JSON.stringify(l)))`"
         </MDashboardGrid>
         <pre class="max-h-32 overflow-auto rounded-xl bg-surface-container-high p-3 font-mono text-body-small text-on-surface-variant">{{ layout.map((w) => `${w.id}: x${w.x} y${w.y} ${w.w}×${w.h}`).join('   ') }}</pre>
       </div>
+    </ComponentDemo>
+
+    <ComponentDemo
+      title="A home screen of your own"
+      description="Widgets of different kinds that adapt to their size: widen the weather for its forecast, the clock for its seconds, the team for names (container queries). The checkboxes and the note work without starting a drag. Add widgets from the catalog, remove them with their ✕ (data-dashboard-action), and the layout is saved in this browser."
+      :code="`<MDashboardGrid v-model=&quot;layout&quot; :row-height=&quot;88&quot; :gap=&quot;12&quot;>
+  <template #item=&quot;{ item }&quot;>
+    <!-- @container: each widget lays out by its own size -->
+    <div class=&quot;@container relative h-full rounded-lg bg-surface-container-high&quot;>
+      <MIconButton icon=&quot;close&quot; label=&quot;Remove&quot; data-dashboard-action class=&quot;absolute right-1 top-1&quot; @click=&quot;remove(item.id)&quot; />
+      <WeatherWidget v-if=&quot;item.kind === 'weather'&quot; />  <!-- forecast: hidden @[28rem]:flex -->
+      <TasksWidget v-else-if=&quot;item.kind === 'tasks'&quot; />  <!-- MCheckbox inside: no drag from controls -->
+      …
+    </div>
+  </template>
+</MDashboardGrid>`"
+      :script="`const layout = ref(JSON.parse(localStorage.getItem('home') ?? 'null') ?? DEFAULT)
+watch(layout, (l) => localStorage.setItem('home', JSON.stringify(l)), { deep: true })
+
+// Into the first gap it fits, in reading order
+function freeSpot(w, h) {
+  const taken = (x, y) => layout.value.some((o) => x < o.x + o.w && o.x < x + w && y < o.y + o.h && o.y < y + h)
+  for (let y = 0; ; y++) for (let x = 0; x + w <= 12; x++) if (!taken(x, y)) return { x, y }
+}
+function add(kind) {
+  layout.value = [...layout.value, { id: crypto.randomUUID(), kind, ...freeSpot(4, 2), w: 4, h: 2, minW: 3 }]
+}
+const remove = (id) => (layout.value = layout.value.filter((w) => w.id !== id))`"
+    >
+      <DashboardHomeScreen />
     </ComponentDemo>
 
     <h3 class="mb-3 mt-6 text-title-large font-medium">Props</h3>
