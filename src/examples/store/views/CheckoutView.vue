@@ -3,7 +3,8 @@
 import { ref } from 'vue'
 
 const step = ref(0)
-const attempted = ref<boolean[]>([false, false, false])
+/** Steps whose last Continue failed validation: the stepper marks them */
+const stepErrors = ref<boolean[]>([false, false, false])
 const form = ref({
   name: '', email: '', phone: '', address: '', city: '', postcode: '', country: 'Argentina',
   notes: '',
@@ -18,8 +19,8 @@ const processingStep = ref(0)
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount } from 'vue'
-import { MButton, MIcon, MLoadingIndicator, MMaskField, MRadioGroup, MResult, MSelect, MStepper, MTextField } from '@m3ui-vue/m3ui-vue'
-import type { StepItem } from '@m3ui-vue/m3ui-vue'
+import { MButton, MForm, MIcon, MLoadingIndicator, MMaskField, MRadioGroup, MResult, MSelect, MStepper, MTextField, required, email } from '@m3ui-vue/m3ui-vue'
+import type { StepItem, ValidationRule } from '@m3ui-vue/m3ui-vue'
 import { useStore, productById, picture, money, shippingOptions } from '../useStore'
 
 const { cart, shipping, subtotal, discount, shippingCost, total, coupon, clearCart, go } = useStore()
@@ -32,43 +33,33 @@ const deliveryOptions = computed(() =>
   })),
 )
 
-// Validation: errors only show for a step after trying to leave it.
+// Validation: one MForm around the steps. Only the current step's fields are mounted, so Continue (a submit, as
+// is Enter in a field) checks just those; errors show once a field is left, or on Continue.
 const f = form
-const errors = computed(() => {
-  const v = f.value
-  const [month, year] = v.expiry.split('/').map(Number)
+const digits = (v: string) => v.replace(/\D/g, '')
+const cardNumber: ValidationRule<string> = (v) => digits(v).length === 16 || 'Enter the 16 digits'
+const futureExpiry: ValidationRule<string> = (v) => {
+  const [month, year] = v.split('/').map(Number)
   const now = new Date()
-  const expiryOk = !!month && month <= 12 && !!year && (2000 + year > now.getFullYear() || (2000 + year === now.getFullYear() && month >= now.getMonth() + 1))
-  return [
-    {
-      name: !v.name.trim() && 'Enter your name',
-      email: !/^\S+@\S+\.\S+$/.test(v.email) && 'Enter a valid email',
-      address: !v.address.trim() && 'Enter your street address',
-      city: !v.city.trim() && 'Enter your city',
-      postcode: !v.postcode.trim() && 'Enter a postal code',
-    },
-    {},
-    {
-      card: v.card.replace(/\D/g, '').length !== 16 && 'Enter the 16 digits',
-      expiry: !expiryOk && 'Use a future MM/YY date',
-      cvc: v.cvc.length !== 3 && '3 digits',
-      cardName: !v.cardName.trim() && 'Enter the name on the card',
-    },
-  ] as Record<string, string | false>[]
-})
-const err = (i: number, key: string) => (attempted.value[i] ? errors.value[i]?.[key] || '' : '')
-const stepValid = (i: number) => !Object.values(errors.value[i] ?? {}).some(Boolean)
+  return (!!month && month <= 12 && !!year && (2000 + year > now.getFullYear() || (2000 + year === now.getFullYear() && month >= now.getMonth() + 1))) || 'Use a future MM/YY date'
+}
+const cvc: ValidationRule<string> = (v) => v.length === 3 || '3 digits'
 
 const steps = computed<StepItem[]>(() => [
-  { label: 'Shipping', icon: 'home', error: attempted.value[0] && !stepValid(0) },
+  { label: 'Shipping', icon: 'home', error: stepErrors.value[0] },
   { label: 'Delivery', icon: 'local_shipping' },
-  { label: 'Payment', icon: 'credit_card', error: attempted.value[2] && !stepValid(2) },
+  { label: 'Payment', icon: 'credit_card', error: stepErrors.value[2] },
   { label: 'Review', icon: 'fact_check' },
 ])
 
-function next() {
-  attempted.value[step.value] = true
-  if (stepValid(step.value)) step.value++
+function onSubmit() {
+  if (step.value < 3) {
+    stepErrors.value[step.value] = false
+    step.value++
+  } else place()
+}
+function onInvalid() {
+  stepErrors.value[step.value] = true
 }
 // Only steps already passed can be revisited from the stepper.
 function goTo(i: number) {
@@ -126,7 +117,7 @@ const confetti = Array.from({ length: 48 }, (_, i) => ({
 function shopAgain() {
   placed.value = null
   step.value = 0
-  attempted.value = [false, false, false]
+  stepErrors.value = [false, false, false]
   go({ name: 'shop' })
 }
 </script>
@@ -198,15 +189,15 @@ function shopAgain() {
       <MStepper :model-value="step" :steps="steps" :linear="false" @update:model-value="goTo" />
 
       <div class="grid gap-6 lg:grid-cols-3">
-        <section class="rounded-3xl bg-surface-container-low p-5 sm:p-6 lg:col-span-2">
+        <MForm class="rounded-3xl bg-surface-container-low p-5 sm:p-6 lg:col-span-2" @submit="onSubmit" @invalid="onInvalid">
           <!-- 1. Shipping -->
           <div v-if="step === 0" class="grid gap-4 sm:grid-cols-2">
-            <MTextField v-model="f.name" label="Full name" autocomplete="name" required :error="!!err(0, 'name')" :error-label="err(0, 'name')" class="sm:col-span-2" />
-            <MTextField v-model="f.email" label="Email" type="email" autocomplete="email" required :error="!!err(0, 'email')" :error-label="err(0, 'email')" hint="For the receipt" />
+            <MTextField v-model="f.name" name="name" label="Full name" autocomplete="name" :rules="[required('Enter your name')]" required class="sm:col-span-2" />
+            <MTextField v-model="f.email" name="email" label="Email" type="email" autocomplete="email" :rules="[required('Enter a valid email'), email('Enter a valid email')]" required hint="For the receipt" />
             <MMaskField v-model="f.phone" label="Phone (optional)" mask="phone" />
-            <MTextField v-model="f.address" label="Street address" autocomplete="street-address" required :error="!!err(0, 'address')" :error-label="err(0, 'address')" class="sm:col-span-2" />
-            <MTextField v-model="f.city" label="City" autocomplete="address-level2" required :error="!!err(0, 'city')" :error-label="err(0, 'city')" />
-            <MTextField v-model="f.postcode" label="Postal code" autocomplete="postal-code" required :error="!!err(0, 'postcode')" :error-label="err(0, 'postcode')" />
+            <MTextField v-model="f.address" name="address" label="Street address" autocomplete="street-address" :rules="[required('Enter your street address')]" required class="sm:col-span-2" />
+            <MTextField v-model="f.city" name="city" label="City" autocomplete="address-level2" :rules="[required('Enter your city')]" required />
+            <MTextField v-model="f.postcode" name="postcode" label="Postal code" autocomplete="postal-code" :rules="[required('Enter a postal code')]" required />
             <MSelect v-model="f.country" :options="countries" label="Country" class="sm:col-span-2" />
           </div>
 
@@ -221,10 +212,10 @@ function shopAgain() {
             <p class="flex items-center gap-2 rounded-2xl bg-secondary-container px-4 py-3 text-body-medium text-on-secondary-container sm:col-span-2">
               <MIcon name="info" :size="20" /> Demo checkout: nothing is charged. Use 4242 4242 4242 4242 or "Fill with test data".
             </p>
-            <MMaskField v-model="f.card" label="Card number" mask="credit-card" leading-icon="credit_card" required :error="!!err(2, 'card')" :error-label="err(2, 'card')" class="sm:col-span-2" />
-            <MMaskField v-model="f.expiry" label="Expiry (MM/YY)" mask="##/##" required :error="!!err(2, 'expiry')" :error-label="err(2, 'expiry')" />
-            <MMaskField v-model="f.cvc" label="CVC" mask="###" required :error="!!err(2, 'cvc')" :error-label="err(2, 'cvc')" />
-            <MTextField v-model="f.cardName" label="Name on card" autocomplete="cc-name" required :error="!!err(2, 'cardName')" :error-label="err(2, 'cardName')" class="sm:col-span-2" />
+            <MMaskField v-model="f.card" name="card" label="Card number" mask="credit-card" leading-icon="credit_card" :rules="[cardNumber]" required class="sm:col-span-2" />
+            <MMaskField v-model="f.expiry" name="expiry" label="Expiry (MM/YY)" mask="##/##" :rules="[futureExpiry]" required />
+            <MMaskField v-model="f.cvc" name="cvc" label="CVC" mask="###" :rules="[cvc]" required />
+            <MTextField v-model="f.cardName" name="cardName" label="Name on card" autocomplete="cc-name" :rules="[required('Enter the name on the card')]" required class="sm:col-span-2" />
           </div>
 
           <!-- 4. Review -->
@@ -246,10 +237,10 @@ function shopAgain() {
           <div class="mt-6 flex justify-between gap-3">
             <MButton v-if="step > 0" variant="outlined" icon="arrow_back" @click="step--">Back</MButton>
             <span v-else />
-            <MButton v-if="step < 3" icon="arrow_forward" @click="next">Continue</MButton>
-            <MButton v-else icon="lock" :loading="processing" :disabled="processing" @click="place">Place order · {{ money(total) }}</MButton>
+            <MButton v-if="step < 3" type="submit" icon="arrow_forward">Continue</MButton>
+            <MButton v-else type="submit" icon="lock" :loading="processing" :disabled="processing">Place order · {{ money(total) }}</MButton>
           </div>
-        </section>
+        </MForm>
 
         <!-- Summary -->
         <aside class="h-fit rounded-3xl bg-surface-container-low p-5 sm:p-6">
