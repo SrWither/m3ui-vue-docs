@@ -17,6 +17,7 @@ const components = [
   { name: 'MMeterGroup', description: 'Several values sharing one bar with a legend, like a phone\'s storage screen.' },
   { name: 'MCalendarHeatmap', description: 'Activity per day as a grid of weeks tinted by how much happened, like a contributions graph.' },
   { name: 'MTimeline', description: 'An event timeline, vertical or horizontal, with icon dots, dates and custom content.' },
+  { name: 'MTrackingTimeline', description: 'An order\'s progress: stages, arrival time, delayed and canceled states.' },
   { name: 'MSkeleton', description: 'A loading placeholder shape with pulse or wave animation.' },
   { name: 'MEmptyState', description: 'A placeholder for empty views with optional action buttons.' },
   { name: 'MResult', description: 'Pre-built result screens for success, errors, and HTTP status codes.' },

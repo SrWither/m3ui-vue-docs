@@ -8,6 +8,7 @@ const components = [
   { name: 'MMapPopup', description: 'A popup with your own content at a point of the map.' },
   { name: 'MMapGeoJson', description: 'GeoJSON drawn in the theme\'s colors, or with your own layers, clickable.' },
   { name: 'MMapCluster', description: 'Many points grouped into count bubbles that split as you zoom in.' },
+  { name: 'MMapRoute', description: 'A delivery or trip route: travelled and ahead, stops, and a vehicle that moves along the road.' },
   { name: 'MMapControl', description: 'Your own control in a corner: icon buttons, anything else, or a button that expands into a panel.' },
   { name: 'MMapLayers', description: 'A layer list from the style\'s conventions: groups, visibility, opacity and legends.' },
   { name: 'MMapBaseLayers', description: 'A thumbnail switcher for the style\'s base layers.' },

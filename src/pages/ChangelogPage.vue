@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.7.0',
-    date: 'Unreleased',
+    date: '2026-11-27',
     changes: {
       added: [
         'Form validation: MForm validates the fields inside it, shows every error and focuses the first on submit, takes a server\'s errors by field name and a whole-form schema (zod, valibot…)',
@@ -27,6 +27,9 @@ const versions: Version[] = [
         'validateDebounce waits until typing stops before re-checking (one request for an async rule, not one per key)',
         'Server errors in MForm hide as soon as the field is edited and come back with the next response (keepErrors to keep them)',
         'MForm validate([names]) checks just some fields, for a wizard\'s step, and can focus the first error',
+        'MMapRoute: a delivery or trip route on the map, travelled solid and ahead dotted, stops that fill once reached, and a vehicle that moves along the road from a progress or a live GPS position (kept on the right pass of out-and-back routes)',
+        'osrmRouteProvider: real street routes (curves, roundabouts, one-way streets) for MMapRoute, from OSRM or any routing service',
+        'MTrackingTimeline: an order\'s progress, with the arrival time counting down, stage icons whose current leg fills (from MMapRoute\'s progress), delayed and canceled states and the stages\' times',
       ],
       changed: [
         'MFileUpload\'s drop zone works with the keyboard (Tab, Enter, Space)',
