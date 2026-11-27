@@ -23,7 +23,7 @@ const builtins: TypeDef[] = [
     name: 'Built-in rules',
     description: 'Each returns a rule. All but required pass on an empty value, so [email()] keeps a field optional and [required(), email()] does not. The last argument is always an optional custom message; without it the message comes from the locale (validation* keys), so it follows the app language.',
     fields: [
-      { name: 'required(message?)', type: 'ValidationRule', description: 'Filled in: not null/undefined, not a blank string, not [], not false (an unticked checkbox). Fields can define their own "empty" (a date range needs both ends)' },
+      { name: 'required(message?)', type: 'ValidationRule', description: 'Filled in: not null/undefined, not a blank string, not [], not false (an unticked checkbox). Fields can define their own "empty" (a date range needs both ends). In rules next to the required prop (kept for the asterisk), it replaces the prop\'s check, so its message is the one shown' },
       { name: 'email(message?)', type: 'ValidationRule', description: "An email address, with the browser's own <input type=email> rule plus a dot in the domain" },
       { name: 'url(message?)', type: 'ValidationRule', description: 'An absolute http(s) URL' },
       { name: 'minLength(n, message?)', type: 'ValidationRule', description: 'At least n characters, or n items for arrays (tags, files, multi-selects), with item wording' },

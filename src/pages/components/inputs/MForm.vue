@@ -56,12 +56,15 @@ const formProps: PropDef[] = [
   { name: 'errors', type: 'Record<string, string | string[]>', description: "Errors from outside, by field name (a server's response, vee-validate's errors). Shown over the fields' own rules; they don't block submit" },
   { name: 'schema', type: 'StandardSchemaV1', description: 'A schema for the whole form (zod, valibot, arktype…), run against the values by name. submit then gets its output' },
   { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the fields check and show their rules, unless a field sets its own. blur: on leaving the field, live after that' },
+  { name: 'validateDebounce', type: 'number', description: 'Default for every field: wait this long (ms) after a value stops changing before re-checking it, so an async rule makes one request, not one per key' },
+  { name: 'keepErrors', type: 'boolean', default: 'false', description: 'Keep an errors message while its field changes. By default it hides as soon as the user edits that field, until a new errors object comes' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables every control inside and skips their validation' },
 ]
 const fieldProps: PropDef[] = [
   { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Functions (value, ctx) => true | 'message' (may be async), or a Standard Schema. Checked in order; the first failure is shown" },
   { name: 'name', type: 'string', description: 'The key of the field in the form values, errors and schema (also the native name)' },
   { name: 'validateOn', type: "'blur' | 'input' | 'submit'", description: "Overrides the form's validateOn for this field" },
+  { name: 'validateDebounce', type: 'number', description: "Overrides the form's validateDebounce for this field" },
   { name: 'required', type: 'boolean', description: 'Inside an MForm or next to rules, also validates that the field is filled in' },
   { name: 'error', type: 'boolean | string', description: "A string is also the message, so a validation library's error plugs straight in" },
 ]
@@ -74,8 +77,8 @@ const formSlots: SlotDef[] = [
   { name: 'default', description: 'The fields and buttons. A <MButton type="submit"> submits the form, as does Enter in a text field' },
 ]
 const formExposed: PropDef[] = [
-  { name: 'validate()', type: '() => Promise<boolean>', description: 'Checks every field and shows the errors' },
-  { name: 'reset() / resetValidation()', type: 'function', description: 'Back to the first values and no errors / only hide the errors' },
+  { name: 'validate(names?, { focus? })', type: 'Promise<boolean>', description: "Checks every field, or only the named ones (a wizard's step; 'address' includes 'address.city'), and shows their errors. focus: true moves the focus to the first one in error" },
+  { name: 'reset() / resetValidation(names?)', type: 'function', description: 'Back to the first values and no errors / only hide the errors (of the named fields)' },
   { name: 'valid', type: 'boolean', description: 'Whether every rule passes right now, shown or not (e.g. to disable a button)' },
   { name: 'pending', type: 'boolean', description: 'Async rules still running' },
   { name: 'errors / values', type: 'object', description: 'The messages on display and the values, by name' },
@@ -265,7 +268,7 @@ function onInvalid(errors) { /* { email: 'Enter a valid email address', ... } */
 
     <ComponentDemo
       title="Server errors"
-      description="Pass the server's errors by field name. Try submitting with taken@m3ui.dev, then another address."
+      description="Pass the server's errors by field name. Try submitting with taken@m3ui.dev: the error hides as soon as you edit the email, and a new response shows it again (keepErrors keeps it)."
       :code="`<template>
   <MForm :errors=&quot;serverErrors&quot; @submit=&quot;send&quot;>
     <MTextField v-model=&quot;login.email&quot; name=&quot;email&quot; label=&quot;Email&quot; :rules=&quot;[required(), email()]&quot; />
@@ -292,14 +295,14 @@ async function send(values) {
 
     <ComponentDemo
       title="Async rules, checked while typing"
-      description="A rule may return a promise; only the latest check counts. validateOn=&quot;input&quot; shows the result without waiting for blur. Try admin."
+      description="A rule may return a promise; only the latest check counts. validateOn=&quot;input&quot; shows the result without waiting for blur, and validateDebounce waits until typing stops, so the check runs once, not per key. Try admin."
       :code="`<template>
-  <MTextField v-model=&quot;username&quot; label=&quot;Username&quot; validate-on=&quot;input&quot; :rules=&quot;[minLength(3), available]&quot; />
+  <MTextField v-model=&quot;username&quot; label=&quot;Username&quot; validate-on=&quot;input&quot; :validate-debounce=&quot;300&quot; :rules=&quot;[minLength(3), available]&quot; />
 </template>`"
       :script="`const available = async (v) => !(await isTaken(v)) || \`&quot;\${v}&quot; is taken\``"
     >
       <div class="w-full max-w-md">
-        <MTextField v-model="username" label="Username" validate-on="input" :rules="[minLength(3), available]" />
+        <MTextField v-model="username" label="Username" validate-on="input" :validate-debounce="300" :rules="[minLength(3), available]" />
       </div>
     </ComponentDemo>
 

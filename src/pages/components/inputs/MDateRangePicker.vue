@@ -23,6 +23,7 @@ const dateRangeProps: PropDef[] = [
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
   { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
   { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'validateDebounce', type: 'number', description: "Wait this long (ms) after the value stops changing before re-checking: one request for an async rule, not one per key. Defaults to its MForm's" },
   { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
   { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk; inside an MForm or with rules, also validates it' },
   { name: 'hint', type: 'string', description: 'Hint text below the field' },

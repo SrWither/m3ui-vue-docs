@@ -25,6 +25,7 @@ const signaturePadProps: PropDef[] = [
   { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, a signature must be drawn (its value in the form is the PNG data: URL)' },
   { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
   { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'validateDebounce', type: 'number', description: "Wait this long (ms) after the value stops changing before re-checking: one request for an async rule, not one per key. Defaults to its MForm's" },
   { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 

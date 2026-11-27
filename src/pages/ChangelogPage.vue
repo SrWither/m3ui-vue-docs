@@ -24,6 +24,9 @@ const versions: Version[] = [
         'Built-in rules (required, email, url, minLength, maxLength, min, max, pattern, sameAs) with messages in the app\'s language, your own functions (async too), or a schema as a rule',
         'A string error is also the message, so vee-validate and Vuelidate plug straight in',
         'MCheckbox shows M3\'s error colors; the other controls show the message',
+        'validateDebounce waits until typing stops before re-checking (one request for an async rule, not one per key)',
+        'Server errors in MForm hide as soon as the field is edited and come back with the next response (keepErrors to keep them)',
+        'MForm validate([names]) checks just some fields, for a wizard\'s step, and can focus the first error',
       ],
       changed: [
         'MFileUpload\'s drop zone works with the keyboard (Tab, Enter, Space)',

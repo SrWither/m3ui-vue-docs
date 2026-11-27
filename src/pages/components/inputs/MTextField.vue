@@ -45,6 +45,7 @@ const textFieldProps: PropDef[] = [
   { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk after the label; inside an MForm or with rules, also validates it' },
   { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
   { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'validateDebounce', type: 'number', description: "Wait this long (ms) after the value stops changing before re-checking: one request for an async rule, not one per key. Defaults to its MForm's" },
   { name: 'name', type: 'string', description: 'Native name; also the key of this field in its MForm' },
   { name: 'multiline', type: 'boolean', default: 'false', description: 'Renders a textarea instead of an input' },
   { name: 'rows', type: 'number', default: '3', description: 'Textarea rows (when multiline); with autoGrow, the fewest it shrinks to' },

@@ -20,7 +20,7 @@ const selectProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'The locale\'s "Time zone" by default.' },
   { name: 'mode', type: "'docked' | 'modal'", default: "'docked'", description: 'A dropdown, or a dialog with search (phones).' },
   { name: 'variant / clearable / hint / error (boolean | string) / errorLabel / required / disabled', type: '…', description: 'As on MAutocomplete.' },
-  { name: 'rules / validateOn / name', type: '…', description: 'Validation, as on MTextField (see MForm).' },
+  { name: 'rules / validateOn / validateDebounce / name', type: '…', description: 'Validation, as on MTextField (see MForm).' },
 ]
 const selectEvents: EventDef[] = [{ name: 'update:modelValue', payload: 'string | null', description: 'A zone was picked (its IANA name), or cleared.' }]
 </script>
