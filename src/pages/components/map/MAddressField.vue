@@ -44,7 +44,8 @@ const fieldProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'The field\'s label; the locale\'s "Address" by default.' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style.' },
   { name: 'leadingIcon', type: 'string', default: "'location_on'", description: 'Material Symbol on the left.' },
-  { name: 'hint / error / errorLabel / required / disabled', type: '…', description: 'As on MTextField.' },
+  { name: 'hint / error (boolean | string) / errorLabel / required / disabled', type: '…', description: 'As on MTextField.' },
+  { name: 'rules / validateOn / name', type: '…', description: 'Validation, as on MTextField (see MForm). On MAddressField they check the picked place, so required needs a place picked.' },
 ]
 const fieldEvents: EventDef[] = [
   { name: 'update:modelValue', payload: 'MapSearchResult | null', description: 'A place was picked, or the text changed after picking one (null).' },

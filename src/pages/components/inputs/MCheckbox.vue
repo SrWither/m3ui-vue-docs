@@ -18,6 +18,12 @@ const checkboxProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Label text — overridden by the default slot when present' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Checked/indeterminate color' },
   { name: 'ariaLabel', type: 'string', description: 'Accessible name for the input when there\'s no visible label (e.g. a checkbox in a table or list row)' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, must be ticked' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const checkboxSlots: SlotDef[] = [

@@ -20,9 +20,16 @@ const signaturePadProps: PropDef[] = [
   { name: 'background', type: 'string', default: "'#ffffff'", description: 'Canvas background color' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'outlined'", description: 'Container border style' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables drawing' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, a signature must be drawn (its value in the form is the PNG data: URL)' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const signaturePadEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'begin', description: 'Fires on the first pointerdown of a new stroke' },
   { name: 'end', payload: 'string', description: 'Fires after a stroke ends, with a PNG data: URL of the canvas' },
   { name: 'change', payload: 'string', description: 'Fires alongside end, and also after undo() — same data: URL payload' },

@@ -45,9 +45,16 @@ const fileUploadProps: PropDef[] = [
   { name: 'maxSizePrefix', type: 'string', description: 'Prefix shown before the formatted max size (defaults to the locale string)' },
   { name: 'removeLabel', type: 'string', description: 'Aria label for each file row\'s remove button (defaults to the locale string)' },
   { name: 'modelValue', type: 'UploadFile[]', description: 'Optional v-model with the file list. Bind it to own the list: set it to [] to clear it, or update entries\' status/progress. Unbound, the component keeps the list itself' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, at least one file' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const fileUploadEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'select', payload: 'UploadFile[]', description: 'Emitted with the newly accepted files whenever files are added (drop or picker)' },
   { name: 'remove', payload: 'UploadFile', description: 'Emitted when a file is removed from the list with its remove button' },
   { name: 'update:modelValue', payload: 'UploadFile[]', description: 'Emitted with the new list whenever files are added, removed or cleared (v-model)' },

@@ -27,8 +27,15 @@ const fieldProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'The field\'s label; the locale\'s "Cron expression" by default.' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style.' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables it.' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, an expression must be set' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 const fieldEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'update:modelValue', payload: 'string', description: 'The expression changed (valid ones only; while the text is invalid the field shows an error instead).' },
 ]
 const helpers = [

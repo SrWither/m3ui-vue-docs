@@ -22,6 +22,7 @@ const iconExamples = [
 ]
 
 const ratingEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'update:modelValue', payload: 'number', description: 'Emitted when the user rates by click, drag or keyboard (v-model). Dragging past the first icon emits 0' },
 ]
 
@@ -34,6 +35,12 @@ const ratingProps: PropDef[] = [
   { name: 'color', type: 'string', default: "'primary'", description: "One of the 4 M3 roles ('primary' | 'secondary' | 'tertiary' | 'error'), or any other CSS color string" },
   { name: 'icon', type: 'string', default: "'star'", description: 'Material Symbol icon' },
   { name: 'halfIncrements', type: 'boolean', default: 'false', description: 'Allow half-star values (click the left half of an icon). Fractional values always render exactly, with or without this prop' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, 0 (not rated) fails' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 </script>
 

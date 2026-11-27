@@ -43,6 +43,12 @@ const sliderProps: PropDef[] = [
   { name: 'fillColor', type: 'string', description: 'Custom color (hex, rgb(), a CSS var…) for the filled/active track and corner dot — not limited to the 4 M3 roles. Defaults to color' },
   { name: 'thumbColor', type: 'string', description: 'Custom color (hex, rgb(), a CSS var…) for the thumb (bar or icon) — not limited to the 4 M3 roles. Defaults to color' },
   { name: 'thumbIcon', type: 'string', description: 'Replaces the draggable bar thumb with a Material Symbol icon' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Adds the asterisk; a slider always has a value, so use rules (e.g. min(1)) for limits' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 </script>
 

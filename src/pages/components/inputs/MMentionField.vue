@@ -64,7 +64,8 @@ const fieldProps: PropDef[] = [
   { name: 'multiline', type: 'boolean', default: 'true', description: 'A textarea; false for one line.' },
   { name: 'rows / autoGrow / maxRows', type: 'number / boolean / number', default: '3 / true / —', description: 'As on MTextField.' },
   { name: 'debounce', type: 'number', default: '200', description: 'The delay before a search, in ms.' },
-  { name: 'variant / leadingIcon / hint / error / errorLabel / required / disabled', type: '…', description: 'As on MTextField.' },
+  { name: 'variant / leadingIcon / hint / error (boolean | string) / errorLabel / required / disabled', type: '…', description: 'As on MTextField.' },
+  { name: 'rules / validateOn / name', type: '…', description: 'Validation, as on MTextField (see MForm).' },
 ]
 const fieldEvents: EventDef[] = [
   { name: 'update:modelValue', payload: 'string', description: 'The text changed.' },

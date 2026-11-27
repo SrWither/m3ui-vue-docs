@@ -27,8 +27,12 @@ const pinInputProps: PropDef[] = [
   { name: 'type', type: "'numeric' | 'alphanumeric'", default: "'numeric'", description: 'Restricts which characters are accepted' },
   { name: 'masked', type: 'boolean', default: 'false', description: 'Renders each box as a password field (dots instead of characters)' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
-  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk; inside an MForm or with rules, also validates it' },
   { name: 'hint', type: 'string', description: 'Hint text below the boxes' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables every box' },
   { name: 'autoFocus', type: 'boolean', default: 'false', description: 'Focuses the first box on mount' },
@@ -36,6 +40,7 @@ const pinInputProps: PropDef[] = [
 ]
 
 const pinInputEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: "Focus left the field (its buttons and popup included): wire vee-validate's handleBlur or Vuelidate's $touch here" },
   { name: 'update:modelValue', payload: 'string', description: 'Emitted on every box change — powers v-model' },
   { name: 'complete', payload: 'string', description: 'Fires once with the full code as soon as every box is filled — the natural place to trigger auto-submit' },
 ]

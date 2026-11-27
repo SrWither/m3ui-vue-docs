@@ -34,6 +34,7 @@ const groups = [
       { name: 'useReactions', description: 'An emoji or icon that floats up swaying, like reactions over a live stream or a video call.' },
       { name: 'useContainerTransform', description: 'Opens one MContainerTransform from many elements (a grid of cards, one detail view).' },
       { name: 'useFieldBg', description: 'Detect the background behind a field so an outlined label can cut through its border.' },
+      { name: 'Validators', description: 'The rules form fields take: required, email, minLength, sameAs… plus your own functions and schemas.' },
     ],
   },
   {

@@ -15,6 +15,12 @@ const switchProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Label text' },
   { name: 'color', type: "'primary' | 'secondary' | 'tertiary' | 'error'", default: "'primary'", description: 'Track/thumb color when on' },
   { name: 'icon', type: 'boolean', default: 'true', description: "M3 officially has two Switch variants — with a check icon inside the thumb, and without (Compose's actual default). Set to false for the plain/no-icon variant." },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, must be on' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 </script>
 

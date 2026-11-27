@@ -43,6 +43,12 @@ const props: PropDef[] = [
   { name: 'autoAdvance', type: 'boolean', default: 'true', description: 'Moves focus to the next field once one is complete and valid' },
   { name: 'errors', type: "Partial<Record<'number' | 'expiry' | 'cvc' | 'name', string>>", description: 'Error messages shown regardless of the built-in checks, e.g. a decline from the server' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables every field' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, an empty card fails (an optional empty card passes; a half-typed one never does)' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const slots: SlotDef[] = [
@@ -50,6 +56,7 @@ const slots: SlotDef[] = [
 ]
 
 const events: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'update:modelValue', payload: 'CreditCardValue', description: 'Emitted on every change' },
   { name: 'complete', payload: 'CreditCardValue', description: 'Emitted when every field becomes valid' },
   { name: 'brand', payload: 'CardBrand', description: 'Emitted when the detected network changes' },

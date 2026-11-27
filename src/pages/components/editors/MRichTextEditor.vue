@@ -25,9 +25,16 @@ const richTextProps: PropDef[] = [
   { name: 'minHeight', type: 'string', default: "'200px'", description: 'Minimum height of the text area (not used with fill)' },
   { name: 'fill', type: 'boolean', default: 'false', description: 'Fills the height you give the editor (class="h-full", flex-1…): the toolbar stays put and the text scrolls inside, instead of the editor growing with its content' },
   { name: 'labels', type: 'RichTextEditorLabels', description: 'Object with all toolbar/dialog label overrides for i18n (see the type below) — defaults come from useLocale()' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, the document needs some text or an image' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const richTextEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'update:modelValue', payload: 'string', description: 'Emitted with the editor HTML on every content change — powers v-model' },
 ]
 

@@ -15,6 +15,25 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.7.0',
+    date: 'Unreleased',
+    changes: {
+      added: [
+        'Form validation: MForm validates the fields inside it, shows every error and focuses the first on submit, takes a server\'s errors by field name and a whole-form schema (zod, valibot…)',
+        'Every form field takes rules, name and validateOn and emits blur, from text fields and selects to pickers, checkboxes, file upload, signature pad, card input and the editors',
+        'Built-in rules (required, email, url, minLength, maxLength, min, max, pattern, sameAs) with messages in the app\'s language, your own functions (async too), or a schema as a rule',
+        'A string error is also the message, so vee-validate and Vuelidate plug straight in',
+        'MCheckbox shows M3\'s error colors; the other controls show the message',
+      ],
+      changed: [
+        'MFileUpload\'s drop zone works with the keyboard (Tab, Enter, Space)',
+      ],
+      fixed: [
+        '@blur on MTextField and the fields built on it now fires',
+      ],
+    },
+  },
+  {
     version: '1.6.2',
     date: '2026-11-26',
     changes: {

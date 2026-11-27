@@ -30,9 +30,16 @@ const jsonEditorProps: PropDef[] = [
   { name: 'minHeight', type: 'string', default: "'200px'", description: 'Min height' },
   { name: 'maxHeight', type: 'string', default: "'600px'", description: 'Max height' },
   { name: 'labels', type: 'JsonEditorLabels', description: 'Overrides for the valid/invalid badge and format/minify button text (see the type below) — defaults come from useLocale()' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, it cannot be null; text that does not parse always fails' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const jsonEditorEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'update:modelValue', payload: 'unknown', description: 'Emitted with the parsed value whenever the text is valid JSON — powers v-model' },
 ]
 

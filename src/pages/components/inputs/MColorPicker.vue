@@ -19,8 +19,12 @@ const colorPickerProps: PropDef[] = [
   { name: 'recentLimit', type: 'number', default: '7', description: 'How many recent colors to keep' },
   { name: 'eyedropper', type: 'boolean', default: 'true', description: 'Show a button to pick a color from the screen, where the browser supports it (Chrome, Edge)' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the picker' },
-  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk; inside an MForm or with rules, also validates it' },
   { name: 'hint', type: 'string', description: 'Hint text below the field' },
   { name: 'fieldBg', type: 'string', description: 'Overrides the auto-detected background color used to cut the floating label out of the border' },
 ]

@@ -3,6 +3,7 @@ import { MCard, MIcon } from '@m3ui-vue/m3ui-vue'
 import { iconMap } from '@/nav/sections'
 
 const components = [
+  { name: 'MForm', description: 'Form validation: field rules, server errors, schemas (zod, valibot) and validation libraries.' },
   { name: 'MTextField', description: 'Single- or multi-line text input, filled or outlined.' },
   { name: 'MNumberField', description: 'Numeric input with +/- stepper buttons and min/max clamping.' },
   { name: 'MMaskField', description: 'Text input with formatting masks — card, phone, date, and more.' },

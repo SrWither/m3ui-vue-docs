@@ -21,10 +21,13 @@ const tagInputProps: PropDef[] = [
   { name: 'placeholder', type: 'string', description: 'Input placeholder' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Field style' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
-  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
   { name: 'hint', type: 'string', description: 'Helper text below field' },
-  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk after the label' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk; inside an MForm or with rules, also validates it' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon name' },
   { name: 'fieldBg', type: 'string', description: 'Overrides the auto-detected background color used to cut the floating label out of the outlined border' },
   { name: 'maxTags', type: 'number', description: 'Max number of tags allowed' },
@@ -34,6 +37,7 @@ const tagInputProps: PropDef[] = [
 ]
 
 const tagInputEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: "Focus left the field (its buttons and popup included): wire vee-validate's handleBlur or Vuelidate's $touch here" },
   { name: 'update:modelValue', payload: 'string[]', description: 'Emitted whenever a tag is added or removed — powers v-model' },
   { name: 'debounced', payload: 'string[]', description: 'Emitted debounce ms after the tag list stops changing (only when debounce > 0)' },
 ]

@@ -29,6 +29,7 @@ const textTrailing = ref('Hello')
 
 const textFieldExposed: PropDef[] = [
   { name: 'focus(options?) / blur()', type: 'function', description: 'Focus the field, or take focus away' },
+  { name: 'validate() / resetValidation()', type: 'function', description: 'Check its rules and show the result (resolves to whether they pass) / hide its error' },
   { name: 'select() / setSelectionRange(start, end)', type: 'function', description: 'Select all its text, or part of it (a file name without its extension)' },
   { name: 'inputEl', type: 'HTMLInputElement | HTMLTextAreaElement', description: 'The element itself. MNumberField, MMaskField and MTagInput expose the same (MNumberField without setSelectionRange)' },
 ]
@@ -37,11 +38,14 @@ const textFieldProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'type', type: 'string', default: "'text'", description: 'HTML input type' },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
-  { name: 'error', type: 'boolean', description: 'Puts the field in error state (red border and label)' },
+  { name: 'error', type: 'boolean | string', description: 'Puts the field in error state (red border and label). A string is also the message' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown below the field (only visible when error is true)' },
   { name: 'hint', type: 'string', description: 'Hint text shown below the field' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
-  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk after the label' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk after the label; inside an MForm or with rules, also validates it' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'name', type: 'string', description: 'Native name; also the key of this field in its MForm' },
   { name: 'multiline', type: 'boolean', default: 'false', description: 'Renders a textarea instead of an input' },
   { name: 'rows', type: 'number', default: '3', description: 'Textarea rows (when multiline); with autoGrow, the fewest it shrinks to' },
   { name: 'autoGrow', type: 'boolean', default: 'false', description: 'Multiline only: grows with the text from rows up to maxRows, instead of a fixed height with a drag handle' },
@@ -56,6 +60,7 @@ const textFieldProps: PropDef[] = [
 const textFieldEvents: EventDef[] = [
   { name: 'update:modelValue', payload: 'string', description: 'Emitted on every keystroke — powers v-model' },
   { name: 'debounced', payload: 'string', description: 'Emitted debounce ms after the user stops typing (only when debounce > 0)' },
+  { name: 'blur / focus', payload: 'FocusEvent', description: "The field lost / gained focus (wire vee-validate's handleBlur or Vuelidate's $touch to blur)" },
 ]
 
 const textFieldSlots: SlotDef[] = [

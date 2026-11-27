@@ -24,11 +24,14 @@ const maskFieldProps: PropDef[] = [
   { name: 'label', type: 'string', description: 'Field label' },
   { name: 'mask', type: 'string | MaskPreset', description: "Mask pattern (# = digit) or a built-in preset name (see the type below)" },
   { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual style' },
-  { name: 'error', type: 'boolean', description: 'Error state' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
   { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema (zod, valibot). See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown: on leaving the field (live after that), while typing, or only on submit' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
   { name: 'hint', type: 'string', description: 'Hint text' },
   { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field' },
-  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk after the label' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Marks as required — adds a red asterisk; inside an MForm or with rules, also validates it' },
   { name: 'leadingIcon', type: 'string', description: 'Material Symbol icon' },
   { name: 'clearable', type: 'boolean', default: 'false', description: 'Show clear button' },
   { name: 'fieldBg', type: 'string', description: 'Overrides the auto-detected background color used to cut the floating label out of the outlined border' },
@@ -36,6 +39,7 @@ const maskFieldProps: PropDef[] = [
 ]
 
 const maskFieldEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: "Focus left the field (its buttons and popup included): wire vee-validate's handleBlur or Vuelidate's $touch here" },
   { name: 'update:modelValue', payload: 'string', description: 'Emitted on every keystroke — powers v-model' },
   { name: 'debounced', payload: 'string', description: 'Emitted debounce ms after the user stops typing (only when debounce > 0)' },
 ]

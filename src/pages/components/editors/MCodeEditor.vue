@@ -29,9 +29,16 @@ const codeEditorProps: PropDef[] = [
   { name: 'maxHeight', type: 'string', default: "'600px'", description: 'Maximum editor height' },
   { name: 'placeholder', type: 'string', description: 'Placeholder text shown via CodeMirror when the editor is empty' },
   { name: 'wrap', type: 'boolean', default: 'true', description: 'Word wrap' },
+  { name: 'error', type: 'boolean | string', description: 'Error state. A string is also the message' },
+  { name: 'errorLabel', type: 'string', description: 'Error message shown when error is true' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'Inside an MForm or with rules, the code cannot be blank' },
+  { name: 'rules', type: 'ValidationRule | ValidationRule[]', description: "Validation rules: functions (value, ctx) => true | 'message' (may be async) or a Standard Schema. See MForm" },
+  { name: 'validateOn', type: "'blur' | 'input' | 'submit'", default: "'blur'", description: 'When the rules are checked and shown' },
+  { name: 'name', type: 'string', description: 'The key of this field in its MForm' },
 ]
 
 const codeEditorEvents: EventDef[] = [
+  { name: 'blur', payload: '—', description: 'Focus left it (wire a validation library\'s touch here)' },
   { name: 'update:modelValue', payload: 'string', description: 'Emitted on every document change — powers v-model' },
 ]
 
