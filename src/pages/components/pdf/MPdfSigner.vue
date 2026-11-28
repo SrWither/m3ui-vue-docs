@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MPdfSigner } from '@m3ui-vue/m3ui-vue/pdf'
-import type { PdfSignField } from '@m3ui-vue/m3ui-vue/pdf'
+import { MPdfSigner } from '@m3ui-vue/m3ui-vue/pdf-sign'
+import type { PdfSignField } from '@m3ui-vue/m3ui-vue/pdf-sign'
 import { MButton, MSegmentedButton } from '@m3ui-vue/m3ui-vue'
 import ComponentDemo from '@/components/ComponentDemo.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -98,7 +98,7 @@ const types: TypeDef[] = [
       mode the sender places the fields. Built on
       <RouterLink to="/components/pdf/mpdfviewer" class="text-primary underline">MPdfViewer</RouterLink> and
       <RouterLink to="/components/inputs/msignaturepad" class="text-primary underline">MSignaturePad</RouterLink>,
-      from the <code>/pdf</code> entry point. Writing the file needs <code>pdf-lib</code> (<code>pnpm add pdf-lib</code>).
+      from the <code>/pdf-sign</code> entry point, which needs <code>pdfjs-dist</code> and <code>pdf-lib</code> (<code>pnpm add pdfjs-dist pdf-lib</code>).
     </p>
     <p class="mb-8 rounded-lg bg-surface-container p-4 text-body-medium text-on-surface-variant">
       This is a visual signature, the kind e-signature flows show, print and keep with an audit trail. It is not a
@@ -119,7 +119,7 @@ const types: TypeDef[] = [
   class=&quot;h-[640px]&quot;
   @finish=&quot;finish&quot;
 />`"
-      :script="`import { MPdfSigner } from '@m3ui-vue/m3ui-vue/pdf'
+      :script="`import { MPdfSigner } from '@m3ui-vue/m3ui-vue/pdf-sign'
 
 const fields = ref([
   { id: 'tenant', type: 'signature', page: 2, x: 0.548, y: 0.1, width: 0.32, height: 0.052, signer: 'tenant' },
@@ -168,7 +168,7 @@ async function finish() {
     <h3 class="mb-3 mt-6 text-title-large font-medium">Types</h3>
     <TypesTable :types="types" />
     <p class="mt-4 text-body-medium text-on-surface-variant">
-      Also from <code>/pdf</code>: <code>signPdf(bytes, fields)</code> writes filled fields into a PDF without the
+      Also from <code>/pdf-sign</code>: <code>signPdf(bytes, fields)</code> writes filled fields into a PDF without the
       component (once every signer is done, say).
     </p>
 

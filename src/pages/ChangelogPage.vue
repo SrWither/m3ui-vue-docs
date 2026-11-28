@@ -15,6 +15,15 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.8.1',
+    date: '2026-11-28',
+    changes: {
+      fixed: [
+        'MPdfSigner and signPdf() move to their own entry point, @m3ui-vue/m3ui-vue/pdf-sign: in /pdf they made apps using MPdfViewer without pdf-lib fail to build',
+      ],
+    },
+  },
+  {
     version: '1.8.0',
     date: '2026-11-28',
     changes: {
