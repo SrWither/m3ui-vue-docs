@@ -4,6 +4,8 @@ import { iconMap } from '@/nav/sections'
 
 const components = [
   { name: 'MForm', description: 'Form validation: field rules, server errors, schemas (zod, valibot) and validation libraries.' },
+  { name: 'MFormRenderer', description: 'A form from a JSON schema: fields, rules, widths and conditional fields.' },
+  { name: 'MFormBuilder', description: 'Design forms without code: palette, drag to reorder, inspector, preview, JSON.' },
   { name: 'MTextField', description: 'Single- or multi-line text input, filled or outlined.' },
   { name: 'MNumberField', description: 'Numeric input with +/- stepper buttons and min/max clamping.' },
   { name: 'MMaskField', description: 'Text input with formatting masks — card, phone, date, and more.' },
