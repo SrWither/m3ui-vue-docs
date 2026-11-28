@@ -18,6 +18,9 @@ const versions: Version[] = [
     version: '1.8.0',
     date: 'Unreleased',
     changes: {
+      added: [
+        'MSpreadsheet: editable cells like a small Excel, with formulas, a fill handle, copy and paste to and from Excel, undo, frozen rows and columns and resizable columns, smooth with thousands of rows; its formula engine is exported too',
+      ],
       changed: [
         'MMapRoute\'s duration defaults to auto: the vehicle moves for the time between its last two positions, at an even pace instead of stopping before each new one',
       ],

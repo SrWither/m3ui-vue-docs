@@ -7,6 +7,7 @@ const components = [
   { name: 'MDataTable', description: 'Feature-rich table: resize/pin/toggle columns, grouping, density, expandable rows, CSV export.' },
   { name: 'MTreeTable', description: 'Hierarchical table with expandable rows for nested data like file systems.' },
   { name: 'MVirtualTable', description: 'Virtualized rendering for smooth scrolling through thousands of rows.' },
+  { name: 'MSpreadsheet', description: 'Editable cells like a small Excel: formulas, fill handle, copy and paste with Excel, frozen rows.' },
   { name: 'MFilterBuilder', description: 'Visual filters (field · operator · value, all / any, groups) and filterRows() to apply them to any table.' },
 ]
 </script>
