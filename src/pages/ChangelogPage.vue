@@ -22,6 +22,8 @@ const versions: Version[] = [
         'MSpreadsheet: editable cells like a small Excel, with formulas, a fill handle, copy and paste to and from Excel, undo, frozen rows and columns and resizable columns, smooth with thousands of rows; its formula engine is exported too',
         'MFormRenderer: a form from a JSON schema, with its rules, widths and fields that show only when another one has some value',
         'MFormBuilder: design forms without code (add, drag to reorder, edit, preview), saved as the JSON MFormRenderer draws',
+        'MPdfSigner: sign and fill a PDF (signature drawn or typed and reused, initials, dates, text, checkboxes, several signers, a mode to place the fields) and download it signed',
+        'MPdfViewer: a #page slot to draw your own marks over each page',
       ],
       changed: [
         'MMapRoute\'s duration defaults to auto: the vehicle moves for the time between its last two positions, at an even pace instead of stopping before each new one',

@@ -4,6 +4,7 @@ import { iconMap } from '@/nav/sections'
 
 const components = [
   { name: 'MPdfViewer', description: 'A PDF viewer on pdf.js: continuous pages, zoom and pinch, search, thumbnails, outline, and annotations as JSON.' },
+  { name: 'MPdfSigner', description: 'Sign and fill a PDF: signature, initials, date and text fields, several signers, and the signed file.' },
 ]
 </script>
 

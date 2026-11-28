@@ -1,4 +1,4 @@
-// Builds the sample PDFs in public/pdf/ (MPdfViewer's page and the Drive example) from the HTML files here:
+// Builds the sample PDFs in public/pdf/ (MPdfViewer's and MPdfSigner's pages and the Drive example) from the HTML files here:
 // headless Chromium prints each one (with an outline from its headings, and working links), and qpdf encrypts
 // the lease. All the text is written for these samples. Run: node scripts/sample-pdfs/build.mjs
 import { execFileSync } from 'node:child_process'
@@ -10,7 +10,7 @@ const out = join(here, '../../public/pdf')
 mkdirSync(out, { recursive: true })
 
 const chromium = process.env.CHROMIUM ?? 'chromium'
-for (const name of ['pocket-gardens', 'invoice', 'lease']) {
+for (const name of ['pocket-gardens', 'invoice', 'lease', 'lease-sign']) {
   execFileSync(chromium, [
     '--headless',
     '--disable-gpu',
