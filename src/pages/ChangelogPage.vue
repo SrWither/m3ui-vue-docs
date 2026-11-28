@@ -15,6 +15,18 @@ interface Version {
 
 const versions: Version[] = [
   {
+    version: '1.8.0',
+    date: 'Unreleased',
+    changes: {
+      changed: [
+        'MMapRoute\'s duration defaults to auto: the vehicle moves for the time between its last two positions, at an even pace instead of stopping before each new one',
+      ],
+      fixed: [
+        'MMapRoute\'s vehicle shook in Firefox (drawn at whole pixels); it glides there now as in Chrome',
+      ],
+    },
+  },
+  {
     version: '1.7.0',
     date: '2026-11-27',
     changes: {

@@ -99,7 +99,7 @@ const statusOptions = [
         :path="path"
         :progress="current >= 2 ? progress : undefined"
         vehicle-icon="two_wheeler"
-        :duration="1400"
+       
         :follow="follow"
         @arrive="onArrive"
       />

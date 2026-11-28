@@ -78,7 +78,7 @@ const props: PropDef[] = [
   { name: 'vehicleIcon', type: 'string', default: "'navigation'", description: 'The default arrow turns with the road; other icons (two_wheeler, local_shipping) face the way it goes' },
   { name: 'rotateVehicle', type: 'boolean', description: 'Turn the vehicle with the road (and the map\'s rotation): on for the default arrow, off for other icons (mirrored when heading west). Set it for #vehicle content drawn pointing up' },
   { name: 'showVehicle', type: 'boolean', default: 'true', description: 'Show the vehicle (when there is a progress or vehicle)' },
-  { name: 'duration', type: 'number', default: '1000', description: 'How long the vehicle takes to move to a new position (ms), along the road. 0 jumps; reduced motion jumps' },
+  { name: 'duration', type: "number | 'auto'", default: "'auto'", description: 'How long the vehicle takes to move to a new position (ms), along the road. auto takes the time between the last two positions, so a vehicle fed every few seconds keeps an even pace instead of stopping between fixes. 0 jumps; reduced motion jumps' },
   { name: 'fit', type: 'boolean', default: 'true', description: 'Fit the map to the route when it shows and when it changes' },
   { name: 'follow', type: 'boolean', default: 'false', description: 'Keep the vehicle in the middle of the map' },
   { name: 'padding', type: 'number', default: '64', description: 'Room around the route when fitting it (px)' },
@@ -221,11 +221,11 @@ const { path } = await osrmRouteProvider()([from, to], {})`"
     <ComponentDemo
       title="Live GPS on an out-and-back route"
       description="Each fix lands ~10 m off the road. Where the way back runs over the way out, forward snapping keeps the van on the way back; switch to nearest to see it jump to the way out there."
-      :code="`<MMapRoute :stops=&quot;stops&quot; :path=&quot;path&quot; :vehicle=&quot;gps&quot; :snap=&quot;snap&quot; vehicle-icon=&quot;local_shipping&quot; :duration=&quot;1100&quot; />`"
+      :code="`<MMapRoute :stops=&quot;stops&quot; :path=&quot;path&quot; :vehicle=&quot;gps&quot; :snap=&quot;snap&quot; vehicle-icon=&quot;local_shipping&quot; />`"
     >
       <div class="flex w-full flex-col gap-3">
         <MMap :map-style="STYLE" :center="[-64.191, -31.418]" :zoom="14" class="h-96 w-full rounded-xl">
-          <MMapRoute :stops="tripStops" :path="roundTrip" :vehicle="gps" :snap="snap" vehicle-icon="local_shipping" :duration="1100" />
+          <MMapRoute :stops="tripStops" :path="roundTrip" :vehicle="gps" :snap="snap" vehicle-icon="local_shipping" />
         </MMap>
         <div class="flex flex-wrap items-center gap-2">
           <MButton variant="tonal" icon="play_arrow" @click="startGps">{{ gps ? 'Restart the van' : 'Start the van' }}</MButton>
