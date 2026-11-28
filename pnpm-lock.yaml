@@ -51,8 +51,8 @@ importers:
         specifier: ^6.43.11
         version: 6.43.15
       '@m3ui-vue/m3ui-vue':
-        specifier: ^1.7.0
-        version: 1.7.0(474511bbf2ddc74acb82710ce6422874)
+        specifier: ^1.8.0
+        version: 1.8.0(6e4ae89b24e5bb72ebac8524acd45d73)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.5(jiti@2.7.0))
@@ -113,9 +113,12 @@ importers:
       material-symbols:
         specifier: ^0.47.3
         version: 0.47.6
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
       pdfjs-dist:
-        specifier: ^6.4.299
-        version: 6.4.299
+        specifier: ^6.5.438
+        version: 6.5.438
       qrcode-generator:
         specifier: ^2.0.4
         version: 2.0.4
@@ -296,8 +299,8 @@ packages:
   '@lezer/rust@1.0.3':
     resolution: {integrity: sha512-XxErOjZzQ7yJt1agUT4fu9qQvESZ3acgoxpPaPTPOiUx+duCjaVAtZGFIgphkHxlN05djdVAIOy/wItShMEjqQ==}
 
-  '@m3ui-vue/m3ui-vue@1.7.0':
-    resolution: {integrity: sha512-S8bmENCL/B1Tw9cX8gpPhmwQ9Hb0z7uVnxv5pn13JH7gTucAM0gfrgnr0G9xx8Z+8z/VVQTy/J4DEqZ1TEaHiQ==}
+  '@m3ui-vue/m3ui-vue@1.8.0':
+    resolution: {integrity: sha512-jxkt1aYihODEz9hjJVn4HnVQKv24U0PUeJHWR8HwQOoPo9AWqWmP32JKeMBMbeYhOVLeBIuCvYsnXAB5jChqwA==}
     peerDependencies:
       '@codemirror/commands': '*'
       '@codemirror/lang-cpp': '*'
@@ -332,6 +335,7 @@ packages:
       maplibre-gl: ^5.0.0 || ^6.0.0
       markdown-it: '*'
       material-symbols: '*'
+      pdf-lib: '*'
       pdfjs-dist: '*'
       qrcode-generator: '*'
       tailwindcss: ^4.0.0
@@ -403,6 +407,8 @@ packages:
       markdown-it:
         optional: true
       material-symbols:
+        optional: true
+      pdf-lib:
         optional: true
       pdfjs-dist:
         optional: true
@@ -520,6 +526,12 @@ packages:
 
   '@oxc-project/types@0.155.0':
     resolution: {integrity: sha512-SeE8JPwW1xs1tHeNycjUtUBdhorRa8o4jlvjwk49R7/Z291i+4DQa7JJIgOm/TaYQZx+QrPQbVJ/9c8dMIZN8Q==}
+
+  '@pdf-lib/standard-fonts@1.0.0':
+    resolution: {integrity: sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA==}
+
+  '@pdf-lib/upng@1.0.1':
+    resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
 
   '@rolldown/binding-android-arm-eabi@1.2.15':
     resolution: {integrity: sha512-aLcgK9gIJ3YRvrrtfSBbRa27F5WrpiTaPulnFpsHPxpUHgFlSgnU4854MHwoRGEBhfRJDWCS2WQ7lIjskE9Olw==}
@@ -1434,6 +1446,9 @@ packages:
   orderedmap@2.1.1:
     resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
 
+  pako@1.0.11:
+    resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
 
@@ -1444,8 +1459,11 @@ packages:
     resolution: {integrity: sha512-mnvGdvOrIvJOBGUEdGkrVXjN8E/VkIJCkf2eS1DH2yv82ORUlLttmDt0rWY38yYZmVwciZwBUvHM20qxBZf40w==}
     hasBin: true
 
-  pdfjs-dist@6.4.299:
-    resolution: {integrity: sha512-AVl138zALtfaAPvADulE0PZThbYzCBS79nL4pOSL/6Sm/4AH5A21BD9VHt97OlCuzJuCpmeZtAtkinisF4Vb1g==}
+  pdf-lib@1.17.1:
+    resolution: {integrity: sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw==}
+
+  pdfjs-dist@6.5.438:
+    resolution: {integrity: sha512-vg8Pw1x+AFKy4AMDvhuWl5cOYV8d698UoEANoFFhc79hqXDnZQqnOXoxw3HG907WHOg1JYOvLhP756boddFxpA==}
     engines: {node: '>=22.13.0 || >=24'}
 
   perfect-debounce@2.1.0:
@@ -1576,6 +1594,9 @@ packages:
 
   tinyqueue@3.0.0:
     resolution: {integrity: sha512-gRa9gwYU3ECmQYv3lslts5hxuIa90veaEcxDYuu3QGOIAEM2mOZkVHp48ANJuu1CURtRdHKUBY5Lm1tHV+sD4g==}
+
+  tslib@1.14.1:
+    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
@@ -1970,7 +1991,7 @@ snapshots:
       '@lezer/highlight': 1.2.5
       '@lezer/lr': 1.4.11
 
-  '@m3ui-vue/m3ui-vue@1.7.0(474511bbf2ddc74acb82710ce6422874)':
+  '@m3ui-vue/m3ui-vue@1.8.0(6e4ae89b24e5bb72ebac8524acd45d73)':
     dependencies:
       shape-morph: 0.4.0
       tailwindcss: 4.3.3
@@ -2008,7 +2029,8 @@ snapshots:
       maplibre-gl: 6.19.0
       markdown-it: 15.0.3
       material-symbols: 0.47.6
-      pdfjs-dist: 6.4.299
+      pdf-lib: 1.17.1
+      pdfjs-dist: 6.5.438
       qrcode-generator: 2.0.4
       vue-chartjs: 5.3.4(chart.js@4.5.1)(vue@3.5.44(typescript@7.0.2))
     transitivePeerDependencies:
@@ -2102,6 +2124,14 @@ snapshots:
     optional: true
 
   '@oxc-project/types@0.155.0': {}
+
+  '@pdf-lib/standard-fonts@1.0.0':
+    dependencies:
+      pako: 1.0.11
+
+  '@pdf-lib/upng@1.0.1':
+    dependencies:
+      pako: 1.0.11
 
   '@rolldown/binding-android-arm-eabi@1.2.15':
     optional: true
@@ -2875,6 +2905,8 @@ snapshots:
 
   orderedmap@2.1.1: {}
 
+  pako@1.0.11: {}
+
   path-browserify@1.0.1: {}
 
   pathe@2.0.3: {}
@@ -2883,7 +2915,14 @@ snapshots:
     dependencies:
       resolve-protobuf-schema: 2.1.0
 
-  pdfjs-dist@6.4.299:
+  pdf-lib@1.17.1:
+    dependencies:
+      '@pdf-lib/standard-fonts': 1.0.0
+      '@pdf-lib/upng': 1.0.1
+      pako: 1.0.11
+      tslib: 1.14.1
+
+  pdfjs-dist@6.5.438:
     optionalDependencies:
       '@napi-rs/canvas': 1.0.13
 
@@ -3046,6 +3085,8 @@ snapshots:
       picomatch: 4.0.7
 
   tinyqueue@3.0.0: {}
+
+  tslib@1.14.1: {}
 
   typescript@7.0.2:
     optionalDependencies:
