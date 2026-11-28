@@ -16,7 +16,7 @@ interface Version {
 const versions: Version[] = [
   {
     version: '1.8.0',
-    date: 'Unreleased',
+    date: '2026-11-28',
     changes: {
       added: [
         'MSpreadsheet: editable cells like a small Excel, with formulas, a fill handle, copy and paste to and from Excel, undo, frozen rows and columns and resizable columns, smooth with thousands of rows; its formula engine is exported too',
